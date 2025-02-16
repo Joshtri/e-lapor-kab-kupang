@@ -1,6 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/partials/header";
+import FloatingHelper from "@/components/floating-helpers";
+// import { ThemeProvider } from 'next-themes'
+// import { Flowbite } from 'flowbite-react'
+import ClientThemeProvider from "@/providers/client-theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,8 +27,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header/>
-        {children}
+        <ClientThemeProvider>
+          <Header/>
+          <FloatingHelper/>
+          {children}
+        </ClientThemeProvider>
       </body>
     </html>
   );
