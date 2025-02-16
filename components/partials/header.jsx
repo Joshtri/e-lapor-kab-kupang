@@ -26,7 +26,7 @@ export default function Header() {
                         Alur Pengaduan
                     </Button>
                 </Navbar.Link>
-                <Navbar.Link as={Link} href="/registrasi">
+                <Navbar.Link as={Link} href="/registrasi-akun">
                     <Button 
                         // gradientDuoTone="blueToGreen"
                         className="w-full font-medium rounded-lg hover:scale-105 transition-transform"

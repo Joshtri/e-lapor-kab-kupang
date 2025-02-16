@@ -42,12 +42,11 @@ export default function RegistrationPage() {
   return (
     <div className="min-h-screen flex items-center justify-center">
 
-    
     <div className="container mx-auto max-w-2xl px-4 py-8">
       <Card>
         <div className="text-center">
-          <h2 className="text-2xl font-bold">SEKRETARIAT WAKIL PRESIDEN</h2>
-          <p className="text-gray-500">RESERVASI LAYANAN PENGADUAN LAPOR MAS WAPRES!</p>
+          <h2 className="text-2xl font-bold"> Pemerintah Daerah Kabupaten Kupang</h2>
+          <p className="text-gray-500">RESERVASI LAYANAN PENGADUAN E-LAPOR!</p>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div>
@@ -105,6 +104,41 @@ export default function RegistrationPage() {
                   <span className="text-red-500">{errors.contactNumber.message}</span>
                 ) : (
                   "Masukkan nomor kontak tanpa spasi"
+                )
+              }
+            />
+          </div>
+
+          <div>
+            <div className="mb-2 block">
+              <Label htmlFor="email" value="EMAIL" />
+            </div>
+            <TextInput
+              id="idNumber"
+              type="text"
+              placeholder="Masukkan NIK/Nomor KTP"
+              {...register("idNumber")}
+              color={errors.idNumber ? "failure" : "gray"}
+              helperText={
+                errors.idNumber ? (
+                  <span className="text-red-500">{errors.idNumber.message}</span>
+                ) : (
+                  "Masukkan EMAIL"
+                )
+              }
+            />
+
+            <TextInput
+              id="idNumber"
+              type="text"
+              placeholder="Masukkan Password"
+              {...register("idNumber")}
+              color={errors.idNumber ? "failure" : "gray"}
+              helperText={
+                errors.idNumber ? (
+                  <span className="text-red-500">{errors.idNumber.message}</span>
+                ) : (
+                  "Masukkan PASSWORD"
                 )
               }
             />
