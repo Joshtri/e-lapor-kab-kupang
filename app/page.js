@@ -1,57 +1,135 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link"
-import { Button } from "flowbite-react"
-import { HiOutlineUser, HiOutlinePhone } from "react-icons/hi"
+import Link from "next/link";
+import { Button } from "flowbite-react";
+import { HiOutlinePhone, HiOutlineUserAdd, HiOutlineLogin } from "react-icons/hi";
 
 export default function Home() {
+  const cardClass = "transform transition-all duration-300 hover:scale-105";
+  const innerClass =
+    "flex flex-col h-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 shadow-lg hover:shadow-xl";
+  const contentClass =
+    "flex flex-col flex-grow items-center text-center gap-6";
+  const iconWrapper = (bgColor, textColor, Icon) => (
+    <div className={`flex h-16 w-16 items-center justify-center rounded-full ${bgColor} ${textColor}`}>
+      <Icon className="h-8 w-8" />
+    </div>
+  );
+
   return (
-    <main className="container mx-auto px-4 py-8">
-    <div className="mb-12 text-center">
-      <Image
-        src="/placeholder.svg?height=80&width=240"
-        alt="LAPOR MAS WAPRES"
-        width={240}
-        height={80}
-        className="mx-auto mb-8"
-      />
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">
-        Sampaikan Laporan Anda melalui pilihan kanal berikut ini
-      </h1>
-    </div>
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-700 mt-12">
+      <div className="container mx-auto px-4 py-16">
+        {/* Header Section */}
+        <div className="mb-16 text-center">
+          {/* <Image
+            src="/placeholder.svg?height=100&width=300"
+            alt="E-Lapor Kabupaten Kupang"
+            width={300}
+            height={100}
+            className="mx-auto mb-8 drop-shadow-lg"
+          /> */}
+          <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100 drop-shadow-sm">
+            Selamat Datang di E-LAPOR Kabupaten Kupang
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Layanan Aspirasi dan Pengaduan Online untuk mendukung transparansi dan pelayanan publik di Pemerintah Daerah Kabupaten Kupang.
+          </p>
+        </div>
 
-    <div className="grid gap-6 md:grid-cols-2">
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
-            <HiOutlineUser className="h-6 w-6" />
+        {/* Cards Container */}
+        <div className="max-w-5xl mx-auto">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+
+            {/* Register Card */}
+            <div className={cardClass}>
+              <div className={innerClass}>
+                <div className={contentClass}>
+                  {iconWrapper("bg-purple-100 dark:bg-purple-900", "text-purple-600 dark:text-purple-300", HiOutlineUserAdd)}
+                  <div>
+                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">Register</h2>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Daftarkan akun Anda untuk mendapatkan akses penuh ke layanan pengaduan dan informasi dari Pemerintah Daerah Kabupaten Kupang.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-full mt-6">
+                  <Link href="/auth/register" className="w-full">
+                    <Button
+                      color="blue"
+                      size="lg"
+                      className="w-full"
+                    >
+                      Daftar Sekarang
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* WhatsApp Card */}
+            <div className={cardClass}>
+              <div className={innerClass}>
+                <div className={contentClass}>
+                  {iconWrapper("bg-green-100 dark:bg-green-900", "text-green-600 dark:text-green-300", HiOutlinePhone)}
+                  <div>
+                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">WhatsApp</h2>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Sampaikan pengaduan dan masukan Anda melalui WhatsApp untuk respons yang cepat dan tepat.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-full mt-6">
+                  <Button
+                    gradientDuoTone="greenToBlue"
+                    size="lg"
+                    className="w-full"
+                  >
+                    Hubungi Kami
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Login Card */}
+            <div className={cardClass}>
+              <div className={innerClass}>
+                <div className={contentClass}>
+                  {iconWrapper("bg-blue-100 dark:bg-blue-900", "text-blue-600 dark:text-blue-300", HiOutlineLogin)}
+                  <div>
+                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">Login</h2>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Masuk ke akun Anda untuk melacak pengaduan dan berinteraksi dengan layanan kami.
+                    </p>
+                  </div>
+                </div>
+                <div className="w-full mt-6">
+                  <Link href="/auth/login" className="w-full">
+                    <Button
+                      color="blue"
+                      size="lg"
+                      className="w-full"
+                    >
+                      Masuk
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <div className="flex-1">
-            <h2 className="mb-1 font-semibold">Tatap Muka (Registrasi Online)</h2>
-            <p className="text-sm text-gray-600">
-              Sampaikan langsung di Kantor Sekretariat Wakil Presiden Jln. Kebon Sirih No. 14, Jakarta Pusat
-            </p>
-          </div>
-          <Link href="/registrasi">
-            <Button gradientDuoTone="blueToGreen">Daftar</Button>
-          </Link>
+        </div>
+
+        {/* Footer Info */}
+        <div className="mt-16 text-center">
+          <p className="text-gray-600 dark:text-gray-300">
+            Butuh bantuan? Hubungi tim support kami di{" "}
+            <a href="mailto:support@kupangkab.go.id" className="text-blue-600 hover:underline">
+              support@kupangkab.go.id
+            </a>
+          </p>
         </div>
       </div>
-
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-600">
-            <HiOutlinePhone className="h-6 w-6" />
-          </div>
-          <div className="flex-1">
-            <h2 className="mb-1 font-semibold">WhatsApp</h2>
-            <p className="text-sm text-gray-600">Hubungi kami via WhatsApp.</p>
-          </div>
-          <Button outline gradientDuoTone="greenToBlue">
-            Hubungi
-          </Button>
-        </div>
-      </div>
-    </div>
-  </main>
+    </main>
   );
 }
