@@ -67,29 +67,37 @@ export default function Home() {
               </div>
             </div>
 
-            {/* WhatsApp Card */}
-            <div className={cardClass}>
-              <div className={innerClass}>
-                <div className={contentClass}>
-                  {iconWrapper("bg-green-100 dark:bg-green-900", "text-green-600 dark:text-green-300", HiOutlinePhone)}
-                  <div>
-                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">WhatsApp</h2>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Sampaikan pengaduan dan masukan Anda melalui WhatsApp untuk respons yang cepat dan tepat.
-                    </p>
-                  </div>
-                </div>
-                <div className="w-full mt-6">
-                  <Button
-                    gradientDuoTone="greenToBlue"
-                    size="lg"
-                    className="w-full"
-                  >
-                    Hubungi Kami
-                  </Button>
-                </div>
-              </div>
-            </div>
+{/* WhatsApp Card */}
+<div className={cardClass}>
+  <div className={innerClass}>
+    <div className={contentClass}>
+      {iconWrapper("bg-green-100 dark:bg-green-900", "text-green-600 dark:text-green-300", HiOutlinePhone)}
+      <div>
+        <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">WhatsApp</h2>
+        <p className="text-gray-600 dark:text-gray-300">
+          Sampaikan pengaduan dan masukan Anda melalui WhatsApp untuk respons yang cepat dan tepat.
+        </p>
+      </div>
+    </div>
+    <div className="w-full mt-6">
+      <Button
+        gradientDuoTone="greenToBlue"
+        size="lg"
+        className="w-full"
+        onClick={() => {
+          const message = encodeURIComponent(
+            "Halo Bupati,\n\nSaya ingin melaporkan...\n\nNama: \nAlamat: \nKeluhan: \n\nTerima kasih."
+          );
+          window.open(`https://wa.me/6281246191188?text=${message}`, "_blank");
+        }}
+      >
+        Hubungi Kami
+      </Button>
+    </div>
+  </div>
+</div>
+
+
 
             {/* Login Card */}
             <div className={cardClass}>
