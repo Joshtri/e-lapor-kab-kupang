@@ -96,7 +96,7 @@ export default function LoginPage() {
                             </div>
                         </div>
 
-                        <Button
+                        {/* <Button
                             type="submit"
                             color="blue"
                             className="w-full"
@@ -114,7 +114,13 @@ export default function LoginPage() {
                             ) : (
                                 "Masuk"
                             )}
-                        </Button>
+                        </Button> */}
+
+                        <Link href="/pelapor/dashboard">
+                            <Button type="button" color="blue" className="w-full" size="lg">
+                                Masuk
+                            </Button>
+                        </Link>
 
                         <p className="text-center text-sm text-gray-600 dark:text-gray-300">
                             Belum punya akun?{" "}
