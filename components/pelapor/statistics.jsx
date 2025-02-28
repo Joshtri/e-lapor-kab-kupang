@@ -1,22 +1,47 @@
 "use client";
 
-import React from "react";
-import { Card } from "flowbite-react";
-import {
-  HiOutlineDocumentText,
-  HiOutlineUsers,
-  HiOutlineCheckCircle,
-} from "react-icons/hi";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Card, Spinner } from "flowbite-react";
+import { HiOutlineDocumentText, HiOutlineUsers, HiOutlineCheckCircle } from "react-icons/hi";
 
-const Statistics = () => {
+const Statistics = ({ user }) => {
+  const [stats, setStats] = useState({ total: 0, pending: 0, inProgress: 0, completed: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get(`/api/reports/stats?userId=${user.id}`); // Ambil statistik berdasarkan userId
+        setStats(res.data);
+      } catch (error) {
+        console.error("Gagal mengambil statistik laporan", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center mt-4">
+        <Spinner size="lg" />
+        <span className="ml-2 text-gray-600 dark:text-gray-300">Memuat statistik...</span>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mt-10 mb-4">Statistik Laporan</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="mt-8">
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Statistik Laporan Anda</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
         {[
-          { title: "Total Laporan", value: 125, icon: HiOutlineDocumentText, color: "text-blue-500" },
-          { title: "Laporan Selesai", value: 98, icon: HiOutlineCheckCircle, color: "text-green-500" },
-          { title: "Dalam Proses", value: 27, icon: HiOutlineUsers, color: "text-red-500" },
+          { title: "Total Laporan", value: stats.total, icon: HiOutlineDocumentText, color: "text-blue-500" },
+          { title: "Laporan Selesai", value: stats.completed, icon: HiOutlineCheckCircle, color: "text-green-500" },
+          { title: "Dalam Proses", value: stats.inProgress, icon: HiOutlineUsers, color: "text-yellow-500" },
         ].map(({ title, value, icon: Icon, color }) => (
           <Card key={title} className="p-5 shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="flex items-center space-x-4">
