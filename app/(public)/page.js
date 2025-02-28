@@ -88,7 +88,7 @@ export default function Home() {
                       const message = encodeURIComponent(
                         "Halo Bupati,\n\nSaya ingin melaporkan...\n\nNama: \nAlamat: \nKeluhan: \n\nTerima kasih."
                       );
-                      window.open(`https://wa.me/6281246191188?text=${message}`, "_blank");
+                      window.open(`https://wa.me/6281237159777?text=${message}`, "_blank");
                     }}
                   >
                     Hubungi Kami
