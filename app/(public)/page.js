@@ -30,7 +30,7 @@ export default function Home() {
             className="mx-auto mb-8 drop-shadow-lg"
           /> */}
           <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100 drop-shadow-sm">
-            Selamat Datang di LAPOR KK BUPATI Kabupaten Kupang
+            Selamat Datang di LAPOR KK BUPATI Kupang
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Layanan Aspirasi dan Pengaduan Online untuk mendukung transparansi dan pelayanan publik di Pemerintah Daerah Kabupaten Kupang.
