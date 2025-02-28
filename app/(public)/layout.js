@@ -2,9 +2,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import Header from "@/components/partials/header";
 import FloatingHelper from "@/components/floating-helpers";
-// import { ThemeProvider } from 'next-themes'
-// import { Flowbite } from 'flowbite-react'
 import ClientThemeProvider from "@/providers/client-theme-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,13 +22,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="id">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClientThemeProvider>
-          <Header/>
-          <FloatingHelper/>
+          <Toaster position="top-right" />
+          <Header />
+          <FloatingHelper />
           {children}
         </ClientThemeProvider>
       </body>
