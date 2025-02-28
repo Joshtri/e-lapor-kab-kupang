@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL") // Gunakan variabel environment untuk koneksi database
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(100)
+  nikNumber     String   @unique @db.VarChar(16) // NIK/KTP harus unik
+  contactNumber String   @db.VarChar(15)
+  email         String   @unique @db.VarChar(100)
+  password      String   @db.VarChar(255)
+  role          Role     @default(USER)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  reports  Report[]
+  comments Comment[]
+  logs     Log[]
+}
+
+model Report {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  category    Category
+  priority    Priority
+  status      Status   @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  comments Comment[]
+  logs     Log[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  reportId  Int
+  userId    Int
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+
+  report Report @relation(fields: [reportId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Log {
+  id        Int      @id @default(autoincrement())
+  reportId  Int
+  userId    Int
+  action    Action
+  timestamp DateTime @default(now())
+
+  report Report @relation(fields: [reportId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Category {
+  INFRASTRUKTUR
+  PELAYANAN
+  SOSIAL
+  LAINNYA
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Status {
+  PENDING
+  PROSES
+  SELESAI
+  DITOLAK
+}
+
+enum Action {
+  CREATED
+  UPDATED
+  DELETED
+  STATUS_CHANGED
+}
