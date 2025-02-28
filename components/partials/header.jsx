@@ -15,7 +15,7 @@ export default function Header() {
         >
             <Navbar.Brand as={Link} href="/">
                 <span className="self-center text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-                    E-LAPOR
+                    Lapor KK BUPATI
                 </span>
             </Navbar.Brand>
             
