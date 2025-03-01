@@ -21,7 +21,7 @@ const DashboardPelapor = ({ user }) => {
         <QuickActions setOpenModal={setOpenModal} />
 
         {/* Statistik Laporan */}
-        <Statistics />
+        <Statistics  user={user}/>
 
         {/* Modal Buat Laporan */}
         <ReportModal openModal={openModal} setOpenModal={setOpenModal} user={user} />
