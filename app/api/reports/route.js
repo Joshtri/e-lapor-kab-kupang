@@ -31,3 +31,26 @@ export async function POST(req) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+
+
+ 
+// 📌 2. Memperbarui Status Laporan (Hanya untuk Bupati)
+export async function PUT(req) {
+  try {
+    const { id, status } = await req.json();
+
+    if (!["pending", "in_progress", "completed"].includes(status)) {
+      return NextResponse.json({ error: "Status tidak valid" }, { status: 400 });
+    }
+
+    const updatedReport = await prisma.report.update({
+      where: { id },
+      data: { status },
+    });
+
+    return NextResponse.json(updatedReport, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: "Gagal memperbarui status laporan" }, { status: 500 });
+  }
+}
