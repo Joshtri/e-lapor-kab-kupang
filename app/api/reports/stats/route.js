@@ -10,13 +10,16 @@ export async function GET(req) {
     const whereClause = userId ? { userId: parseInt(userId) } : {}; // Filter jika ada userId
 
     // Hitung jumlah laporan berdasarkan status
-    const pending = await prisma.report.count({ where: { ...whereClause, status: "pending" } });
-    const inProgress = await prisma.report.count({ where: { ...whereClause, status: "in_progress" } });
-    const completed = await prisma.report.count({ where: { ...whereClause, status: "completed" } });
-    const total = pending + inProgress + completed;
+    const pending = await prisma.report.count({ where: { ...whereClause, status: "PENDING" } });
+    const inProgress = await prisma.report.count({ where: { ...whereClause, status: "PROSES" } });
+    const completed = await prisma.report.count({ where: { ...whereClause, status: "SELESAI" } });
+    const rejected = await prisma.report.count({ where: { ...whereClause, status: "DITOLAK" } });
+
+    const total = pending + inProgress + completed + rejected;
 
     return NextResponse.json({ total, pending, inProgress, completed }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Gagal menghitung laporan" }, { status: 500 });
   }
 }
+ 
