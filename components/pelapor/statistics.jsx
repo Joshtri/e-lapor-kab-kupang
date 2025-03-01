@@ -10,9 +10,11 @@ const Statistics = ({ user }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+ 
     const fetchStats = async () => {
       try {
-        const res = await axios.get(`/api/reports/stats?userId=${user.id}`); // Ambil statistik berdasarkan userId
+        const res = await axios.get(`/api/reports/stats?userId=${user.id}`);
+        console.log("Statistik laporan:", res.data); // ✅ Log data untuk debugging
         setStats(res.data);
       } catch (error) {
         console.error("Gagal mengambil statistik laporan", error);
