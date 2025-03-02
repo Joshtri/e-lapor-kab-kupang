@@ -12,7 +12,7 @@ const UpdateStatusModal = ({ open, setOpen, report }) => {
   const handleUpdateStatus = async () => {
     setIsLoading(true);
     try {
-      await axios.put("/api/reports", { id: report.id, status });
+      await axios.patch(`/api/reports/${report.id}/status`, { status });
       toast.success("Status laporan diperbarui!");
       setOpen(false);
     } catch (error) {
@@ -26,9 +26,11 @@ const UpdateStatusModal = ({ open, setOpen, report }) => {
       <Modal.Header>Ubah Status Laporan</Modal.Header>
       <Modal.Body>
         <Select value={status} onChange={(e) => setStatus(e.target.value)}>
-          <option value="pending">Pending</option>
-          <option value="in_progress">Sedang Diproses</option>
-          <option value="completed">Selesai</option>
+          <option value="PENDING">Pending</option>
+          <option value="PROSES">Sedang Diproses</option>
+          <option value="SELESAI">Selesai</option>
+          <option value="DITOLAK">Selesai</option>
+
         </Select>
       </Modal.Body>
       <Modal.Footer>
