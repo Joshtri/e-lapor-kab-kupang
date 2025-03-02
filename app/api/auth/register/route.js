@@ -28,7 +28,7 @@ export async function POST(req) {
         contactNumber,
         email,
         password: hashedPassword,
-        role: "USER",
+        role: "PELAPOR",
       },
     });
 
