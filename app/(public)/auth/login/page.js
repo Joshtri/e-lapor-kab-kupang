@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner"; // Import Toast Notifikasi
 import * as z from "zod";
+import AuthRedirectGuard from "@/components/AuthRedirectGuard";
 
 // Skema validasi
 const loginSchema = z.object({
@@ -34,9 +35,8 @@ export default function LoginPage() {
 
       if (res.status === 200) {
         toast.success("Login berhasil! Mengarahkan ke dashboard...");
-        setTimeout(() => {
-          router.push("/pelapor/dashboard");
-        }, 2000);
+        setTimeout(() => router.push("/pelapor/dashboard"), 500); // Cukup 0.5 detik
+
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Login gagal.");
@@ -46,6 +46,7 @@ export default function LoginPage() {
   };
 
   return (
+    <AuthRedirectGuard>
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto max-w-md px-4 py-8">
         <Card className="p-8 bg-white dark:bg-gray-800">
@@ -93,5 +94,7 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
+    </AuthRedirectGuard>
+
   );
 }
