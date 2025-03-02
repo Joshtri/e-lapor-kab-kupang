@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "E-LAPOR",
-  description: "Sampaikan laporan Anda melalui E-LAPOR",
+  title: "LAPOR KK BUPATI",
+  description: "Sampaikan laporan Anda melalui LAPOR KK BUPATI",
 };
 
 export default function RootLayout({ children }) {
