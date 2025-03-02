@@ -85,9 +85,9 @@ const HeaderPelapor = () => {
           <Navbar.Link as={Link} href="/pelapor/dashboard" className="text-gray-800 dark:text-gray-200 hover:text-green-500">
             Beranda
           </Navbar.Link>
-          {/* <Navbar.Link as={Link} href="/buat-laporan" className="text-gray-800 dark:text-gray-200 hover:text-green-500">
-            Buat Laporan
-          </Navbar.Link> */}
+          <Navbar.Link as={Link} href="/pelapor/log-laporan" className="text-gray-800 dark:text-gray-200 hover:text-green-500">
+            Log Laporan
+          </Navbar.Link>
           <Navbar.Link as={Link} href="/status-laporan" className="text-gray-800 dark:text-gray-200 hover:text-green-500">
             Status Laporan
           </Navbar.Link>
