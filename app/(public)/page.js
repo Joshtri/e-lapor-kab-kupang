@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "flowbite-react";
 import { HiOutlinePhone, HiOutlineUserAdd, HiOutlineLogin } from "react-icons/hi";
+import AuthRedirectGuard from "@/components/AuthRedirectGuard";
+
 
 export default function Home() {
   const cardClass = "transform transition-all duration-300 hover:scale-105";
@@ -18,6 +20,9 @@ export default function Home() {
   );
 
   return (
+    <AuthRedirectGuard>
+
+
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-700 mt-12">
       <div className="container mx-auto px-4 py-16">
         {/* Header Section */}
@@ -139,5 +144,6 @@ export default function Home() {
         </div>
       </div>
     </main>
+    </AuthRedirectGuard>
   );
 }
