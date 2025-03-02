@@ -4,6 +4,7 @@ import React from "react";
 import { Card } from "flowbite-react";
 import { HiOutlineClipboardList, HiOutlinePlusCircle } from "react-icons/hi";
 import Link from "next/link";
+import { FaThList } from "react-icons/fa";
 
 const QuickActions = ({ setOpenModal }) => {
   return (
@@ -32,6 +33,19 @@ const QuickActions = ({ setOpenModal }) => {
           </div>
         </Card>
       </Link>
+
+      <Link href="/pelapor-log-laporan">
+        <Card className="p-4 shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-md transition">
+          <div className="flex items-center space-x-4">
+            <FaThList className="text-green-500 text-4xl" />
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Log Laporan</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Lihat riwayat laporan Anda.</p>
+            </div>
+          </div>
+        </Card>
+      </Link>
+
     </div>
   );
 };
