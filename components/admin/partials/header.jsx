@@ -1,17 +1,17 @@
 "use client";
 
-import React from "react";
-import { Navbar, Button, Modal } from "flowbite-react";
+import React, { useState } from "react";
+import { Navbar, Button, Modal, Dropdown, Avatar } from "flowbite-react";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
-import { HiOutlineChatAlt2 } from "react-icons/hi";
+import { HiOutlineMenu } from "react-icons/hi";
 import { useTheme } from "next-themes";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-const AdminHeader = ({ toggleSidebar }) => {
+const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
   const { theme, setTheme } = useTheme();
-  const [openModal, setOpenModal] = React.useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -20,40 +20,84 @@ const AdminHeader = ({ toggleSidebar }) => {
       toast.success("Logout berhasil! Anda akan diarahkan ke halaman utama.");
       setTimeout(() => {
         router.push("/");
-      }, 2000);
+      }, 1500);
     } catch (error) {
       toast.error("Terjadi kesalahan saat logout.");
     }
   };
 
   return (
-    <Navbar fluid rounded className="py-4 px-6 bg-white dark:bg-gray-800 shadow-lg fixed w-full z-40 top-0 left-0">
-      <button onClick={toggleSidebar} className="text-gray-900 dark:text-gray-100 focus:outline-none">
-        <HiOutlineChatAlt2 className="h-8 w-8 text-green-600 dark:text-green-400" />
-      </button>
-      <span className="text-2xl font-bold text-gray-800 dark:text-gray-200 ml-4">Admin Panel</span>
+    <Navbar
+      fluid
+      rounded
+      className={`py-4 px-6 bg-white dark:bg-gray-800 shadow-lg fixed w-full z-40 top-0 left-0 transition-all duration-300`}
+    >
+      <div className="flex justify-between items-center w-full">
+        {/* Kiri: Menu & Judul */}
+        <div className="flex items-center space-x-4 ml-20">
+          {/* <button
+            onClick={toggleSidebar}
+            className="text-gray-900 dark:text-gray-100 focus:outline-none"
+          >
+            <HiOutlineMenu className="h-7 w-7" />
+          </button> */}
 
-      <div className="flex md:order-2 items-center space-x-3">
-        <button
-          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-          aria-label="Toggle Dark Mode"
-        >
-          {theme === "light" ? <BsMoonStarsFill className="text-gray-700 dark:text-gray-300 text-lg" /> : <BsSunFill className="text-yellow-400 text-lg" />}
-        </button>
-        <Button color="failure" onClick={() => setOpenModal(true)} className="font-medium">
-          Logout
-        </Button>
+          <span className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Admin Panel
+          </span>
+        </div>
+
+        {/* Kanan: Dark Mode & Avatar */}
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+            aria-label="Toggle Dark Mode"
+          >
+            {theme === "light" ? (
+              <BsMoonStarsFill className="text-gray-700 dark:text-gray-300 text-lg" />
+            ) : (
+              <BsSunFill className="text-yellow-400 text-lg" />
+            )}
+          </button>
+
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={<Avatar alt="User Avatar" rounded />}
+          >
+            <Dropdown.Header>
+              <span className="block text-sm font-medium">Admin</span>
+              <span className="block truncate text-sm text-gray-500">
+                admin@email.com
+              </span>
+            </Dropdown.Header>
+            <Dropdown.Divider />
+            <Dropdown.Item
+              onClick={() => setOpenModal(true)}
+              className="text-red-600"
+            >
+              Logout
+            </Dropdown.Item>
+          </Dropdown>
+        </div>
       </div>
 
+      {/* Modal Logout */}
       <Modal show={openModal} onClose={() => setOpenModal(false)} size="md">
         <Modal.Header>Konfirmasi Logout</Modal.Header>
         <Modal.Body>
-          <p className="text-gray-600 dark:text-gray-300">Apakah Anda yakin ingin logout dari akun ini?</p>
+          <p className="text-gray-600 dark:text-gray-300">
+            Apakah Anda yakin ingin logout dari akun ini?
+          </p>
         </Modal.Body>
         <Modal.Footer>
-          <Button color="failure" onClick={handleLogout}>Ya, Logout</Button>
-          <Button color="gray" onClick={() => setOpenModal(false)}>Batal</Button>
+          <Button color="failure" onClick={handleLogout}>
+            Ya, Logout
+          </Button>
+          <Button color="gray" onClick={() => setOpenModal(false)}>
+            Batal
+          </Button>
         </Modal.Footer>
       </Modal>
     </Navbar>
