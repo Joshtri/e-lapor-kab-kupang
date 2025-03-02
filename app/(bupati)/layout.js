@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import HeaderBupati from "@/components/bupati/partials/header";
 import FooterBupati from "@/components/bupati/partials/footer";
 import { Toaster } from "sonner";
+import AuthProtectGuard from "@/components/AuthProtectedGuard";
 
 export default function BupatiLayout({ children }) {
   const [mounted, setMounted] = useState(false);
@@ -24,9 +25,11 @@ export default function BupatiLayout({ children }) {
 
         {/* Header Bupati */}
         <HeaderBupati />
+        <AuthProtectGuard>
 
         {/* Konten Utama */}
         <main className="flex-grow p-4 pt-16">{children}</main>
+        </AuthProtectGuard>
 
         {/* Footer Bupati */}
         <FooterBupati />
