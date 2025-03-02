@@ -2,14 +2,25 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // 📌 Ambil Semua Pengaduan
-export async function GET() {
+export async function GET(req) {
   try {
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId");
+
     const reports = await prisma.report.findMany({
+      where: userId ? { userId: Number(userId) } : {},
       include: {
         user: {
           select: { id: true, name: true, email: true },
         },
-        comments: true,
+        comments: {
+          include: {
+            user: {
+              select: { id: true, name: true, email: true, role: true },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -32,15 +43,12 @@ export async function POST(req) {
   }
 }
 
-
-
- 
-// 📌 2. Memperbarui Status Laporan (Hanya untuk Bupati)
+// 📌 Memperbarui Status Laporan (Hanya untuk Bupati)
 export async function PUT(req) {
   try {
     const { id, status } = await req.json();
 
-    if (!["pending", "in_progress", "completed"].includes(status)) {
+    if (!["PENDING", "PROSES", "SUKSES"].includes(status)) {
       return NextResponse.json({ error: "Status tidak valid" }, { status: 400 });
     }
 
