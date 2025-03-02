@@ -2,8 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import { Card } from "flowbite-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { FaClipboardList, FaUserFriends, FaCheckCircle, FaSpinner } from "react-icons/fa";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  FaClipboardList,
+  FaUserFriends,
+  FaCheckCircle,
+  FaSpinner,
+} from "react-icons/fa";
 import axios from "axios";
 import Link from "next/link";
 
@@ -34,23 +47,31 @@ const AdminDashboard = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Dashboard Admin</h1>
-      <p className="text-gray-500 dark:text-gray-300">Ringkasan laporan dan pengguna</p>
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+        Dashboard Admin
+      </h1>
+      <p className="text-gray-500 dark:text-gray-300">
+        Ringkasan laporan dan pengguna
+      </p>
 
       {/* Statistik Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
         <Card className="flex items-center gap-4 p-6 shadow-md">
           <FaClipboardList className="text-blue-500 text-4xl" />
           <div>
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Total Laporan</h2>
+            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">
+              Total Laporan
+            </h2>
             <p className="text-2xl font-bold">{stats.totalReports}</p>
           </div>
         </Card>
 
         <Card className="flex items-center gap-4 p-6 shadow-md">
-          <FaSpinner className="text-yellow-500 text-4xl" />
+          <FaSpinner className="text-yellow-500 text-4xl animate-spin" />
           <div>
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Sedang Diproses</h2>
+            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">
+              Sedang Diproses
+            </h2>
             <p className="text-2xl font-bold">{stats.inProgress}</p>
           </div>
         </Card>
@@ -58,7 +79,9 @@ const AdminDashboard = () => {
         <Card className="flex items-center gap-4 p-6 shadow-md">
           <FaCheckCircle className="text-green-500 text-4xl" />
           <div>
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Selesai</h2>
+            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">
+              Selesai
+            </h2>
             <p className="text-2xl font-bold">{stats.completed}</p>
           </div>
         </Card>
@@ -66,7 +89,9 @@ const AdminDashboard = () => {
         <Card className="flex items-center gap-4 p-6 shadow-md">
           <FaUserFriends className="text-purple-500 text-4xl" />
           <div>
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">Total Pengguna</h2>
+            <h2 className="text-lg font-semibold text-gray-700 dark:text-white">
+              Total Pengguna
+            </h2>
             <p className="text-2xl font-bold">{stats.totalUsers}</p>
           </div>
         </Card>
@@ -74,21 +99,30 @@ const AdminDashboard = () => {
 
       {/* Grafik Statistik */}
       <div className="bg-white dark:bg-gray-800 shadow-md p-6 rounded-lg mt-8">
-        <h2 className="text-xl font-bold text-gray-700 dark:text-white mb-4">Statistik Laporan</h2>
+        <h2 className="text-xl font-bold text-gray-700 dark:text-white mb-4">
+          Statistik Laporan
+        </h2>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={3} />
+            <Line
+              type="monotone"
+              dataKey="total"
+              stroke="#3b82f6"
+              strokeWidth={3}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       {/* Tabel Laporan Terbaru */}
       <div className="bg-white dark:bg-gray-800 shadow-md p-6 rounded-lg mt-8">
-        <h2 className="text-xl font-bold text-gray-700 dark:text-white mb-4">Laporan Terbaru</h2>
+        <h2 className="text-xl font-bold text-gray-700 dark:text-white mb-4">
+          Laporan Terbaru
+        </h2>
         <table className="w-full text-left">
           <thead className="bg-gray-100 dark:bg-gray-700">
             <tr>
@@ -121,7 +155,9 @@ const AdminDashboard = () => {
                   </td>
                   <td className="p-2">
                     <Link href={`/admin/laporan/${report.id}`}>
-                      <span className="text-blue-500 hover:underline cursor-pointer">Detail</span>
+                      <span className="text-blue-500 hover:underline cursor-pointer">
+                        Detail
+                      </span>
                     </Link>
                   </td>
                 </tr>
