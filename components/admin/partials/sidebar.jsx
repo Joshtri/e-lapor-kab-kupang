@@ -36,37 +36,37 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
       <nav className="mt-4 flex-1 overflow-y-auto">
         <ul className="space-y-2">
           <li>
-            <Link href="/admin/dashboard" className={navLinkClass("/admin/dashboard")}>
+            <Link href="/adm/dashboard" className={navLinkClass("/adm/dashboard")}>
               <MdOutlineReport />
               {isSidebarOpen && "Dashboard"}
             </Link>
           </li>
           <li>
-            <Link href="/admin/reports" className={navLinkClass("/admin/reports")}>
+            <Link href="/adm/reports" className={navLinkClass("/adm/reports")}>
               <HiOutlineClipboardCheck />
               {isSidebarOpen && "Kelola Pengaduan"}
             </Link>
           </li>
           <li>
-            <Link href="/admin/users" className={navLinkClass("/admin/users")}>
+            <Link href="/adm/users" className={navLinkClass("/adm/users")}>
               <HiOutlineUserGroup />
               {isSidebarOpen && "Manajemen Pengguna"}
             </Link>
           </li>
           <li>
-            <Link href="/admin/history" className={navLinkClass("/admin/history")}>
+            <Link href="/adm/history" className={navLinkClass("/adm/history")}>
               <MdOutlineHistoryEdu />
               {isSidebarOpen && "Riwayat Pengaduan"}
             </Link>
           </li>
           <li>
-            <Link href="/admin/logs" className={navLinkClass("/admin/logs")}>
+            <Link href="/adm/logs" className={navLinkClass("/adm/logs")}>
               <AiOutlineFileSearch />
               {isSidebarOpen && "Log Aktivitas"}
             </Link>
           </li>
           <li>
-            <Link href="/admin/settings" className={navLinkClass("/admin/settings")}>
+            <Link href="/adm/settings" className={navLinkClass("/adm/settings")}>
               <MdOutlineSettings />
               {isSidebarOpen && "Pengaturan"}
             </Link>
