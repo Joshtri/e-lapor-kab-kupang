@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { toast } from "sonner"; // Import Toast Notifikasi
+import { toast } from "sonner";
 import * as z from "zod";
 import AuthRedirectGuard from "@/components/AuthRedirectGuard";
 
@@ -32,12 +32,25 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       const res = await axios.post("/api/auth/login", data);
+      const user = res.data.user;
 
-      if (res.status === 200) {
-        toast.success("Login berhasil! Mengarahkan ke dashboard...");
-        setTimeout(() => router.push("/pelapor/dashboard"), 500); // Cukup 0.5 detik
+      toast.success("Login berhasil! Mengarahkan ke dashboard...");
 
-      }
+      setTimeout(() => {
+        switch (user.role) {
+          case "PELAPOR":
+            router.push("/pelapor/dashboard");
+            break;
+          case "ADMIN":
+            router.push("/adm/dashboard");
+            break;
+          case "BUPATI":
+            router.push("/bupati-portal/dashboard");
+            break;
+          default:
+            router.push("/");
+        }
+      }, 500); // 0.5 detik
     } catch (error) {
       toast.error(error.response?.data?.error || "Login gagal.");
     } finally {
@@ -47,54 +60,72 @@ export default function LoginPage() {
 
   return (
     <AuthRedirectGuard>
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto max-w-md px-4 py-8">
-        <Card className="p-8 bg-white dark:bg-gray-800">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">Log In Pengadu / Pelapor</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-4">RESERVASI LAYANAN PENGADUAN E-LAPOR!</p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div>
-              <Label htmlFor="email" value="Email" />
-              <TextInput
-                id="email"
-                type="email"
-                placeholder="nama@email.com"
-                {...register("email")}
-                color={errors.email ? "failure" : "gray"}
-              />
-              {errors.email && <span className="text-red-500">{errors.email.message}</span>}
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="container mx-auto max-w-md px-4 py-8">
+          <Card className="p-8 bg-white dark:bg-gray-800">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">
+                Log In Pengadu / Pelapor
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                RESERVASI LAYANAN PENGADUAN E-LAPOR!
+              </p>
             </div>
 
-            <div>
-              <Label htmlFor="password" value="Password" />
-              <TextInput
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                {...register("password")}
-                color={errors.password ? "failure" : "gray"}
-              />
-              {errors.password && <span className="text-red-500">{errors.password.message}</span>}
-            </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div>
+                <Label htmlFor="email" value="Email" />
+                <TextInput
+                  id="email"
+                  type="email"
+                  placeholder="nama@email.com"
+                  {...register("email")}
+                  color={errors.email ? "failure" : "gray"}
+                />
+                {errors.email && (
+                  <span className="text-red-500">{errors.email.message}</span>
+                )}
+              </div>
 
-            <Button type="submit" color="blue" className="w-full" size="lg" disabled={isSubmitting}>
-              {isSubmitting ? "Memproses..." : "Masuk"}
-            </Button>
+              <div>
+                <Label htmlFor="password" value="Password" />
+                <TextInput
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  {...register("password")}
+                  color={errors.password ? "failure" : "gray"}
+                />
+                {errors.password && (
+                  <span className="text-red-500">
+                    {errors.password.message}
+                  </span>
+                )}
+              </div>
 
-            <p className="text-center text-sm text-gray-600 dark:text-gray-300">
-              Belum punya akun?{" "}
-              <a href="/auth/register" className="text-blue-600 hover:text-blue-800 font-medium">
-                Daftar di sini
-              </a>
-            </p>
-          </form>
-        </Card>
+              <Button
+                type="submit"
+                color="blue"
+                className="w-full"
+                size="lg"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Memproses..." : "Masuk"}
+              </Button>
+
+              <p className="text-center text-sm text-gray-600 dark:text-gray-300">
+                Belum punya akun?{" "}
+                <a
+                  href="/auth/register"
+                  className="text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  Daftar di sini
+                </a>
+              </p>
+            </form>
+          </Card>
+        </div>
       </div>
-    </div>
     </AuthRedirectGuard>
-
   );
 }
