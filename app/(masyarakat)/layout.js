@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import HeaderPelapor from "@/components/pelapor/partials/header";
 import FooterPelapor from "@/components/pelapor/partials/footer";
 import { Toaster } from "sonner";
+import AuthProtectGuard from "@/components/AuthProtectedGuard";
 
 export default function PelaporLayout({ children }) {
   const [mounted, setMounted] = useState(false);
@@ -22,7 +23,9 @@ export default function PelaporLayout({ children }) {
         {/* Toaster untuk notifikasi global */}
         <Toaster richColors position="top-right" />
         <HeaderPelapor />
-        <main className="flex-grow p-4 pt-16">{children}</main>
+        <AuthProtectGuard>
+          <main className="flex-grow p-4 pt-16">{children}</main>
+        </AuthProtectGuard>
         <FooterPelapor />
       </div>
     </ThemeProvider>
