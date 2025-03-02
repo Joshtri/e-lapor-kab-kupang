@@ -23,9 +23,9 @@ export default function PelaporLayout({ children }) {
         {/* Toaster untuk notifikasi global */}
         <Toaster richColors position="top-right" />
         <HeaderPelapor />
-        <AuthProtectGuard>
+        {/* <AuthProtectGuard> */}
           <main className="flex-grow p-4 pt-16">{children}</main>
-        </AuthProtectGuard>
+        {/* </AuthProtectGuard> */}
         <FooterPelapor />
       </div>
     </ThemeProvider>
