@@ -92,7 +92,7 @@ export default function Home() {
     className="w-full"
     onClick={() => {
       const message = encodeURIComponent(
-        "Halo Bupati,\n\nSaya ingin melaporkan...\n\nNama: \nAlamat: \nKeluhan: \n\nTerima kasih."
+        "Halo Bupati,\n\nSaya ingin melaporkan...\n\nNama: \nAlamat: \nDeskripsi Laporan: \n\nTerima kasih."
       );
       window.open(`https://wa.me/6281237159777?text=${message}`, "_blank");
     }}
@@ -106,7 +106,7 @@ export default function Home() {
     className="w-full"
     onClick={() => {
       const message = encodeURIComponent(
-        "Halo Admin,\n\nSaya ingin menanyakan...\n\nNama: \nAlamat: \nKeluhan: \n\nTerima kasih."
+        "Halo Admin,\n\nSaya ingin menanyakan...\n\nNama: \nAlamat: \Deskripsi Laporan: \n\nTerima kasih."
       );
       window.open(`https://wa.me/6281339300533?text=${message}`, "_blank");
     }}
