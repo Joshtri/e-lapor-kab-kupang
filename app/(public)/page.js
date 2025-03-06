@@ -97,7 +97,7 @@ export default function Home() {
       window.open(`https://wa.me/6281237159777?text=${message}`, "_blank");
     }}
   >
-    Hubungi Bupati
+    Hubungi Opsi 1
   </Button>
 
   <Button
@@ -111,7 +111,7 @@ export default function Home() {
       window.open(`https://wa.me/6281339300533?text=${message}`, "_blank");
     }}
   >
-    Hubungi Admin
+    Hubungi Opsi 2
   </Button>
 </div>
 
