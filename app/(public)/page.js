@@ -85,19 +85,36 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full mt-6">
-                  <Button
-                    gradientDuoTone="greenToBlue"
-                    size="lg"
-                    className="w-full"
-                    onClick={() => {
-                      const message = encodeURIComponent(
-                        "Halo Bupati,\n\nSaya ingin melaporkan...\n\nNama: \nAlamat: \nKeluhan: \n\nTerima kasih."
-                      );
-                      window.open(`https://wa.me/6281237159777?text=${message}`, "_blank");
-                    }}
-                  >
-                    Hubungi Kami
-                  </Button>
+                <div className="flex flex-col gap-4 w-full">
+  <Button
+    gradientDuoTone="greenToBlue"
+    size="lg"
+    className="w-full"
+    onClick={() => {
+      const message = encodeURIComponent(
+        "Halo Bupati,\n\nSaya ingin melaporkan...\n\nNama: \nAlamat: \nKeluhan: \n\nTerima kasih."
+      );
+      window.open(`https://wa.me/6281237159777?text=${message}`, "_blank");
+    }}
+  >
+    Hubungi Bupati
+  </Button>
+
+  <Button
+    gradientDuoTone="purpleToPink"
+    size="lg"
+    className="w-full"
+    onClick={() => {
+      const message = encodeURIComponent(
+        "Halo Admin,\n\nSaya ingin menanyakan...\n\nNama: \nPertanyaan: \n\nTerima kasih."
+      );
+      window.open(`https://wa.me/6281339300533?text=${message}`, "_blank");
+    }}
+  >
+    Hubungi Admin
+  </Button>
+</div>
+
                 </div>
               </div>
             </div>
