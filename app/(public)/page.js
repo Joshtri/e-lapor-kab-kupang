@@ -106,7 +106,7 @@ export default function Home() {
     className="w-full"
     onClick={() => {
       const message = encodeURIComponent(
-        "Halo Admin,\n\nSaya ingin menanyakan...\n\nNama: \nPertanyaan: \n\nTerima kasih."
+        "Halo Admin,\n\nSaya ingin menanyakan...\n\nNama: \nAlamat: \nKeluhan: \n\nTerima kasih."
       );
       window.open(`https://wa.me/6281339300533?text=${message}`, "_blank");
     }}
