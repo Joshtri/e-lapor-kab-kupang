@@ -42,7 +42,7 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
             </Link>
           </li>
           <li>
-            <Link href="/adm/reports" className={navLinkClass("/adm/reports")}>
+            <Link href="/adm/report-warga" className={navLinkClass("/adm/report-warga")}>
               <HiOutlineClipboardCheck />
               {isSidebarOpen && "Kelola Pengaduan"}
             </Link>
@@ -54,23 +54,23 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
             </Link>
           </li>
           <li>
-            <Link href="/adm/history" className={navLinkClass("/adm/history")}>
+            <Link href="/adm/riwayat-pengaduan" className={navLinkClass("/adm/riwayat-pengaduan")}>
               <MdOutlineHistoryEdu />
               {isSidebarOpen && "Riwayat Pengaduan"}
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link href="/adm/logs" className={navLinkClass("/adm/logs")}>
               <AiOutlineFileSearch />
               {isSidebarOpen && "Log Aktivitas"}
             </Link>
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
             <Link href="/adm/settings" className={navLinkClass("/adm/settings")}>
               <MdOutlineSettings />
               {isSidebarOpen && "Pengaturan"}
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </aside>

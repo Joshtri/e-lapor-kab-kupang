@@ -26,10 +26,15 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
     setIsSubmitting(true);
 
     try {
-      await axios.post("/api/reports", { ...formData, userId: user.id });
+      await axios.post(`/api/reports`, { ...formData, userId: user.id });
       toast.success("Laporan berhasil dikirim!");
       setFormData({ title: "", category: "", priority: "LOW", description: "" });
+      // ✅ Kasih jeda 1.5 detik biar toast tampil dulu
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
       setOpenModal(false);
+      
     } catch (error) {
       toast.error("Gagal mengirim laporan.");
     } finally {

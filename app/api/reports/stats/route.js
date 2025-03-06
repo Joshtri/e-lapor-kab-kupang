@@ -17,7 +17,7 @@ export async function GET(req) {
 
     const total = pending + inProgress + completed + rejected;
 
-    return NextResponse.json({ total, pending, inProgress, completed }, { status: 200 });
+    return NextResponse.json({ total, pending, inProgress, completed , rejected}, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Gagal menghitung laporan" }, { status: 500 });
   }

@@ -22,7 +22,7 @@ const QuickActions = ({ setOpenModal }) => {
         </div>
       </Card>
 
-      <Link href="/status-laporan">
+      {/* <Link href="/status-laporan">
         <Card className="p-4 shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-md transition">
           <div className="flex items-center space-x-4">
             <HiOutlineClipboardList className="text-green-500 text-4xl" />
@@ -32,7 +32,7 @@ const QuickActions = ({ setOpenModal }) => {
             </div>
           </div>
         </Card>
-      </Link>
+      </Link> */}
 
       <Link href="/pelapor/log-laporan">
         <Card className="p-4 shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-md transition">

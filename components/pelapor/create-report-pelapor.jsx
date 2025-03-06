@@ -23,6 +23,8 @@ const BuatLaporan = () => {
     console.log("Laporan dikirim:", form);
     alert("Laporan Anda telah dikirim!");
     setForm({ title: "", category: "", priority: "", description: "" }); // Reset hanya input laporan
+
+    window.location.href = "/pelapor-dashboard"; // Redirect ke halaman utama
   };
 
   return (
