@@ -86,34 +86,34 @@ export default function Home() {
                 </div>
                 <div className="w-full mt-6">
                 <div className="flex flex-col gap-4 w-full">
-  <Button
-    gradientDuoTone="greenToBlue"
-    size="lg"
-    className="w-full"
-    onClick={() => {
-      const message = encodeURIComponent(
-        "Halo Bupati,\n\nSaya ingin melaporkan...\n\nNama: \nAlamat: \nDeskripsi Laporan: \n\nTerima kasih."
-      );
-      window.open(`https://wa.me/6281237159777?text=${message}`, "_blank");
-    }}
-  >
-    Hubungi Opsi 1
-  </Button>
+                  <Button
+                    gradientDuoTone="greenToBlue"
+                    size="lg"
+                    className="w-full"
+                    onClick={() => {
+                      const message = encodeURIComponent(
+                        "Halo KK BUPATI,\n\nSaya ingin melaporkan...\n\nNama: \nAlamat: \nDeskripsi Laporan: \n\nTerima kasih."
+                      );
+                      window.open(`https://wa.me/6281237159777?text=${message}`, "_blank");
+                    }}
+                  >
+                    Hubungi Opsi 1
+                  </Button>
 
-  <Button
-    gradientDuoTone="purpleToPink"
-    size="lg"
-    className="w-full"
-    onClick={() => {
-      const message = encodeURIComponent(
-        "Halo Admin,\n\nSaya ingin menanyakan...\n\nNama: \nAlamat: \Deskripsi Laporan: \n\nTerima kasih."
-      );
-      window.open(`https://wa.me/6281339300533?text=${message}`, "_blank");
-    }}
-  >
-    Hubungi Opsi 2
-  </Button>
-</div>
+                  <Button
+                    gradientDuoTone="purpleToPink"
+                    size="lg"
+                    className="w-full"
+                    onClick={() => {
+                      const message = encodeURIComponent(
+                        "Halo KK BUPATI,\n\nSaya ingin menanyakan...\n\nNama: \nAlamat: \Deskripsi Laporan: \n\nTerima kasih."
+                      );
+                      window.open(`https://wa.me/6281339300533?text=${message}`, "_blank");
+                    }}
+                  >
+                    Hubungi Opsi 2
+                  </Button>
+                </div>
 
                 </div>
               </div>
