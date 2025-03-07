@@ -2,16 +2,19 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Spinner, Badge } from "flowbite-react";
+import { Card, Spinner, Badge, Button } from "flowbite-react";
 import {
   HiOutlineClock,
   HiOutlineCheckCircle,
   HiOutlineChatAlt2,
 } from "react-icons/hi";
+import Breadcrumbs from "@/components/ui/breadcrumbs";
+import PageHeader from "@/components/ui/page-header";
 
 export default function LogLaporanPage() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -30,6 +33,10 @@ export default function LogLaporanPage() {
     fetchReports();
   }, []);
 
+  const filteredReports = reports.filter((report) =>
+    report.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
@@ -41,19 +48,33 @@ export default function LogLaporanPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-        Riwayat Laporan Anda
-      </h1>
+      <PageHeader
+        title="Riwayat Laporan Anda"
+        backHref="/pelapor/dashboard"
+        showSearch={true}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        breadcrumbsProps={{
+          home: { label: "Beranda", href: "/pelapor/dashboard" },
+          customRoutes: {
+            pelapor: { label: "Dashboard Pelapor", href: "/pelapor/dashboard" },
+          },
+        }}
+      />
 
-      {reports.length === 0 ? (
+      <hr className="mt-4" />
+
+      {filteredReports.length === 0 ? (
         <p className="text-gray-600 dark:text-gray-400 text-center">
-          Anda belum memiliki laporan.
+          {searchQuery
+            ? "Tidak ada laporan yang cocok."
+            : "Anda belum memiliki laporan."}
         </p>
       ) : (
         <div className="space-y-4">
-          {reports.map((report) => {
+          {filteredReports.map((report) => {
             const latestComment = report.comments?.find(
-              (comment) => comment.user.role === "PELAPOR",
+              (comment) => comment.user.role === "PELAPOR"
             );
 
             return (

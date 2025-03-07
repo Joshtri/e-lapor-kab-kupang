@@ -5,6 +5,7 @@ import axios from "axios";
 import { Card, Badge, Spinner } from "flowbite-react";
 import { HiOutlineClock, HiOutlineExclamationCircle } from "react-icons/hi";
 
+
 const ListReport = ({ user }) => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +42,8 @@ const ListReport = ({ user }) => {
 
   return (
     <div className="mt-8">
+      {/* <Breadcrumbs/> */}
+
       <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
         Laporan yang Sedang Diajukan
       </h2>
