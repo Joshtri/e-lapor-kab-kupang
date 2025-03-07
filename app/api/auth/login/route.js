@@ -14,7 +14,10 @@ export async function POST(req) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Email tidak ditemukan" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Email tidak ditemukan" },
+        { status: 404 },
+      );
     }
 
     // Cek apakah password cocok
@@ -24,9 +27,13 @@ export async function POST(req) {
     }
 
     // Buat token JWT
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
 
     // Simpan token di cookies
     const cookie = serialize("auth_token", token, {
@@ -36,10 +43,13 @@ export async function POST(req) {
       path: "/",
     });
 
-    return new NextResponse(JSON.stringify({ message: "Login berhasil", user }), {
-      status: 200,
-      headers: { "Set-Cookie": cookie },
-    });
+    return new NextResponse(
+      JSON.stringify({ message: "Login berhasil", user }),
+      {
+        status: 200,
+        headers: { "Set-Cookie": cookie },
+      },
+    );
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

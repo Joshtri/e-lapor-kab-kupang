@@ -41,14 +41,18 @@ export default function RegistrationPage() {
 
     try {
       const res = await axios.post("/api/auth/register", data);
-      toast.success("Pendaftaran berhasil! Anda akan dialihkan ke halaman login.");
+      toast.success(
+        "Pendaftaran berhasil! Anda akan dialihkan ke halaman login.",
+      );
 
       // Redirect ke halaman login setelah 2 detik
       setTimeout(() => {
         router.push("/auth/login");
       }, 2000);
     } catch (error) {
-      toast.error(error.response?.data?.error || "Terjadi kesalahan saat mendaftar.");
+      toast.error(
+        error.response?.data?.error || "Terjadi kesalahan saat mendaftar.",
+      );
     }
 
     setIsSubmitting(false);
@@ -59,15 +63,28 @@ export default function RegistrationPage() {
       <div className="container mx-auto max-w-2xl px-4 py-8">
         <Card>
           <div className="text-center">
-            <h2 className="text-2xl font-bold">REGISTER AKUN</h2>
-            <p className="text-gray-500">REGISTER UNTUK AKUN E-LAPOR!</p>
+            <h2 className="text-2xl font-bold">Buat Akun Lapor KK Bupati</h2>
+            <p className="text-gray-500">
+              Silakan isi formulir untuk membuat akun Anda.
+            </p>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
             {/* Nama Lengkap */}
             <div>
               <Label htmlFor="fullName" value="NAMA LENGKAP" />
-              <TextInput id="fullName" type="text" placeholder="Masukkan nama lengkap" {...register("fullName")} />
-              {errors.fullName && <span className="text-red-500">{errors.fullName.message}</span>}
+              <TextInput
+                id="fullName"
+                type="text"
+                placeholder="Masukkan nama lengkap"
+                {...register("fullName")}
+              />
+              {errors.fullName && (
+                <span className="text-red-500">{errors.fullName.message}</span>
+              )}
             </div>
 
             {/* NIK */}
@@ -80,33 +97,70 @@ export default function RegistrationPage() {
                 maxLength={16} // Batasi input maksimal 16 digit
                 {...register("nikNumber")}
               />
-              {errors.nikNumber && <span className="text-red-500">{errors.nikNumber.message}</span>}
+              {errors.nikNumber && (
+                <span className="text-red-500">{errors.nikNumber.message}</span>
+              )}
             </div>
 
             {/* Nomor Kontak */}
             <div>
               <Label htmlFor="contactNumber" value="NOMOR KONTAK" />
-              <TextInput id="contactNumber" type="text" placeholder="Masukkan nomor kontak" {...register("contactNumber")} />
-              {errors.contactNumber && <span className="text-red-500">{errors.contactNumber.message}</span>}
+              <TextInput
+                id="contactNumber"
+                type="text"
+                placeholder="Masukkan nomor kontak"
+                {...register("contactNumber")}
+              />
+              {errors.contactNumber && (
+                <span className="text-red-500">
+                  {errors.contactNumber.message}
+                </span>
+              )}
             </div>
 
             {/* Email */}
             <div>
               <Label htmlFor="email" value="EMAIL" />
-              <TextInput id="email" type="email" placeholder="Masukkan EMAIL" {...register("email")} />
-              {errors.email && <span className="text-red-500">{errors.email.message}</span>}
+              <TextInput
+                id="email"
+                type="email"
+                placeholder="Masukkan EMAIL"
+                {...register("email")}
+              />
+              {errors.email && (
+                <span className="text-red-500">{errors.email.message}</span>
+              )}
             </div>
 
             {/* Password */}
             <div>
               <Label htmlFor="password" value="PASSWORD" />
-              <TextInput id="password" type="password" placeholder="Masukkan Password" {...register("password")} />
-              {errors.password && <span className="text-red-500">{errors.password.message}</span>}
+              <TextInput
+                id="password"
+                type="password"
+                placeholder="Masukkan Password"
+                {...register("password")}
+              />
+              {errors.password && (
+                <span className="text-red-500">{errors.password.message}</span>
+              )}
             </div>
 
             <Button type="submit" color="blue" disabled={isSubmitting}>
               {isSubmitting ? "Memproses..." : "Daftar"}
             </Button>
+
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Sudah memiliki akun?{" "}
+                <a
+                  href="/auth/login"
+                  className="text-blue-600 hover:underline font-medium"
+                >
+                  Login di sini
+                </a>
+              </p>
+            </div>
           </form>
         </Card>
       </div>

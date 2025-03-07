@@ -12,7 +12,9 @@ const ListReport = ({ user }) => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const res = await axios.get(`/api/reports?status=pending&userId=${user.id}`);
+        const res = await axios.get(
+          `/api/reports?status=pending&userId=${user.id}`,
+        );
         setReports(res.data);
       } catch (error) {
         console.error("Gagal mengambil data laporan", error);
@@ -30,34 +32,55 @@ const ListReport = ({ user }) => {
     return (
       <div className="flex justify-center items-center mt-10">
         <Spinner size="lg" />
-        <span className="ml-2 text-gray-600 dark:text-gray-300">Memuat laporan...</span>
+        <span className="ml-2 text-gray-600 dark:text-gray-300">
+          Memuat laporan...
+        </span>
       </div>
     );
   }
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Laporan yang Sedang Diajukan</h2>
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+        Laporan yang Sedang Diajukan
+      </h2>
 
       {reports.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400 mt-4">Tidak ada laporan yang sedang diajukan.</p>
+        <p className="text-gray-600 dark:text-gray-400 mt-4">
+          Tidak ada laporan yang sedang diajukan.
+        </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mt-4">
           {reports.map((report) => (
-            <Card key={report.id} className="p-5 shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <Card
+              key={report.id}
+              className="p-5 shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+            >
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{report.title}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  {report.title}
+                </h3>
                 <Badge color="yellow">
                   <HiOutlineClock className="inline-block mr-1 text-lg" />
                   {report.status}
                 </Badge>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{report.description.substring(0, 100)}...</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                {report.description.substring(0, 100)}...
+              </p>
               <div className="flex justify-between items-center mt-3">
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {new Date(report.createdAt).toLocaleDateString("id-ID")}
                 </span>
-                <Badge color={report.priority === "high" ? "red" : report.priority === "normal" ? "blue" : "green"}>
+                <Badge
+                  color={
+                    report.priority === "high"
+                      ? "red"
+                      : report.priority === "normal"
+                        ? "blue"
+                        : "green"
+                  }
+                >
                   <HiOutlineExclamationCircle className="inline-block mr-1" />
                   {report.priority.toUpperCase()}
                 </Badge>

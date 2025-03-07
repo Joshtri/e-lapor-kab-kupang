@@ -23,8 +23,8 @@ export default function UserTable({ users }) {
                   user.role === "ADMIN"
                     ? "purple"
                     : user.role === "BUPATI"
-                    ? "green"
-                    : "blue"
+                      ? "green"
+                      : "blue"
                 }
               >
                 {user.role}

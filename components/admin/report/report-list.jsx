@@ -33,7 +33,7 @@ export default function ReportList() {
   };
 
   const filteredReports = reports.filter((report) =>
-    filterStatus === "ALL" ? true : report.status === filterStatus
+    filterStatus === "ALL" ? true : report.status === filterStatus,
   );
 
   if (loading) {

@@ -20,8 +20,8 @@ export default function UserGrid({ users, onShow, onEdit, onDelete }) {
                   user.role === "ADMIN"
                     ? "purple"
                     : user.role === "BUPATI"
-                    ? "green"
-                    : "blue"
+                      ? "green"
+                      : "blue"
                 }
                 className="mt-1"
               >
@@ -34,24 +34,20 @@ export default function UserGrid({ users, onShow, onEdit, onDelete }) {
           <div className="flex justify-end gap-2 mt-2">
             {/* Show Button (Boleh untuk semua role) */}
             <Button size="xs" color="gray" onClick={() => onShow(user)}>
-              <HiEye className="mr-1 h-4 w-4" />  
+              <HiEye className="mr-1 h-4 w-4" />
             </Button>
 
             {/* Edit Button (Hanya untuk PELAPOR) */}
             {user.role === "PELAPOR" && (
               <Button size="xs" color="blue" onClick={() => onEdit(user)}>
-                <HiPencil className="mr-1 h-4 w-4" />  
+                <HiPencil className="mr-1 h-4 w-4" />
               </Button>
             )}
 
             {/* Delete Button (Hanya untuk PELAPOR) */}
             {user.role === "PELAPOR" && (
-              <Button
-                size="xs"
-                color="failure"
-                onClick={() => onDelete(user)}
-              >
-                <HiTrash className="mr-1 h-4 w-4" />  
+              <Button size="xs" color="failure" onClick={() => onDelete(user)}>
+                <HiTrash className="mr-1 h-4 w-4" />
               </Button>
             )}
           </div>

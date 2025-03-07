@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Spinner, Badge } from "flowbite-react";
-import { HiOutlineClock, HiOutlineCheckCircle, HiOutlineChatAlt2 } from "react-icons/hi";
+import {
+  HiOutlineClock,
+  HiOutlineCheckCircle,
+  HiOutlineChatAlt2,
+} from "react-icons/hi";
 
 export default function LogLaporanPage() {
   const [reports, setReports] = useState([]);
@@ -49,7 +53,7 @@ export default function LogLaporanPage() {
         <div className="space-y-4">
           {reports.map((report) => {
             const latestComment = report.comments?.find(
-              (comment) => comment.user.role === "PELAPOR"
+              (comment) => comment.user.role === "PELAPOR",
             );
 
             return (

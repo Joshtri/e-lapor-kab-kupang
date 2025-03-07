@@ -49,7 +49,10 @@ export async function PUT(req) {
     const { id, status } = await req.json();
 
     if (!["PENDING", "PROSES", "SUKSES"].includes(status)) {
-      return NextResponse.json({ error: "Status tidak valid" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Status tidak valid" },
+        { status: 400 },
+      );
     }
 
     const updatedReport = await prisma.report.update({
@@ -59,6 +62,9 @@ export async function PUT(req) {
 
     return NextResponse.json(updatedReport, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Gagal memperbarui status laporan" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Gagal memperbarui status laporan" },
+      { status: 500 },
+    );
   }
 }

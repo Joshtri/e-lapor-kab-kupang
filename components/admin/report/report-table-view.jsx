@@ -18,20 +18,24 @@ export default function ReportTable({ reports }) {
             <Table.Cell>{report.title}</Table.Cell>
             <Table.Cell>{report.category}</Table.Cell>
             <Table.Cell>
-              <Badge color={
-                report.status === "SELESAI"
-                  ? "green"
-                  : report.status === "PROSES"
-                  ? "yellow"
-                  : report.status === "DITOLAK"
-                  ? "red"
-                  : "gray"
-              }>
+              <Badge
+                color={
+                  report.status === "SELESAI"
+                    ? "green"
+                    : report.status === "PROSES"
+                      ? "yellow"
+                      : report.status === "DITOLAK"
+                        ? "red"
+                        : "gray"
+                }
+              >
                 {report.status}
               </Badge>
             </Table.Cell>
             <Table.Cell>{report.priority}</Table.Cell>
-            <Table.Cell>{new Date(report.createdAt).toLocaleDateString()}</Table.Cell>
+            <Table.Cell>
+              {new Date(report.createdAt).toLocaleDateString()}
+            </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>

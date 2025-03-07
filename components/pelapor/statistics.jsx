@@ -16,7 +16,7 @@ const Statistics = ({ user }) => {
     inProgress: 0,
     completed: 0,
     rejected: 0,
-    canceled: 0,  
+    canceled: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -79,7 +79,6 @@ const Statistics = ({ user }) => {
             icon: HiOutlineDocumentText,
             color: "text-red-500",
           },
-
         ].map(({ title, value, icon: Icon, color }) => (
           <Card
             key={title}

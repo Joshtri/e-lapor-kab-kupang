@@ -1,4 +1,4 @@
-import  prisma from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function PATCH(req, { params }) {
   const { id } = params; // reportId
@@ -17,6 +17,9 @@ export async function PATCH(req, { params }) {
     return Response.json(updatedReport);
   } catch (error) {
     console.error(error);
-    return Response.json({ error: "Gagal mengupdate status laporan." }, { status: 500 });
+    return Response.json(
+      { error: "Gagal mengupdate status laporan." },
+      { status: 500 },
+    );
   }
 }

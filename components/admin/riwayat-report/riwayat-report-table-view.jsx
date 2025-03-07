@@ -18,20 +18,24 @@ export default function RiwayatTable({ riwayat }) {
             <Table.Cell>{item.title}</Table.Cell>
             <Table.Cell>{item.category}</Table.Cell>
             <Table.Cell>
-              <Badge color={
-                item.status === "SELESAI"
-                  ? "green"
-                  : item.status === "PROSES"
-                  ? "yellow"
-                  : item.status === "DITOLAK"
-                  ? "red"
-                  : "gray"
-              }>
+              <Badge
+                color={
+                  item.status === "SELESAI"
+                    ? "green"
+                    : item.status === "PROSES"
+                      ? "yellow"
+                      : item.status === "DITOLAK"
+                        ? "red"
+                        : "gray"
+                }
+              >
                 {item.status}
               </Badge>
             </Table.Cell>
             <Table.Cell>{item.priority}</Table.Cell>
-            <Table.Cell>{new Date(item.createdAt).toLocaleDateString()}</Table.Cell>
+            <Table.Cell>
+              {new Date(item.createdAt).toLocaleDateString()}
+            </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>

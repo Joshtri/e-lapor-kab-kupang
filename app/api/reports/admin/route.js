@@ -34,7 +34,7 @@ export async function GET() {
     console.error("Gagal mengambil data laporan:", error.message, error);
     return NextResponse.json(
       { message: "Gagal mengambil data laporan.", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

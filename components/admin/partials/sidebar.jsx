@@ -4,7 +4,12 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { MdOutlineReport, MdOutlineSupervisorAccount, MdOutlineHistoryEdu, MdOutlineSettings } from "react-icons/md";
+import {
+  MdOutlineReport,
+  MdOutlineSupervisorAccount,
+  MdOutlineHistoryEdu,
+  MdOutlineSettings,
+} from "react-icons/md";
 import { HiOutlineClipboardCheck, HiOutlineUserGroup } from "react-icons/hi";
 import { AiOutlineFileSearch } from "react-icons/ai";
 
@@ -26,8 +31,13 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
     >
       {/* Header Sidebar */}
       <div className="p-4 flex items-center justify-between">
-        {isSidebarOpen && <span className="text-lg font-bold">Admin Panel</span>}
-        <button className="text-gray-100 hover:text-gray-400" onClick={toggleSidebar}>
+        {isSidebarOpen && (
+          <span className="text-lg font-bold">Admin Panel</span>
+        )}
+        <button
+          className="text-gray-100 hover:text-gray-400"
+          onClick={toggleSidebar}
+        >
           {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
       </div>
@@ -36,13 +46,19 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
       <nav className="mt-4 flex-1 overflow-y-auto">
         <ul className="space-y-2">
           <li>
-            <Link href="/adm/dashboard" className={navLinkClass("/adm/dashboard")}>
+            <Link
+              href="/adm/dashboard"
+              className={navLinkClass("/adm/dashboard")}
+            >
               <MdOutlineReport />
               {isSidebarOpen && "Dashboard"}
             </Link>
           </li>
           <li>
-            <Link href="/adm/report-warga" className={navLinkClass("/adm/report-warga")}>
+            <Link
+              href="/adm/report-warga"
+              className={navLinkClass("/adm/report-warga")}
+            >
               <HiOutlineClipboardCheck />
               {isSidebarOpen && "Kelola Pengaduan"}
             </Link>
@@ -54,7 +70,10 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
             </Link>
           </li>
           <li>
-            <Link href="/adm/riwayat-pengaduan" className={navLinkClass("/adm/riwayat-pengaduan")}>
+            <Link
+              href="/adm/riwayat-pengaduan"
+              className={navLinkClass("/adm/riwayat-pengaduan")}
+            >
               <MdOutlineHistoryEdu />
               {isSidebarOpen && "Riwayat Pengaduan"}
             </Link>

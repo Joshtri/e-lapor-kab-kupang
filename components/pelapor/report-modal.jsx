@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Modal, Button, Label, TextInput, Textarea, Select } from "flowbite-react";
+import {
+  Modal,
+  Button,
+  Label,
+  TextInput,
+  Textarea,
+  Select,
+} from "flowbite-react";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -28,13 +35,17 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
     try {
       await axios.post(`/api/reports`, { ...formData, userId: user.id });
       toast.success("Laporan berhasil dikirim!");
-      setFormData({ title: "", category: "", priority: "LOW", description: "" });
+      setFormData({
+        title: "",
+        category: "",
+        priority: "LOW",
+        description: "",
+      });
       // ✅ Kasih jeda 1.5 detik biar toast tampil dulu
       setTimeout(() => {
         window.location.reload();
       }, 1500);
       setOpenModal(false);
-      
     } catch (error) {
       toast.error("Gagal mengirim laporan.");
     } finally {
@@ -70,7 +81,13 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
             <Label htmlFor="category">
               Kategori Laporan <span className="text-red-500">*</span>
             </Label>
-            <Select id="category" name="category" value={formData.category} onChange={handleChange} required>
+            <Select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              required
+            >
               <option value="">Pilih Kategori</option>
               <option value="INFRASTRUKTUR">Infrastruktur</option>
               <option value="PELAYANAN_PUBLIK">Pelayanan Publik</option>
@@ -88,7 +105,13 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
             <Label htmlFor="priority">
               Prioritas <span className="text-red-500">*</span>
             </Label>
-            <Select id="priority" name="priority" value={formData.priority} onChange={handleChange} required>
+            <Select
+              id="priority"
+              name="priority"
+              value={formData.priority}
+              onChange={handleChange}
+              required
+            >
               <option value="LOW">Rendah</option>
               <option value="MEDIUM">Sedang</option>
               <option value="HIGH">Tinggi</option>
@@ -113,7 +136,8 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
               required
             />
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Berikan detail yang jelas agar laporan dapat ditindaklanjuti dengan baik.
+              Berikan detail yang jelas agar laporan dapat ditindaklanjuti
+              dengan baik.
             </p>
           </div>
 

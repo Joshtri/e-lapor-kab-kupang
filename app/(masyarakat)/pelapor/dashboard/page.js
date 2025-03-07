@@ -35,7 +35,7 @@ export default function DashboardPelaporPage() {
       </div>
     );
   }
-  
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
@@ -43,7 +43,6 @@ export default function DashboardPelaporPage() {
       </div>
     );
   }
-  
 
-  return (<DashboardPelapor user={user} />);
+  return <DashboardPelapor user={user} />;
 }

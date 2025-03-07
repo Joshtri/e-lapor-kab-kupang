@@ -11,7 +11,10 @@ export async function POST(req) {
 
     return NextResponse.json(newLog, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Gagal menambahkan log" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Gagal menambahkan log" },
+      { status: 500 },
+    );
   }
 }
 

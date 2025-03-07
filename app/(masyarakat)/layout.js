@@ -24,7 +24,7 @@ export default function PelaporLayout({ children }) {
         <Toaster richColors position="top-right" />
         <HeaderPelapor />
         {/* <AuthProtectGuard> */}
-          <main className="flex-grow p-4 pt-16">{children}</main>
+        <main className="flex-grow p-4 pt-16">{children}</main>
         {/* </AuthProtectGuard> */}
         <FooterPelapor />
       </div>

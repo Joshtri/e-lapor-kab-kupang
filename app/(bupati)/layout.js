@@ -26,9 +26,8 @@ export default function BupatiLayout({ children }) {
         {/* Header Bupati */}
         <HeaderBupati />
         <AuthProtectGuard>
-
-        {/* Konten Utama */}
-        <main className="flex-grow p-4 pt-16">{children}</main>
+          {/* Konten Utama */}
+          <main className="flex-grow p-4 pt-16">{children}</main>
         </AuthProtectGuard>
 
         {/* Footer Bupati */}

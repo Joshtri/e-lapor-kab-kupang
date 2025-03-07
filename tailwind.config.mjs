@@ -8,7 +8,6 @@ const config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
 
     flowbite.content(),
-
   ],
   theme: {
     extend: {
@@ -18,10 +17,7 @@ const config = {
       },
     },
   },
-  plugins: [
-    flowbite.plugin(),
-
-  ],
+  plugins: [flowbite.plugin()],
 };
 
 export default config;

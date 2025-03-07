@@ -16,7 +16,10 @@ export default function AdminLayout({ children }) {
     <ClientThemeProvider>
       <Toaster richColors position="top-right" />
       <div className="flex">
-        <AdminSidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        <AdminSidebar
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
         <div
           className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
             isSidebarOpen ? "ml-64" : "ml-20"

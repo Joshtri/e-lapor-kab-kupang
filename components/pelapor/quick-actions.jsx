@@ -16,8 +16,12 @@ const QuickActions = ({ setOpenModal }) => {
         <div className="flex items-center space-x-4">
           <HiOutlinePlusCircle className="text-blue-500 text-4xl" />
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Buat Laporan</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Laporkan masalah yang Anda alami.</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Buat Laporan
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Laporkan masalah yang Anda alami.
+            </p>
           </div>
         </div>
       </Card>
@@ -39,13 +43,16 @@ const QuickActions = ({ setOpenModal }) => {
           <div className="flex items-center space-x-4">
             <FaThList className="text-green-500 text-4xl" />
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Log Laporan</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Lihat riwayat laporan Anda.</p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                Log Laporan
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Lihat riwayat laporan Anda.
+              </p>
             </div>
           </div>
         </Card>
       </Link>
-
     </div>
   );
 };

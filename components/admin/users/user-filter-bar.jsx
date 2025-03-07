@@ -3,7 +3,12 @@
 import { Select, Button } from "flowbite-react";
 import { HiOutlineTable, HiOutlineViewGrid } from "react-icons/hi";
 
-export default function UserFilterBar({ filterRole, setFilterRole, viewMode, setViewMode }) {
+export default function UserFilterBar({
+  filterRole,
+  setFilterRole,
+  viewMode,
+  setViewMode,
+}) {
   return (
     <div className="flex flex-wrap gap-4 items-center">
       <Select
@@ -35,4 +40,3 @@ export default function UserFilterBar({ filterRole, setFilterRole, viewMode, set
     </div>
   );
 }
-    

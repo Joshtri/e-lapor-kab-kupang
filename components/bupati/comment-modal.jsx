@@ -53,14 +53,23 @@ const CommentModal = ({ open, setOpen, reportId }) => {
             <Spinner />
           </div>
         ) : comments.length === 0 ? (
-          <p className="text-gray-600 dark:text-gray-400">Belum ada komentar.</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Belum ada komentar.
+          </p>
         ) : (
           <div className="space-y-4 max-h-60 overflow-y-auto">
             {comments.map((comment) => (
-              <div key={comment.id} className="p-3 bg-gray-100 dark:bg-gray-700 rounded">
+              <div
+                key={comment.id}
+                className="p-3 bg-gray-100 dark:bg-gray-700 rounded"
+              >
                 <p className="text-sm font-medium">{comment.user.name}</p>
-                <p className="text-gray-700 dark:text-gray-300">{comment.comment}</p>
-                <p className="text-xs text-gray-500">{new Date(comment.createdAt).toLocaleString()}</p>
+                <p className="text-gray-700 dark:text-gray-300">
+                  {comment.comment}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {new Date(comment.createdAt).toLocaleString()}
+                </p>
               </div>
             ))}
           </div>

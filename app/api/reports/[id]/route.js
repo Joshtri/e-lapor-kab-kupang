@@ -13,7 +13,10 @@ export async function GET(req, { params }) {
     });
 
     if (!report) {
-      return NextResponse.json({ message: "Report not found" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Report not found" },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json(report);

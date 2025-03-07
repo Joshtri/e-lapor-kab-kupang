@@ -37,7 +37,11 @@ const StatistikOverview = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <StatistikCard title="Total Laporan" count={stats.totalReports} color="blue" />
+      <StatistikCard
+        title="Total Laporan"
+        count={stats.totalReports}
+        color="blue"
+      />
       <StatistikCard title="Diproses" count={stats.inProgress} color="yellow" />
       <StatistikCard title="Selesai" count={stats.completed} color="green" />
       {/* Kalau nanti ada data 'rejected', tampilkan, kalau tidak bisa dihapus */}

@@ -23,7 +23,11 @@ export default function Header() {
     >
       <Navbar.Brand as={Link} href="/" className="flex items-center gap-3">
         {/* Logo Lembaga */}
-        <img src="/logo-kab-kupang.png" alt="Logo Lembaga" className="w-10 h-10" /> 
+        <img
+          src="/logo-kab-kupang.png"
+          alt="Logo Lembaga"
+          className="w-10 h-10"
+        />
 
         {/* Nama Lembaga */}
         <span className="self-center text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">

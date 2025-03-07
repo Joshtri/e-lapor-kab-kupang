@@ -3,7 +3,12 @@
 import { Select, Button } from "flowbite-react";
 import { HiOutlineTable, HiOutlineViewGrid } from "react-icons/hi";
 
-export default function ReportFilterBar({ filterStatus, setFilterStatus, viewMode, setViewMode }) {
+export default function ReportFilterBar({
+  filterStatus,
+  setFilterStatus,
+  viewMode,
+  setViewMode,
+}) {
   return (
     <div className="flex flex-wrap gap-4 items-center">
       <Select

@@ -34,7 +34,7 @@ export default function UserList() {
   };
 
   const filteredUsers = users.filter((user) =>
-    filterRole === "ALL" ? true : user.role === filterRole
+    filterRole === "ALL" ? true : user.role === filterRole,
   );
 
   if (loading) {

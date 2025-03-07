@@ -10,15 +10,17 @@ export default function RiwayatGrid({ riwayat }) {
           <h3 className="text-lg font-semibold">{item.title}</h3>
           <p className="text-sm text-gray-500">{item.category}</p>
           <div className="flex gap-2 mt-2">
-            <Badge color={
-              item.status === "SELESAI"
-                ? "green"
-                : item.status === "PROSES"
-                ? "yellow"
-                : item.status === "DITOLAK"
-                ? "red"
-                : "gray"
-            }>
+            <Badge
+              color={
+                item.status === "SELESAI"
+                  ? "green"
+                  : item.status === "PROSES"
+                    ? "yellow"
+                    : item.status === "DITOLAK"
+                      ? "red"
+                      : "gray"
+              }
+            >
               {item.status}
             </Badge>
             <Badge color="blue">{item.priority}</Badge>

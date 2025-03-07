@@ -9,6 +9,8 @@ import axios from "axios";
 import { toast } from "sonner";
 import * as z from "zod";
 import AuthRedirectGuard from "@/components/AuthRedirectGuard";
+import { HiOutlineLogin } from "react-icons/hi";
+
 
 // Skema validasi
 const loginSchema = z.object({
@@ -60,15 +62,16 @@ export default function LoginPage() {
 
   return (
     <AuthRedirectGuard>
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="container mx-auto max-w-md px-4 py-8">
-          <Card className="p-8 bg-white dark:bg-gray-800">
-            <div className="text-center mb-8">
+          <Card className="p-8 bg-white/70 dark:bg-gray-800/70">
+            <div className="text-center mb-2">
               <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">
-                Log In Pengadu / Pelapor
+                Selamat Datang di E-Lapor
               </h2>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                RESERVASI LAYANAN PENGADUAN E-LAPOR!
+
+              <p className="text-gray-500 dark:text-gray-400 mb-0">
+                Silakan masuk untuk mengakses akun Anda.
               </p>
             </div>
 
@@ -106,10 +109,11 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 color="blue"
-                className="w-full"
+                className="w-full flex items-center justify-center gap-2"
                 size="lg"
                 disabled={isSubmitting}
               >
+                <HiOutlineLogin className="h-5 w-5" />
                 {isSubmitting ? "Memproses..." : "Masuk"}
               </Button>
 

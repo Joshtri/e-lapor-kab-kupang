@@ -16,6 +16,9 @@ export async function POST() {
       headers: { "Set-Cookie": cookie },
     });
   } catch (error) {
-    return NextResponse.json({ error: "Terjadi kesalahan saat logout" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Terjadi kesalahan saat logout" },
+      { status: 500 },
+    );
   }
 }

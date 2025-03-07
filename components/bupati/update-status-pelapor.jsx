@@ -30,14 +30,15 @@ const UpdateStatusModal = ({ open, setOpen, report }) => {
           <option value="PROSES">Sedang Diproses</option>
           <option value="SELESAI">Selesai</option>
           <option value="DITOLAK">Selesai</option>
-
         </Select>
       </Modal.Body>
       <Modal.Footer>
         <Button color="blue" onClick={handleUpdateStatus} disabled={isLoading}>
           {isLoading ? "Memproses..." : "Simpan"}
         </Button>
-        <Button color="gray" onClick={() => setOpen(false)}>Batal</Button>
+        <Button color="gray" onClick={() => setOpen(false)}>
+          Batal
+        </Button>
       </Modal.Footer>
     </Modal>
   );

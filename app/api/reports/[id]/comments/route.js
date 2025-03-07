@@ -9,7 +9,7 @@ export async function POST(req, context) {
   if (!userId || !comment) {
     return NextResponse.json(
       { error: "userId dan comment wajib diisi." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -27,7 +27,7 @@ export async function POST(req, context) {
     console.error("Gagal menambahkan komentar:", error);
     return NextResponse.json(
       { error: "Gagal menambahkan komentar." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -52,7 +52,7 @@ export async function GET(req, context) {
     console.error("Gagal mengambil komentar:", error);
     return NextResponse.json(
       { error: "Gagal mengambil komentar." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

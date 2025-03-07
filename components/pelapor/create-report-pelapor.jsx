@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, Label, Textarea, Button, Select, TextInput } from "flowbite-react";
+import {
+  Card,
+  Label,
+  Textarea,
+  Button,
+  Select,
+  TextInput,
+} from "flowbite-react";
 
 const BuatLaporan = () => {
   const [form, setForm] = useState({
@@ -30,7 +37,9 @@ const BuatLaporan = () => {
   return (
     <div className="bg-gray-100 dark:bg-gray-900 min-h-screen py-10 px-6 flex items-center justify-center">
       <Card className="w-full max-w-2xl bg-white dark:bg-gray-800 shadow-md">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Buat Laporan</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+          Buat Laporan
+        </h2>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
           Silakan isi formulir berikut untuk melaporkan permasalahan Anda.
         </p>
@@ -38,7 +47,9 @@ const BuatLaporan = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Judul Laporan */}
           <div>
-            <Label htmlFor="title" className="text-gray-700 dark:text-gray-300">Judul Laporan</Label>
+            <Label htmlFor="title" className="text-gray-700 dark:text-gray-300">
+              Judul Laporan
+            </Label>
             <TextInput
               id="title"
               name="title"
@@ -52,7 +63,12 @@ const BuatLaporan = () => {
 
           {/* Kategori Laporan */}
           <div>
-            <Label htmlFor="category" className="text-gray-700 dark:text-gray-300">Kategori Laporan</Label>
+            <Label
+              htmlFor="category"
+              className="text-gray-700 dark:text-gray-300"
+            >
+              Kategori Laporan
+            </Label>
             <Select
               id="category"
               name="category"
@@ -72,7 +88,12 @@ const BuatLaporan = () => {
 
           {/* Prioritas Laporan */}
           <div>
-            <Label htmlFor="priority" className="text-gray-700 dark:text-gray-300">Prioritas Laporan</Label>
+            <Label
+              htmlFor="priority"
+              className="text-gray-700 dark:text-gray-300"
+            >
+              Prioritas Laporan
+            </Label>
             <Select
               id="priority"
               name="priority"
@@ -90,7 +111,12 @@ const BuatLaporan = () => {
 
           {/* Isi Laporan */}
           <div>
-            <Label htmlFor="description" className="text-gray-700 dark:text-gray-300">Detail Laporan</Label>
+            <Label
+              htmlFor="description"
+              className="text-gray-700 dark:text-gray-300"
+            >
+              Detail Laporan
+            </Label>
             <Textarea
               id="description"
               name="description"
@@ -105,7 +131,11 @@ const BuatLaporan = () => {
 
           {/* Tombol Kirim */}
           <div className="flex justify-end">
-            <Button type="submit" gradientDuoTone="greenToBlue" className="w-full">
+            <Button
+              type="submit"
+              gradientDuoTone="greenToBlue"
+              className="w-full"
+            >
               Kirim Laporan
             </Button>
           </div>

@@ -4,7 +4,8 @@ import prisma from "@/lib/prisma";
 
 export async function POST(req) {
   try {
-    const { fullName, nikNumber, contactNumber, email, password } = await req.json();
+    const { fullName, nikNumber, contactNumber, email, password } =
+      await req.json();
 
     // Periksa apakah email atau nikNumber sudah terdaftar
     const existingUser = await prisma.user.findFirst({
@@ -14,7 +15,10 @@ export async function POST(req) {
     });
 
     if (existingUser) {
-      return NextResponse.json({ error: "Email atau NIK sudah terdaftar" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Email atau NIK sudah terdaftar" },
+        { status: 400 },
+      );
     }
 
     // Hash password sebelum menyimpan ke database
@@ -33,8 +37,11 @@ export async function POST(req) {
     });
 
     return NextResponse.json(
-      { message: "User berhasil didaftarkan!", user: { id: newUser.id, name: newUser.name, email: newUser.email } },
-      { status: 201 }
+      {
+        message: "User berhasil didaftarkan!",
+        user: { id: newUser.id, name: newUser.name, email: newUser.email },
+      },
+      { status: 201 },
     );
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

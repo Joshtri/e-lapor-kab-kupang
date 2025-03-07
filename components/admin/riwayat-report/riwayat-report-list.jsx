@@ -32,7 +32,7 @@ export default function RiwayatPengaduan() {
   };
 
   const filteredRiwayat = riwayat.filter((item) =>
-    filterStatus === "ALL" ? true : item.status === filterStatus
+    filterStatus === "ALL" ? true : item.status === filterStatus,
   );
 
   if (loading) {

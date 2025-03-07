@@ -9,31 +9,24 @@ export async function POST(req) {
       await req.json();
 
     // Validasi basic
-    if (
-      !name ||
-      !nikNumber ||
-      !contactNumber ||
-      !email ||
-      !password ||
-      !role
-    ) {
+    if (!name || !nikNumber || !contactNumber || !email || !password || !role) {
       return NextResponse.json(
         { error: "Semua field wajib diisi." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (nikNumber.length !== 16) {
       return NextResponse.json(
         { error: "NIK harus tepat 16 digit." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (contactNumber.length > 15) {
       return NextResponse.json(
         { error: "Nomor kontak maksimal 15 digit." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -47,7 +40,7 @@ export async function POST(req) {
     if (existingUser) {
       return NextResponse.json(
         { error: "Email atau NIK sudah terdaftar." },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -71,7 +64,7 @@ export async function POST(req) {
     console.error("Gagal membuat user:", error);
     return NextResponse.json(
       { error: "Terjadi kesalahan saat membuat user." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -96,7 +89,7 @@ export async function GET() {
   } catch (error) {
     return NextResponse.json(
       { error: "Gagal mengambil data users." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

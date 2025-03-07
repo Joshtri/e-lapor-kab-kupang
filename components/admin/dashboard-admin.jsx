@@ -173,7 +173,7 @@ const AdminDashboard = () => {
                     <td className="p-2">
                       <span
                         className={`px-3 py-1 rounded-full text-white text-sm ${statusBadge(
-                          report.status
+                          report.status,
                         )}`}
                       >
                         {report.status}

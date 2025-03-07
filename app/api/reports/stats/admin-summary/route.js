@@ -57,7 +57,7 @@ export async function GET() {
     console.error("Error fetching admin summary:", error.message, error);
     return NextResponse.json(
       { message: "Gagal mengambil data admin summary.", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
