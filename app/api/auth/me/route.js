@@ -1,19 +1,19 @@
 import { NextResponse } from "next/server";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
-import prisma from "@/lib/prisma"; // Sesuaikan dengan koneksi Prisma Anda
+import prisma from "@/lib/prisma";
 
 export async function GET() {
+  const authCookies = cookies();
+  const token = authCookies.get("auth_token")?.value;
+
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized - Token missing" }, { status: 401 });
+  }
+
   try {
-    // Gunakan `await` saat memanggil `cookies().get()`
-    const authCookies = await cookies();
-    const token = authCookies.get("auth_token")?.value;
-
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const decoded = verify(token, process.env.JWT_SECRET);
+
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
       select: { id: true, name: true, email: true },
@@ -25,6 +25,6 @@ export async function GET() {
 
     return NextResponse.json({ user });
   } catch (error) {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized - Invalid token" }, { status: 401 });
   }
 }

@@ -12,12 +12,16 @@ export default function AuthRedirectGuard({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("/api/auth/me");
-        if (res.data?.user) {
-          router.replace("/pelapor/dashboard"); // Redirect jika sudah login
+        const res = await axios.get("/api/auth/me", {
+          validateStatus: () => true, // ✅ Anggap semua status sukses
+        });
+
+        if (res.status === 200 && res.data?.user) {
+          router.replace("/pelapor/dashboard");
         }
       } catch (error) {
-        // User belum login, aman akses halaman auth
+        // Optional log, kalau mau tracking internal error
+        console.debug("Auth check error:", error);
       } finally {
         setCheckingAuth(false);
       }

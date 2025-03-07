@@ -29,13 +29,17 @@ const HeaderBupati = ({ user }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("/api/auth/logout");
-      toast.success("Logout berhasil! Anda akan diarahkan ke halaman utama.");
+      await axios.post("/api/auth/logout", null, {
+        withCredentials: true, // ✅ Penting kalau axios global butuh kirim cookie
+      });
+      toast.success("Berhasil logout! Mengarahkan ke halaman utama...");
+  
       setTimeout(() => {
-        router.push("/");
-      }, 2000);
+        router.push("/auth/login"); // ✅ Lebih baik langsung ke login, bukan ke "/" kalau ini logout user
+      }, 1500); // Sedikit lebih cepat, biar UX makin smooth
     } catch (error) {
-      toast.error("Terjadi kesalahan saat logout.");
+      console.error("Logout Error:", error);
+      toast.error("Gagal logout. Silakan coba lagi.");
     }
   };
 
