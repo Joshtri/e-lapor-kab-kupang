@@ -31,7 +31,7 @@ const DashboardPelapor = ({ user }) => {
               !
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Dashboard pelapor E-Lapor KK Bupati.
+              Dashboard pelapor Lapor KK Bupati.
             </p>
           </div>
 
