@@ -6,6 +6,7 @@ import Statistics from "@/components/pelapor/statistics";
 import ReportModal from "@/components/pelapor/report-modal";
 import { Button } from "flowbite-react";
 import { FaWhatsapp } from "react-icons/fa";
+import PageHeader from "../ui/page-header";
 
 const DashboardPelapor = ({ user }) => {
   const [openModal, setOpenModal] = useState(false);
