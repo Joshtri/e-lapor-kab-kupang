@@ -16,7 +16,7 @@ const DashboardPelapor = ({ user }) => {
     );
     window.open(`https://wa.me/6281237159777?text=${message}`, "_blank");
   };
-
+  
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-8 px-6">
       <div className="max-w-6xl mx-auto">
