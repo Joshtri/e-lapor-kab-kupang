@@ -1,27 +1,40 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// 📌 Ambil Detail Pengaduan Berdasarkan ID
 export async function GET(req, { params }) {
   try {
+    const { id } = params;
+
     const report = await prisma.report.findUnique({
-      where: { id: parseInt(params.id) },
+      where: { id: Number(id) },
       include: {
-        user: { select: { id: true, name: true, email: true } },
-        comments: { include: { user: { select: { name: true } } } },
+        user: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
     if (!report) {
-      return NextResponse.json(
-        { message: "Report not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ message: "Laporan tidak ditemukan." }, { status: 404 });
     }
 
-    return NextResponse.json(report);
+    return NextResponse.json({
+      id: report.id,
+      title: report.title,
+      description: report.description,
+      pelapor: report.user?.name || "Tidak diketahui",
+      kategori: report.category,
+      status: report.status,
+      createdAt: report.createdAt,
+    });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Error fetching report details:", error.message, error);
+    return NextResponse.json(
+      { message: "Gagal mengambil data laporan.", error: error.message },
+      { status: 500 }
+    );
   }
 }
 

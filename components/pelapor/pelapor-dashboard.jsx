@@ -12,7 +12,7 @@ const DashboardPelapor = ({ user }) => {
 
   const handleWhatsApp = () => {
     const message = encodeURIComponent(
-      `Halo Bupati,\n\nSaya ingin menyampaikan pengaduan terkait...\n\nNama: ${user?.name}\n`,
+      "Halo KK Yos & Sis Arumi,\n\nNIK: \nNAMA: \nAlamat: \n\nSaya ingin melaporkan\n\nDeskripsi Laporan: \n\nTerima kasih. UIS NENO NOKAN KIT.",
     );
     window.open(`https://wa.me/6281237159777?text=${message}`, "_blank");
   };

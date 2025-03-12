@@ -119,7 +119,7 @@ export default function Home() {
                       size="lg"
                       onClick={() => {
                         const message = encodeURIComponent(
-                          "Halo KK BUPATI,\n\nSaya ingin melaporkan...\n\nNama: \nAlamat: \nDeskripsi Laporan: \n\nTerima kasih.",
+                          "Halo KK Yos & Sis Arumi,\n\nNIK: \nNAMA: \nAlamat: \n\nSaya ingin melaporkan\n\nDeskripsi Laporan: \n\nTerima kasih. UIS NENO NOKAN KIT.",
                         );
                         window.open(
                           `https://wa.me/6281237159777?text=${message}`,
@@ -135,7 +135,7 @@ export default function Home() {
                       size="lg"
                       onClick={() => {
                         const message = encodeURIComponent(
-                          "Halo KK BUPATI,\n\nSaya ingin menanyakan...\n\nNama: \nAlamat: \nDeskripsi Laporan: \n\nTerima kasih.",
+                          "Halo KK Yos & Sis Arumi,\n\nNIK: \nNAMA: \nAlamat: \n\nSaya ingin melaporkan\n\nDeskripsi Laporan: \n\nTerima kasih. UIS NENO NOKAN KIT.",
                         );
                         window.open(
                           `https://wa.me/6281339300533?text=${message}`,

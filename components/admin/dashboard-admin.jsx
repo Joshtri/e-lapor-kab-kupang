@@ -15,7 +15,10 @@ import {
   FaClipboardList,
   FaUserFriends,
   FaCheckCircle,
-  FaSpinner as FaSpinnerIcon,
+  FaTimesCircle,
+  FaComments,
+  FaUserShield,
+  FaUserTie,
 } from "react-icons/fa";
 import axios from "axios";
 import Link from "next/link";
@@ -24,6 +27,7 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [chartData, setChartData] = useState([]);
   const [recentReports, setRecentReports] = useState([]);
+  const [categoryStats, setCategoryStats] = useState([]);
 
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingChart, setLoadingChart] = useState(true);
@@ -44,6 +48,7 @@ const AdminDashboard = () => {
       setStats(response.data.stats);
       setChartData(response.data.chartData);
       setRecentReports(response.data.recentReports);
+      setCategoryStats(response.data.categoryStats);
     } catch (error) {
       console.error("Gagal mengambil data dashboard:", error);
     } finally {
@@ -77,7 +82,7 @@ const AdminDashboard = () => {
         Ringkasan laporan dan pengguna
       </p>
 
-      {/* Statistik Cards */}
+      {/* 📊 Statistik Utama */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
         {loadingStats ? (
           <div className="col-span-4 flex justify-center py-10">
@@ -85,42 +90,31 @@ const AdminDashboard = () => {
           </div>
         ) : (
           <>
-            <Card className="flex items-center gap-4 p-6 shadow-md">
-              <FaClipboardList className="text-blue-500 text-4xl" />
-              <div>
-                <h2 className="text-lg font-semibold">Total Laporan</h2>
-                <p className="text-2xl font-bold">{stats.totalReports}</p>
-              </div>
-            </Card>
-
-            <Card className="flex items-center gap-4 p-6 shadow-md">
-              <FaSpinnerIcon className="text-yellow-500 text-4xl animate-spin" />
-              <div>
-                <h2 className="text-lg font-semibold">Sedang Diproses</h2>
-                <p className="text-2xl font-bold">{stats.inProgress}</p>
-              </div>
-            </Card>
-
-            <Card className="flex items-center gap-4 p-6 shadow-md">
-              <FaCheckCircle className="text-green-500 text-4xl" />
-              <div>
-                <h2 className="text-lg font-semibold">Selesai</h2>
-                <p className="text-2xl font-bold">{stats.completed}</p>
-              </div>
-            </Card>
-
-            <Card className="flex items-center gap-4 p-6 shadow-md">
-              <FaUserFriends className="text-purple-500 text-4xl" />
-              <div>
-                <h2 className="text-lg font-semibold">Total Pengguna</h2>
-                <p className="text-2xl font-bold">{stats.totalUsers}</p>
-              </div>
-            </Card>
+            <StatCard icon={<FaClipboardList />} color="text-blue-500" title="Total Laporan" value={stats.totalReports} />
+            <StatCard icon={<FaCheckCircle />} color="text-green-500" title="Selesai" value={stats.completed} />
+            <StatCard icon={<FaTimesCircle />} color="text-red-500" title="Ditolak" value={stats.rejected} />
+            <StatCard icon={<FaUserFriends />} color="text-purple-500" title="Total Pengguna" value={stats.totalUsers} />
           </>
         )}
       </div>
 
-      {/* Grafik Statistik */}
+      {/* 📌 Statistik Tambahan */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+        {loadingStats ? (
+          <div className="col-span-4 flex justify-center py-10">
+            <Spinner size="lg" />
+          </div>
+        ) : (
+          <>
+            <StatCard icon={<FaUserShield />} color="text-orange-500" title="Total Admin" value={stats.totalAdmin} />
+            <StatCard icon={<FaUserTie />} color="text-blue-700" title="Total Bupati" value={stats.totalBupati} />
+            <StatCard icon={<FaUserFriends />} color="text-green-700" title="Total Pelapor" value={stats.totalPelapor} />
+            <StatCard icon={<FaComments />} color="text-gray-700" title="Total Komentar" value={stats.totalComments} />
+          </>
+        )}
+      </div>
+
+      {/* 📈 Grafik Statistik */}
       <div className="bg-white dark:bg-gray-800 shadow-md p-6 rounded-lg mt-8">
         <h2 className="text-xl font-bold mb-4">Statistik Laporan</h2>
         {loadingChart ? (
@@ -134,18 +128,25 @@ const AdminDashboard = () => {
               <XAxis dataKey="month" />
               <YAxis />
               <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="total"
-                stroke="#3b82f6"
-                strokeWidth={3}
-              />
+              <Line type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={3} />
             </LineChart>
           </ResponsiveContainer>
         )}
       </div>
 
-      {/* Tabel Laporan Terbaru */}
+      {/* 📂 Statistik Per Kategori */}
+      <div className="bg-white dark:bg-gray-800 shadow-md p-6 rounded-lg mt-8">
+        <h2 className="text-xl font-bold mb-4">Statistik Per Kategori</h2>
+        <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300">
+          {categoryStats.map((category) => (
+            <li key={category.category}>
+              <span className="font-semibold">{category.category}:</span> {category.total} laporan
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 📝 Tabel Laporan Terbaru */}
       <div className="bg-white dark:bg-gray-800 shadow-md p-6 rounded-lg mt-8">
         <h2 className="text-xl font-bold mb-4">Laporan Terbaru</h2>
         {loadingReports ? (
@@ -171,28 +172,20 @@ const AdminDashboard = () => {
                     <td className="p-2">{report.pelapor}</td>
                     <td className="p-2">{report.kategori}</td>
                     <td className="p-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-white text-sm ${statusBadge(
-                          report.status,
-                        )}`}
-                      >
+                      <span className={`px-3 py-1 rounded-full text-white text-sm ${statusBadge(report.status)}`}>
                         {report.status}
                       </span>
                     </td>
                     <td className="p-2">
-                      <Link href={`/admin/laporan/${report.id}`}>
-                        <span className="text-blue-500 hover:underline cursor-pointer">
-                          Detail
-                        </span>
+                      <Link href={`/adm/laporan/${report.id}`} className="text-blue-500 hover:underline">
+                        Detail
                       </Link>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="text-center p-4 text-gray-500">
-                    Tidak ada laporan terbaru.
-                  </td>
+                  <td colSpan="5" className="text-center p-4 text-gray-500">Tidak ada laporan terbaru.</td>
                 </tr>
               )}
             </tbody>
@@ -202,5 +195,15 @@ const AdminDashboard = () => {
     </div>
   );
 };
+
+const StatCard = ({ icon, color, title, value }) => (
+  <Card className="flex items-center gap-4 p-6 shadow-md">
+    <div className={`text-4xl ${color}`}>{icon}</div>
+    <div>
+      <h2 className="text-lg font-semibold">{title}</h2>
+      <p className="text-2xl font-bold">{value}</p>
+    </div>
+  </Card>
+);
 
 export default AdminDashboard;
