@@ -11,13 +11,21 @@ export default function ResetPasswordForm() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
+    setError(false);
+
     if (newPassword !== confirmPassword) {
-      setMessage("Passwords do not match.");
+      setError(true);
+      setMessage("Password tidak cocok.");
       return;
     }
+
+    setLoading(true);
 
     try {
       const response = await fetch("/api/auth/reset-password", {
@@ -27,13 +35,19 @@ export default function ResetPasswordForm() {
       });
 
       const data = await response.json();
-      setMessage(data.message);
 
       if (response.ok) {
+        setMessage("Password berhasil diubah. Mengarahkan ke login...");
         setTimeout(() => router.push("/auth/login"), 3000);
+      } else {
+        setError(true);
+        setMessage(data.error || "Terjadi kesalahan, coba lagi.");
       }
     } catch (error) {
-      setMessage("Failed to reset password.");
+      setError(true);
+      setMessage("Gagal mereset password.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,10 +55,18 @@ export default function ResetPasswordForm() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="p-6 bg-white rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Reset Password</h2>
-        {message && <div className="mt-4 p-4 bg-green-100 border border-green-200 text-green-700 rounded">{message}</div>}
+        {message && (
+          <div
+            className={`mt-4 p-4 border rounded ${
+              error ? "bg-red-100 border-red-200 text-red-700" : "bg-green-100 border-green-200 text-green-700"
+            }`}
+          >
+            {message}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">New Password</label>
+            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">Password Baru</label>
             <input
               type="password"
               id="newPassword"
@@ -55,7 +77,7 @@ export default function ResetPasswordForm() {
             />
           </div>
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
             <input
               type="password"
               id="confirmPassword"
@@ -68,8 +90,9 @@ export default function ResetPasswordForm() {
           <button
             type="submit"
             className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none"
+            disabled={loading}
           >
-            Reset Password
+            {loading ? "Mengubah Password..." : "Reset Password"}
           </button>
         </form>
       </div>
