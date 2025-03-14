@@ -1,41 +1,68 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  try {
-    const { token, newPassword } = await req.json();
-    if (!token || !newPassword) {
-      return NextResponse.json({ message: "Invalid request." }, { status: 400 });
+    try {
+        console.log("🚀 Reset Password API Called");
+
+        const { token, newPassword } = await req.json();
+        console.log("🔑 Received Token:", token);
+        console.log("🔒 New Password Input:", newPassword);
+
+        if (!token || !newPassword) {
+            console.error("❌ Missing Token or Password");
+            return NextResponse.json({ error: "Token dan password baru diperlukan" }, { status: 400 });
+        }
+
+        // 🔍 Cari user berdasarkan reset token di database
+        const user = await prisma.user.findFirst({
+            where: {
+                resetPasswordToken: {
+                    not: null,
+                },
+            },
+        });
+
+        if (!user) {
+            console.error("❌ Token tidak ditemukan dalam database");
+            return NextResponse.json({ error: "Token tidak valid" }, { status: 400 });
+        }
+
+        console.log("✅ User found:", user.email);
+
+        // 🔄 Cek apakah token masih valid
+        const isValidToken = await bcrypt.compare(token, user.resetPasswordToken);
+        if (!isValidToken || new Date(user.resetPasswordExpires) < new Date()) {
+            console.error("❌ Token kedaluwarsa atau tidak valid");
+            return NextResponse.json({ error: "Token sudah kadaluarsa atau tidak valid" }, { status: 401 });
+        }
+
+        console.log("🔓 Token valid");
+
+        // 🔑 Hash password baru
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        console.log("🔒 New Hashed Password:", hashedPassword);
+
+        // 🛠 Update password di database
+        await prisma.user.update({
+            where: { email: user.email },
+            data: {
+                password: hashedPassword,
+                resetPasswordToken: null,
+                resetPasswordExpires: null,
+            },
+        });
+
+        console.log("✅ Password updated successfully for:", user.email);
+
+        return NextResponse.json({ message: "Password berhasil diubah" });
+
+    } catch (error) {
+        console.error("🔥 Server error in reset-password API:", error);
+        return NextResponse.json(
+            { error: "Terjadi kesalahan server, coba lagi nanti." },
+            { status: 500 }
+        );
     }
-
-    const user = await prisma.user.findFirst({
-      where: {
-        resetToken: token,
-        resetTokenExpiry: { gte: new Date() },
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json({ message: "Invalid or expired token." }, { status: 400 });
-    }
-
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    // Update password and remove reset token
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        password: hashedPassword,
-        resetToken: null,
-        resetTokenExpiry: null,
-      },
-    });
-
-    return NextResponse.json({ message: "Password reset successful." });
-  } catch (error) {
-    console.error("Reset Password Error:", error);
-    return NextResponse.json({ message: "Internal server error." }, { status: 500 });
-  }
 }
