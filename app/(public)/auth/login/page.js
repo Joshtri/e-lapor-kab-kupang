@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import AuthRedirectGuard from "@/components/AuthRedirectGuard";
 import { HiOutlineLogin, HiEye, HiEyeOff } from "react-icons/hi"; // 👀 Import Eye Icons
+import Link from "next/link";
 
 // Validation Schema
 const loginSchema = z.object({
@@ -31,7 +32,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data) => {
-    setIsSubmitting(true);
+    setIsSubmitting(true);  
     try {
       const res = await axios.post("/api/auth/login", data);
       const user = res.data.user;
@@ -111,6 +112,16 @@ export default function LoginPage() {
                 {errors.password && (
                   <span className="text-red-500">{errors.password.message}</span>
                 )}
+              </div>
+
+              {/* 🔹 Forget Password Link */}
+              <div className="text-right">
+                <Link
+                  href="/forget-password"
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Lupa Password?
+                </Link>
               </div>
 
               {/* Submit Button */}
