@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Spinner, Modal } from "flowbite-react";
-import { toast } from "sonner";
 import ReportFilterBar from "@/components/admin/report/report-filter-bar";
 import ReportGrid from "@/components/admin/report/report-grid-view";
 import ReportTable from "@/components/admin/report/report-table-view";
 import PageHeader from "@/components/ui/page-header";
+import axios from "axios";
+import { Spinner } from "flowbite-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import ReportModal from "./report-create";
 
 export default function ReportList() {
@@ -89,17 +89,8 @@ export default function ReportList() {
         <ReportGrid reports={filteredReports} />
       )}
 
-<ReportModal openModal={openModal} setOpenModal={setOpenModal} />
-
-
-      {/* ✅ MODAL BUAT LAPORAN */}
-      {/* ✅ MODAL BUAT LAPORAN */}
-      {/* <Modal show={openModal} onClose={() => setOpenModal(false)} size="lg">
-        <Modal.Header>Buat Laporan Baru</Modal.Header>
-        <Modal.Body>
-          <ReportModal onClose={() => setOpenModal(false)} />
-        </Modal.Body>
-      </Modal> */}
+      <ReportModal openModal={openModal} setOpenModal={setOpenModal} />
+ 
     </div>
   );
 }
