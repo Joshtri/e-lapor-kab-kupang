@@ -1,22 +1,52 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, Button, Modal, Dropdown, Avatar } from "flowbite-react";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import {
+  HiDesktopComputer,
   HiOutlineLogout,
   HiOutlineMenu,
   HiOutlineUserCircle,
+  HiShieldCheck,
 } from "react-icons/hi";
 import { useTheme } from "next-themes";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-const AdminHeader = ({ toggleSidebar, isSidebarOpen, user }) => {
+const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
   const { theme, setTheme } = useTheme();
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
+
+
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("/api/auth/me", {
+          validateStatus: () => true, // Agar semua status diterima
+        });
+
+        if (response.status === 200) {
+          setUser(response.data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data user:", error);
+        setUser(null);
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -38,21 +68,32 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen, user }) => {
     <Navbar
       fluid
       rounded
-      className="py-4 px-6 bg-white dark:bg-gray-800 shadow-lg fixed w-full z-40 top-0 left-0 transition-all duration-300"
+      className="py-1 px-6 bg-white dark:bg-gray-800 shadow-lg fixed w-full z-40 top-0 left-0 transition-all duration-300"
     >
       <div className="flex justify-between items-center w-full">
         {/* Kiri: Menu & Judul */}
-        <div className="flex items-center space-x-9">
+        <div className="flex items-center space-x-8 bg-white/30 dark:bg-gray-800 backdrop-blur-md 
+        px-3 py-3 rounded-xl  border-gray-300 dark:border-gray-700 transition-all duration-300 hover:shadow-xl">
           <button
             onClick={toggleSidebar}
-            className="text-gray-900 dark:text-gray-100 focus:outline-none hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-md transition-all"
+            className="text-white dark:text-gray-100 focus:outline-none hover:bg-white/20 p-2 rounded-md transition-all"
           >
             <HiOutlineMenu className="h-7 w-7" />
           </button>
-          <span className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-            Admin Panel
-          </span>
+
+          <div className="flex flex-col">
+            <div className="flex items-center space-x-2">
+              <span className="text-xl font-bold text-gray-800 dark:text-gray-200">
+                Admin Panel
+              </span>
+              <HiDesktopComputer  className="h-5 w-5 text-gray-800 dark:text-gray-300" />
+            </div>
+            <span className="text-xs text-gray-800 dark:text-gray-400">
+              Sistem Manajemen
+            </span>
+          </div>
         </div>
+
 
         {/* Kanan: Dark Mode, Hi Username & Avatar */}
         <div className="flex items-center space-x-6 ml-auto">
@@ -65,12 +106,26 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen, user }) => {
             
             {/* 👤 Hi, Username */}
             <div className="flex flex-col text-gray-800 dark:text-gray-300">
-              <span className="font-medium text-base">
-                Hi, {user?.name || "Admin"} 👋
-              </span>
-              <span className="text-sm text-gray-700 dark:text-gray-400">
-                {user?.role || "Administrator"}
-              </span>
+              {loadingUser ? ( 
+                  <div className="space-y-2">
+                  {/* Skeleton untuk Hi, Username */}
+                  <div className="w-28 h-4 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
+                  {/* Skeleton untuk Role */}
+                  <div className="w-20 h-3 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
+                </div>
+
+              ): (
+                <>
+                <span className="font-medium text-base">
+                  Hi, {user?.name || "Admin"} 👋
+                </span>
+                <span className="text-sm text-gray-700 dark:text-gray-400">
+                  {user?.role || "Administrator"}
+                </span>
+              </>
+          
+              )}
+
             </div>
 
             {/* 🌗 Dark Mode Toggle */}
