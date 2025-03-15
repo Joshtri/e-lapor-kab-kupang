@@ -17,10 +17,18 @@ export default function AuthRedirectGuard({ children }) {
         });
 
         if (res.status === 200 && res.data?.user) {
-          router.replace("/pelapor/dashboard");
+          const { role } = res.data.user;
+
+          // 🔄 Redirect berdasarkan role user
+          if (role === "PELAPOR") {
+            router.replace("/pelapor/dashboard");
+          } else if (role === "BUPATI") {
+            router.replace("/bupati-portal/dashboard");
+          } else if (role === "ADMIN") {
+            router.replace("/adm/dashboard");
+          }
         }
       } catch (error) {
-        // Optional log, kalau mau tracking internal error
         console.debug("Auth check error:", error);
       } finally {
         setCheckingAuth(false);
