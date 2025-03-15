@@ -19,7 +19,8 @@ export default function ReportTable({ reports }) {
       {/* 📊 Tabel Laporan */}
       <Table striped>
         <Table.Head>
-          <Table.HeadCell>Judul</Table.HeadCell>
+          <Table.HeadCell>Nama Pelapor</Table.HeadCell>
+          <Table.HeadCell>Subjek</Table.HeadCell>
           <Table.HeadCell>Kategori</Table.HeadCell>
           <Table.HeadCell>Status</Table.HeadCell>
           <Table.HeadCell>Prioritas</Table.HeadCell>
@@ -29,6 +30,7 @@ export default function ReportTable({ reports }) {
         <Table.Body>
           {reports.map((report) => (
             <Table.Row key={report.id}>
+              <Table.Cell>{report.user.name}</Table.Cell>
               <Table.Cell>{report.title}</Table.Cell>
               <Table.Cell>{report.category}</Table.Cell>
               <Table.Cell>
