@@ -69,6 +69,14 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
               {isSidebarOpen && "Manajemen Pengguna"}
             </Link>
           </li>
+
+          <li>
+            <Link href="/adm/org-perangkat-daerah" className={navLinkClass("/adm/org-perangkat-daerah")}>
+              <HiOutlineUserGroup />
+              {isSidebarOpen && "Manajemen OPD"}
+            </Link>
+          </li>
+          
           <li>
             <Link
               href="/adm/riwayat-pengaduan"
