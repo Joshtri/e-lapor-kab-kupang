@@ -9,8 +9,6 @@ import {
   HiOutlineLogout,
   HiOutlineHome,
   HiOutlineClipboardCheck,
-  HiOutlineChartSquareBar,
-  HiOutlineCog,
   HiOutlineMenu,
 } from "react-icons/hi";
 import { useTheme } from "next-themes";
@@ -23,7 +21,6 @@ const HeaderBupati = () => {
   const { theme, setTheme } = useTheme();
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
@@ -59,16 +56,6 @@ const HeaderBupati = () => {
     fetchNotifications();
   }, []);
 
-  const markAsRead = async (notifId, link) => {
-    try {
-      await axios.patch(`/api/notifications/${notifId}/read`);
-      setNotifications(notifications.filter((n) => n.id !== notifId));
-      if (link) router.push(link);
-    } catch (error) {
-      console.error("Gagal menandai notifikasi:", error);
-    }
-  };
-
   const handleLogout = async () => {
     try {
       await axios.post("/api/auth/logout");
@@ -100,12 +87,6 @@ const HeaderBupati = () => {
         <Link href="/bupati-portal/laporan-warga" className="hover:text-blue-500">
           Daftar Laporan
         </Link>
-        {/* <Link href="/bupati-portal/statistik" className="hover:text-blue-500">
-          Statistik
-        </Link>
-        <Link href="/bupati-portal/pengaturan" className="hover:text-blue-500">
-          Pengaturan
-        </Link> */}
       </div>
 
       {/* Kanan: Dark Mode, Notifikasi, Profil */}
@@ -147,7 +128,6 @@ const HeaderBupati = () => {
               notifications.map((notif) => (
                 <Dropdown.Item
                   key={notif.id}
-                  onClick={() => markAsRead(notif.id, notif.link)}
                   className="flex flex-col items-start px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <p className="text-sm font-medium">{notif.message}</p>
@@ -192,18 +172,28 @@ const HeaderBupati = () => {
           <Dropdown.Item as={Link} href="/bupati-portal/laporan-warga" icon={HiOutlineClipboardCheck}>
             Daftar Laporan
           </Dropdown.Item>
-          {/* <Dropdown.Item as={Link} href="/bupati-portal/statistik" icon={HiOutlineChartSquareBar}>
-            Statistik
-          </Dropdown.Item> */}
-          {/* <Dropdown.Item as={Link} href="/bupati-portal/pengaturan" icon={HiOutlineCog}>
-            Pengaturan
-          </Dropdown.Item> */}
           <Dropdown.Divider />
           <Dropdown.Item icon={HiOutlineLogout} onClick={() => setOpenModal(true)} className="text-red-600">
             Logout
           </Dropdown.Item>
         </Dropdown>
       </div>
+
+      {/* ✅ MODAL KONFIRMASI LOGOUT */}
+      <Modal show={openModal} onClose={() => setOpenModal(false)} size="md">
+        <Modal.Header>Konfirmasi Logout</Modal.Header>
+        <Modal.Body>
+          <p className="text-gray-600 dark:text-gray-300">Apakah Anda yakin ingin logout?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color="failure" onClick={handleLogout}>
+            Ya, Logout
+          </Button>
+          <Button color="gray" onClick={() => setOpenModal(false)}>
+            Batal
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </nav>
   );
 };

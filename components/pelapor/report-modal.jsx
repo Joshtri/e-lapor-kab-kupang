@@ -90,10 +90,9 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
             >
               <option value="">Pilih Kategori</option>
               <option value="INFRASTRUKTUR">Infrastruktur</option>
-              <option value="PELAYANAN_PUBLIK">Pelayanan Publik</option>
+              <option value="PELAYANAN">Pelayanan Publik</option>
               <option value="SOSIAL">Permasalahan Sosial</option>
-              <option value="KEAMANAN">Keamanan</option>
-              <option value="LAINNYA">Lainnya</option>
+               <option value="LAINNYA">Lainnya</option>
             </Select>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Pilih kategori yang sesuai dengan laporan Anda.
