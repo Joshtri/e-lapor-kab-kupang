@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Button, Spinner } from "flowbite-react";
-import { HiOutlinePlus } from "react-icons/hi";
-import { toast } from "sonner";
-import CreateUserModal from "@/components/admin/users/users-create-modal";
 import UserFilterBar from "@/components/admin/users/user-filter-bar";
 import UserGrid from "@/components/admin/users/user-grid-view";
 import UserTable from "@/components/admin/users/user-table-view";
+import CreateUserModal from "@/components/admin/users/users-create-modal";
+import PageHeader from "@/components/ui/page-header";
+import axios from "axios";
+import { Button, Spinner } from "flowbite-react";
+import { useEffect, useState } from "react";
+import { HiOutlinePlus } from "react-icons/hi";
+import { toast } from "sonner";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -46,11 +47,26 @@ export default function UserList() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-full mx-auto p-4 space-y-6">
+      <PageHeader
+        showBackButton={false}
+        title="Manajemen Users"
+        showSearch={true}
+        breadcrumbsProps={{
+          home: { label: "Beranda", href: "/adm/dashboard" },
+
+          customRoutes: {
+            adm: { label: "Dashboard Admin", href: "/adm/dashboard" },
+          },
+        }}
+      />
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Manajemen Users
-        </h1>
+        <UserFilterBar
+          filterRole={filterRole}
+          setFilterRole={setFilterRole}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+        />
         <Button
           color="blue"
           onClick={() => setOpenModal(true)}
@@ -59,13 +75,6 @@ export default function UserList() {
           Tambah User
         </Button>
       </div>
-
-      <UserFilterBar
-        filterRole={filterRole}
-        setFilterRole={setFilterRole}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-      />
 
       {filteredUsers.length === 0 ? (
         <p className="text-gray-600 dark:text-gray-400">
