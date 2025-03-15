@@ -2,15 +2,19 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { HiArrowLeft, HiSearch, HiX } from "react-icons/hi";
+import { HiArrowLeft, HiOutlineRefresh, HiRefresh, HiSearch, HiX } from "react-icons/hi";
 import Breadcrumbs from "@/components/ui/breadcrumbs";
+import { Button, Tooltip } from "flowbite-react";
 
 export default function PageHeader({
   title,
   backHref = "/",
   showSearch = false,
+  showBackButton = true,
+  showRefreshButton = false,
   searchQuery = "",
   onSearchChange = () => {},
+  onRefreshClick = () => {}, // Handler untuk refresh
   breadcrumbsProps = {},
 }) {
   const [showSearchBar, setShowSearchBar] = useState(false);
@@ -24,14 +28,29 @@ export default function PageHeader({
 
   return (
     <section className="mb-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-        <Link
-          href={backHref}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-        >
-          <HiArrowLeft className="w-4 h-4" />
-          Kembali
-        </Link>
+      {/* className="flex flex-wrap items-center justify-between gap-4 mb-4" */}
+      <div
+        className={`flex flex-wrap items-center gap-4 mb-4 ${showBackButton  ? "justify-between" : "justify-end"}`}
+      >
+        {showBackButton && (
+          <Link
+            href={backHref}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+          >
+            <HiArrowLeft className="w-4 h-4" />
+            Kembali
+          </Link>
+        )}
+
+      <div className="flex items-center gap-2">
+        {/* Tombol Refresh (Opsional) */}
+        {showRefreshButton && (
+          <Tooltip content="Refresh" position="bottom">
+            <Button color="blue" size="sm" onClick={onRefreshClick} icon={HiOutlineRefresh}>
+              <HiRefresh className="w-4 h-4"/>
+            </Button>
+          </Tooltip>
+        )}
 
         {showSearch &&
           (showSearchBar ? (
@@ -60,6 +79,7 @@ export default function PageHeader({
               Cari
             </button>
           ))}
+        </div>
       </div>
 
       <Breadcrumbs {...breadcrumbsProps} />
