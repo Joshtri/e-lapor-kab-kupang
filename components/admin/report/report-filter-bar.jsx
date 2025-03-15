@@ -13,6 +13,7 @@ export default function ReportFilterBar({
   setViewMode,
   createButtonLabel,
   onCreateClick,
+  showCreateButton,
 }) {
   return (
     <div className="flex flex-wrap items-center w-full gap-4">
@@ -82,12 +83,14 @@ export default function ReportFilterBar({
       </div>
 
       {/* 🔹 Create Button DIPOSISIKAN DI END */}
-      <div className="ml-auto">
-        <Button color="blue" onClick={onCreateClick}>
-          <HiPlus className="mr-2" />
-          {createButtonLabel}
-        </Button>
-      </div>
+      {showCreateButton  & (
+        <div className="ml-auto">
+          <Button color="blue" onClick={onCreateClick}>
+            <HiPlus className="mr-2" />
+            {createButtonLabel}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

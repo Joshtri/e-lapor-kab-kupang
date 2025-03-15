@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Spinner, Modal } from "flowbite-react";
-import { toast } from "sonner";
 import ReportFilterBar from "@/components/admin/report/report-filter-bar";
-import ReportGrid from "@/components/admin/report/report-grid-view";
-import ReportTable from "@/components/admin/report/report-table-view";
+import ReportGrid from "@/components/bupati/report/report-grid-view";
+import ReportTable from "@/components/bupati/report/report-table-view";
 import PageHeader from "@/components/ui/page-header";
-import ReportModal from "./report-create";
+import axios from "axios";
+import { Spinner } from "flowbite-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import ReportModal from "@/components/admin/report/report-create";
 
 export default function ReportList() {
   const [reports, setReports] = useState([]);
@@ -16,7 +16,7 @@ export default function ReportList() {
   const [viewMode, setViewMode] = useState("table");
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [filterPriority, setFilterPriority] = useState("ALL");
-  const [openModal, setOpenModal] = useState(false); // ✅ State untuk modal
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     fetchReports();
@@ -36,10 +36,8 @@ export default function ReportList() {
   };
 
   const filteredReports = reports.filter((report) => {
-    const statusMatch =
-      filterStatus === "ALL" || report.status === filterStatus;
-    const priorityMatch =
-      filterPriority === "ALL" || report.priority === filterPriority;
+    const statusMatch = filterStatus === "ALL" || report.status === filterStatus;
+    const priorityMatch = filterPriority === "ALL" || report.priority === filterPriority;
     return statusMatch && priorityMatch;
   });
 
@@ -74,8 +72,7 @@ export default function ReportList() {
           setFilterPriority={setFilterPriority}
           viewMode={viewMode}
           setViewMode={setViewMode}
-          createButtonLabel="Buat Laporan"
-          onCreateClick={() => setOpenModal(true)} // ✅ Buka modal saat klik tombol
+          showCreateButton={false}
         />
       </div>
 
@@ -90,7 +87,6 @@ export default function ReportList() {
       )}
 
       <ReportModal openModal={openModal} setOpenModal={setOpenModal} />
- 
     </div>
   );
 }

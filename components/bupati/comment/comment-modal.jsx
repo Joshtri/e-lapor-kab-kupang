@@ -9,10 +9,27 @@ const CommentModal = ({ open, setOpen, reportId }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState("");
+  const [userId, setUserId] = useState(null); // ID user yang login
+  const [isBupati, setIsBupati] = useState(false); // Pastikan hanya Bupati yang bisa komentar
 
   useEffect(() => {
-    if (open) fetchComments();
+    if (open) {
+      fetchUser();
+      fetchComments();
+    }
   }, [open]);
+
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get("/api/auth/me");
+      console.log(res);
+      setUserId(res.data.user.id);
+      setIsBupati(res.data.user.role === "BUPATI"); // Pastikan user adalah Bupati
+    } catch (error) {
+      console.error("Gagal mengambil user:", error);
+      toast.error("Gagal mengambil informasi user.");
+    }
+  };
 
   const fetchComments = async () => {
     setLoading(true);
@@ -29,10 +46,14 @@ const CommentModal = ({ open, setOpen, reportId }) => {
 
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
+    if (!userId) {
+      toast.error("User tidak ditemukan.");
+      return;
+    }
 
     try {
       await axios.post(`/api/reports/${reportId}/comments`, {
-        userId: 1, // Ganti dengan ID user aktif
+        userId, // Gunakan userId dari API /auth/me
         comment: newComment,
       });
       toast.success("Komentar ditambahkan!");
@@ -74,17 +95,27 @@ const CommentModal = ({ open, setOpen, reportId }) => {
             ))}
           </div>
         )}
-        <div className="mt-4">
-          <Textarea
-            placeholder="Tulis komentar..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            rows={3}
-          />
-          <Button className="mt-2" onClick={handleAddComment}>
-            Kirim Komentar
-          </Button>
-        </div>
+
+        {/* Form komentar hanya tampil jika user adalah Bupati */}
+        {isBupati && (
+          <div className="mt-4">
+            <Textarea
+              placeholder="Tulis komentar..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              rows={3}
+            />
+            <Button className="mt-2" onClick={handleAddComment}>
+              Kirim Komentar
+            </Button>
+          </div>
+        )}
+
+        {!isBupati && (
+          <p className="text-red-500 text-sm mt-4">
+            Hanya Bupati yang dapat memberikan komentar pada laporan ini.
+          </p>
+        )}
       </Modal.Body>
     </Modal>
   );

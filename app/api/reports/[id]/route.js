@@ -23,6 +23,7 @@ export async function GET(req, { params }) {
     return NextResponse.json({
       id: report.id,
       title: report.title,
+      priority: report.priority,
       description: report.description,
       pelapor: report.user?.name || "Tidak diketahui",
       kategori: report.category,

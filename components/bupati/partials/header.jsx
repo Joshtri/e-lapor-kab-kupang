@@ -1,20 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  Navbar,
-  Button,
-  Dropdown,
-  Avatar,
-  Modal,
-  NavbarLink,
-} from "flowbite-react";
+import React, { useEffect, useState } from "react";
+import { Button, Modal, Dropdown, Avatar, Spinner } from "flowbite-react";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import {
+  HiOutlineBell,
   HiOutlineUserCircle,
   HiOutlineLogout,
   HiOutlineHome,
   HiOutlineClipboardCheck,
+  HiOutlineChartSquareBar,
+  HiOutlineCog,
+  HiOutlineMenu,
 } from "react-icons/hi";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -22,21 +19,61 @@ import axios from "axios";
 import { toast } from "sonner";
 import Link from "next/link";
 
-const HeaderBupati = ({ user }) => {
+const HeaderBupati = () => {
   const { theme, setTheme } = useTheme();
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [notifications, setNotifications] = useState([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get("/api/auth/me");
+        if (response.status === 200) {
+          setUser(response.data.user);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data user:", error);
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get("/api/notifications");
+        setNotifications(response.data);
+      } catch (error) {
+        console.error("Gagal mengambil notifikasi:", error);
+      } finally {
+        setLoadingNotifications(false);
+      }
+    };
+
+    fetchUser();
+    fetchNotifications();
+  }, []);
+
+  const markAsRead = async (notifId, link) => {
+    try {
+      await axios.patch(`/api/notifications/${notifId}/read`);
+      setNotifications(notifications.filter((n) => n.id !== notifId));
+      if (link) router.push(link);
+    } catch (error) {
+      console.error("Gagal menandai notifikasi:", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
-      await axios.post("/api/auth/logout", null, {
-        withCredentials: true, // ✅ Penting kalau axios global butuh kirim cookie
-      });
-      toast.success("Berhasil logout! Mengarahkan ke halaman utama...");
-  
-      setTimeout(() => {
-        router.push("/auth/login"); // ✅ Lebih baik langsung ke login, bukan ke "/" kalau ini logout user
-      }, 1500); // Sedikit lebih cepat, biar UX makin smooth
+      await axios.post("/api/auth/logout");
+      toast.success("Berhasil logout! Mengarahkan ke login...");
+      setTimeout(() => router.push("/auth/login"), 1500);
     } catch (error) {
       console.error("Logout Error:", error);
       toast.error("Gagal logout. Silakan coba lagi.");
@@ -44,115 +81,130 @@ const HeaderBupati = ({ user }) => {
   };
 
   return (
-    <Navbar
-      fluid
-      rounded
-      className="py-4 px-6 bg-white dark:bg-gray-800 shadow-lg fixed w-full z-40 top-0"
-    >
-      {/* Brand Logo */}
-      <Navbar.Brand href="/bupati-portal/dashboard">
-        <HiOutlineHome className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-        <span className="text-2xl font-bold text-gray-800 dark:text-gray-200 ml-2">
-          Dashboard Bupati
-        </span>
-      </Navbar.Brand>
+    <nav className="fixed top-0 w-full z-40 bg-white dark:bg-gray-800 shadow-lg py-4 px-6 flex justify-between items-center">
+      {/* Kiri: Logo & Navigasi */}
+      <div className="flex items-center gap-4">
+        <Link href="/bupati-portal/dashboard" className="flex items-center gap-2">
+          <HiOutlineHome className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+          <span className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+            Dashboard Bupati
+          </span>
+        </Link>
+      </div>
 
-      {/* Menu Navigasi */}
-      <Navbar.Collapse>
-        <NavbarLink
-          as={Link}
-          href="/bupati-portal/laporan"
-          className="text-gray-800 dark:text-gray-200 hover:text-blue-500"
-        >
+      {/* MENU NAVIGASI (Hanya Muncul di Desktop) */}
+      <div className="hidden md:flex gap-8 text-gray-700 dark:text-gray-300">
+        <Link href="/bupati-portal/dashboard" className="hover:text-blue-500">
+          Dashboard
+        </Link>
+        <Link href="/bupati-portal/laporan-warga" className="hover:text-blue-500">
           Daftar Laporan
-        </NavbarLink>
-        <NavbarLink
-          as={Link}
-          href="/bupati-portal/statistik"
-          className="text-gray-800 dark:text-gray-200 hover:text-blue-500"
-        >
+        </Link>
+        {/* <Link href="/bupati-portal/statistik" className="hover:text-blue-500">
           Statistik
-        </NavbarLink>
-      </Navbar.Collapse>
+        </Link>
+        <Link href="/bupati-portal/pengaturan" className="hover:text-blue-500">
+          Pengaturan
+        </Link> */}
+      </div>
 
-      {/* Aksi Kanan */}
-      <div className="flex md:order-2 items-center space-x-3">
-        {/* Tombol Dark Mode */}
+      {/* Kanan: Dark Mode, Notifikasi, Profil */}
+      <div className="flex items-center gap-4">
+        {/* 🌗 Dark Mode Toggle */}
         <button
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition-all hover:bg-gray-300 dark:hover:bg-gray-600"
           aria-label="Toggle Dark Mode"
         >
-          {theme === "light" ? (
-            <BsMoonStarsFill className="text-gray-700 dark:text-gray-300 text-lg" />
-          ) : (
-            <BsSunFill className="text-yellow-400 text-lg" />
-          )}
+          {theme === "light" ? <BsMoonStarsFill className="text-lg" /> : <BsSunFill className="text-lg text-yellow-400" />}
         </button>
 
-        {/* Dropdown Profil */}
+        {/* 🔔 Notifikasi */}
+        <Dropdown
+          arrowIcon={false}
+          inline
+          label={
+            <div className="relative">
+              <HiOutlineBell className="h-6 w-6 text-gray-700 dark:text-gray-300 cursor-pointer" />
+              {notifications.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
+                  {notifications.length}
+                </span>
+              )}
+            </div>
+          }
+        >
+          <Dropdown.Header>
+            <span className="text-sm font-semibold">Notifikasi</span>
+          </Dropdown.Header>
+
+          <div className="w-80 max-w-xs max-h-96 overflow-y-auto">
+            {loadingNotifications ? (
+              <p className="text-center text-gray-500 py-2">Memuat notifikasi...</p>
+            ) : notifications.length === 0 ? (
+              <p className="text-center text-gray-500 py-2">Belum ada notifikasi</p>
+            ) : (
+              notifications.map((notif) => (
+                <Dropdown.Item
+                  key={notif.id}
+                  onClick={() => markAsRead(notif.id, notif.link)}
+                  className="flex flex-col items-start px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <p className="text-sm font-medium">{notif.message}</p>
+                  <span className="text-xs text-gray-500">
+                    {new Date(notif.createdAt).toLocaleString()}
+                  </span>
+                </Dropdown.Item>
+              ))
+            )}
+          </div>
+        </Dropdown>
+
+        {/* 👤 Avatar & Dropdown Profil */}
         <Dropdown
           arrowIcon={false}
           inline
           label={
             <Avatar
               alt="User"
-              img="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgYXJpYS1sYWJlbD0ieHhsYXJnZSI+CiAgICA8Zz4KICAgICAgICA8Y2lyY2xlIGN4PSI2NCIgY3k9IjY0IiByPSI2NCIgZmlsbD0iIzg5OTNhNCIgLz4KICAgICAgICA8Zz4KICAgICAgICAgICAgPHBhdGggZmlsbD0iI2ZmZiIKICAgICAgICAgICAgICAgIGQ9Ik0xMDMsMTAyLjEzODggQzkzLjA5NCwxMTEuOTIgNzkuMzUwNCwxMTggNjQuMTYzOCwxMTggQzQ4LjgwNTYsMTE4IDM0LjkyOTQsMTExLjc2OCAyNSwxMDEuNzg5MiBMMjUsOTUuMiBDMjUsODYuODA5NiAzMS45ODEsODAgNDAuNiw4MCBMODcuNCw4MCBDOTYuMDE5LDgwIDEwMyw4Ni44MDk2IDEwMyw5NS4yIEwxMDMsMTAyLjEzODggWiIgLz4KICAgICAgICAgICAgPHBhdGggZmlsbD0iI2ZmZiIKICAgICAgICAgICAgICAgIGQ9Ik02My45OTYxNjQ3LDI0IEM1MS4yOTM4MTM2LDI0IDQxLDM0LjI5MzgxMzYgNDEsNDYuOTk2MTY0NyBDNDEsNTkuNzA2MTg2NCA1MS4yOTM4MTM2LDcwIDYzLjk5NjE2NDcsNzAgQzc2LjY5ODUxNTksNzAgODcsNTkuNzA2MTg2NCA4Nyw0Ni45OTYxNjQ3IEM4NywzNC4yOTM4MTM2IDc2LjY5ODUxNTksMjQgNjMuOTk2MTY0NywyNCIgLz4KICAgICAgICA8L2c+CiAgICA8L2c+Cjwvc3ZnPgo="
+              img={`https://ui-avatars.com/api/?name=${user?.name || "Bupati"}&background=random`}
               rounded
               size="sm"
             />
           }
         >
           <Dropdown.Header>
-            <span className="block text-sm font-medium">{user?.name}</span>
-            <span className="block text-sm text-gray-500 truncate">
-              {user?.email}
-            </span>
+            {loadingUser ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <span className="block text-sm font-medium">{user?.name || "Bupati"}</span>
+                <span className="block text-sm text-gray-500 truncate">{user?.email || "bupati@email.com"}</span>
+              </>
+            )}
           </Dropdown.Header>
-          <Dropdown.Item
-            icon={HiOutlineUserCircle}
-            as={Link}
-            href="/bupati/profile"
-          >
+          <Dropdown.Item as={Link} href="/bupati-portal/dashboard" icon={HiOutlineUserCircle}>
+            Dashboard
+          </Dropdown.Item>
+          <Dropdown.Item as={Link} href="/bupati-portal/profile" icon={HiOutlineUserCircle}>
             Profil Saya
           </Dropdown.Item>
-          <Dropdown.Item
-            icon={HiOutlineClipboardCheck}
-            as={Link}
-            href="/bupati/laporan"
-          >
+          <Dropdown.Item as={Link} href="/bupati-portal/laporan-warga" icon={HiOutlineClipboardCheck}>
             Daftar Laporan
           </Dropdown.Item>
+          {/* <Dropdown.Item as={Link} href="/bupati-portal/statistik" icon={HiOutlineChartSquareBar}>
+            Statistik
+          </Dropdown.Item> */}
+          {/* <Dropdown.Item as={Link} href="/bupati-portal/pengaturan" icon={HiOutlineCog}>
+            Pengaturan
+          </Dropdown.Item> */}
           <Dropdown.Divider />
-          <Dropdown.Item
-            icon={HiOutlineLogout}
-            onClick={() => setOpenModal(true)}
-          >
+          <Dropdown.Item icon={HiOutlineLogout} onClick={() => setOpenModal(true)} className="text-red-600">
             Logout
           </Dropdown.Item>
         </Dropdown>
-
-        <Navbar.Toggle />
       </div>
-
-      {/* Modal Logout */}
-      <Modal show={openModal} onClose={() => setOpenModal(false)} size="md">
-        <Modal.Header>Konfirmasi Logout</Modal.Header>
-        <Modal.Body>
-          <p className="text-gray-600 dark:text-gray-300">
-            Apakah Anda yakin ingin logout?
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button color="failure" onClick={handleLogout}>
-            Ya, Logout
-          </Button>
-          <Button color="gray" onClick={() => setOpenModal(false)}>
-            Batal
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Navbar>
+    </nav>
   );
 };
 

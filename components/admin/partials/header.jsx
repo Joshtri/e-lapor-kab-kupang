@@ -1,10 +1,19 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Navbar, Button, Modal, Dropdown, Avatar } from "flowbite-react";
+import {
+  Navbar,
+  Button,
+  Modal,
+  Dropdown,
+  Avatar,
+  Spinner,
+} from "flowbite-react";
 import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import {
+  HiBell,
   HiDesktopComputer,
+  HiOutlineBell,
   HiOutlineLogout,
   HiOutlineMenu,
   HiOutlineUserCircle,
@@ -20,10 +29,10 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
 
-
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
-
+  const [notifications, setNotifications] = useState([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -47,6 +56,36 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
 
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get("/api/notifications");
+        setNotifications(response.data);
+      } catch (error) {
+        console.error("Gagal mengambil notifikasi:", error);
+      } finally {
+        setLoadingNotifications(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  // ✅ Fungsi untuk Menandai Notifikasi sebagai "Dibaca"
+  const markAsRead = async (notifId, link) => {
+    try {
+      await axios.patch(`/api/notifications/${notifId}/read`);
+      setNotifications(notifications.filter((n) => n.id !== notifId));
+
+      // Redirect jika ada link
+      if (link) {
+        router.push(link);
+      }
+    } catch (error) {
+      console.error("Gagal menandai notifikasi sebagai dibaca:", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -72,8 +111,10 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
     >
       <div className="flex justify-between items-center w-full">
         {/* Kiri: Menu & Judul */}
-        <div className="flex items-center space-x-8 bg-white/30 dark:bg-gray-800 backdrop-blur-md 
-        px-3 py-3 rounded-xl  border-gray-300 dark:border-gray-700 transition-all duration-300 hover:shadow-xl">
+        <div
+          className="flex items-center space-x-8 bg-white/30 dark:bg-gray-800 backdrop-blur-md 
+        px-3 py-3 rounded-xl  border-gray-300 dark:border-gray-700 transition-all duration-300 hover:shadow-xl"
+        >
           <button
             onClick={toggleSidebar}
             className="text-white dark:text-gray-100 focus:outline-none hover:bg-white/20 p-2 rounded-md transition-all"
@@ -86,7 +127,7 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
               <span className="text-xl font-bold text-gray-800 dark:text-gray-200">
                 Admin Panel
               </span>
-              <HiDesktopComputer  className="h-5 w-5 text-gray-800 dark:text-gray-300" />
+              <HiDesktopComputer className="h-5 w-5 text-gray-800 dark:text-gray-300" />
             </div>
             <span className="text-xs text-gray-800 dark:text-gray-400">
               Sistem Manajemen
@@ -94,38 +135,84 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
           </div>
         </div>
 
-
         {/* Kanan: Dark Mode, Hi Username & Avatar */}
         <div className="flex items-center space-x-6 ml-auto">
+          {/* 🔔 Notifikasi */}
+          <div className="relative">
+            {/* 🔔 Dropdown Notifikasi */}
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={
+                <div className="relative">
+                  <HiBell className="h-6 w-6 text-gray-700 dark:text-gray-300 cursor-pointer" />
+                  {notifications.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
+                      {notifications.length}
+                    </span>
+                  )}
+                </div>
+              }
+            >
+              <Dropdown.Header>
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Notifikasi
+                </span>
+              </Dropdown.Header>
+
+              {/* 💡 Atur Ukuran Dropdown */}
+              <div className="w-80 max-w-xs max-h-96 overflow-y-auto">
+                {loadingNotifications ? (
+                  <p className="text-center text-gray-500 py-2">
+                    Memuat notifikasi...
+                  </p>
+                ) : notifications.length === 0 ? (
+                  <p className="text-center text-gray-500 py-2">
+                    Belum ada notifikasi
+                  </p>
+                ) : (
+                  notifications.map((notif) => (
+                    <Dropdown.Item
+                      key={notif.id}
+                      onClick={() => markAsRead(notif.id, notif.link)}
+                      className="flex flex-col items-start px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <p className="text-sm font-medium">{notif.message}</p>
+                      <span className="text-xs text-gray-500">
+                        {new Date(notif.createdAt).toLocaleString()}
+                      </span>
+                    </Dropdown.Item>
+                  ))
+                )}
+              </div>
+            </Dropdown>
+          </div>
           {/* 🏷️ Card Wrapper */}
-          <div className="hidden md:flex items-center space-x-4 
+          <div
+            className="hidden md:flex items-center space-x-4 
             bg-gradient-to-r from-blue-400 to-indigo-500 dark:from-gray-800 dark:to-gray-900
             px-4 py-2 rounded-lg shadow-md border border-blue-600 dark:border-gray-700
             transition-all duration-300 hover:shadow-lg"
           >
-            
             {/* 👤 Hi, Username */}
             <div className="flex flex-col text-gray-800 dark:text-gray-300">
-              {loadingUser ? ( 
-                  <div className="space-y-2">
+              {loadingUser ? (
+                <div className="space-y-2">
                   {/* Skeleton untuk Hi, Username */}
                   <div className="w-28 h-4 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
                   {/* Skeleton untuk Role */}
                   <div className="w-20 h-3 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
                 </div>
-
-              ): (
+              ) : (
                 <>
-                <span className="font-medium text-base">
-                  Hi, {user?.name || "Admin"} 👋
-                </span>
-                <span className="text-sm text-gray-700 dark:text-gray-400">
-                  {user?.role || "Administrator"}
-                </span>
-              </>
-          
+                  <span className="font-medium text-base">
+                    Hi, {user?.name || "Admin"} 👋
+                  </span>
+                  <span className="text-sm text-gray-700 dark:text-gray-400">
+                    {user?.role || "Administrator"}
+                  </span>
+                </>
               )}
-
             </div>
 
             {/* 🌗 Dark Mode Toggle */}

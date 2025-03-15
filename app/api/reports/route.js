@@ -31,11 +31,31 @@ export async function GET(req) {
   }
 }
 
-// 📌 Buat Pengaduan Baru
+// 📌 Buat Pengaduan Baru & membuat notifikasi.
 export async function POST(req) {
   try {
     const data = await req.json();
+    
+    // ✅ Buat Laporan Baru
     const newReport = await prisma.report.create({ data });
+
+    // ✅ Cari semua pengguna dengan role ADMIN & BUPATI
+    const adminsAndBupati = await prisma.user.findMany({
+      where: {
+        role: { in: ["ADMIN", "BUPATI"] }, // Ambil semua Admin dan Bupati
+      },
+      select: { id: true },
+    });
+
+    // ✅ Buat Notifikasi untuk setiap Admin & Bupati
+    const notifications = adminsAndBupati.map((user) => ({
+      userId: user.id,
+      message: `Laporan baru: "${newReport.title}" telah dibuat.`,
+      link: `/adm/report/${newReport.id}`, // Redirect ke halaman detail laporan
+    }));
+
+    // ✅ Simpan notifikasi ke database
+    await prisma.notification.createMany({ data: notifications });
 
     return NextResponse.json(newReport, { status: 201 });
   } catch (error) {
@@ -68,3 +88,6 @@ export async function PUT(req) {
     );
   }
 }
+
+
+
