@@ -2,18 +2,21 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Spinner } from "flowbite-react";
-import { HiOutlineRefresh } from "react-icons/hi";
+import { Spinner, Modal } from "flowbite-react";
 import { toast } from "sonner";
 import ReportFilterBar from "@/components/admin/report/report-filter-bar";
 import ReportGrid from "@/components/admin/report/report-grid-view";
 import ReportTable from "@/components/admin/report/report-table-view";
+import PageHeader from "@/components/ui/page-header";
+import ReportModal from "./report-create";
 
 export default function ReportList() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState("table"); // Default ke table
+  const [viewMode, setViewMode] = useState("table");
   const [filterStatus, setFilterStatus] = useState("ALL");
+  const [filterPriority, setFilterPriority] = useState("ALL");
+  const [openModal, setOpenModal] = useState(false); // ✅ State untuk modal
 
   useEffect(() => {
     fetchReports();
@@ -32,9 +35,13 @@ export default function ReportList() {
     }
   };
 
-  const filteredReports = reports.filter((report) =>
-    filterStatus === "ALL" ? true : report.status === filterStatus,
-  );
+  const filteredReports = reports.filter((report) => {
+    const statusMatch =
+      filterStatus === "ALL" || report.status === filterStatus;
+    const priorityMatch =
+      filterPriority === "ALL" || report.priority === filterPriority;
+    return statusMatch && priorityMatch;
+  });
 
   if (loading) {
     return (
@@ -45,22 +52,32 @@ export default function ReportList() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Manajemen Laporan
-        </h1>
-        <Button color="blue" onClick={fetchReports} icon={HiOutlineRefresh}>
-          Refresh Data
-        </Button>
-      </div>
-
-      <ReportFilterBar
-        filterStatus={filterStatus}
-        setFilterStatus={setFilterStatus}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
+    <div className="max-w-full mx-auto p-4 space-y-6">
+      <PageHeader
+        title="Manajemen Laporan"
+        showBackButton={false}
+        showSearch
+        showRefreshButton
+        onRefreshClick={fetchReports}
+        breadcrumbsProps={{
+          home: { label: "Beranda", href: "/adm/dashboard" },
+          customRoutes: {
+            adm: { label: "Dashboard Admin", href: "/adm/dashboard" },
+          },
+        }}
       />
+      <div className="flex items-center justify-between">
+        <ReportFilterBar
+          filterStatus={filterStatus}
+          setFilterStatus={setFilterStatus}
+          filterPriority={filterPriority}
+          setFilterPriority={setFilterPriority}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          createButtonLabel="Buat Laporan"
+          onCreateClick={() => setOpenModal(true)} // ✅ Buka modal saat klik tombol
+        />
+      </div>
 
       {filteredReports.length === 0 ? (
         <p className="text-gray-600 dark:text-gray-400">
@@ -71,6 +88,18 @@ export default function ReportList() {
       ) : (
         <ReportGrid reports={filteredReports} />
       )}
+
+<ReportModal openModal={openModal} setOpenModal={setOpenModal} />
+
+
+      {/* ✅ MODAL BUAT LAPORAN */}
+      {/* ✅ MODAL BUAT LAPORAN */}
+      {/* <Modal show={openModal} onClose={() => setOpenModal(false)} size="lg">
+        <Modal.Header>Buat Laporan Baru</Modal.Header>
+        <Modal.Body>
+          <ReportModal onClose={() => setOpenModal(false)} />
+        </Modal.Body>
+      </Modal> */}
     </div>
   );
 }
