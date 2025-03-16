@@ -23,6 +23,7 @@ import { useTheme } from "next-themes";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import NotificationDropdown from "@/components/ui/notification-dropdown";
 
 const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
   const { theme, setTheme } = useTheme();
@@ -37,31 +38,23 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("/api/auth/me", {
-          validateStatus: () => true, // Agar semua status diterima
-        });
-
+        const response = await axios.get("/api/auth/me");
         if (response.status === 200) {
           setUser(response.data.user);
-        } else {
-          setUser(null);
         }
       } catch (error) {
         console.error("Gagal mengambil data user:", error);
-        setUser(null);
       } finally {
         setLoadingUser(false);
       }
     };
 
-    fetchUser();
-  }, []);
-
-  useEffect(() => {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get("/api/notifications");
-        setNotifications(response.data);
+        if (response.status === 200) {
+          setNotifications(response.data);
+        }
       } catch (error) {
         console.error("Gagal mengambil notifikasi:", error);
       } finally {
@@ -69,21 +62,29 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
       }
     };
 
+    fetchUser();
     fetchNotifications();
   }, []);
 
-  // ✅ Fungsi untuk Menandai Notifikasi sebagai "Dibaca"
-  const markAsRead = async (notifId, link) => {
-    try {
-      await axios.patch(`/api/notifications/${notifId}/read`);
-      setNotifications(notifications.filter((n) => n.id !== notifId));
+  // ✅ Filter hanya notifikasi untuk admin
+  const filteredNotifications = notifications.filter((notif) =>
+    notif.link.startsWith("/adm/"),
+  );
 
-      // Redirect jika ada link
-      if (link) {
-        router.push(link);
-      }
+  const unreadCount = filteredNotifications.filter(
+    (notif) => !notif.isRead,
+  ).length;
+
+  const handleNotificationClick = async (notif) => {
+    try {
+      await axios.post("/api/notifications/read", { notificationId: notif.id });
+      router.push(notif.link);
+
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n)),
+      );
     } catch (error) {
-      console.error("Gagal menandai notifikasi sebagai dibaca:", error);
+      console.error("Gagal memperbarui notifikasi:", error);
     }
   };
 
@@ -138,55 +139,13 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
         {/* Kanan: Dark Mode, Hi Username & Avatar */}
         <div className="flex items-center space-x-6 ml-auto">
           {/* 🔔 Notifikasi */}
-          <div className="relative">
-            {/* 🔔 Dropdown Notifikasi */}
-            <Dropdown
-              arrowIcon={false}
-              inline
-              label={
-                <div className="relative">
-                  <HiBell className="h-6 w-6 text-gray-700 dark:text-gray-300 cursor-pointer" />
-                  {notifications.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
-                      {notifications.length}
-                    </span>
-                  )}
-                </div>
-              }
-            >
-              <Dropdown.Header>
-                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                  Notifikasi
-                </span>
-              </Dropdown.Header>
+          <NotificationDropdown
+            notifications={filteredNotifications}
+            unreadCount={unreadCount}
+            handleNotificationClick={handleNotificationClick}
+            loadingNotifications={loadingNotifications}
+          />
 
-              {/* 💡 Atur Ukuran Dropdown */}
-              <div className="w-80 max-w-xs max-h-96 overflow-y-auto">
-                {loadingNotifications ? (
-                  <p className="text-center text-gray-500 py-2">
-                    Memuat notifikasi...
-                  </p>
-                ) : notifications.length === 0 ? (
-                  <p className="text-center text-gray-500 py-2">
-                    Belum ada notifikasi
-                  </p>
-                ) : (
-                  notifications.map((notif) => (
-                    <Dropdown.Item
-                      key={notif.id}
-                      onClick={() => markAsRead(notif.id, notif.link)}
-                      className="flex flex-col items-start px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                      <p className="text-sm font-medium">{notif.message}</p>
-                      <span className="text-xs text-gray-500">
-                        {new Date(notif.createdAt).toLocaleString()}
-                      </span>
-                    </Dropdown.Item>
-                  ))
-                )}
-              </div>
-            </Dropdown>
-          </div>
           {/* 🏷️ Card Wrapper */}
           <div
             className="hidden md:flex items-center space-x-4 
