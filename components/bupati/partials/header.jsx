@@ -9,7 +9,6 @@ import {
   HiOutlineLogout,
   HiOutlineHome,
   HiOutlineClipboardCheck,
-  HiOutlineMenu,
 } from "react-icons/hi";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -67,6 +66,23 @@ const HeaderBupati = () => {
     }
   };
 
+  // ✅ Hitung jumlah notifikasi yang belum dibaca
+  const unreadCount = notifications.filter((notif) => !notif.isRead).length;
+
+  // ✅ Handle klik notifikasi: redirect & update status `isRead`
+  const handleNotificationClick = async (notif) => {
+    try {
+      await axios.post("/api/notifications/read", { notificationId: notif.id });
+      router.push(notif.link);
+
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n))
+      );
+    } catch (error) {
+      console.error("Gagal memperbarui notifikasi:", error);
+    }
+  };
+
   return (
     <nav className="fixed top-0 w-full z-40 bg-white dark:bg-gray-800 shadow-lg py-4 px-6 flex justify-between items-center">
       {/* Kiri: Logo & Navigasi */}
@@ -76,16 +92,6 @@ const HeaderBupati = () => {
           <span className="text-2xl font-bold text-gray-800 dark:text-gray-200">
             Dashboard Bupati
           </span>
-        </Link>
-      </div>
-
-      {/* MENU NAVIGASI (Hanya Muncul di Desktop) */}
-      <div className="hidden md:flex gap-8 text-gray-700 dark:text-gray-300">
-        <Link href="/bupati-portal/dashboard" className="hover:text-blue-500">
-          Dashboard
-        </Link>
-        <Link href="/bupati-portal/laporan-warga" className="hover:text-blue-500">
-          Daftar Laporan
         </Link>
       </div>
 
@@ -107,9 +113,9 @@ const HeaderBupati = () => {
           label={
             <div className="relative">
               <HiOutlineBell className="h-6 w-6 text-gray-700 dark:text-gray-300 cursor-pointer" />
-              {notifications.length > 0 && (
+              {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
-                  {notifications.length}
+                  {unreadCount}
                 </span>
               )}
             </div>
@@ -128,7 +134,10 @@ const HeaderBupati = () => {
               notifications.map((notif) => (
                 <Dropdown.Item
                   key={notif.id}
-                  className="flex flex-col items-start px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className={`flex flex-col items-start px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                    notif.isRead ? "opacity-60" : ""
+                  }`}
+                  onClick={() => handleNotificationClick(notif)}
                 >
                   <p className="text-sm font-medium">{notif.message}</p>
                   <span className="text-xs text-gray-500">
@@ -158,8 +167,12 @@ const HeaderBupati = () => {
               <Spinner size="sm" />
             ) : (
               <>
-                <span className="block text-sm font-medium">{user?.name || "Bupati"}</span>
-                <span className="block text-sm text-gray-500 truncate">{user?.email || "bupati@email.com"}</span>
+                <span className="block text-sm font-medium">
+                  {user?.name || "Bupati"}
+                </span>
+                <span className="block text-sm text-gray-500 truncate">
+                  {user?.email || "bupati@email.com"}
+                </span>
               </>
             )}
           </Dropdown.Header>
@@ -173,7 +186,11 @@ const HeaderBupati = () => {
             Daftar Laporan
           </Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item icon={HiOutlineLogout} onClick={() => setOpenModal(true)} className="text-red-600">
+          <Dropdown.Item
+            icon={HiOutlineLogout}
+            onClick={() => setOpenModal(true)}
+            className="text-red-600"
+          >
             Logout
           </Dropdown.Item>
         </Dropdown>
