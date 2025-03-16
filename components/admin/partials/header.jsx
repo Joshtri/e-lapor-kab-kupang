@@ -212,7 +212,7 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
               <Dropdown.Divider />
               <Dropdown.Item
                 icon={HiOutlineUserCircle}
-                onClick={() => router.push("/admin/profile")}
+                onClick={() => router.push("/adm/profile")}
               >
                 Profil Saya
               </Dropdown.Item>

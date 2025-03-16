@@ -5,8 +5,8 @@ import { Button, Card, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiOutlineKey } from "react-icons/hi";
 import { toast } from "sonner";
-import ChangePasswordModal from "./change-password";
 import PageHeader from "../ui/page-header";
+import ChangePasswordModal from "./change-password";
 
 const ProfileManagement = () => {
   const [user, setUser] = useState(null);
@@ -47,21 +47,11 @@ const ProfileManagement = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6 mt-10">
+    <div className="max-w-7xl mx-auto p-6">
       {/* <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
         Profil Saya
       </h1> */}
-      <PageHeader
-        title={"Profil Saya"}
-        backHref="/bupati-portal/dashboard"
-        breadcrumbsProps={{
-          home: { label: "Beranda", href: "/bupati-portal/dashboard" },
-          customRoutes: {
-            "bupati-portal": { label: "Dashboard Bupati", href: "/bupati-portal/dashboard" },
 
-          },
-        }}
-      />
       <Card className="p-6 shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
         <div className="space-y-4">
           <div>
