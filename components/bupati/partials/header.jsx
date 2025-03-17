@@ -99,6 +99,19 @@ const HeaderBupati = () => {
         </Link>
       </div>
 
+
+
+      {/* 🔹 Tengah: Menu Navigasi (Desktop) */}
+      <div className="hidden md:flex items-center gap-6">
+        <Link href="/bupati-portal/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-blue-500 transition">
+          Dashboard
+        </Link>
+        <Link href="/bupati-portal/laporan-warga" className="text-gray-700 dark:text-gray-300 hover:text-blue-500 transition">
+          Laporan Warga
+        </Link>
+ 
+      </div>
+
       <div className="flex items-center gap-4">
         <button
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
@@ -145,9 +158,7 @@ const HeaderBupati = () => {
           <Dropdown.Item as={Link} href="/bupati-portal/profile" icon={HiOutlineUserCircle}>
             Profil Saya
           </Dropdown.Item>
-          <Dropdown.Item as={Link} href="/bupati-portal/laporan-warga" icon={HiOutlineClipboardCheck}>
-            Daftar Laporan
-          </Dropdown.Item>
+ 
           <Dropdown.Divider />
           <Dropdown.Item icon={HiOutlineLogout} onClick={() => setOpenModal(true)} className="text-red-600">
             Logout
