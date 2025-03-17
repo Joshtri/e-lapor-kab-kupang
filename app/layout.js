@@ -4,6 +4,7 @@ import FloatingHelper from "@/components/floating-helpers";
 import ClientThemeProvider from "@/providers/client-theme-provider";
 import { Toaster } from "sonner";
 import { UserProvider } from "@/contexts/UserContext";
+import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,6 +24,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="id" >
+      
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-r from-blue-50 to-indigo-100 min-h-screen`}
       >
@@ -30,6 +32,7 @@ export default function RootLayout({ children }) {
 
         <ClientThemeProvider>
           <Toaster position="top-right" />
+          <ScrollToTopButton />
           <FloatingHelper />
           {children}
         </ClientThemeProvider>
