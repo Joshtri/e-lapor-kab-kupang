@@ -6,6 +6,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true, // Hindari error ESLint saat build di Vercel
   },
+  images: {
+    domains: ["placehold.co"], // Tambahkan domain eksternal yang digunakan
+  },
 };
 
 export default nextConfig;

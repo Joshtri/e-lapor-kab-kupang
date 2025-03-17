@@ -8,15 +8,15 @@ datasource db {
 }
 
 model User {
-  id            Int         @id @default(autoincrement())
-  name          String      @db.VarChar(100)
-  nikNumber     String      @unique @db.VarChar(16)
-  contactNumber String      @db.VarChar(15)
-  email         String      @unique @db.VarChar(100)
-  password      String      @db.VarChar(255)
-  role          Role        @default(PELAPOR)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id            Int            @id @default(autoincrement())
+  name          String         @db.VarChar(100)
+  nikNumber     String         @unique @db.VarChar(16)
+  contactNumber String         @db.VarChar(15)
+  email         String         @unique @db.VarChar(100)
+  password      String         @db.VarChar(255)
+  role          Role           @default(PELAPOR)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   comments      Comment[]
   logs          Log[]
   reports       Report[]
@@ -29,8 +29,10 @@ model User {
 }
 
 model Report {
-  id          Int       @id @default(autoincrement())
-  userId      Int
+  id     Int @id @default(autoincrement())
+  userId Int
+  opdId  Int? // ✅ OPD yang dituju oleh laporan ini
+
   title       String    @db.VarChar(255)
   description String
   category    Category
@@ -41,6 +43,7 @@ model Report {
   comments    Comment[]
   logs        Log[]
   user        User      @relation(fields: [userId], references: [id])
+  opd         OPD?       @relation(fields: [opdId], references: [id])
 }
 
 model Comment {
@@ -49,9 +52,9 @@ model Comment {
   userId    Int
   comment   String
   createdAt DateTime @default(now())
-  
-  report    Report   @relation(fields: [reportId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+
+  report Report @relation(fields: [reportId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 model Log {
@@ -100,18 +103,37 @@ model BugReport {
 //   updatedAt DateTime @updatedAt
 // }
 
+//separate OPD model which is could be one of the user role
+model OPD {
+  id          Int    @id @default(autoincrement())
+  name        String @db.VarChar(255)
+  email       String @unique @db.VarChar(100)
+  phoneNumber String @db.VarChar(15)
+  password    String @db.VarChar(255)
+
+  staffFirstName   String  @db.VarChar(100) // Nama depan staff yang mengelola akses
+  staffMiddleName  String? @db.VarChar(100) // Nama tengah (opsional)
+  staffLastName    String  @db.VarChar(100) // Nama belakang staff
+  staffPosition    String  @db.VarChar(100) // Jabatan staff (misalnya "Ajudan", "Staff IT", dll.)
+  staffEmail       String? @unique @db.VarChar(100) // Email staff (opsional)
+  staffPhoneNumber String? @db.VarChar(15) // No. telepon staff (opsional)
+
+  reports       Report[] // ✅ Relasi ke laporan yang ditujukan ke OPD ini
+  Notifications Notification[]
+}
 
 model Notification {
   id        Int      @id @default(autoincrement())
-  userId    Int?     // ID User yang menerima notifikasi (opsional, bisa null untuk umum)
+  userId    Int? // ID User yang menerima notifikasi (opsional, bisa null untuk umum)
+  opdId     Int? // ID OPD yang menerima notifikasi (opsional, bisa null untuk umum)
   message   String   @db.VarChar(255) // Isi notifikasi
   link      String?  @db.VarChar(255) // Link tujuan jika diklik
   isRead    Boolean  @default(false) // Status apakah sudah dibaca
   createdAt DateTime @default(now())
 
-  user      User?    @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
+  opd  OPD?  @relation(fields: [opdId], references: [id]) // Relasi ke OPD yang menerima
 }
-
 
 enum Role {
   BUPATI
