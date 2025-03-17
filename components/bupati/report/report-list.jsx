@@ -58,7 +58,8 @@ export default function ReportList() {
         showRefreshButton
         onRefreshClick={fetchReports}
         breadcrumbsProps={{
-          home: { label: "Beranda", href: "/adm/dashboard" },
+          home: { label: "Beranda", href: "/bupati-portal/dashboard" },
+          "bupati-portal": { label: "Bupati Portal", href: "/bupati-portal/dashboard" },
           customRoutes: {
             adm: { label: "Dashboard Admin", href: "/adm/dashboard" },
           },
