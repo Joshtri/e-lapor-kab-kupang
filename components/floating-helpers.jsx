@@ -2,6 +2,7 @@
 
 import { Button, Modal } from "flowbite-react";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { HiOutlineQuestionMarkCircle } from "react-icons/hi";
 
 export default function FloatingHelper() {
@@ -10,18 +11,22 @@ export default function FloatingHelper() {
   return (
     <>
       {/* Floating Button */}
-      <div className="fixed bottom-8 right-8 z-50">
-        <Button
-          gradientDuoTone="greenToBlue"
-          pill
-          size="lg"
+      <motion.div
+      className="fixed bottom-8 right-6 z-50"
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1 , scale: 1}}
+      transition={{ duration: 0.3 }}
+    >
+        <motion.button
+          gradientduotone="greenToBlue"
+
+          whileHover={{ scale: 1.1, rotate: 10 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => setOpenModal(true)}
-          className="shadow-lg hover:shadow-xl transition-shadow duration-300"
-        >
-          <HiOutlineQuestionMarkCircle className="mr-2 h-5 w-5" />
-          Alur Pengaduan
-        </Button>
-      </div>
+          className="p-3 rounded-full bg-purple-500 text-white shadow-lg hover:bg-purple-700 transition-all duration-300"        >
+          <HiOutlineQuestionMarkCircle className="h-6 w-6" />
+        </motion.button>
+      </motion.div>
 
       {/* Modal */}
       <Modal show={openModal} onClose={() => setOpenModal(false)} size="xl">
@@ -109,7 +114,7 @@ export default function FloatingHelper() {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            gradientDuoTone="blueToGreen"
+            gradientduotone="blueToGreen"
             onClick={() => setOpenModal(false)}
           >
             Saya Mengerti
