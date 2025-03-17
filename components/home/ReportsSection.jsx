@@ -56,7 +56,7 @@ export default function ReportsSection() {
               className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md"
             >
               <div className="h-48 bg-gray-200 dark:bg-gray-700 relative">
-                <Image src="https://placehold.co/600x400" alt={report.title} fill className="object-cover" />
+                <Image src="https://placehold.co/600x400" alt={report.title} fill className="object-cover"  dangerouslyAllowSVG={true}/>
                 <div className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
                   {report.status}
                 </div>

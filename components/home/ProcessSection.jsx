@@ -13,7 +13,8 @@ export default function ProcessSection() {
   const processRef = useRef(null);
   const [activeStep, setActiveStep] = useState(0);
   const [isScrollingLocked, setIsScrollingLocked] = useState(false);
-  const [hasAnimated, setHasAnimated] = useState(false); // ✅ Cegah animasi ulang
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const processSteps = [
     { title: "Buat Laporan", description: "Daftarkan diri dan buat laporan dengan detail yang jelas.", icon: HiOutlineDocumentReport, color: "blue" },
@@ -22,16 +23,28 @@ export default function ProcessSection() {
     { title: "Penyelesaian", description: "Laporan diselesaikan dan Anda mendapat notifikasi.", icon: HiOutlineCheckCircle, color: "green" },
   ];
 
+  // ✅ Deteksi apakah user sedang di mobile
   useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // Mobile jika < 768px
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return; // ❌ Jangan jalankan animasi jika di mobile
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
-          setIsScrollingLocked(true); // 🔒 Kunci scroll hanya saat elemen masuk
+          setIsScrollingLocked(true);
           setActiveStep(1);
-          setHasAnimated(true); // ✅ Mencegah animasi terulang saat scroll ke atas
+          setHasAnimated(true);
         }
       },
-      { threshold: 0.9 } // ✅ Pastikan elemen terlihat sepenuhnya sebelum trigger animasi
+      { threshold: 0.9 }
     );
 
     if (processRef.current) {
@@ -39,7 +52,7 @@ export default function ProcessSection() {
     }
 
     return () => observer.disconnect();
-  }, [hasAnimated]);
+  }, [hasAnimated, isMobile]);
 
   useEffect(() => {
     if (isScrollingLocked) {
@@ -54,6 +67,8 @@ export default function ProcessSection() {
   }, [isScrollingLocked]);
 
   useEffect(() => {
+    if (isMobile) return; // ❌ Jangan jalankan animasi jika di mobile
+
     if (activeStep > 0 && activeStep < processSteps.length) {
       const timer = setTimeout(() => {
         setActiveStep((prev) => prev + 1);
@@ -67,7 +82,7 @@ export default function ProcessSection() {
         setIsScrollingLocked(false);
       }, 800);
     }
-  }, [activeStep]);
+  }, [activeStep, isMobile]);
 
   return (
     <div id="process-section" ref={processRef} className="py-20 bg-gray-50 dark:bg-gray-800 relative">
@@ -88,21 +103,23 @@ export default function ProcessSection() {
         </motion.div>
 
         {/* Garis Tengah Horizontal Animasi */}
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: activeStep === processSteps.length ? "100%" : `${(activeStep / processSteps.length) * 100}%` }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
-          className="absolute top-[67%] left-0 right-0 mx-auto h-[4px] bg-blue-500 dark:bg-blue-600 z-0"
-          style={{ maxWidth: "60%", transform: "translateY(-50%)" }}
-        ></motion.div>
+        {!isMobile && (
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: activeStep === processSteps.length ? "100%" : `${(activeStep / processSteps.length) * 100}%` }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute top-[67%] left-0 right-0 mx-auto h-[4px] bg-blue-500 dark:bg-blue-600 z-0"
+            style={{ maxWidth: "60%", transform: "translateY(-50%)" }}
+          ></motion.div>
+        )}
 
         {/* Steps */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 relative z-10">
           {processSteps.map((step, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, scale: 0.8, y: 50 }}
-              animate={activeStep > index ? { opacity: 1, scale: 1, y: 0 } : {}}
+              initial={isMobile ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 50 }}
+              animate={isMobile || activeStep > index ? { opacity: 1, scale: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: index * 0.2, type: "spring", stiffness: 100 }}
               className="relative"
             >
@@ -112,8 +129,8 @@ export default function ProcessSection() {
               >
                 {/* Icon dengan efek putaran saat muncul */}
                 <motion.div
-                  initial={{ rotate: 0 }}
-                  animate={activeStep > index ? { rotate: 360 } : {}}
+                  initial={isMobile ? {} : { rotate: 0 }}
+                  animate={isMobile || activeStep > index ? { rotate: 360 } : {}}
                   transition={{ duration: 0.8, ease: "easeInOut" }}
                   className={`flex items-center justify-center w-16 h-16 rounded-full bg-${step.color}-100 dark:bg-${step.color}-900 text-${step.color}-600 dark:text-${step.color}-300 mx-auto mb-4`}
                 >
