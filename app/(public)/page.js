@@ -99,7 +99,7 @@ export default function Home() {
                   </div>
                   <div className="w-full mt-6">
                     <Button
-                      gradientDuoTone="greenToBlue"
+                      gradientduotone="greenToBlue"
                       size="lg"
                       className="w-full"
                       onClick={() => setOpenModal(true)}
@@ -115,7 +115,7 @@ export default function Home() {
                 <Modal.Body>
                   <div className="flex flex-col gap-4">
                     <Button
-                      gradientDuoTone="greenToBlue"
+                      gradientduotone="greenToBlue"
                       size="lg"
                       onClick={() => {
                         const message = encodeURIComponent(
@@ -131,7 +131,7 @@ export default function Home() {
                     </Button>
 
                     <Button
-                      gradientDuoTone="purpleToPink"
+                      gradientduotone="purpleToPink"
                       size="lg"
                       onClick={() => {
                         const message = encodeURIComponent(
