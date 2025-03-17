@@ -1,47 +1,45 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { TextInput, Button, Label } from "flowbite-react";
 import { toast } from "sonner";
 import axios from "axios";
 import PageHeader from "@/components/ui/page-header";
 
 export default function OPDForm({ onSuccess }) {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
-    wilayah: "",
     email: "",
-    phoneNumber: "",
-    kepalaOpdName: "",
-    kepalaOpdNIP: "",
-    kepalaOpdEmail: "",
-    kepalaOpdPhone: "",
+    password: "",
   });
 
   const handleSubmit = async () => {
     try {
-      await axios.post("/api/opd", form);
-      toast.success("OPD berhasil ditambahkan!");
+      await axios.post("/api/opd/create", form);
+      toast.success("✅ OPD berhasil ditambahkan!");
+      
+      // Reset form setelah berhasil
       setForm({
         name: "",
-        wilayah: "",
         email: "",
-        phoneNumber: "",
-        kepalaOpdName: "",
-        kepalaOpdNIP: "",
-        kepalaOpdEmail: "",
-        kepalaOpdPhone: "",
+        password: "",
       });
+
+      // Redirect langsung setelah sukses
+      router.push("/adm/org-perangkat-daerah");
+
       if (onSuccess) onSuccess();
     } catch (error) {
-      toast.error("Gagal menambahkan OPD.");
+      toast.error(error.response?.data?.error || "❌ Gagal menambahkan OPD.");
     }
   };
 
   return (
     <>
       <PageHeader
-        title={"Tambah OPD"}
+        title="Tambah OPD"
         backHref="/adm/org-perangkat-daerah"
         breadcrumbsProps={{
           home: { label: "Beranda", href: "/adm/dashboard" },
@@ -67,24 +65,24 @@ export default function OPDForm({ onSuccess }) {
         </div>
 
         <div>
-          <Label htmlFor="wilayah" value="Wilayah" />
+          <Label htmlFor="email" value="Email OPD" />
           <TextInput
-            id="wilayah"
-            placeholder="Wilayah OPD"
-            value={form.wilayah}
-            onChange={(e) => setForm({ ...form, wilayah: e.target.value })}
+            id="email"
+            type="email"
+            placeholder="Email OPD"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
         </div>
 
         <div>
-          <Label htmlFor="kepalaOpdName" value="Nama Kepala OPD" />
+          <Label htmlFor="password" value="Password OPD" />
           <TextInput
-            id="kepalaOpdName"
-            placeholder="Nama Kepala OPD"
-            value={form.kepalaOpdName}
-            onChange={(e) =>
-              setForm({ ...form, kepalaOpdName: e.target.value })
-            }
+            id="password"
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
         </div>
 
