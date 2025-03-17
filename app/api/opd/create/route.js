@@ -1,6 +1,6 @@
 import { getSession } from "@/lib/auth"; // Pastikan Anda memiliki middleware auth
 import { prisma } from "@/lib/prisma"; // Pastikan path sesuai dengan setup Prisma
-import { hash } from "bcryptjs";
+import { hash } from "bcrypt";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
