@@ -4,8 +4,7 @@ import prisma from "@/lib/prisma";
 export async function GET(req) {
   try {
     const notifications = await prisma.notification.findMany({
-      where: { isRead: false }, // Ambil hanya notifikasi yang belum dibaca
-      orderBy: { createdAt: "desc" },
+       orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json(notifications, { status: 200 });
