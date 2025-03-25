@@ -10,12 +10,16 @@ import ReportTable from '@/components/admin/report/ReportTableView';
 import PageHeader from '@/components/ui/page-header';
 import ReportCreateModal from './ReportCreateModal';
 import { HiOutlinePlus } from 'react-icons/hi';
+import EmptyState from '@/components/ui/empty-state';
+import { exportToExcel } from '@/utils/export/exportToExcel';
 
 export default function ReportList() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('table');
   const [filterStatus, setFilterStatus] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState(''); // ✅ NEW
+
   const [filterPriority, setFilterPriority] = useState('ALL');
   const [openModal, setOpenModal] = useState(false); // ✅ State untuk modal
 
@@ -36,12 +40,64 @@ export default function ReportList() {
     }
   };
 
+  const handleExportExcel = () => {
+    const exportData = filteredUsers.map((report) => ({
+      Title: report.title,
+      Description: report.description,
+      Category: report.category,
+      Priority: report.priority,
+      BupatiStatus: report.bupatiStatus,
+      OpdStatus: report.opdStatus,
+      UserName: report.user?.name, //Mengganti key dengan yang lebih spesifik
+      OpdName: report.opd?.name, //Mengganti key dengan yang lebih spesifik
+      CreatedAt: report.createdAt,
+    }));
+
+    exportToExcel({
+      data: exportData,
+      columns: [
+        { header: 'Judul', key: 'Title' },
+        { header: 'Deskripsi', key: 'Description' },
+        { header: 'Kategori', key: 'Category' },
+        { header: 'Prioritas', key: 'Priority' },
+        { header: 'Status Bupati', key: 'BupatiStatus' },
+        { header: 'Status OPD', key: 'OpdStatus' },
+        { header: 'Nama Pengguna', key: 'UserName' }, // Mengganti header dan key sesuai dengan data
+        { header: 'Nama OPD', key: 'OpdName' }, // Mengganti header dan key sesuai dengan data
+        { header: 'Tanggal Dibuat', key: 'CreatedAt' },
+      ],
+      filename: 'data_laporan', // Mengganti nama file sesuai dengan data
+    });
+  };
+
+  const handleResetFilter = () => {
+    setFilterStatus('ALL');
+    setFilterPriority('ALL');
+    setSearchQuery('');
+  };
+
   const filteredReports = reports.filter((report) => {
     const bupatiMatch =
       filterStatus === 'ALL' || report.bupatiStatus === filterStatus;
     const opdMatch =
       filterPriority === 'ALL' || report.opdStatus === filterPriority;
-    return bupatiMatch && opdMatch;
+
+    const searchMatch = [
+      report.title,
+      report.description,
+      report.category,
+      report.priority,
+      report.bupatiStatus,
+      report.opdStatus,
+      report.user?.name,
+      report.opd?.name,
+      report.createdAt,
+    ]
+      .join(' ')
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    return bupatiMatch && opdMatch && searchMatch;
   });
 
   if (loading) {
@@ -58,6 +114,9 @@ export default function ReportList() {
         title="Manajemen Laporan"
         showBackButton={false}
         showSearch
+        searchQuery={searchQuery} // ✅ linked
+        onSearchChange={(val) => setSearchQuery(val)} // ✅ ADD THIS LINE
+        onExportExcel={handleExportExcel}
         showRefreshButton
         onRefreshClick={fetchReports}
         breadcrumbsProps={{
@@ -89,9 +148,15 @@ export default function ReportList() {
       </div>
 
       {filteredReports.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400">
-          Tidak ada laporan dengan filter ini.
-        </p>
+        <EmptyState message="Tidak ada laporan yang cocok dengan filter saat ini.">
+          <p className="text-sm">
+            Coba ubah filter status, prioritas, atau gunakan kata kunci yang
+            berbeda.
+          </p>
+          <Button color="gray" onClick={handleResetFilter}>
+            Reset Filter
+          </Button>
+        </EmptyState>
       ) : viewMode === 'table' ? (
         <ReportTable reports={filteredReports} />
       ) : (
