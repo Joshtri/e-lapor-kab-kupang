@@ -10,7 +10,7 @@ import {
   MdOutlineHistoryEdu,
   MdOutlineSettings,
 } from "react-icons/md";
-import { HiOutlineClipboardCheck, HiOutlineUserGroup } from "react-icons/hi";
+import { HiChat, HiOutlineClipboardCheck, HiOutlineUserGroup } from "react-icons/hi";
 import { AiOutlineFileSearch } from "react-icons/ai";
 
 const OpdSidebar = ({ isSidebarOpen, toggleSidebar }) => {
@@ -63,6 +63,7 @@ const OpdSidebar = ({ isSidebarOpen, toggleSidebar }) => {
               {isSidebarOpen && "Kelola Pengaduan"}
             </Link>
           </li>
+
           {/* <li>
             <Link href="/opd/users" className={navLinkClass("/opd/users")}>
               <HiOutlineUserGroup />
@@ -84,6 +85,16 @@ const OpdSidebar = ({ isSidebarOpen, toggleSidebar }) => {
             >
               <MdOutlineHistoryEdu />
               {isSidebarOpen && "Riwayat Pengaduan"}
+            </Link>
+          </li>
+          
+          <li>
+            <Link
+              href="/opd/respon-pengaduan"
+              className={navLinkClass("/opd/respon-pengaduan")}
+            >
+              <HiChat />
+              {isSidebarOpen && "Respon Pengaduan"}
             </Link>
           </li>
           {/* <li>
