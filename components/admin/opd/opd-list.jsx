@@ -27,7 +27,7 @@ export default function OPDList() {
 
   const fetchOPD = async () => {
     try {
-      const res = await axios.get("/api/opd");
+      const res = await axios.get("/api/opd/list");
       setOpdList(res.data);
     } catch (error) {
       console.error("Gagal mengambil data OPD:", error);
@@ -38,8 +38,9 @@ export default function OPDList() {
   };
 
   const filteredOPD = opdList.filter((opd) =>
-    filterWilayah === "ALL" ? true : opd.wilayah === filterWilayah
+    filterWilayah === "ALL" ? true : opd.wilayah === filterWilayah // wilayah belum ada, tetap pakai placeholder
   );
+  
 
   if (loading) {
     return (
@@ -61,9 +62,9 @@ export default function OPDList() {
         title="Manajemen OPD"
         showSearch={true}
         breadcrumbsProps={{
-          home: { label: "Beranda", href: "/adm/dashboard" },
+          home: { label: "Beranda", href: "/opd/dashboard" },
           customRoutes: {
-            adm: { label: "Dashboard Admin", href: "/adm/dashboard" },
+            opd: { label: "Dashboard OPD", href: "/opd/dashboard" },
           },
         }}
       />
