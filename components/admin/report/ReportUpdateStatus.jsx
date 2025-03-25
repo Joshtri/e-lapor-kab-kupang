@@ -1,47 +1,92 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Modal, Button, Select } from "flowbite-react";
-import axios from "axios";
-import { toast } from "sonner";
+import { useState, useEffect } from 'react';
+import { Modal, Button, Select } from 'flowbite-react';
+import axios from 'axios';
+import { toast } from 'sonner';
 
-const UpdateStatusModalByAdmin = ({ open, setOpen, report }) => {
-  const [bupatiStatus, setStatus] = useState(report.bupatiStatus);
-  const [isLoading, setIsLoading] = useState(false);
+const STATUS_OPTIONS = ['PENDING', 'PROSES', 'SELESAI', 'DITOLAK'];
+
+export default function UpdateStatusModal({
+  open,
+  setOpen,
+  report,
+  onSuccess,
+}) {
+  const [bupatiStatus, setBupatiStatus] = useState('');
+  const [opdStatus, setOpdStatus] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (report) {
+      setBupatiStatus(report.bupatiStatus || 'PENDING');
+      setOpdStatus(report.opdStatus || 'PENDING');
+    }
+  }, [report]);
 
   const handleUpdateStatus = async () => {
-    setIsLoading(true);
+    setLoading(true);
     try {
-      await axios.patch(`/api/reports/${report.id}/status`, { bupatiStatus });
-      toast.success("Status laporan diperbarui!");
+      await axios.patch(`/api/reports/${report.id}/admin-status`, {
+        bupatiStatus,
+        opdStatus,
+      });
+
+      toast.success('Status laporan berhasil diperbarui!');
+      onSuccess?.(); // jika ada handler untuk refresh
       setOpen(false);
     } catch (error) {
-      toast.error("Gagal memperbarui status.");
+      console.error('❌ Gagal update status:', error);
+      toast.error('Gagal memperbarui status.');
+    } finally {
+      setLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
-    <Modal show={open} onClose={() => setOpen(false)} size="md">
+    <Modal show={open} size="md" onClose={() => setOpen(false)}>
       <Modal.Header>Ubah Status Laporan</Modal.Header>
-      <Modal.Body>
-        <Select value={bupatiStatus} onChange={(e) => setStatus(e.target.value)}>
-          <option value="PENDING">Pending</option>
-          <option value="PROSES">Sedang Diproses</option>
-          <option value="DITOLAK">Ditolak</option>
-          <option value="SELESAI">Selesai</option>
-        </Select>
+      <Modal.Body className="space-y-4">
+        <div>
+          <label className="text-sm font-medium text-gray-700 mb-1 block">
+            Status Bupati
+          </label>
+          <Select
+            value={bupatiStatus}
+            onChange={(e) => setBupatiStatus(e.target.value)}
+          >
+            {STATUS_OPTIONS.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </Select>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700 mb-1 block">
+            Status OPD
+          </label>
+          <Select
+            value={opdStatus}
+            onChange={(e) => setOpdStatus(e.target.value)}
+          >
+            {STATUS_OPTIONS.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </Select>
+        </div>
       </Modal.Body>
-      <Modal.Footer>
-        <Button color="blue" onClick={handleUpdateStatus} disabled={isLoading}>
-          {isLoading ? "Memproses..." : "Simpan"}
+      <Modal.Footer className="flex justify-end">
+        <Button color="blue" onClick={handleUpdateStatus} disabled={loading}>
+          {loading ? 'Menyimpan...' : 'Simpan'}
         </Button>
-        <Button color="gray" onClick={() => setOpen(false)}>
+        <Button color="gray" onClick={() => setOpen(false)} disabled={loading}>
           Batal
         </Button>
       </Modal.Footer>
     </Modal>
   );
-};
-
-export default UpdateStatusModalByAdmin;
+}
