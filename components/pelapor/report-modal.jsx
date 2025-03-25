@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Button,
@@ -19,35 +19,63 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
     priority: "LOW",
     description: "",
     status: "PENDING",
+    opdId: "", // ✅ Tambahkan OPD ke state
   });
+
+  const [opds, setOpds] = useState([]); // ✅ List OPD dari API
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fungsi untuk menangani perubahan input
+  // Ambil daftar OPD saat modal dibuka
+  useEffect(() => {
+    if (openModal) {
+      fetchOpds();
+    }
+  }, [openModal]);
+
+  const fetchOpds = async () => {
+    try {
+      const res = await axios.get("/api/opd/list");
+      setOpds(res.data);
+    } catch (error) {
+      console.error("Gagal mengambil OPD:", error);
+      toast.error("Gagal mengambil daftar OPD.");
+    }
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Fungsi untuk menangani submit laporan
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      await axios.post(`/api/reports`, { ...formData, userId: user.id });
+      await axios.post(`/api/reports`, {
+        ...formData,
+        opdId: Number(formData.opdId), // ✅ konversi ke number!
+        userId: user.id,
+      });
+
       toast.success("Laporan berhasil dikirim!");
+
       setFormData({
         title: "",
         category: "",
         priority: "LOW",
         description: "",
+        status: "PENDING",
+        opdId: "",
       });
-      // ✅ Kasih jeda 1.5 detik biar toast tampil dulu
+
       setTimeout(() => {
         window.location.reload();
       }, 1500);
+
       setOpenModal(false);
     } catch (error) {
       toast.error("Gagal mengirim laporan.");
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -71,12 +99,9 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
               onChange={handleChange}
               required
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Contoh: Jalan rusak di dekat sekolah
-            </p>
           </div>
 
-          {/* Kategori Laporan */}
+          {/* Kategori */}
           <div>
             <Label htmlFor="category">
               Kategori Laporan <span className="text-red-500">*</span>
@@ -92,14 +117,11 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
               <option value="INFRASTRUKTUR">Infrastruktur</option>
               <option value="PELAYANAN">Pelayanan Publik</option>
               <option value="SOSIAL">Permasalahan Sosial</option>
-               <option value="LAINNYA">Lainnya</option>
+              <option value="LAINNYA">Lainnya</option>
             </Select>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Pilih kategori yang sesuai dengan laporan Anda.
-            </p>
           </div>
 
-          {/* Prioritas Laporan */}
+          {/* Prioritas */}
           <div>
             <Label htmlFor="priority">
               Prioritas <span className="text-red-500">*</span>
@@ -115,12 +137,30 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
               <option value="MEDIUM">Sedang</option>
               <option value="HIGH">Tinggi</option>
             </Select>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Pilih tingkat urgensi laporan ini.
-            </p>
           </div>
 
-          {/* Deskripsi Laporan */}
+          {/* OPD Tujuan */}
+          <div>
+            <Label htmlFor="opdId">
+              OPD Tujuan <span className="text-red-500">*</span>
+            </Label>
+            <Select
+              id="opdId"
+              name="opdId"
+              value={formData.opdId}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Pilih OPD</option>
+              {opds.map((opd) => (
+                <option key={opd.opdId} value={opd.opdId}>
+                  {opd.nameInstansi} - {opd.opdId}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          {/* Deskripsi */}
           <div>
             <Label htmlFor="description">
               Deskripsi Laporan <span className="text-red-500">*</span>
@@ -134,13 +174,9 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
               onChange={handleChange}
               required
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Berikan detail yang jelas agar laporan dapat ditindaklanjuti
-              dengan baik.
-            </p>
           </div>
 
-          {/* Tombol Kirim */}
+          {/* Tombol Submit */}
           <div className="flex justify-end">
             <Button type="submit" color="blue" disabled={isSubmitting}>
               {isSubmitting ? "Mengirim..." : "Kirim Laporan"}
