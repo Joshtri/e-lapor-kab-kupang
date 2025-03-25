@@ -1,53 +1,41 @@
-import { useState } from "react";
-import { Modal, Button, TextInput, Label, Select } from "flowbite-react";
-import { toast } from "sonner";
-import axios from "axios";
+'use client';
+
+import { Modal, Button, TextInput, Label, Select } from 'flowbite-react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import axios from 'axios';
 
 export default function CreateUserModal({ open, setOpen, onSuccess }) {
-  const [form, setForm] = useState({
-    name: "",
-    nikNumber: "",
-    contactNumber: "",
-    email: "",
-    password: "",
-    role: "PELAPOR",
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      name: '',
+      nikNumber: '',
+      contactNumber: '',
+      email: '',
+      password: '',
+      role: 'PELAPOR',
+    },
   });
-  const [nikError, setNikError] = useState("");
 
-  const handleSubmit = async () => {
-    if (form.nikNumber.length !== 16) {
-      setNikError("NIK harus tepat 16 digit.");
-      return;
-    }
+  const role = watch('role');
 
+  const onSubmit = async (data) => {
     try {
-      await axios.post("/api/users", form);
-      toast.success("User berhasil ditambahkan!");
-      setForm({
-        name: "",
-        nikNumber: "",
-        contactNumber: "",
-        email: "",
-        password: "",
-        role: "PELAPOR",
-      });
-      setNikError("");
+      await axios.post('/api/users', data);
+
+      toast.success('User berhasil ditambahkan!');
+
+      reset();
       setOpen(false);
       if (onSuccess) onSuccess();
     } catch (error) {
-      toast.error(error.response?.data?.error || "Gagal menambahkan user.");
-    }
-  };
-
-  const handleNIKChange = (e) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value) && value.length <= 16) {
-      setForm({ ...form, nikNumber: value });
-      if (value.length === 16) {
-        setNikError("");
-      } else {
-        setNikError("NIK harus tepat 16 digit.");
-      }
+      toast.error(error.response?.data?.error || 'Gagal menambahkan user.');
     }
   };
 
@@ -55,85 +43,120 @@ export default function CreateUserModal({ open, setOpen, onSuccess }) {
     <Modal show={open} onClose={() => setOpen(false)} size="lg">
       <Modal.Header>Tambah User Baru</Modal.Header>
       <Modal.Body>
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Role */}
+          <div>
+            <Label htmlFor="role" value="Role" />
+            <Select id="role" {...register('role', { required: true })}>
+              <option value="PELAPOR">Pelapor</option>
+              <option value="ADMIN">Admin</option>
+              <option value="BUPATI">Bupati</option>
+              <option value="OPD">OPD</option>
+            </Select>
+          </div>
+
+          {/* Nama */}
           <div>
             <Label htmlFor="name" value="Nama Lengkap" />
             <TextInput
               id="name"
               placeholder="Nama Lengkap"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              {...register('name', { required: 'Nama wajib diisi' })}
+              color={errors.name ? 'failure' : 'gray'}
+              helperText={errors.name?.message}
             />
           </div>
+
+          {/* NIK */}
           <div>
             <Label htmlFor="nikNumber" value="NIK (16 Digit)" />
             <TextInput
               id="nikNumber"
               placeholder="1234567890123456"
-              value={form.nikNumber}
-              onChange={handleNIKChange}
+              {...register('nikNumber', {
+                required: 'NIK wajib diisi',
+                minLength: {
+                  value: 16,
+                  message: 'NIK harus 16 digit',
+                },
+                maxLength: {
+                  value: 16,
+                  message: 'NIK harus 16 digit',
+                },
+                pattern: {
+                  value: /^\d{16}$/,
+                  message: 'NIK hanya boleh berisi angka',
+                },
+              })}
               maxLength={16}
               inputMode="numeric"
-              pattern="\d*"
-              color={nikError ? "failure" : "gray"}
-              helperText={
-                nikError && <span className="text-red-500">{nikError}</span>
-              }
+              color={errors.nikNumber ? 'failure' : 'gray'}
+              helperText={errors.nikNumber?.message}
             />
           </div>
+
+          {/* Kontak */}
           <div>
             <Label htmlFor="contactNumber" value="No. Kontak" />
             <TextInput
               id="contactNumber"
               placeholder="08123456789"
-              value={form.contactNumber}
-              onChange={(e) =>
-                setForm({ ...form, contactNumber: e.target.value })
-              }
+              {...register('contactNumber', {
+                required: 'Kontak wajib diisi',
+                maxLength: {
+                  value: 15,
+                  message: 'Kontak maksimal 15 digit',
+                },
+              })}
+              color={errors.contactNumber ? 'failure' : 'gray'}
+              helperText={errors.contactNumber?.message}
             />
           </div>
+
+          {/* Email */}
           <div>
             <Label htmlFor="email" value="Email" />
             <TextInput
               id="email"
               type="email"
               placeholder="email@example.com"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              {...register('email', {
+                required: 'Email wajib diisi',
+              })}
+              color={errors.email ? 'failure' : 'gray'}
+              helperText={errors.email?.message}
             />
           </div>
+
+          {/* Password */}
           <div>
             <Label htmlFor="password" value="Password" />
             <TextInput
               id="password"
               type="password"
               placeholder="••••••••"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              {...register('password', {
+                required: 'Password wajib diisi',
+                minLength: {
+                  value: 6,
+                  message: 'Password minimal 6 karakter',
+                },
+              })}
+              color={errors.password ? 'failure' : 'gray'}
+              helperText={errors.password?.message}
             />
           </div>
-          <div>
-            <Label htmlFor="role" value="Role" />
-            <Select
-              id="role"
-              value={form.role}
-              onChange={(e) => setForm({ ...form, role: e.target.value })}
-            >
-              <option value="PELAPOR">Pelapor</option>
-              <option value="ADMIN">Admin</option>
-              <option value="BUPATI">Bupati</option>
-            </Select>
+
+          <div className="flex justify-end pt-2 gap-2">
+            <Button type="submit" color="blue" isProcessing={isSubmitting}>
+              Simpan
+            </Button>
+            <Button color="gray" onClick={() => setOpen(false)} type="button">
+              Batal
+            </Button>
           </div>
-        </div>
+        </form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button color="blue" onClick={handleSubmit}>
-          Simpan
-        </Button>
-        <Button color="gray" onClick={() => setOpen(false)}>
-          Batal
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 }
