@@ -26,7 +26,10 @@ export default function AuthRedirectGuard({ children }) {
             router.replace("/bupati-portal/dashboard");
           } else if (role === "ADMIN") {
             router.replace("/adm/dashboard");
+          } else if (role === "OPD") {
+            router.replace("/opd/dashboard");
           }
+          
         }
       } catch (error) {
         console.debug("Auth check error:", error);
