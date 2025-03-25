@@ -2,57 +2,69 @@
 
 import React from "react";
 import { Card } from "flowbite-react";
-import { HiOutlineClipboardList, HiOutlinePlusCircle } from "react-icons/hi";
+import { 
+  HiPlus, 
+  HiOutlineDocumentText, 
+  HiOutlineMail, 
+  HiMailOpen 
+} from "react-icons/hi";
 import Link from "next/link";
-import { FaThList } from "react-icons/fa";
 
 const QuickActions = ({ setOpenModal }) => {
   return (
-    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <Card
-        className="p-4 shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-md transition cursor-pointer"
-        onClick={() => setOpenModal(true)}
-      >
-        <div className="flex items-center space-x-4">
-          <HiOutlinePlusCircle className="text-blue-500 text-4xl" />
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Buat Laporan
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Laporkan masalah yang Anda alami.
-            </p>
-          </div>
-        </div>
-      </Card>
+    <div className="mt-6">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center dark:text-gray-200">
+        <HiOutlineMail className="mr-2 h-5 w-5 text-blue-600 "  />
+        Aksi Cepat
+      </h2>
 
-      {/* <Link href="/status-laporan">
-        <Card className="p-4 shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-md transition">
-          <div className="flex items-center space-x-4">
-            <HiOutlineClipboardList className="text-green-500 text-4xl" />
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Cek Status</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Lihat status laporan Anda.</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Create Report Card */}
+        <Card 
+          className="border-l-4 border-blue-500 hover:shadow-md transition-shadow cursor-pointer"
+          onClick={() => setOpenModal(true)}
+        >
+          <div className="flex items-start">
+            <div className="bg-blue-100 p-3 rounded-full mr-4">
+              <HiPlus className="text-blue-600 h-6 w-6" />
             </div>
-          </div>
-        </Card>
-      </Link> */}
-
-      <Link href="/pelapor/log-laporan">
-        <Card className="p-4 shadow-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-md transition">
-          <div className="flex items-center space-x-4">
-            <FaThList className="text-green-500 text-4xl" />
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Log Laporan
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Lihat riwayat laporan Anda.
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Buat Laporan</h3>
+              <p className="text-gray-600 mt-1 dark:text-gray-200">
+                Laporkan masalah yang Anda alami.
               </p>
+              <button 
+                className="mt-3 text-blue-600 font-medium flex items-center hover:underline"
+                onClick={() => setOpenModal(true)}
+              >
+                <HiOutlineMail className="mr-1 h-4 w-4" />
+                Buat Laporan Baru
+              </button>
             </div>
           </div>
         </Card>
-      </Link>
+
+        {/* Report Log Card */}
+        <Link href="/pelapor/log-laporan" passHref>
+          <Card className="border-l-4 border-green-500 hover:shadow-md transition-shadow cursor-pointer">
+            <div className="flex items-start">
+              <div className="bg-green-100 p-3 rounded-full mr-4">
+                <HiOutlineDocumentText className="text-green-600 h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Log Laporan</h3>
+                <p className="text-gray-600 mt-1 dark:text-gray-200">
+                  Lihat riwayat laporan Anda.
+                </p>
+                <span className="mt-3 text-green-600 font-medium flex items-center hover:underline">
+                  <HiMailOpen className="mr-1 h-4 w-4" />
+                  Lihat Semua Laporan
+                </span>
+              </div>
+            </div>
+          </Card>
+        </Link>
+      </div>
     </div>
   );
 };
