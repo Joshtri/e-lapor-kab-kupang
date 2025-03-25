@@ -10,7 +10,7 @@ import {
   MdOutlineHistoryEdu,
   MdOutlineSettings,
 } from "react-icons/md";
-import { HiOutlineClipboardCheck, HiOutlineUserGroup } from "react-icons/hi";
+import { HiOutlineClipboardCheck, HiOutlinePencilAlt, HiOutlineUserGroup } from "react-icons/hi";
 import { AiOutlineFileSearch } from "react-icons/ai";
 
 const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
@@ -86,12 +86,12 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
               {isSidebarOpen && "Riwayat Pengaduan"}
             </Link>
           </li>
-          {/* <li>
+          <li>
             <Link href="/adm/logs" className={navLinkClass("/adm/logs")}>
-              <AiOutlineFileSearch />
-              {isSidebarOpen && "Log Aktivitas"}
+              <HiOutlinePencilAlt />
+              {isSidebarOpen && "Compose Mail"}
             </Link>
-          </li> */}
+          </li>
           {/* <li>
             <Link href="/adm/settings" className={navLinkClass("/adm/settings")}>
               <MdOutlineSettings />
