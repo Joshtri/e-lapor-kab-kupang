@@ -19,7 +19,7 @@ export default function CreateUserModal({ open, setOpen, onSuccess }) {
       contactNumber: '',
       email: '',
       password: '',
-      role: 'PELAPOR',
+      role: '',
     },
   });
 
@@ -48,6 +48,7 @@ export default function CreateUserModal({ open, setOpen, onSuccess }) {
           <div>
             <Label htmlFor="role" value="Role" />
             <Select id="role" {...register('role', { required: true })}>
+              <option >Pilih Role</option>
               <option value="PELAPOR">Pelapor</option>
               <option value="ADMIN">Admin</option>
               <option value="BUPATI">Bupati</option>
