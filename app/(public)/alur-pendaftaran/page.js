@@ -1,73 +1,73 @@
-import { Card } from "flowbite-react";
+import { Card } from 'flowbite-react';
 
 const steps = [
   {
     number: 1,
-    title: "Registrasi Online",
+    title: 'Registrasi Online',
     description:
-      "Pelapor melakukan registrasi online melalui website sebelum datang ke lokasi.",
+      'Pelapor melakukan registrasi online melalui website sebelum datang ke lokasi.',
   },
   {
     number: 2,
-    title: "Pelapor Datang",
+    title: 'Pelapor Datang',
     description:
-      "Pelapor datang ke lokasi pengaduan di Kantor Sekretariat Wakil Presiden.",
+      'Pelapor datang ke lokasi pengaduan di Kantor Sekretariat Wakil Presiden.',
   },
   {
     number: 3,
-    title: "Pengecekan Bukti Registrasi Online",
+    title: 'Pengecekan Bukti Registrasi Online',
     description:
-      "Petugas melakukan pengecekan bukti registrasi online pelapor.",
+      'Petugas melakukan pengecekan bukti registrasi online pelapor.',
   },
   {
     number: 4,
-    title: "Penukaran Kartu Identitas",
+    title: 'Penukaran Kartu Identitas',
     description:
-      "Pelapor menukarkan kartu identitas (KTP/SIM) untuk mendapatkan kartu ID Tamu.",
+      'Pelapor menukarkan kartu identitas (KTP/SIM) untuk mendapatkan kartu ID Tamu.',
   },
   {
     number: 5,
-    title: "Mengambil Antrian",
-    description: "Pelapor mengambil nomor antrian di mesin antrian.",
+    title: 'Mengambil Antrian',
+    description: 'Pelapor mengambil nomor antrian di mesin antrian.',
   },
   {
     number: 6,
-    title: "Meja Registrasi",
-    description: "Pelapor menuju meja registrasi untuk verifikasi data.",
+    title: 'Meja Registrasi',
+    description: 'Pelapor menuju meja registrasi untuk verifikasi data.',
   },
   {
     number: 7,
-    title: "Menunggu Antrian",
+    title: 'Menunggu Antrian',
     description:
-      "Pelapor menunggu di ruang tunggu hingga nomor antriannya dipanggil.",
+      'Pelapor menunggu di ruang tunggu hingga nomor antriannya dipanggil.',
   },
   {
     number: 8,
-    title: "Ruang Pengaduan",
-    description: "Pelapor memasuki ke Ruang Pengaduan sesuai nomor panggilan.",
+    title: 'Ruang Pengaduan',
+    description: 'Pelapor memasuki ke Ruang Pengaduan sesuai nomor panggilan.',
   },
   {
     number: 9,
-    title: "Menuju Loket sesuai Nomor Antrian",
+    title: 'Menuju Loket sesuai Nomor Antrian',
     description:
-      "Pelapor menuju loket yang sesuai dengan nomor panggilan di layar.",
+      'Pelapor menuju loket yang sesuai dengan nomor panggilan di layar.',
   },
   {
     number: 10,
-    title: "Proses Pelayanan Pengaduan",
+    title: 'Proses Pelayanan Pengaduan',
     description:
-      "Petugas melakukan layanan pengaduan dan mencatat laporan pada sistem.",
+      'Petugas melakukan layanan pengaduan dan mencatat laporan pada sistem.',
   },
   {
     number: 11,
-    title: "Cetak Bukti Laporan",
-    description: "Petugas memberikan lembar bukti laporan kepada pelapor.",
+    title: 'Cetak Bukti Laporan',
+    description: 'Petugas memberikan lembar bukti laporan kepada pelapor.',
   },
   {
     number: 12,
-    title: "Meninggalkan Ruang Pengaduan",
+    title: 'Meninggalkan Ruang Pengaduan',
     description:
-      "Pelapor meninggalkan ruang pengaduan dan mengambil kembali kartu identitas.",
+      'Pelapor meninggalkan ruang pengaduan dan mengambil kembali kartu identitas.',
   },
 ];
 
