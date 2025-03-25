@@ -1,23 +1,34 @@
-"use client";
+"use client"
 
-import { AnimatePresence, motion } from "framer-motion";
-import { BsArrowDownUp } from "react-icons/bs";
+import { motion, AnimatePresence } from "framer-motion"
+import { HiOutlineArrowUp, HiOutlineMail } from "react-icons/hi"
 
 export default function FloatingNavbarButton({ onShowNavbar, showButton }) {
   return (
     <AnimatePresence>
       {showButton && (
         <motion.button
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 50 }}
+          exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
           onClick={onShowNavbar}
-          className="fixed bottom-40 right-6 p-3 rounded-full bg-yellow-500 text-black shadow-lg hover:bg-yellow-600 transition-all z-50"
+          className="fixed top-4 right-4 z-50 p-3 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 transition-colors"
+          aria-label="Show Navigation"
         >
-          <BsArrowDownUp className="h-6 w-6" />
+          <div className="relative">
+            <HiOutlineMail className="h-5 w-5" />
+            <motion.div
+              animate={{ y: [-2, 0, -2] }}
+              transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5 }}
+              className="absolute -top-1 -right-1"
+            >
+              <HiOutlineArrowUp className="h-3 w-3" />
+            </motion.div>
+          </div>
         </motion.button>
       )}
     </AnimatePresence>
-  );
+  )
 }
+
