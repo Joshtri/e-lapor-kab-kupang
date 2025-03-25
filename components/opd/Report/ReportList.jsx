@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Spinner, Modal, Button } from 'flowbite-react';
+import { Spinner, Button } from 'flowbite-react';
 import { toast } from 'sonner';
 import ReportFilterBar from '@/components/opd/Report/ReportFilterBar';
 import ReportGrid from '@/components/opd/Report/ReportGridView';
 import ReportTable from '@/components/opd/Report/ReportTableView';
 import PageHeader from '@/components/ui/page-header';
-import ReportCreateModal from './ReportCreateModal';
 import { HiOutlinePlus } from 'react-icons/hi';
+import EmptyState from '@/components/ui/empty-state';
 
 export default function ReportList() {
   const [reports, setReports] = useState([]);
@@ -17,8 +17,9 @@ export default function ReportList() {
   const [viewMode, setViewMode] = useState('table');
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [filterPriority, setFilterPriority] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState(''); // ✅ NEW
   const [openModal, setOpenModal] = useState(false);
-  const [opdId, setOpdId] = useState(null); // ✅
+  const [opdId, setOpdId] = useState(null);
 
   useEffect(() => {
     getCurrentUser();
@@ -28,21 +29,21 @@ export default function ReportList() {
     try {
       const res = await axios.get('/api/auth/me');
       const user = res.data.user;
-      setOpdId(user.opdId); // ✅ ambil dari dalam `user`
+      setOpdId(user.opdId);
     } catch (error) {
       console.error('Gagal mengambil data user login:', error);
       toast.error('Gagal mengambil data user login.');
     }
   };
-  
+
   useEffect(() => {
     fetchReports();
   }, []);
-  
+
   const fetchReports = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/api/reports/opd'); // ✅ ga perlu query param
+      const res = await axios.get('/api/reports/opd');
       setReports(res.data);
     } catch (error) {
       console.error('Gagal ambil laporan:', error);
@@ -51,14 +52,33 @@ export default function ReportList() {
       setLoading(false);
     }
   };
-  
+
+  const handleResetFilter = () => {
+    setFilterStatus('ALL');
+    setFilterPriority('ALL');
+    setSearchQuery('');
+  };
 
   const filteredReports = reports.filter((report) => {
     const bupatiMatch =
       filterStatus === 'ALL' || report.bupatiStatus === filterStatus;
     const opdMatch =
       filterPriority === 'ALL' || report.opdStatus === filterPriority;
-    return bupatiMatch && opdMatch;
+      const searchMatch = [
+        report.title,
+        report.description,
+        report.category,
+        report.priority,
+        report.bupatiStatus,
+        report.opdStatus,
+        report.user?.name,
+        report.opd?.name,
+        report.createdAt,
+      ]      .join(" ")
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    return bupatiMatch && opdMatch && searchMatch;
   });
 
   if (loading) {
@@ -75,6 +95,8 @@ export default function ReportList() {
         title="Manajemen Laporan"
         showBackButton={false}
         showSearch
+        searchQuery={searchQuery} // ✅ linked
+        onSearchChange={(val) => setSearchQuery(val)} // ✅ handler
         showRefreshButton
         onRefreshClick={() => fetchReports(opdId)}
         breadcrumbsProps={{
@@ -84,6 +106,7 @@ export default function ReportList() {
           },
         }}
       />
+
       <div className="flex justify-between items-center mb-6">
         <ReportFilterBar
           filterStatus={filterStatus}
@@ -106,16 +129,20 @@ export default function ReportList() {
       </div>
 
       {filteredReports.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400">
-          Tidak ada laporan dengan filter ini.
-        </p>
+        <EmptyState message="Tidak ada laporan yang cocok dengan filter saat ini.">
+          <p className="text-sm">
+            Coba ubah filter status, prioritas, atau gunakan kata kunci yang
+            berbeda.
+          </p>
+          <Button color="gray" onClick={handleResetFilter}>
+            Reset Filter
+          </Button>
+        </EmptyState>
       ) : viewMode === 'table' ? (
         <ReportTable reports={filteredReports} />
       ) : (
         <ReportGrid reports={filteredReports} />
       )}
-
-      {/* <ReportCreateModal openModal={openModal} setOpenModal={setOpenModal} /> */}
     </div>
   );
 }
