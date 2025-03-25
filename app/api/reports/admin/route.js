@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
     const reports = await prisma.report.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
       include: {
         user: {
           select: {
@@ -12,6 +12,7 @@ export async function GET() {
             email: true,
           },
         },
+        
       },
     });
 
@@ -24,16 +25,19 @@ export async function GET() {
       category: report.category,
       createdAt: report.createdAt,
       user: {
-        name: report.user?.name || "Tidak diketahui",
-        email: report.user?.email || "-",
+        name: report.user?.name || 'Tidak diketahui',
+        email: report.user?.email || '-',
+      },
+      opd: {
+        name: report.opd?.name || 'Tidak diketahui',
       },
     }));
 
     return NextResponse.json(formattedReports);
   } catch (error) {
-    console.error("Gagal mengambil data laporan:", error.message, error);
+    console.error('Gagal mengambil data laporan:', error.message, error);
     return NextResponse.json(
-      { message: "Gagal mengambil data laporan.", error: error.message },
+      { message: 'Gagal mengambil data laporan.', error: error.message },
       { status: 500 },
     );
   }
