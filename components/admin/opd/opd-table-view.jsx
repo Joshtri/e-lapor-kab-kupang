@@ -1,6 +1,7 @@
 'use client';
 
-import { Table, Badge, Button } from 'flowbite-react';
+import { Table, Badge, Button, Tooltip } from 'flowbite-react';
+import Link from 'next/link';
 import { HiEye, HiPencil, HiTrash } from 'react-icons/hi';
 
 export default function OPDTable({ opdList, onShow, onEdit, onDelete }) {
@@ -23,23 +24,45 @@ export default function OPDTable({ opdList, onShow, onEdit, onDelete }) {
               <Badge color="blue">{opd.staff?.name ?? '-'}</Badge>
             </Table.Cell>
             <Table.Cell>
-              <div className="flex gap-2">
-                <Button color="gray" size="xs" onClick={() => onShow?.(opd)}>
-                  <HiEye className="mr-1" />
-                  Detail
-                </Button>
-                <Button color="blue" size="xs" onClick={() => onEdit?.(opd)}>
-                  <HiPencil className="mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  color="failure"
-                  size="xs"
-                  onClick={() => onDelete?.(opd)}
-                >
-                  <HiTrash className="mr-1" />
-                  Hapus
-                </Button>
+              <div className="flex items-center gap-2">
+                {/* 👁️ Detail - biru */}
+
+                <Link href={`/adm/org-perangkat-daerah/${opd.id}`}>
+                  <Tooltip content="Lihat Detail">
+                    <Button
+                      size="xs"
+                      color="gray"
+                      className="p-2"
+                      onClick={() => onShow?.(opd)}
+                    >
+                      <HiEye className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
+                </Link>
+
+                {/* ✏️ Edit - kuning */}
+                <Tooltip content="Edit OPD">
+                  <Button
+                    size="xs"
+                    color="yellow"
+                    className="p-2"
+                    onClick={() => onEdit?.(opd)}
+                  >
+                    <HiPencil className="w-4 h-4" />
+                  </Button>
+                </Tooltip>
+
+                {/* 🗑️ Hapus - merah */}
+                <Tooltip content="Hapus OPD">
+                  <Button
+                    size="xs"
+                    color="failure"
+                    className="p-2"
+                    onClick={() => onDelete?.(opd)}
+                  >
+                    <HiTrash className="w-4 h-4" />
+                  </Button>
+                </Tooltip>
               </div>
             </Table.Cell>
           </Table.Row>
