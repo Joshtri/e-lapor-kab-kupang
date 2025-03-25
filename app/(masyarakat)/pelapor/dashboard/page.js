@@ -1,6 +1,6 @@
 "use client";
 
-import DashboardPelapor from "@/components/pelapor/pelapor-dashboard";
+import DashboardPelapor from "@/components/pelapor/DashboardPelapor";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
