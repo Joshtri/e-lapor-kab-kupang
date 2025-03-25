@@ -85,7 +85,7 @@ export default function LoginPage() {
 
   return (
     <AuthRedirectGuard>
-      <div className="min-h-screen flex items-center justify-center bg-blue-50 py-12 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-gray-800 py-12 px-4">
         <div className="container mx-auto max-w-md">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -121,12 +121,12 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <Card className="border-t-4 border-blue-500 shadow-lg bg-white/90 backdrop-blur-sm">
+            <Card className="border-t-4 border-blue-500 shadow-lg bg-white/90 dark:bg-slate-800 backdrop-blur-sm">
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold mb-2 text-gray-900">
+                <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
                   Selamat Datang di E-Lapor
                 </h2>
-                <p className="text-gray-500 mb-0">
+                <p className="text-gray-500 mb-0 dark:text-gray-300">
                   Silakan masuk untuk mengakses akun Anda.
                 </p>
               </div>
@@ -148,7 +148,7 @@ export default function LoginPage() {
                     placeholder="nama@email.com"
                     {...register('email')}
                     color={errors.email ? 'failure' : 'gray'}
-                    className="bg-blue-50 border-blue-100 focus:border-blue-500"
+                    className="bg-blue-50 dark:bg-gray-800 bg-border-blue-100 focus:border-blue-500"
                   />
                   {errors.email && (
                     <span className="text-red-500 text-sm mt-1 block">
@@ -173,7 +173,7 @@ export default function LoginPage() {
                     placeholder="••••••••"
                     {...register('password')}
                     color={errors.password ? 'failure' : 'gray'}
-                    className="bg-blue-50 border-blue-100 focus:border-blue-500"
+                    className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                   />
                   {/* Eye Icon Button */}
                   <button
@@ -216,7 +216,7 @@ export default function LoginPage() {
                   {isSubmitting ? 'Memproses...' : 'Masuk'}
                 </Button>
 
-                <p className="text-center text-sm text-gray-600">
+                <p className="text-center text-sm text-gray-600 dark:text-gray-200">
                   Belum punya akun?{' '}
                   <Link
                     href="/auth/register"

@@ -93,7 +93,7 @@ export default function RegistrationPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50 py-12 px-4 mt-14">
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-gray-800 py-12 px-4 mt-14">
       <div className="container mx-auto max-w-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -109,16 +109,16 @@ export default function RegistrationPage() {
 
           <Card className="border-t-4 border-blue-500 shadow-lg bg-white/90 backdrop-blur-sm">
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Buat Akun Lapor KK Bupati
               </h2>
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-gray-300">
                 Silakan isi formulir untuk membuat akun Anda.
               </p>
             </div>
 
             {/* Progress bar */}
-            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+            <div className="w-full bg-gray-200 dark:bg-blue-800 rounded-full h-2.5 mb-6">
               <motion.div
                 className="bg-blue-600 h-2.5 rounded-full"
                 initial={{ width: 0 }}
@@ -147,7 +147,7 @@ export default function RegistrationPage() {
                   placeholder="Masukkan nama lengkap"
                   {...register('fullName')}
                   color={errors.fullName ? 'failure' : 'gray'}
-                  className="bg-blue-50 border-blue-100 focus:border-blue-500"
+                  className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                 />
                 {errors.fullName && (
                   <span className="text-red-500 text-sm mt-1 block">
@@ -173,7 +173,7 @@ export default function RegistrationPage() {
                   maxLength={16}
                   {...register('nikNumber')}
                   color={errors.nikNumber ? 'failure' : 'gray'}
-                  className="bg-blue-50 border-blue-100 focus:border-blue-500"
+                  className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                 />
                 {errors.nikNumber && (
                   <span className="text-red-500 text-sm mt-1 block">
@@ -198,7 +198,7 @@ export default function RegistrationPage() {
                   placeholder="Masukkan nomor kontak"
                   {...register('contactNumber')}
                   color={errors.contactNumber ? 'failure' : 'gray'}
-                  className="bg-blue-50 border-blue-100 focus:border-blue-500"
+                  className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                 />
                 {errors.contactNumber && (
                   <span className="text-red-500 text-sm mt-1 block">
@@ -223,7 +223,7 @@ export default function RegistrationPage() {
                   placeholder="Masukkan EMAIL"
                   {...register('email')}
                   color={errors.email ? 'failure' : 'gray'}
-                  className="bg-blue-50 border-blue-100 focus:border-blue-500"
+                  className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                 />
                 {errors.email && (
                   <span className="text-red-500 text-sm mt-1 block">
@@ -248,7 +248,7 @@ export default function RegistrationPage() {
                   placeholder="Masukkan Password"
                   {...register('password')}
                   color={errors.password ? 'failure' : 'gray'}
-                  className="bg-blue-50 border-blue-100 focus:border-blue-500"
+                  className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                 />
                 {/* Eye Icon Button */}
                 <button
@@ -282,7 +282,7 @@ export default function RegistrationPage() {
               </Button>
 
               <div className="text-center mt-4">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-200">
                   Sudah memiliki akun?{' '}
                   <Link
                     href="/auth/login"

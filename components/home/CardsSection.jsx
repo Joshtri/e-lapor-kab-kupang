@@ -14,7 +14,7 @@ import {
 export default function CardsSection({ openWhatsAppModal }) {
   // Card styling
   const cardClass = "transform transition-all duration-500 hover:scale-105"
-  const innerClass = "flex flex-col h-full rounded-xl border border-gray-200 bg-white p-8 shadow-lg hover:shadow-xl"
+  const innerClass = "flex flex-col h-full rounded-xl border border-gray-200 bg-white p-8 shadow-lg hover:shadow-xl dark:bg-slate-700 "
   const contentClass = "flex flex-col flex-grow items-center text-center gap-6"
 
   const iconWrapper = (bgColor, textColor, Icon) => (
@@ -24,7 +24,7 @@ export default function CardsSection({ openWhatsAppModal }) {
   )
 
   return (
-    <div className="py-20 bg-blue-50">
+    <div className="py-20 bg-blue-50 dark:bg-gray-800">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -38,8 +38,8 @@ export default function CardsSection({ openWhatsAppModal }) {
               <HiOutlineMail className="text-blue-600 h-8 w-8" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Mulai Gunakan Layanan Kami</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-gray-200">Mulai Gunakan Layanan Kami</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
             Pilih cara yang paling nyaman bagi Anda untuk menyampaikan pengaduan atau mendapatkan informasi dari
             Pemerintah Kabupaten Kupang.
           </p>
@@ -63,8 +63,8 @@ export default function CardsSection({ openWhatsAppModal }) {
                 <div className={contentClass}>
                   {iconWrapper("bg-purple-100", "text-purple-600", HiOutlineMail)}
                   <div>
-                    <h2 className="mb-3 text-2xl font-bold text-gray-800">Register</h2>
-                    <p className="text-gray-600">
+                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">Register</h2>
+                    <p className="text-gray-600 dark:text-gray-200">
                       Buat akun E-Lapor untuk mulai mengirimkan pengaduan, menyampaikan aspirasi, dan mendapatkan
                       informasi terkini dari Pemerintah Kabupaten Kupang.
                     </p>
@@ -96,8 +96,8 @@ export default function CardsSection({ openWhatsAppModal }) {
                 <div className={contentClass}>
                   {iconWrapper("bg-green-100", "text-green-600", HiMailOpen)}
                   <div>
-                    <h2 className="mb-3 text-2xl font-bold text-gray-800">WhatsApp</h2>
-                    <p className="text-gray-600">
+                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">WhatsApp</h2>
+                    <p className="text-gray-600 dark:text-gray-200">
                       Hubungi kami langsung melalui WhatsApp untuk pengaduan seputar layanan publik secara praktis.
                     </p>
                   </div>
@@ -131,8 +131,8 @@ export default function CardsSection({ openWhatsAppModal }) {
                 <div className={contentClass}>
                   {iconWrapper("bg-blue-100", "text-blue-600", HiPaperAirplane)}
                   <div>
-                    <h2 className="mb-3 text-2xl font-bold text-gray-800">Login</h2>
-                    <p className="text-gray-600">
+                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">Login</h2>
+                    <p className="text-gray-600 dark:text-gray-200">
                       Akses akun Anda untuk memantau status pengaduan, mendapatkan pembaruan, dan terhubung dengan
                       layanan kami.
                     </p>

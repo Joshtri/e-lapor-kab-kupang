@@ -214,7 +214,7 @@ export default function ComparisonSection() {
   ]
 
   return (
-    <div className="py-20 bg-white">
+    <div className="py-20 bg-white dark:bg-gray-800">
       <div className="container mx-auto px-4">
         <motion.div
           className="text-center mb-16"
@@ -228,8 +228,8 @@ export default function ComparisonSection() {
               <HiOutlineMail className="text-blue-600 h-8 w-8" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Alur Pengaduan Online vs Offline</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-gray-200">Alur Pengaduan Online vs Offline</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4 dark:text-gray-200">
             Pilih jalur pengaduan yang paling cocok buat kamu! Mau online yang cepat & praktis, atau lebih nyaman dengan
             offline? Yuk, cek alurnya!
           </p>
@@ -271,8 +271,8 @@ export default function ComparisonSection() {
               >
                 <HiOutlineMail className="h-12 w-12" />
               </motion.div>
-              <h3 className="text-2xl font-bold text-gray-900">Pengaduan Online</h3>
-              <p className="text-sm text-gray-600 mt-2">Cepat, Mudah, dan Efisien</p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-200">Pengaduan Online</h3>
+              <p className="text-sm text-gray-600 mt-2 dark:text-gray-200">Cepat, Mudah, dan Efisien</p>
             </div>
 
             {onlineSteps.map((step, index) => (
@@ -291,12 +291,12 @@ export default function ComparisonSection() {
                     {index + 1}
                   </motion.div>
                 </div>
-                <div className="bg-white rounded-lg p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                <div className="bg-white dark:bg-gray-700 rounded-lg p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
                   <div className="flex items-center mb-3">
                     <step.icon className="h-6 w-6 text-blue-500 mr-2" />
-                    <h4 className="text-lg font-semibold text-gray-900">{step.title}</h4>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-200">{step.title}</h4>
                   </div>
-                  <p className="text-gray-600">{step.description}</p>
+                  <p className="text-gray-600 dark:text-gray-200">{step.description}</p>
                 </div>
               </div>
             ))}
@@ -316,7 +316,7 @@ export default function ComparisonSection() {
 
             <div className="text-center mb-8">
               <motion.div
-                className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-yellow-100 text-yellow-600 mb-4 border-2 border-yellow-200"
+                className="inline-flex items-center  justify-center w-24 h-24 rounded-full bg-yellow-100 text-yellow-600 mb-4 border-2 border-yellow-200"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{
                   repeat: Number.POSITIVE_INFINITY,
@@ -326,8 +326,8 @@ export default function ComparisonSection() {
               >
                 <HiOfficeBuilding className="h-12 w-12" />
               </motion.div>
-              <h3 className="text-2xl font-bold text-gray-900">Pengaduan Offline</h3>
-              <p className="text-sm text-gray-600 mt-2">Tatap Muka Langsung</p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-200">Pengaduan Offline</h3>
+              <p className="text-sm text-gray-600 mt-2 dark:text-gray-200">Tatap Muka Langsung</p>
             </div>
 
             {offlineSteps.map((step, index) => (
@@ -346,12 +346,12 @@ export default function ComparisonSection() {
                     {index + 1}
                   </motion.div>
                 </div>
-                <div className="bg-white rounded-lg p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                <div className="bg-white dark:bg-gray-700 rounded-lg p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
                   <div className="flex items-center mb-3">
                     <step.icon className="h-6 w-6 text-yellow-500 mr-2" />
-                    <h4 className="text-lg font-semibold text-gray-900">{step.title}</h4>
+                    <h4 className="text-lg font-semibold text-gray-900  dark:text-gray-200">{step.title}</h4>
                   </div>
-                  <p className="text-gray-600">{step.description}</p>
+                  <p className="text-gray-600 dark:text-gray-200">{step.description}</p>
                 </div>
               </div>
             ))}

@@ -29,7 +29,7 @@ export default function ReportsSection() {
   ]
 
   return (
-    <div className="py-20 bg-white">
+    <div className="py-20 bg-white dark:bg-gray-700">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -43,8 +43,8 @@ export default function ReportsSection() {
               <HiMailOpen className="text-blue-600 h-8 w-8" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Laporan Terbaru</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-gray-200">Laporan Terbaru</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-200">
             Berikut adalah beberapa laporan terbaru yang telah diselesaikan oleh Pemerintah Kabupaten Kupang.
           </p>
         </motion.div>
@@ -62,7 +62,7 @@ export default function ReportsSection() {
               {/* Envelope header */}
               <div className="bg-blue-500 h-3"></div>
 
-              <div className="h-48 bg-gray-200 relative">
+              <div className="h-48 bg-gray-200  relative">
                 <Image src="/placeholder.svg?height=600&width=400" alt={report.title} fill className="object-cover" />
                 <div className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center">
                   <HiOutlineCheckCircle className="mr-1 h-3 w-3" />
@@ -70,7 +70,7 @@ export default function ReportsSection() {
                 </div>
 
                 {/* Stamp-like element */}
-                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm border border-gray-300 rounded-md p-2 shadow-sm transform rotate-6">
+                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm border  border-gray-300 rounded-md p-2 shadow-sm transform rotate-6">
                   <div className="text-xs font-medium text-gray-800 flex items-center">
                     <HiOutlineCalendar className="mr-1 h-3 w-3" />
                     {report.date}
@@ -78,16 +78,16 @@ export default function ReportsSection() {
                 </div>
               </div>
 
-              <div className="p-5">
+              <div className="p-5 dark:bg-gray-700">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-xs font-medium text-blue-600 bg-blue-100 rounded-full px-3 py-1 flex items-center">
+                  <span className="text-xs font-medium text-blue-600 bg-blue-100 rounded-full px-3 py-1 flex items-center ">
                     <HiOutlineTag className="mr-1 h-3 w-3" />
                     {report.category}
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{report.title}</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 dark:text-gray-200">{report.title}</h3>
+                <p className="text-gray-600 mb-4 dark:text-gray-300">
                   Laporan ini telah ditindaklanjuti oleh OPD terkait dan telah diselesaikan dengan baik.
                 </p>
 

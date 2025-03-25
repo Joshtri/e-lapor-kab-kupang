@@ -95,7 +95,7 @@ export default function Header() {
                   Registrasi
                 </Button>
               </Link>
-              {/* {mounted && (
+              {mounted && (
                 <button
                   onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                   className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -107,7 +107,7 @@ export default function Header() {
                     <BsSunFill className="text-lg text-yellow-400" />
                   )}
                 </button>
-              )} */}
+              )}
             </div>
             <Navbar.Toggle className="md:hidden" />
           </div>
@@ -120,7 +120,7 @@ export default function Header() {
               >
                 Beranda
               </Link>
-              {/* {mounted && (
+              {mounted && (
                 <button
                   onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                   className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -132,7 +132,7 @@ export default function Header() {
                     <BsSunFill className="text-lg text-yellow-400" />
                   )}
                 </button>
-              )} */}
+              )}
               <Link href="/auth/login" className="w-full">
                 <Button
                   outline

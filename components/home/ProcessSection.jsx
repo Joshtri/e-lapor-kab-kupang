@@ -104,7 +104,7 @@ export default function ProcessSection() {
   }, [activeStep, isMobile, processSteps.length])
 
   return (
-    <div id="process-section" ref={processRef} className="py-20 bg-white relative">
+    <div id="process-section" ref={processRef} className="py-20 bg-white relative dark:bg-gray-700">
       <div className="container mx-auto px-4">
         {/* Judul */}
         <motion.div
@@ -115,11 +115,11 @@ export default function ProcessSection() {
         >
           <div className="inline-flex items-center justify-center mb-4">
             <div className="bg-blue-100 p-3 rounded-full">
-              <HiOutlineMail className="text-blue-600 h-8 w-8" />
+              <HiOutlineMail className="text-blue-600 h-8 w-8 " />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Bagaimana Proses Pengaduan Bekerja?</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-gray-200">Bagaimana Proses Pengaduan Bekerja?</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
             Kami memastikan setiap pengaduan ditangani dengan cepat dan efektif. Berikut adalah alur proses pengaduan di
             platform kami:
           </p>
@@ -165,7 +165,7 @@ export default function ProcessSection() {
               className="relative"
             >
               <motion.div
-                className="bg-white rounded-lg p-6 shadow-lg border border-gray-200 h-full"
+                className="bg-white rounded-lg p-6 shadow-lg border border-gray-200 h-full dark:bg-slate-700"
                 whileHover={{ scale: 1.05 }}
               >
                 {/* Envelope icon with animation */}
@@ -173,16 +173,16 @@ export default function ProcessSection() {
                   initial={isMobile ? {} : { rotate: 0 }}
                   animate={isMobile || activeStep > index ? { rotate: 360 } : {}}
                   transition={{ duration: 0.8, ease: "easeInOut" }}
-                  className={`flex items-center justify-center w-16 h-16 rounded-full bg-${step.color}-100 mx-auto mb-4`}
+                  className={`flex items-center justify-center w-16 h-16 rounded-full bg-${step.color}-100 mx-auto mb-4 `}
                 >
                   <step.icon className={`h-8 w-8 text-${step.color}-600`} />
                 </motion.div>
 
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 dark:text-gray-200">
                     {index + 1}. {step.title}
                   </h3>
-                  <p className="text-gray-600">{step.description}</p>
+                  <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
                 </div>
 
                 {/* Envelope status indicator */}
