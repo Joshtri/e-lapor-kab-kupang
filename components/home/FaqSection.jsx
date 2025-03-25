@@ -2,8 +2,7 @@
 
 import { useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-
-
+import { HiOutlineMail, HiMailOpen } from "react-icons/hi"
 
 export default function FaqSection() {
   const faqRef = useRef(null)
@@ -33,7 +32,7 @@ export default function FaqSection() {
   ]
 
   return (
-    <div ref={faqRef} className="py-20 bg-white dark:bg-gray-800">
+    <div ref={faqRef} className="py-20 bg-blue-50">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -42,8 +41,13 @@ export default function FaqSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Pertanyaan yang Sering Diajukan</h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <div className="inline-flex items-center justify-center mb-4">
+            <div className="bg-blue-100 p-3 rounded-full">
+              <HiOutlineMail className="text-blue-600 h-8 w-8" />
+            </div>
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Pertanyaan yang Sering Diajukan</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Temukan jawaban untuk pertanyaan umum tentang layanan pengaduan kami.
           </p>
         </motion.div>
@@ -58,12 +62,22 @@ export default function FaqSection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="mb-4"
             >
-              <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+              <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                {/* Envelope-like header */}
+                <div className={`h-1 ${openFaq === index ? "bg-blue-500" : "bg-gray-200"}`}></div>
+
                 <button
-                  className="flex justify-between items-center w-full p-5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  className="flex justify-between items-center w-full p-5 text-left hover:bg-gray-50"
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
                 >
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">{item.question}</h3>
+                  <div className="flex items-center">
+                    {openFaq === index ? (
+                      <HiMailOpen className="h-5 w-5 text-blue-500 mr-3 flex-shrink-0" />
+                    ) : (
+                      <HiOutlineMail className="h-5 w-5 text-gray-400 mr-3 flex-shrink-0" />
+                    )}
+                    <h3 className="text-lg font-medium text-gray-900">{item.question}</h3>
+                  </div>
                   <svg
                     className={`w-5 h-5 transition-transform ${openFaq === index ? "rotate-180" : ""}`}
                     fill="none"
@@ -74,6 +88,7 @@ export default function FaqSection() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                   </svg>
                 </button>
+
                 <AnimatePresence>
                   {openFaq === index && (
                     <motion.div
@@ -82,8 +97,8 @@ export default function FaqSection() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className="p-5 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
-                        <p className="text-gray-600 dark:text-gray-300">{item.answer}</p>
+                      <div className="p-5 border-t border-gray-200 bg-gray-50">
+                        <p className="text-gray-600">{item.answer}</p>
                       </div>
                     </motion.div>
                   )}
