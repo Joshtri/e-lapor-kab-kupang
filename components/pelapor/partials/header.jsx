@@ -1,14 +1,16 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Button, Modal } from "flowbite-react";
-import { HiOutlineChatAlt2 } from "react-icons/hi";
-import { useTheme } from "next-themes";
-import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { Button, Dropdown, Modal, Avatar } from 'flowbite-react';
+import { HiOutlineChatAlt2 } from 'react-icons/hi';
+import { useTheme } from 'next-themes';
+import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
+import { HiOutlineUserCircle, HiOutlineLogout } from 'react-icons/hi';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import axios from 'axios';
+import NotificationDropdown from '@/components/ui/notification-dropdown';
 
 const HeaderPelapor = () => {
   const { theme, setTheme } = useTheme();
@@ -16,6 +18,32 @@ const HeaderPelapor = () => {
   const [openModal, setOpenModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
+
+  const [user, setUser] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingNotifications, setLoadingNotifications] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get('/api/auth/me');
+        setUser(res.data.user);
+
+        const notifRes = await axios.get('/api/notifications');
+        setNotifications(
+          notifRes.data.filter((n) => n.link.startsWith('/pelapor/')),
+        );
+      } catch (err) {
+        console.error('Gagal mengambil data:', err);
+      } finally {
+        setLoadingUser(false);
+        setLoadingNotifications(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -25,17 +53,17 @@ const HeaderPelapor = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("/api/auth/logout", null, {
+      await axios.post('/api/auth/logout', null, {
         withCredentials: true, // ✅ Penting kalau axios global butuh kirim cookie
       });
-      toast.success("Berhasil logout! Mengarahkan ke halaman utama...");
-  
+      toast.success('Berhasil logout! Mengarahkan ke halaman utama...');
+
       setTimeout(() => {
-        router.push("/auth/login"); // ✅ Lebih baik langsung ke login, bukan ke "/" kalau ini logout user
+        router.push('/auth/login'); // ✅ Lebih baik langsung ke login, bukan ke "/" kalau ini logout user
       }, 1500); // Sedikit lebih cepat, biar UX makin smooth
     } catch (error) {
-      console.error("Logout Error:", error);
-      toast.error("Gagal logout. Silakan coba lagi.");
+      console.error('Logout Error:', error);
+      toast.error('Gagal logout. Silakan coba lagi.');
     }
   };
 
@@ -69,13 +97,33 @@ const HeaderPelapor = () => {
 
           {/* Kanan */}
           <div className="flex items-center gap-2 md:gap-4">
+            <NotificationDropdown
+              notifications={notifications}
+              unreadCount={notifications.filter((n) => !n.isRead).length}
+              handleNotificationClick={(notif) => {
+                axios
+                  .post('/api/notifications/read', { notificationId: notif.id })
+                  .then(() => {
+                    setNotifications((prev) =>
+                      prev.map((n) =>
+                        n.id === notif.id ? { ...n, isRead: true } : n,
+                      ),
+                    );
+                    router.push(notif.link);
+                  })
+                  .catch((err) => {
+                    console.error('Gagal update notifikasi:', err);
+                  });
+              }}
+              loadingNotifications={loadingNotifications}
+            />
             {/* Dark Mode */}
             <button
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
               className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
               aria-label="Toggle Dark Mode"
             >
-              {theme === "light" ? (
+              {theme === 'light' ? (
                 <BsMoonStarsFill className="text-gray-700 dark:text-gray-300 text-lg" />
               ) : (
                 <BsSunFill className="text-yellow-400 text-lg" />
@@ -83,14 +131,48 @@ const HeaderPelapor = () => {
             </button>
 
             {/* Logout Desktop */}
-            <Button
+            {/* <Button
               color="failure"
               onClick={() => setOpenModal(true)}
               size="sm"
               className="font-medium hidden md:flex"
             >
               Logout
-            </Button>
+            </Button> */}
+
+            {/* Avatar & Dropdown */}
+            <Dropdown
+              inline
+              label={
+                <Avatar
+                  alt="User Avatar"
+                  img={`https://ui-avatars.com/api/?name=${user?.name}`}
+                  rounded
+                  size="sm"
+                />
+              }
+            >
+              <Dropdown.Header>
+                <span className="block text-sm font-medium">{user?.name}</span>
+                <span className="block truncate text-sm">{user?.email}</span>
+              </Dropdown.Header>
+              <Dropdown.Divider />
+              {/* <Dropdown.Item
+                icon={HiOutlineUserCircle}
+                className=''
+                // onClick={() => router.push('/pelapor/profile')}
+              >
+                Profil Saya
+              </Dropdown.Item> */}
+              <Dropdown.Divider />
+              <Dropdown.Item
+                icon={HiOutlineLogout}
+                onClick={() => setOpenModal(true)}
+                className="text-red-600"
+              >
+                Logout
+              </Dropdown.Item>
+            </Dropdown>
 
             {/* Toggle Menu Mobile */}
             <button
