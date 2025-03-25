@@ -1,42 +1,54 @@
-"use client";
+'use client';
 
-import UserFilterBar from "@/components/admin/users/user-filter-bar";
-import UserGrid from "@/components/admin/users/user-grid-view";
-import UserTable from "@/components/admin/users/user-table-view";
-import CreateUserModal from "@/components/admin/users/users-create-modal";
-import PageHeader from "@/components/ui/page-header";
-import axios from "axios";
-import { Button, Spinner } from "flowbite-react";
-import { useEffect, useState } from "react";
-import { HiOutlinePlus } from "react-icons/hi";
-import { toast } from "sonner";
+import UserFilterBar from '@/components/admin/users/user-filter-bar';
+import UserGrid from '@/components/admin/users/user-grid-view';
+import UserTable from '@/components/admin/users/user-table-view';
+import CreateUserModal from '@/components/admin/users/users-create-modal';
+import PageHeader from '@/components/ui/page-header';
+import axios from 'axios';
+import { Button, Spinner } from 'flowbite-react';
+import { useEffect, useState } from 'react';
+import { HiOutlinePlus } from 'react-icons/hi';
+import { toast } from 'sonner';
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [viewMode, setViewMode] = useState("table"); // default ke tabel
-  const [filterRole, setFilterRole] = useState("ALL");
+  const [viewMode, setViewMode] = useState('table'); // default ke tabel
+  const [filterRole, setFilterRole] = useState('ALL');
 
   useEffect(() => {
     fetchUsers();
+    fetchIncompleteProfiles();
   }, []);
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("/api/users");
+      const res = await axios.get('/api/users');
       setUsers(res.data);
     } catch (error) {
-      console.error("Gagal mengambil data users:", error);
-      toast.error("Gagal mengambil data users.");
+      console.error('Gagal mengambil data users:', error);
+      toast.error('Gagal mengambil data users.');
     } finally {
       setLoading(false);
     }
   };
 
   const filteredUsers = users.filter((user) =>
-    filterRole === "ALL" ? true : user.role === filterRole,
+    filterRole === 'ALL' ? true : user.role === filterRole,
   );
+  const [incompleteOPDProfiles, setIncompleteOPDProfiles] = useState([]);
+
+  const fetchIncompleteProfiles = async () => {
+    try {
+      const res = await axios.get('/api/opd/incompleted-users');
+      // console.log('🧩 Incomplete OPD profiles:', res.data.incompleteUsers);
+      setIncompleteOPDProfiles(res.data.incompleteUsers.map((u) => u.id));
+    } catch (err) {
+      console.error('Gagal cek incomplete OPD:', err);
+    }
+  };
 
   if (loading) {
     return (
@@ -53,10 +65,10 @@ export default function UserList() {
         title="Manajemen Users"
         showSearch={true}
         breadcrumbsProps={{
-          home: { label: "Beranda", href: "/adm/dashboard" },
+          home: { label: 'Beranda', href: '/adm/dashboard' },
 
           customRoutes: {
-            adm: { label: "Dashboard Admin", href: "/adm/dashboard" },
+            adm: { label: 'Dashboard Admin', href: '/adm/dashboard' },
           },
         }}
       />
@@ -80,14 +92,17 @@ export default function UserList() {
         <p className="text-gray-600 dark:text-gray-400">
           Tidak ada user dengan filter ini.
         </p>
-      ) : viewMode === "table" ? (
-        <UserTable users={filteredUsers} />
+      ) : viewMode === 'table' ? (
+        <UserTable
+          users={filteredUsers}
+          incompleteProfiles={incompleteOPDProfiles}
+        />
       ) : (
         <UserGrid
           users={filteredUsers}
-          onShow={(user) => console.log("Show", user)}
-          onEdit={(user) => console.log("Edit", user)}
-          onDelete={(user) => console.log("Delete", user)}
+          onShow={(user) => console.log('Show', user)}
+          onEdit={(user) => console.log('Edit', user)}
+          onDelete={(user) => console.log('Delete', user)}
         />
       )}
 
