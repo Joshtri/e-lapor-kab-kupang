@@ -1,6 +1,6 @@
 "use client";
 
-import ReportFilterBar from "@/components/admin/report/report-filter-bar";
+import ReportFilterBar from "@/components/admin/report/ReportFilterBar";
 import ReportGrid from "@/components/bupati/report/report-grid-view";
 import ReportTable from "@/components/bupati/report/report-table-view";
 import PageHeader from "@/components/ui/page-header";
@@ -8,7 +8,7 @@ import axios from "axios";
 import { Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import ReportModal from "@/components/admin/report/report-create";
+import ReportModal from "@/components/admin/report/ReportCreateModal";
 
 export default function ReportList() {
   const [reports, setReports] = useState([]);
