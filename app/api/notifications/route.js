@@ -16,13 +16,14 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { userId, message, link } = await req.json();
+      const { userId, message, link,opdId } = await req.json();
   
       const newNotification = await prisma.notification.create({
         data: {
           userId,
           message,
           link,
+          opdId : Number(opdId),
         },
       });
   
