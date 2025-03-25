@@ -2,7 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { HiArrowLeft, HiOutlineRefresh, HiRefresh, HiSearch, HiX } from "react-icons/hi";
+import {
+  HiArrowLeft,
+  HiOutlineRefresh,
+  HiRefresh,
+  HiSearch,
+  HiX,
+  HiDownload,
+} from "react-icons/hi";
+import { FaFileExcel, FaFilePdf } from "react-icons/fa";
 import Breadcrumbs from "@/components/ui/breadcrumbs";
 import { Button, Tooltip } from "flowbite-react";
 
@@ -14,7 +22,9 @@ export default function PageHeader({
   showRefreshButton = false,
   searchQuery = "",
   onSearchChange = () => {},
-  onRefreshClick = () => {}, // Handler untuk refresh
+  onRefreshClick = () => {},
+  onExportExcel = null,
+  onExportPDF = null,
   breadcrumbsProps = {},
 }) {
   const [showSearchBar, setShowSearchBar] = useState(false);
@@ -28,10 +38,12 @@ export default function PageHeader({
 
   return (
     <section className="mb-6">
-      {/* className="flex flex-wrap items-center justify-between gap-4 mb-4" */}
       <div
-        className={`flex flex-wrap items-center gap-4 mb-4 ${showBackButton  ? "justify-between" : "justify-end"}`}
+        className={`flex flex-wrap items-center gap-4 mb-4 ${
+          showBackButton ? "justify-between" : "justify-end"
+        }`}
       >
+        {/* Kembali */}
         {showBackButton && (
           <Link
             href={backHref}
@@ -42,43 +54,84 @@ export default function PageHeader({
           </Link>
         )}
 
-      <div className="flex items-center gap-2">
-        {/* Tombol Refresh (Opsional) */}
-        {showRefreshButton && (
-          <Tooltip content="Refresh" position="bottom">
-            <Button color="blue" size="sm" onClick={onRefreshClick} icon={HiOutlineRefresh}>
-              <HiRefresh className="w-4 h-4"/>
-            </Button>
-          </Tooltip>
-        )}
-
-        {showSearch &&
-          (showSearchBar ? (
-            <div className="relative w-full md:w-auto">
-              <input
-                ref={inputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Cari laporan..."
-                className="w-full md:w-64 px-4 py-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:placeholder-gray-400"
-              />
-              <button
-                onClick={() => setShowSearchBar(false)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        {/* Action Bar (sebaris) */}
+        <div className="flex items-center gap-2">
+          {/* 🔄 Refresh */}
+          {showRefreshButton && (
+            <Tooltip content="Refresh" position="bottom">
+              <Button
+                color="blue"
+                size="sm"
+                onClick={onRefreshClick}
+                className="p-2"
               >
-                <HiX className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => setShowSearchBar(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-            >
-              <HiSearch className="w-5 h-5" />
-              Cari
-            </button>
-          ))}
+                <HiRefresh className="w-4 h-4" />
+              </Button>
+            </Tooltip>
+          )}
+
+          {/* ⬇️ Export Excel */}
+          {onExportExcel && (
+            <Tooltip content="Export ke Excel" position="bottom">
+              <Button
+                color="success"
+                size="sm"
+                onClick={onExportExcel}
+                className="p-2"
+              >
+                <FaFileExcel className="w-4 h-4" />
+              </Button>
+            </Tooltip>
+          )}
+
+          {/* ⬇️ Export PDF */}
+          {onExportPDF && (
+            <Tooltip content="Export ke PDF" position="bottom">
+              <Button
+                color="light"
+                size="sm"
+                onClick={onExportPDF}
+                className="p-2"
+              >
+                <FaFilePdf className="w-4 h-4 text-red-600" />
+              </Button>
+            </Tooltip>
+          )}
+
+          {/* 🔍 Search */}
+          {showSearch &&
+            (showSearchBar ? (
+              <div className="relative w-full md:w-auto">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  placeholder="Cari..."
+                  className="w-full md:w-64 px-4 py-2 text-sm text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:placeholder-gray-400"
+                />
+                <button
+                  onClick={() => {
+                    setShowSearchBar(false);
+                    onSearchChange("");
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  <HiX className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <Tooltip content="Cari" position="bottom">
+                <Button
+                  size="sm"
+                  color="gray"
+                  onClick={() => setShowSearchBar(true)}
+                  className="p-2"
+                >
+                  <HiSearch className="w-5 h-5" />
+                </Button>
+              </Tooltip>
+            ))}
         </div>
       </div>
 
