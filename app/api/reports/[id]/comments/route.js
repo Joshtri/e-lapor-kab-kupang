@@ -1,5 +1,5 @@
-import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import prisma from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 
 // POST komentar
 export async function POST(req, context) {
@@ -8,7 +8,7 @@ export async function POST(req, context) {
 
   if (!userId || !comment) {
     return NextResponse.json(
-      { error: "userId dan comment wajib diisi." },
+      { error: 'userId dan comment wajib diisi.' },
       { status: 400 },
     );
   }
@@ -24,9 +24,9 @@ export async function POST(req, context) {
 
     return NextResponse.json(newComment, { status: 201 });
   } catch (error) {
-    console.error("Gagal menambahkan komentar:", error);
+    console.error('Gagal menambahkan komentar:', error);
     return NextResponse.json(
-      { error: "Gagal menambahkan komentar." },
+      { error: 'Gagal menambahkan komentar.' },
       { status: 500 },
     );
   }
@@ -41,18 +41,26 @@ export async function GET(req, context) {
       where: { reportId: Number(id) },
       include: {
         user: {
-          select: { name: true },
+          select: {
+            name: true,
+            role: true,
+            opd: {
+              select: {
+                name: true,
+              },
+            },
+          },
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     });
 
     return NextResponse.json(comments);
   } catch (error) {
-    console.error("Gagal mengambil komentar:", error);
+    console.error('Gagal mengambil komentar:', error);
     return NextResponse.json(
-      { error: "Gagal mengambil komentar." },
-      { status: 500 },
+      { error: 'Gagal mengambil komentar.' },
+      { status: 500 }
     );
   }
 }
