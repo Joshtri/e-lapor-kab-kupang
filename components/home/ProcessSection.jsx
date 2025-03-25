@@ -1,91 +1,110 @@
-"use client";
+"use client"
 
-import { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import {
-  HiOutlineDocumentReport,
-  HiOutlineExclamation,
-  HiOutlineClock,
-  HiOutlineCheckCircle,
-} from "react-icons/hi";
+import { useRef, useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { HiOutlineMail, HiMailOpen, HiPaperAirplane, HiOutlineClipboardCheck } from "react-icons/hi"
 
 export default function ProcessSection() {
-  const processRef = useRef(null);
-  const [activeStep, setActiveStep] = useState(0);
-  const [isScrollingLocked, setIsScrollingLocked] = useState(false);
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const processRef = useRef(null)
+  const [activeStep, setActiveStep] = useState(0)
+  const [isScrollingLocked, setIsScrollingLocked] = useState(false)
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const processSteps = [
-    { title: "Buat Laporan", description: "Daftarkan diri dan buat laporan dengan detail yang jelas.", icon: HiOutlineDocumentReport, color: "blue" },
-    { title: "Verifikasi", description: "Tim kami akan memverifikasi laporan Anda.", icon: HiOutlineExclamation, color: "yellow" },
-    { title: "Proses", description: "Laporan diteruskan ke OPD terkait untuk ditindaklanjuti.", icon: HiOutlineClock, color: "purple" },
-    { title: "Penyelesaian", description: "Laporan diselesaikan dan Anda mendapat notifikasi.", icon: HiOutlineCheckCircle, color: "green" },
-  ];
+    {
+      title: "Tulis Laporan",
+      description: "Daftarkan diri dan buat laporan dengan detail yang jelas.",
+      icon: HiOutlineMail,
+      color: "blue",
+      envelopeState: "closed",
+    },
+    {
+      title: "Verifikasi",
+      description: "Tim kami akan memverifikasi laporan Anda.",
+      icon: HiMailOpen,
+      color: "yellow",
+      envelopeState: "opening",
+    },
+    {
+      title: "Proses",
+      description: "Laporan diteruskan ke OPD terkait untuk ditindaklanjuti.",
+      icon: HiPaperAirplane,
+      color: "purple",
+      envelopeState: "sending",
+    },
+    {
+      title: "Penyelesaian",
+      description: "Laporan diselesaikan dan Anda mendapat notifikasi.",
+      icon: HiOutlineClipboardCheck,
+      color: "green",
+      envelopeState: "delivered",
+    },
+  ]
 
-  // ✅ Deteksi apakah user sedang di mobile
+  // Deteksi apakah user sedang di mobile
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768); // Mobile jika < 768px
-    };
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
+      setIsMobile(window.innerWidth < 768) // Mobile jika < 768px
+    }
+    checkScreenSize()
+    window.addEventListener("resize", checkScreenSize)
+    return () => window.removeEventListener("resize", checkScreenSize)
+  }, [])
 
   useEffect(() => {
-    if (isMobile) return; // ❌ Jangan jalankan animasi jika di mobile
+    if (isMobile) return // Jangan jalankan animasi jika di mobile
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
-          setIsScrollingLocked(true);
-          setActiveStep(1);
-          setHasAnimated(true);
+          setIsScrollingLocked(true)
+          setActiveStep(1)
+          setHasAnimated(true)
         }
       },
-      { threshold: 0.9 }
-    );
+      { threshold: 0.9 },
+    )
 
     if (processRef.current) {
-      observer.observe(processRef.current);
+      observer.observe(processRef.current)
     }
 
-    return () => observer.disconnect();
-  }, [hasAnimated, isMobile]);
+    return () => observer.disconnect()
+  }, [hasAnimated, isMobile])
 
   useEffect(() => {
     if (isScrollingLocked) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = ""
     }
 
     return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isScrollingLocked]);
+      document.body.style.overflow = ""
+    }
+  }, [isScrollingLocked])
 
   useEffect(() => {
-    if (isMobile) return; // ❌ Jangan jalankan animasi jika di mobile
+    if (isMobile) return // Jangan jalankan animasi jika di mobile
 
     if (activeStep > 0 && activeStep < processSteps.length) {
       const timer = setTimeout(() => {
-        setActiveStep((prev) => prev + 1);
-      }, 900);
+        setActiveStep((prev) => prev + 1)
+      }, 900)
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer)
     }
 
     if (activeStep >= processSteps.length) {
       setTimeout(() => {
-        setIsScrollingLocked(false);
-      }, 800);
+        setIsScrollingLocked(false)
+      }, 800)
     }
-  }, [activeStep, isMobile]);
+  }, [activeStep, isMobile, processSteps.length])
 
   return (
-    <div id="process-section" ref={processRef} className="py-20 bg-gray-50 dark:bg-gray-800 relative">
+    <div id="process-section" ref={processRef} className="py-20 bg-white relative">
       <div className="container mx-auto px-4">
         {/* Judul */}
         <motion.div
@@ -94,23 +113,45 @@ export default function ProcessSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Bagaimana Proses Pengaduan Bekerja?
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Kami memastikan setiap pengaduan ditangani dengan cepat dan efektif. Berikut adalah alur proses pengaduan di platform kami:
+          <div className="inline-flex items-center justify-center mb-4">
+            <div className="bg-blue-100 p-3 rounded-full">
+              <HiOutlineMail className="text-blue-600 h-8 w-8" />
+            </div>
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Bagaimana Proses Pengaduan Bekerja?</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Kami memastikan setiap pengaduan ditangani dengan cepat dan efektif. Berikut adalah alur proses pengaduan di
+            platform kami:
           </p>
         </motion.div>
 
-        {/* Garis Tengah Horizontal Animasi */}
+        {/* Envelope path animation */}
         {!isMobile && (
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: activeStep === processSteps.length ? "100%" : `${(activeStep / processSteps.length) * 100}%` }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="absolute top-[67%] left-0 right-0 mx-auto h-[4px] bg-blue-500 dark:bg-blue-600 z-0"
-            style={{ maxWidth: "60%", transform: "translateY(-50%)" }}
-          ></motion.div>
+          <div className="relative mb-16">
+            <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 transform -translate-y-1/2"></div>
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{
+                width: activeStep === processSteps.length ? "100%" : `${(activeStep / processSteps.length) * 100}%`,
+              }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              className="absolute top-1/2 left-0 h-2 bg-blue-500 transform -translate-y-1/2 z-10"
+            ></motion.div>
+
+            {/* Envelope animation along the path */}
+            {activeStep > 0 && activeStep <= processSteps.length && (
+              <motion.div
+                initial={{ left: "0%" }}
+                animate={{ left: `${((activeStep - 1) / (processSteps.length - 1)) * 100}%` }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+                className="absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 z-20"
+              >
+                <div className="bg-white p-2 rounded-full shadow-lg">
+                  <HiPaperAirplane className="h-8 w-8 text-blue-600 transform rotate-90" />
+                </div>
+              </motion.div>
+            )}
+          </div>
         )}
 
         {/* Steps */}
@@ -124,23 +165,38 @@ export default function ProcessSection() {
               className="relative"
             >
               <motion.div
-                className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-700 h-full"
+                className="bg-white rounded-lg p-6 shadow-lg border border-gray-200 h-full"
                 whileHover={{ scale: 1.05 }}
               >
-                {/* Icon dengan efek putaran saat muncul */}
+                {/* Envelope icon with animation */}
                 <motion.div
                   initial={isMobile ? {} : { rotate: 0 }}
                   animate={isMobile || activeStep > index ? { rotate: 360 } : {}}
                   transition={{ duration: 0.8, ease: "easeInOut" }}
-                  className={`flex items-center justify-center w-16 h-16 rounded-full bg-${step.color}-100 dark:bg-${step.color}-900 text-${step.color}-600 dark:text-${step.color}-300 mx-auto mb-4`}
+                  className={`flex items-center justify-center w-16 h-16 rounded-full bg-${step.color}-100 mx-auto mb-4`}
                 >
-                  <step.icon className="h-8 w-8" />
+                  <step.icon className={`h-8 w-8 text-${step.color}-600`} />
                 </motion.div>
+
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {index + 1}. {step.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
+                  <p className="text-gray-600">{step.description}</p>
+                </div>
+
+                {/* Envelope status indicator */}
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-center">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${step.color}-100 text-${step.color}-800`}
+                    >
+                      {step.envelopeState === "closed" && "Surat Ditulis"}
+                      {step.envelopeState === "opening" && "Surat Dibuka"}
+                      {step.envelopeState === "sending" && "Surat Dikirim"}
+                      {step.envelopeState === "delivered" && "Surat Diterima"}
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -148,5 +204,6 @@ export default function ProcessSection() {
         </div>
       </div>
     </div>
-  );
+  )
 }
+
