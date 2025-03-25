@@ -154,7 +154,7 @@ const ReportModal = ({ openModal, setOpenModal, user }) => {
               <option value="">Pilih OPD</option>
               {opds.map((opd) => (
                 <option key={opd.opdId} value={opd.opdId}>
-                  {opd.nameInstansi} - {opd.opdId}
+                  {opd.name}
                 </option>
               ))}
             </Select>
