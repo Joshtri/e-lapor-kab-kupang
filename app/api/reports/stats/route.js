@@ -11,16 +11,16 @@ export async function GET(req) {
 
     // Hitung jumlah laporan berdasarkan status
     const pending = await prisma.report.count({
-      where: { ...whereClause, status: "PENDING" },
+      where: { ...whereClause, bupatiStatus: "PENDING" },
     });
     const inProgress = await prisma.report.count({
-      where: { ...whereClause, status: "PROSES" },
+      where: { ...whereClause, bupatiStatus: "PROSES" },
     });
     const completed = await prisma.report.count({
-      where: { ...whereClause, status: "SELESAI" },
+      where: { ...whereClause, bupatiStatus: "SELESAI" },
     });
     const rejected = await prisma.report.count({
-      where: { ...whereClause, status: "DITOLAK" },
+      where: { ...whereClause, bupatiStatus: "DITOLAK" },
     });
 
     const total = pending + inProgress + completed + rejected;
