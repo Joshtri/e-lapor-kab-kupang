@@ -54,6 +54,7 @@ const AdminDashboard = () => {
           { title: "Ikhtisar", content: <DashboardStats stats={stats} loading={loadingStats} /> },
           { title: "Statistik", content: <DashboardChart chartData={chartData} categoryStats={categoryStats} loading={loadingChart} /> },
           { title: "Laporan", content: <DashboardReports reports={recentReports} loading={loadingReports} /> },
+          // { title: "Kinerja OPD", content: <p>kinerja opd</p> },
         ]}
       />
     </div>
