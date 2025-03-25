@@ -13,21 +13,28 @@ export default function OPDForm({ onSuccess }) {
     name: "",
     email: "",
     password: "",
+    contactNumber: "",
   });
 
   const handleSubmit = async () => {
     try {
-      await axios.post("/api/opd/create", form);
+      await axios.post("/api/users/create", {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        contactNumber: form.contactNumber,
+        role: "OPD",
+      });
+
       toast.success("✅ OPD berhasil ditambahkan!");
-      
-      // Reset form setelah berhasil
+
       setForm({
         name: "",
         email: "",
         password: "",
+        contactNumber: "",
       });
 
-      // Redirect langsung setelah sukses
       router.push("/adm/org-perangkat-daerah");
 
       if (onSuccess) onSuccess();
@@ -45,7 +52,10 @@ export default function OPDForm({ onSuccess }) {
           home: { label: "Beranda", href: "/adm/dashboard" },
           customRoutes: {
             adm: { label: "Dashboard Admin", href: "/adm/dashboard" },
-            "org-perangkat-daerah": { label: "Manajemen OPD", href: "/adm/org-perangkat-daerah" },
+            "org-perangkat-daerah": {
+              label: "Manajemen OPD",
+              href: "/adm/org-perangkat-daerah",
+            },
             create: {
               label: "Tambah OPD",
               href: "/adm/org-perangkat-daerah/create",
@@ -53,6 +63,7 @@ export default function OPDForm({ onSuccess }) {
           },
         }}
       />
+
       <div className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
         <div>
           <Label htmlFor="name" value="Nama OPD" />
@@ -72,6 +83,16 @@ export default function OPDForm({ onSuccess }) {
             placeholder="Email OPD"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="contactNumber" value="Nomor Telepon OPD" />
+          <TextInput
+            id="contactNumber"
+            placeholder="Nomor Telepon OPD"
+            value={form.contactNumber}
+            onChange={(e) => setForm({ ...form, contactNumber: e.target.value })}
           />
         </div>
 
