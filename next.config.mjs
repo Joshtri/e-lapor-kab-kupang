@@ -1,13 +1,14 @@
 const nextConfig = {
-  output: "standalone", // Pastikan ini ada untuk mendukung Vercel deployment
+  output: 'standalone', // Pastikan ini ada untuk mendukung Vercel deployment
   experimental: {
     serverActions: true, // Jika menggunakan Server Actions, aktifkan ini
   },
   eslint: {
-    ignoreDuringBuilds: true, // Hindari error ESLint saat build di Vercel
+    dirs: ['pages', 'components', 'lib'], // Direktori yang akan diperiksa ESLint
+    ignoreDuringBuilds: false, // Set ke true jika ingin mengabaikan error ESLint saat build
   },
   images: {
-    domains: ["placehold.co"], // Tambahkan domain eksternal yang digunakan
+    domains: ['placehold.co'], // Tambahkan domain eksternal yang digunakan
   },
 };
 

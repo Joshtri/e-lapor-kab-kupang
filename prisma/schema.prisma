@@ -8,42 +8,71 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  name          String         @db.VarChar(100)
-  nikNumber     String         @unique @db.VarChar(16)
-  contactNumber String         @db.VarChar(15)
-  email         String         @unique @db.VarChar(100)
-  password      String         @db.VarChar(255)
-  role          Role           @default(PELAPOR)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(100)
+  nikNumber     String?  @unique @db.VarChar(16)
+  contactNumber String?  @db.VarChar(15)
+  email         String   @unique @db.VarChar(100)
+  password      String   @db.VarChar(255)
+  role          Role     @default(PELAPOR)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relasi
   comments      Comment[]
   logs          Log[]
   reports       Report[]
-  bugReports    BugReport[] // ✅ Relasi ke laporan bug
-  Notifications Notification[]
+  bugReports    BugReport[]
+  notifications Notification[]
 
-  // ✅ Tambahkan field untuk reset password
   resetPasswordToken   String?   @db.Text
   resetPasswordExpires DateTime?
+
+  // ❌ HAPUS: fields dan references
+  opd OPD? @relation("UserToOPD")
+}
+
+model OPD {
+  id               Int     @id @default(autoincrement())
+  name    String @db.VarChar(255) // nama instansi, misalnya "Dinas Kesehatan"
+  alamat  String? @db.VarChar(255) // opsional: alamat instansi
+  email   String? @unique @db.VarChar(100) // email resmi instansi
+  telp    String? @db.VarChar(20)          // telepon kantor, bukan staff
+  website String? @db.VarChar(100)         // opsional: website instansi
+
+  staffUserId Int  @unique
+  staff       User @relation("UserToOPD", fields: [staffUserId], references: [id]) // ✅ hanya di sini pakai fields & references
+
+  reports   Report[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Report {
-  id     Int @id @default(autoincrement())
+  id     Int  @id @default(autoincrement())
   userId Int
-  opdId  Int? // ✅ OPD yang dituju oleh laporan ini
+  opdId  Int? // mengacu ke userId OPD
 
-  title       String    @db.VarChar(255)
-  description String
-  category    Category
-  priority    Priority
-  status      Status    @default(PENDING)
+  title        String   @db.VarChar(255)
+  description  String
+  category     Category
+  priority     Priority
+  bupatiStatus Status   @default(PENDING)
+  opdStatus    Status?  @default(PENDING)
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  comments    Comment[]
-  logs        Log[]
-  user        User      @relation(fields: [userId], references: [id])
-  opd         OPD?       @relation(fields: [opdId], references: [id])
+  assignedAt  DateTime? // waktu laporan ditugaskan ke OPD
+  respondedAt DateTime? // waktu OPD mulai merespon laporan
+
+  // Relasi
+  comments Comment[]
+  logs     Log[]
+  user     User      @relation(fields: [userId], references: [id])
+
+  opd OPD? @relation(fields: [opdId], references: [id])
+
+  // opd      OPD?      @relation("OpdReports", fields: [opdId], references: [userId])
 }
 
 model Comment {
@@ -63,82 +92,42 @@ model Log {
   userId    Int
   action    Action
   timestamp DateTime @default(now())
-  report    Report   @relation(fields: [reportId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+
+  report Report @relation(fields: [reportId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 model BugReport {
   id          Int         @id @default(autoincrement())
   userId      Int
-  title       String      @db.VarChar(255) // ✅ Judul masalah
-  description String // ✅ Deskripsi lengkap bug/kesalahan
-  priority    BugPriority @default(LOW) // ✅ Prioritas laporan bug
-  status      BugStatus   @default(OPEN) // ✅ Status bug
+  title       String      @db.VarChar(255)
+  description String
+  priority    BugPriority @default(LOW)
+  status      BugStatus   @default(OPEN)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  user        User        @relation(fields: [userId], references: [id]) // ✅ Relasi ke user
-}
 
-// model OPD {
-//   id          Int     @id @default(autoincrement())
-//   name        String  @db.VarChar(255) // ✅ Nama Instansi OPD (bebas, tidak enum)
-//   email       String? @unique @db.VarChar(100) // ✅ Email Resmi OPD (opsional)
-//   phoneNumber String? @db.VarChar(15) // ✅ Nomor Kontak OPD (opsional)
-//   address     String? // ✅ Alamat OPD (opsional)
-//   wilayah     String? // ✅ Wilayah OPD (misalnya "Kota Kupang", "Kabupaten Flores")
-//   password    String  @db.VarChar(255) // ✅ Password untuk login OPD
-
-//   // ✅ Informasi Kepala OPD atau Penanggung Jawab
-//   kepalaOpdName  String  @db.VarChar(100) // ✅ Nama Kepala OPD
-//   kepalaOpdNIP   String? @unique @db.VarChar(18) // ✅ NIP Kepala OPD (jika ASN)
-//   kepalaOpdEmail String? @db.VarChar(100) // ✅ Email Kepala OPD
-//   kepalaOpdPhone String? @db.VarChar(15) // ✅ Nomor HP Kepala OPD
-
-//   // ✅ Keterangan tambahan
-//   description String? // ✅ Deskripsi atau tugas utama OPD
-//   website     String? @db.VarChar(255) // ✅ Website resmi OPD (jika ada)
-//   logoUrl     String? @db.VarChar(255) // ✅ URL Logo OPD
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-//separate OPD model which is could be one of the user role
-model OPD {
-  id          Int    @id @default(autoincrement())
-  name        String @db.VarChar(255)
-  email       String @unique @db.VarChar(100)
-  phoneNumber String @db.VarChar(15)
-  password    String @db.VarChar(255)
-
-  staffFirstName   String  @db.VarChar(100) // Nama depan staff yang mengelola akses
-  staffMiddleName  String? @db.VarChar(100) // Nama tengah (opsional)
-  staffLastName    String  @db.VarChar(100) // Nama belakang staff
-  staffPosition    String  @db.VarChar(100) // Jabatan staff (misalnya "Ajudan", "Staff IT", dll.)
-  staffEmail       String? @unique @db.VarChar(100) // Email staff (opsional)
-  staffPhoneNumber String? @db.VarChar(15) // No. telepon staff (opsional)
-
-  reports       Report[] // ✅ Relasi ke laporan yang ditujukan ke OPD ini
-  Notifications Notification[]
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Notification {
   id        Int      @id @default(autoincrement())
-  userId    Int? // ID User yang menerima notifikasi (opsional, bisa null untuk umum)
-  opdId     Int? // ID OPD yang menerima notifikasi (opsional, bisa null untuk umum)
-  message   String   @db.VarChar(255) // Isi notifikasi
-  link      String?  @db.VarChar(255) // Link tujuan jika diklik
-  isRead    Boolean  @default(false) // Status apakah sudah dibaca
+  userId    Int? // Untuk user biasa, bisa null jika ditujukan ke OPD
+  opdId     Int? // Berisi userId dari OPD
+  message   String   @db.VarChar(255)
+  link      String?  @db.VarChar(255)
+  isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id])
-  opd  OPD?  @relation(fields: [opdId], references: [id]) // Relasi ke OPD yang menerima
+  // opd  OPD?  @relation(fields: [opdId], references: [userId])
 }
 
 enum Role {
   BUPATI
   ADMIN
   PELAPOR
+  OPD
 }
 
 enum Category {
@@ -146,6 +135,7 @@ enum Category {
   PELAYANAN
   SOSIAL
   LAINNYA
+  KEAMANAN
 }
 
 enum Priority {
