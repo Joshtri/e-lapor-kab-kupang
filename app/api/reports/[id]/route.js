@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function GET(req, { params }) {
   try {
@@ -10,6 +10,8 @@ export async function GET(req, { params }) {
       include: {
         user: {
           select: {
+            id: true,
+            email: true,
             name: true,
           },
         },
@@ -17,7 +19,10 @@ export async function GET(req, { params }) {
     });
 
     if (!report) {
-      return NextResponse.json({ message: "Laporan tidak ditemukan." }, { status: 404 });
+      return NextResponse.json(
+        { message: 'Laporan tidak ditemukan.' },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json({
@@ -25,16 +30,16 @@ export async function GET(req, { params }) {
       title: report.title,
       priority: report.priority,
       description: report.description,
-      pelapor: report.user?.name || "Tidak diketahui",
+      pelapor: report.user?.name || 'Tidak diketahui',
       kategori: report.category,
-      status: report.status,
+      bupatiStatus: report.bupatiStatus,
       createdAt: report.createdAt,
     });
   } catch (error) {
-    console.error("Error fetching report details:", error.message, error);
+    console.error('Error fetching report details:', error.message, error);
     return NextResponse.json(
-      { message: "Gagal mengambil data laporan.", error: error.message },
-      { status: 500 }
+      { message: 'Gagal mengambil data laporan.', error: error.message },
+      { status: 500 },
     );
   }
 }
@@ -61,7 +66,7 @@ export async function DELETE(req, { params }) {
       where: { id: parseInt(params.id) },
     });
 
-    return NextResponse.json({ message: "Report deleted successfully" });
+    return NextResponse.json({ message: 'Report deleted successfully' });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
