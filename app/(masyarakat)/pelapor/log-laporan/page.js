@@ -1,29 +1,26 @@
-"use client";
+'use client';
 
-import PageHeader from "@/components/ui/page-header";
-import axios from "axios";
-import { Badge, Card, Spinner } from "flowbite-react";
-import { useEffect, useState } from "react";
-import {
-  HiOutlineChatAlt2,
-  HiOutlineClock
-} from "react-icons/hi";
+import PageHeader from '@/components/ui/page-header';
+import axios from 'axios';
+import { Badge, Card, Spinner } from 'flowbite-react';
+import { useEffect, useState } from 'react';
+import { HiOutlineChatAlt2, HiOutlineClock } from 'react-icons/hi';
 
 export default function LogLaporanPage() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const resUser = await axios.get("/api/auth/me");
+        const resUser = await axios.get('/api/auth/me');
         const userId = resUser.data.user.id;
 
         const res = await axios.get(`/api/reports?userId=${userId}`);
         setReports(res.data);
       } catch (error) {
-        console.error("Gagal mengambil laporan:", error);
+        console.error('Gagal mengambil laporan:', error);
       } finally {
         setLoading(false);
       }
@@ -32,7 +29,7 @@ export default function LogLaporanPage() {
   }, []);
 
   const filteredReports = reports.filter((report) =>
-    report.title.toLowerCase().includes(searchQuery.toLowerCase())
+    report.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   if (loading) {
@@ -53,9 +50,9 @@ export default function LogLaporanPage() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         breadcrumbsProps={{
-          home: { label: "Beranda", href: "/pelapor/dashboard" },
+          home: { label: 'Beranda', href: '/pelapor/dashboard' },
           customRoutes: {
-            pelapor: { label: "Dashboard Pelapor", href: "/pelapor/dashboard" },
+            pelapor: { label: 'Dashboard Pelapor', href: '/pelapor/dashboard' },
           },
         }}
       />
@@ -65,14 +62,14 @@ export default function LogLaporanPage() {
       {filteredReports.length === 0 ? (
         <p className="text-gray-600 dark:text-gray-400 text-center">
           {searchQuery
-            ? "Tidak ada laporan yang cocok."
-            : "Anda belum memiliki laporan."}
+            ? 'Tidak ada laporan yang cocok.'
+            : 'Anda belum memiliki laporan.'}
         </p>
       ) : (
         <div className="space-y-4">
           {filteredReports.map((report) => {
             const latestComment = report.comments?.find(
-              (comment) => comment.user.role === "PELAPOR"
+              (comment) => comment.user.role === 'PELAPOR',
             );
 
             return (
