@@ -93,7 +93,7 @@ export default function RegistrationPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 py-12 px-4 mt-14">
       <div className="container mx-auto max-w-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
-import prisma from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import bcrypt from 'bcrypt';
+import prisma from '@/lib/prisma';
 
 export async function POST(req) {
   try {
@@ -16,7 +16,7 @@ export async function POST(req) {
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "Email atau NIK sudah terdaftar" },
+        { error: 'Email atau NIK sudah terdaftar' },
         { status: 400 },
       );
     }
@@ -32,13 +32,13 @@ export async function POST(req) {
         contactNumber,
         email,
         password: hashedPassword,
-        role: "PELAPOR",
+        role: 'PELAPOR',
       },
     });
 
     return NextResponse.json(
       {
-        message: "User berhasil didaftarkan!",
+        message: 'User berhasil didaftarkan!',
         user: { id: newUser.id, name: newUser.name, email: newUser.email },
       },
       { status: 201 },
