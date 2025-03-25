@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { Spinner, Card } from "flowbite-react";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { Spinner, Card } from 'flowbite-react';
 
 const ReportDetailPage = ({ params }) => {
   const router = useRouter();
@@ -22,7 +22,7 @@ const ReportDetailPage = ({ params }) => {
       const response = await axios.get(`/api/reports/${id}`);
       setReport(response.data);
     } catch (error) {
-      console.error("Failed to fetch report details:", error);
+      console.error('Failed to fetch report details:', error);
     } finally {
       setLoading(false);
     }
@@ -61,25 +61,25 @@ const ReportDetailPage = ({ params }) => {
 
         <div className="mt-4 space-y-2">
           <p>
-            <strong className="text-gray-800 dark:text-white">Pelapor:</strong>{" "}
+            <strong className="text-gray-800 dark:text-white">Pelapor:</strong>{' '}
             {report.pelapor}
           </p>
           <p>
-            <strong className="text-gray-800 dark:text-white">Kategori:</strong>{" "}
+            <strong className="text-gray-800 dark:text-white">Kategori:</strong>{' '}
             {report.kategori}
           </p>
           <p>
-            <strong className="text-gray-800 dark:text-white">Status:</strong>{" "}
+            <strong className="text-gray-800 dark:text-white">Status:</strong>{' '}
             <span
               className={`px-3 py-1 rounded-full text-white text-sm ${statusBadge(
-                report.status
+                report.bupatiStatus,
               )}`}
             >
-              {report.status}
+              {report.bupatiStatus}
             </span>
           </p>
           <p>
-            <strong className="text-gray-800 dark:text-white">Tanggal:</strong>{" "}
+            <strong className="text-gray-800 dark:text-white">Tanggal:</strong>{' '}
             {new Date(report.createdAt).toLocaleDateString()}
           </p>
         </div>
@@ -87,7 +87,7 @@ const ReportDetailPage = ({ params }) => {
 
       <button
         className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        onClick={() => router.back()}
+        onClick={() => router.push('/opd/laporan-warga')}
       >
         Kembali
       </button>
@@ -97,16 +97,16 @@ const ReportDetailPage = ({ params }) => {
 
 const statusBadge = (status) => {
   switch (status) {
-    case "SELESAI":
-      return "bg-green-500";
-    case "PROSES":
-      return "bg-yellow-500";
-    case "PENDING":
-      return "bg-gray-500";
-    case "DITOLAK":
-      return "bg-red-500";
+    case 'SELESAI':
+      return 'bg-green-500';
+    case 'PROSES':
+      return 'bg-yellow-500';
+    case 'PENDING':
+      return 'bg-gray-500';
+    case 'DITOLAK':
+      return 'bg-red-500';
     default:
-      return "bg-gray-400";
+      return 'bg-gray-400';
   }
 };
 
