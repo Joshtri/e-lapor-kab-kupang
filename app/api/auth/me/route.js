@@ -1,14 +1,17 @@
-import { NextResponse } from "next/server";
-import { verify } from "jsonwebtoken";
-import { cookies } from "next/headers";
-import prisma from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import { verify } from 'jsonwebtoken';
+import { cookies } from 'next/headers';
+import prisma from '@/lib/prisma';
 
 export async function GET() {
   const authCookies = cookies();
-  const token = authCookies.get("auth_token")?.value;
+  const token = authCookies.get('auth_token')?.value;
 
   if (!token) {
-    return NextResponse.json({ error: "Unauthorized - Token missing" }, { status: 401 });
+    return NextResponse.json(
+      { error: 'Unauthorized - Token missing' },
+      { status: 401 },
+    );
   }
 
   try {
@@ -16,15 +19,18 @@ export async function GET() {
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
-      select: { id: true, name: true, email: true , role:true},
+      select: { id: true, name: true, email: true, role: true },
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     return NextResponse.json({ user });
   } catch (error) {
-    return NextResponse.json({ error: "Unauthorized - Invalid token" }, { status: 401 });
+    return NextResponse.json(
+      { error: 'Unauthorized - Invalid token' },
+      { status: 401 },
+    );
   }
 }
