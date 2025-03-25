@@ -65,7 +65,7 @@ const ListReport = ({ user }) => {
                 </h3>
                 <Badge color="yellow">
                   <HiOutlineClock className="inline-block mr-1 text-lg" />
-                  {report.status}
+                  {report.bupatiStatus}
                 </Badge>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
