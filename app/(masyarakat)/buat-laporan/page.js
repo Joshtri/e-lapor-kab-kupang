@@ -1,4 +1,4 @@
-import BuatLaporan from '@/components/pelapor/report-modal';
+import BuatLaporan from '@/components/pelapor/CreateReportModal';
 import React from 'react';
 
 export default function BuatLaporanPage() {
