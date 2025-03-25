@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Table, Badge, Button } from 'flowbite-react';
+import { Table, Badge, Button, Tooltip } from 'flowbite-react';
 import { HiOutlineEye, HiPencilAlt, HiChatAlt2 } from 'react-icons/hi';
 import ReportDetail from './ReportDetail';
 import UpdateStatusModalByAdmin from './ReportUpdateStatus';
@@ -76,31 +76,39 @@ export default function ReportTable({ reports }) {
                 {new Date(report.createdAt).toLocaleDateString('id-ID')}
               </Table.Cell>
               <Table.Cell>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    size="xs"
-                    color="blue"
-                    onClick={() => openDetailModal(report)}
-                  >
-                    <HiOutlineEye className="mr-1 h-4 w-4" />
-                    Lihat
-                  </Button>
-                  <Button
-                    size="xs"
-                    color="purple"
-                    onClick={() => openStatusModal(report)}
-                  >
-                    <HiPencilAlt className="mr-1 h-4 w-4" />
-                    Status
-                  </Button>
-                  <Button
-                    size="xs"
-                    color="teal"
-                    onClick={() => openCommentModal(report)}
-                  >
-                    <HiChatAlt2 className="mr-1 h-4 w-4" />
-                    Komentar
-                  </Button>
+                <div className="flex items-center gap-2">
+                  <Tooltip content="Lihat Detail">
+                    <Button
+                      size="xs"
+                      color="gray"
+                      className="p-2"
+                      onClick={() => openDetailModal(report)}
+                    >
+                      <HiOutlineEye className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
+
+                  <Tooltip content="Ubah Status">
+                    <Button
+                      size="xs"
+                      color="gray"
+                      className="p-2"
+                      onClick={() => openStatusModal(report)}
+                    >
+                      <HiPencilAlt className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
+
+                  <Tooltip content="Lihat Komentar">
+                    <Button
+                      size="xs"
+                      color="gray"
+                      className="p-2"
+                      onClick={() => openCommentModal(report)}
+                    >
+                      <HiChatAlt2 className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
                 </div>
               </Table.Cell>
             </Table.Row>
