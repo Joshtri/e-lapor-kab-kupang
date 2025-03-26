@@ -33,6 +33,7 @@ export async function GET(req, { params }) {
       pelapor: report.user?.name || 'Tidak diketahui',
       kategori: report.category,
       bupatiStatus: report.bupatiStatus,
+      opdStatus: report.opdStatus,
       createdAt: report.createdAt,
     });
   } catch (error) {
