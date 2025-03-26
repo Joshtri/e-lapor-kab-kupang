@@ -1,14 +1,18 @@
-"use client";
+'use client';
 
-import { ThemeProvider } from "next-themes";
-import { useEffect, useState } from "react";
-import HeaderBupati from "@/components/bupati/partials/header";
-import FooterBupati from "@/components/bupati/partials/footer";
-import { Toaster } from "sonner";
-import AuthProtectGuard from "@/components/AuthProtectedGuard";
+import { ThemeProvider } from 'next-themes';
+import { useEffect, useState } from 'react';
+import HeaderBupati from '@/components/bupati/partials/header';
+import FooterBupati from '@/components/bupati/partials/footer';
+import { Toaster } from 'sonner';
+import AuthProtectGuard from '@/components/AuthProtectedGuard';
+import BupatiSidebar from '@/components/bupati/partials/sidebar';
 
 export default function BupatiLayout({ children }) {
   const [mounted, setMounted] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   // Pastikan komponen hanya dirender di client-side
   useEffect(() => {
@@ -19,19 +23,23 @@ export default function BupatiLayout({ children }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
-        {/* Toaster untuk notifikasi global */}
-        <Toaster richColors position="top-right" />
 
-        {/* Header Bupati */}
-        <HeaderBupati />
-        <AuthProtectGuard>
-          {/* Konten Utama */}
-          <main className="flex-grow p-4 pt-16">{children}</main>
-        </AuthProtectGuard>
 
-        {/* Footer Bupati */}
-        <FooterBupati />
+      <Toaster richColors position="top-right" />
+      <div className="flex">
+        <BupatiSidebar
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
+        <div
+          className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
+            isSidebarOpen ? 'ml-64' : 'ml-20'
+          }`}
+        >
+          <HeaderBupati toggleSidebar={toggleSidebar} />
+          <main className="mt-20 p-6">{children}</main>
+          <FooterBupati />
+        </div>
       </div>
     </ThemeProvider>
   );
