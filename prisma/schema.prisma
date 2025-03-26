@@ -55,6 +55,7 @@ model Report {
 
   title        String   @db.VarChar(255)
   description  String
+  location     String @default("empty")
   category     Category
   priority     Priority
   bupatiStatus Status   @default(PENDING)

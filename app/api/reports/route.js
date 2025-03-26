@@ -39,15 +39,37 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const data = await req.json();
-    const { userId, title, category, priority, description, opdId } = data;
+    // ⛔ Hapus ini karena tidak digunakan:
+    // const data = await req.json();
 
-    // Validasi wajib
-    if (!userId || !title || !category || !priority || !description || !opdId) {
-      return NextResponse.json({ error: 'Data tidak lengkap' }, { status: 400 });
+    const form = await req.formData();
+
+    const userId = parseInt(form.get('userId'));
+    const title = form.get('title');
+    const category = form.get('category');
+    const priority = form.get('priority');
+    const location = form.get('location');
+    const description = form.get('description');
+    const opdId = parseInt(form.get('opdId'));
+    const files = form.getAll('files'); // kalau ada
+
+    // ✅ Validasi input
+    if (
+      !userId ||
+      !title ||
+      !category ||
+      !priority ||
+      !location ||
+      !description ||
+      !opdId
+    ) {
+      return NextResponse.json(
+        { error: 'Data tidak lengkap' },
+        { status: 400 },
+      );
     }
 
-    // ✅ Cek apakah OPD valid
+    // ✅ Validasi OPD tujuan
     const opd = await prisma.oPD.findUnique({
       where: { id: opdId },
       include: {
@@ -64,7 +86,15 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Buat laporan baru
+    // ⏳ Jika nanti upload file ke storage, lakukan di sini
+    // for (const file of files) {
+    //   console.log(file.name, file.type);
+    //   const buffer = await file.arrayBuffer();
+    //   const fileData = Buffer.from(buffer);
+    //   // Upload ke Cloudinary, Supabase, dsb
+    // }
+
+    // ✅ Simpan laporan baru
     const newReport = await prisma.report.create({
       data: {
         userId,
@@ -72,6 +102,7 @@ export async function POST(req) {
         category,
         priority,
         description,
+        location,
         opdId,
         bupatiStatus: 'PENDING',
         opdStatus: 'PENDING',
@@ -103,25 +134,27 @@ export async function POST(req) {
     const notifOPD = {
       userId: opd.staff.id,
       message: `Anda menerima laporan baru: "${newReport.title}"`,
-      link: `/opd-portal/laporan-warga/${newReport.id}`,
+      link: `/opd/laporan-warga/${newReport.id}`,
       createdAt: new Date(),
     };
 
-    // ✅ Gabungkan semua notifikasi dan simpan
+    // ✅ Simpan notifikasi
     await prisma.notification.createMany({
       data: [...notifAdminBupati, notifOPD],
     });
 
-    return NextResponse.json(newReport, { status: 201 });
-  } catch (error) {
-    console.error('Error creating report:', error);
     return NextResponse.json(
-      { error: 'Terjadi kesalahan pada server.' },
+      { message: 'Laporan berhasil dikirim.', report: newReport },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error('❌ Error creating report:', error);
+    return NextResponse.json(
+      { error: 'Terjadi kesalahan pada server.', detail: error.message },
       { status: 500 },
     );
   }
 }
-
 // 📌 Memperbarui Status Laporan (Hanya untuk Bupati)
 export async function PUT(req) {
   try {
