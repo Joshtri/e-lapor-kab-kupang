@@ -29,16 +29,18 @@ model User {
   resetPasswordExpires DateTime?
 
   // ❌ HAPUS: fields dan references
-  opd OPD? @relation("UserToOPD")
+  opd            OPD?    @relation("UserToOPD")
+  sentEmails     Email[] @relation("SentEmails")
+  receivedEmails Email[] @relation("ReceivedEmails")
 }
 
 model OPD {
-  id               Int     @id @default(autoincrement())
-  name    String @db.VarChar(255) // nama instansi, misalnya "Dinas Kesehatan"
+  id      Int     @id @default(autoincrement())
+  name    String  @db.VarChar(255) // nama instansi, misalnya "Dinas Kesehatan"
   alamat  String? @db.VarChar(255) // opsional: alamat instansi
   email   String? @unique @db.VarChar(100) // email resmi instansi
-  telp    String? @db.VarChar(20)          // telepon kantor, bukan staff
-  website String? @db.VarChar(100)         // opsional: website instansi
+  telp    String? @db.VarChar(20) // telepon kantor, bukan staff
+  website String? @db.VarChar(100) // opsional: website instansi
 
   staffUserId Int  @unique
   staff       User @relation("UserToOPD", fields: [staffUserId], references: [id]) // ✅ hanya di sini pakai fields & references
@@ -55,7 +57,7 @@ model Report {
 
   title        String   @db.VarChar(255)
   description  String
-  location     String @default("empty")
+  location     String   @default("empty")
   category     Category
   priority     Priority
   bupatiStatus Status   @default(PENDING)
@@ -122,6 +124,19 @@ model Notification {
 
   user User? @relation(fields: [userId], references: [id])
   // opd  OPD?  @relation(fields: [opdId], references: [userId])
+}
+
+model Email {
+  id          Int      @id @default(autoincrement())
+  senderId    Int // ID of the admin who sent the email
+  recipientId Int // ID of the PELAPOR who received the email
+  subject     String   @db.VarChar(255)
+  content     String   @db.Text
+  sentAt      DateTime @default(now())
+
+  // Relations
+  sender    User @relation("SentEmails", fields: [senderId], references: [id])
+  recipient User @relation("ReceivedEmails", fields: [recipientId], references: [id])
 }
 
 enum Role {
