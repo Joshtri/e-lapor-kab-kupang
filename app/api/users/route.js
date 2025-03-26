@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcrypt';
+import { verifyToken } from '@/lib/auth'; // ✅ pakai utilitas
 
 // 📌 Create User
 export async function POST(req) {

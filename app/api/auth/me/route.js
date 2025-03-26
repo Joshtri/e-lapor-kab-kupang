@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { verify } from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
+import { verifyToken } from '@/lib/auth';
+
 
 export async function GET() {
   // Await the cookies function call
