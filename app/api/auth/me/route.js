@@ -4,7 +4,8 @@ import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 
 export async function GET() {
-  const authCookies = cookies();
+  // Await the cookies function call
+  const authCookies = await cookies();
   const token = authCookies.get('auth_token')?.value;
 
   if (!token) {
