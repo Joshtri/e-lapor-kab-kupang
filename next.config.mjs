@@ -1,15 +1,27 @@
+// next.config.js
+import nextPWA from 'next-pwa'
+
+const withPWA = nextPWA({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
+})
+
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone', // Pastikan ini ada untuk mendukung Vercel deployment
+  output: 'standalone',
   experimental: {
-    serverActions: true, // Jika menggunakan Server Actions, aktifkan ini
+    serverActions: true,
   },
   eslint: {
-    dirs: ['pages', 'components', 'lib'], // Direktori yang akan diperiksa ESLint
-    ignoreDuringBuilds: false, // Set ke true jika ingin mengabaikan error ESLint saat build
+    dirs: ['pages', 'components', 'lib'],
+    ignoreDuringBuilds: false,
   },
   images: {
-    domains: ['placehold.co'], // Tambahkan domain eksternal yang digunakan
+    domains: ['placehold.co'],
   },
-};
+  trailingSlash: true,
+}
 
-export default nextConfig;
+export default withPWA(nextConfig)

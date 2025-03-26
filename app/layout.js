@@ -16,10 +16,19 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+ 
+
 export const metadata = {
   title: 'E-LAPOR',
   description: 'Sampaikan laporan Anda melalui E-LAPOR',
-};
+  themeColor: '#ef4444',
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/icons/icon-192.png',
+    apple: '/icons/icon-192.png'
+  }
+}
+
 
 export default function RootLayout({ children }) {
   return (
