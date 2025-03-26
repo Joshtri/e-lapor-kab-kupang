@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import HeaderPelapor from '@/components/pelapor/partials/header';
 import FooterPelapor from '@/components/pelapor/partials/footer';
 import { Toaster } from 'sonner';
+import AuthProtectGuard from '@/components/AuthProtectedGuard';
 
 export default function PelaporLayout({ children }) {
   const token = cookies().get('auth_token')?.value;
@@ -20,13 +21,19 @@ export default function PelaporLayout({ children }) {
   }
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <div className="flex flex-col min-h-screen bg-blue-50  dark:bg-gray-900">
-        <Toaster richColors position="top-right" />
-        <HeaderPelapor />
-        <main className="flex-grow pt-14">{children}</main>
-        <FooterPelapor />
-      </div>
-    </ThemeProvider>
+    <AuthProtectGuard allowRole={['PELAPOR']}>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        enableSystem={false}
+      >
+        <div className="flex flex-col min-h-screen bg-blue-50  dark:bg-gray-900">
+          <Toaster richColors position="top-right" />
+          <HeaderPelapor />
+          <main className="flex-grow pt-14">{children}</main>
+          <FooterPelapor />
+        </div>
+      </ThemeProvider>
+    </AuthProtectGuard>
   );
 }

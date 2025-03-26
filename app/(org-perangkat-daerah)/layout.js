@@ -14,7 +14,7 @@ export default function OpdLayout({ children }) {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <AuthProtectGuard>
+    <AuthProtectGuard allowRole={['OPD']}>
       <ClientThemeProvider>
         <Toaster richColors position="top-right" />
         <div className="flex">

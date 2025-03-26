@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Spinner } from 'flowbite-react';
 
-export default function AuthProtectGuard({ children }) {
+export default function AuthProtectGuard({ children, allowRole = [] }) {
   const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [authorized, setAuthorized] = useState(false);
@@ -16,7 +16,7 @@ export default function AuthProtectGuard({ children }) {
         const res = await axios.get('/api/auth/me');
         const user = res.data?.user;
 
-        if (user) {
+        if (user && allowRole.includes(user.role)) {
           setAuthorized(true);
         } else {
           router.replace('/');
@@ -29,9 +29,8 @@ export default function AuthProtectGuard({ children }) {
     };
 
     checkAuth();
-  }, [router]);
+  }, [router, allowRole]);
 
-  // Jangan render apa-apa sebelum pengecekan selesai
   if (checkingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
@@ -41,7 +40,6 @@ export default function AuthProtectGuard({ children }) {
     );
   }
 
-  // Setelah pengecekan selesai, hanya render children jika authorized
   if (!authorized) return null;
 
   return children;

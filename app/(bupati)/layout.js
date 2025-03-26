@@ -22,7 +22,7 @@ export default function BupatiLayout({ children }) {
   if (!mounted) return null; // Hindari error SSR
 
   return (
-    <AuthProtectGuard>
+    <AuthProtectGuard allowRole={['BUPATI']}>
       <ThemeProvider
         attribute="class"
         defaultTheme="light"
