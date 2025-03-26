@@ -1,107 +1,139 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { FaBars, FaTimes } from "react-icons/fa";
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { motion } from "framer-motion"
 import {
-  MdOutlineReport,
-  MdOutlineSupervisorAccount,
-  MdOutlineHistoryEdu,
-  MdOutlineSettings,
-} from "react-icons/md";
-import { HiOutlineClipboardCheck, HiOutlinePencilAlt, HiOutlineUserGroup } from "react-icons/hi";
-import { AiOutlineFileSearch } from "react-icons/ai";
+  HiOutlineMail,
+  HiMailOpen,
+  HiPaperAirplane,
+  HiOutlineDocumentReport,
+  HiOutlineUserGroup,
+  HiOutlineOfficeBuilding,
+  HiOutlineChevronLeft,
+  HiOutlineChevronRight,
+  HiOutlinePencilAlt,
+} from "react-icons/hi"
 
 const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   const navLinkClass = (href) => {
-    const isActive = pathname === href;
-    return `flex items-center gap-2 px-4 py-3 rounded-lg transition-all ${
-      isActive ? "bg-gray-700 text-white font-semibold" : "hover:bg-gray-800"
-    } ${!isSidebarOpen ? "justify-center" : ""}`;
-  };
+    const isActive = pathname === href
+    return `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+      isActive
+        ? "bg-blue-100 text-blue-700 font-semibold dark:bg-blue-900/30 dark:text-blue-300"
+        : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+    } ${!isSidebarOpen ? "justify-center" : ""}`
+  }
 
   return (
     <aside
-      className={`bg-gray-900 text-gray-100 h-screen transition-all shadow-lg fixed top-0 left-0 z-50 ${
+      className={`bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-screen transition-all shadow-lg fixed top-0 left-0 z-50 ${
         isSidebarOpen ? "w-64" : "w-20"
       } flex flex-col duration-300`}
     >
-      {/* Header Sidebar */}
-      <div className="p-4 flex items-center justify-between">
+      {/* Header Sidebar - Styled like mail header */}
+      <div className="p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
         {isSidebarOpen && (
-          <span className="text-lg font-bold">Admin Panel</span>
+          <div className="flex items-center">
+            <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full mr-2">
+              <HiOutlineMail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <span className="text-lg font-bold text-gray-800 dark:text-gray-200">Mail Admin</span>
+          </div>
         )}
         <button
-          className="text-gray-100 hover:text-gray-400"
+          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 p-2 rounded-full"
           onClick={toggleSidebar}
         >
-          {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {isSidebarOpen ? <HiOutlineChevronLeft size={20} /> : <HiOutlineChevronRight size={20} />}
         </button>
       </div>
 
-      {/* Menu Navigasi */}
-      <nav className="mt-4 flex-1 overflow-y-auto">
-        <ul className="space-y-2">
-          <li>
-            <Link
-              href="/adm/dashboard"
-              className={navLinkClass("/adm/dashboard")}
-            >
-              <MdOutlineReport />
-              {isSidebarOpen && "Dashboard"}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/adm/report-warga"
-              className={navLinkClass("/adm/report-warga")}
-            >
-              <HiOutlineClipboardCheck />
-              {isSidebarOpen && "Kelola Pengaduan"}
-            </Link>
-          </li>
-          <li>
-            <Link href="/adm/users" className={navLinkClass("/adm/users")}>
-              <HiOutlineUserGroup />
-              {isSidebarOpen && "Manajemen Pengguna"}
-            </Link>
-          </li>
+      {/* Menu Navigasi - Styled like mail folders */}
+      <nav className="mt-4 flex-1 overflow-y-auto px-3">
+        <div className="mb-4">
+          {isSidebarOpen && (
+            <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Main Menu
+            </h3>
+          )}
+          <ul className="space-y-1 mt-2">
+            <li>
+              <Link href="/adm/dashboard" className={navLinkClass("/adm/dashboard")}>
+                <motion.div whileHover={{ rotate: [0, -10, 0] }} transition={{ duration: 0.5 }} className="relative">
+                  <HiOutlineMail className="h-6 w-6" />
+                  {pathname === "/adm/dashboard" && (
+                    <span className="absolute -top-1 -right-1 h-2 w-2 bg-blue-600 rounded-full"></span>
+                  )}
+                </motion.div>
+                {isSidebarOpen && "Dashboard"}
+              </Link>
+            </li>
+            <li>
+              <Link href="/adm/report-warga" className={navLinkClass("/adm/report-warga")}>
+                <motion.div whileHover={{ rotate: [0, -10, 0] }} transition={{ duration: 0.5 }}>
+                  <HiMailOpen className="h-6 w-6" />
+                </motion.div>
+                {isSidebarOpen && "Kelola Pengaduan"}
+              </Link>
+            </li>
+            <li>
+              <Link href="/adm/users" className={navLinkClass("/adm/users")}>
+                <HiOutlineUserGroup className="h-6 w-6" />
+                {isSidebarOpen && "Manajemen Pengguna"}
+              </Link>
+            </li>
+            <li>
+              <Link href="/adm/org-perangkat-daerah" className={navLinkClass("/adm/org-perangkat-daerah")}>
+                <HiOutlineOfficeBuilding className="h-6 w-6" />
+                {isSidebarOpen && "Manajemen OPD"}
+              </Link>
+            </li>
+            <li>
+              <Link href="/adm/riwayat-pengaduan" className={navLinkClass("/adm/riwayat-pengaduan")}>
+                <motion.div whileHover={{ y: [0, -2, 0] }} transition={{ repeat: 2, duration: 0.3 }}>
+                  <HiOutlineDocumentReport className="h-6 w-6" />
+                </motion.div>
+                {isSidebarOpen && "Riwayat Pengaduan"}
+              </Link>
+            </li>
+            <li>
+              <Link href="/adm/logs" className={navLinkClass("/adm/logs")}>
+                <motion.div whileHover={{ y: [0, -3, 0], x: [0, 3, 0] }} transition={{ duration: 0.5 }}>
+                  <HiOutlinePencilAlt className="h-6 w-6" />
+                </motion.div>
+                {isSidebarOpen && "Compose Mail"}
+              </Link>
+            </li>
+          </ul>
+        </div>
 
-          <li>
-            <Link href="/adm/org-perangkat-daerah" className={navLinkClass("/adm/org-perangkat-daerah")}>
-              <HiOutlineUserGroup />
-              {isSidebarOpen && "Manajemen OPD"}
-            </Link>
-          </li>
-          
-          <li>
-            <Link
-              href="/adm/riwayat-pengaduan"
-              className={navLinkClass("/adm/riwayat-pengaduan")}
-            >
-              <MdOutlineHistoryEdu />
-              {isSidebarOpen && "Riwayat Pengaduan"}
-            </Link>
-          </li>
-          <li>
-            <Link href="/adm/logs" className={navLinkClass("/adm/logs")}>
-              <HiOutlinePencilAlt />
-              {isSidebarOpen && "Compose Mail"}
-            </Link>
-          </li>
-          {/* <li>
-            <Link href="/adm/settings" className={navLinkClass("/adm/settings")}>
-              <MdOutlineSettings />
-              {isSidebarOpen && "Pengaturan"}
-            </Link>
-          </li> */}
-        </ul>
+        {isSidebarOpen && (
+          <div className="mt-8 px-4">
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-100 dark:border-blue-800/30">
+              <div className="flex items-center mb-2">
+                <HiPaperAirplane className="h-5 w-5 text-blue-600 dark:text-blue-400 mr-2 transform rotate-90" />
+                <h4 className="font-medium text-blue-800 dark:text-blue-300">Mail Stats</h4>
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="flex justify-between">
+                  <span>Unread:</span>
+                  <span className="font-medium text-blue-600 dark:text-blue-400">24</span>
+                </p>
+                <p className="flex justify-between mt-1">
+                  <span>Processed:</span>
+                  <span className="font-medium text-green-600 dark:text-green-400">156</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
     </aside>
-  );
-};
+  )
+}
 
-export default AdminSidebar;
+export default AdminSidebar
+
