@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import AdminHeader from "@/components/admin/partials/header";
-import AdminSidebar from "@/components/admin/partials/sidebar";
-import AdminFooter from "@/components/admin/partials/footer";
-import ClientThemeProvider from "@/providers/client-theme-provider";
-import { Toaster } from "sonner";
+import React, { useState } from 'react';
+import AdminHeader from '@/components/admin/partials/header';
+import AdminSidebar from '@/components/admin/partials/sidebar';
+import AdminFooter from '@/components/admin/partials/footer';
+import ClientThemeProvider from '@/providers/client-theme-provider';
+import { Toaster } from 'sonner';
 
 export default function AdminLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -22,7 +22,7 @@ export default function AdminLayout({ children }) {
         />
         <div
           className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
-            isSidebarOpen ? "ml-64" : "ml-20"
+            isSidebarOpen ? 'ml-64' : 'ml-20'
           }`}
         >
           <AdminHeader toggleSidebar={toggleSidebar} />
