@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { Spinner } from "flowbite-react";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { Spinner } from 'flowbite-react';
 
 export default function AuthRedirectGuard({ children }) {
   const router = useRouter();
@@ -12,7 +12,7 @@ export default function AuthRedirectGuard({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("/api/auth/me", {
+        const res = await axios.get('/api/auth/me', {
           validateStatus: () => true, // ✅ Anggap semua status sukses
         });
 
@@ -20,19 +20,18 @@ export default function AuthRedirectGuard({ children }) {
           const { role } = res.data.user;
 
           // 🔄 Redirect berdasarkan role user
-          if (role === "PELAPOR") {
-            router.replace("/pelapor/dashboard");
-          } else if (role === "BUPATI") {
-            router.replace("/bupati-portal/dashboard");
-          } else if (role === "ADMIN") {
-            router.replace("/adm/dashboard");
-          } else if (role === "OPD") {
-            router.replace("/opd/dashboard");
+          if (role === 'PELAPOR') {
+            router.replace('/pelapor/dashboard');
+          } else if (role === 'BUPATI') {
+            router.replace('/bupati-portal/dashboard');
+          } else if (role === 'ADMIN') {
+            router.replace('/adm/dashboard');
+          } else if (role === 'OPD') {
+            router.replace('/opd/dashboard');
           }
-          
         }
       } catch (error) {
-        console.debug("Auth check error:", error);
+        console.debug('Auth check error:', error);
       } finally {
         setCheckingAuth(false);
       }

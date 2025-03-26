@@ -22,25 +22,29 @@ export default function BupatiLayout({ children }) {
   if (!mounted) return null; // Hindari error SSR
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-
-
-      <Toaster richColors position="top-right" />
-      <div className="flex">
-        <BupatiSidebar
-          isSidebarOpen={isSidebarOpen}
-          toggleSidebar={toggleSidebar}
-        />
-        <div
-          className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
-            isSidebarOpen ? 'ml-64' : 'ml-20'
-          }`}
-        >
-          <HeaderBupati toggleSidebar={toggleSidebar} />
-          <main className="mt-20 p-6">{children}</main>
-          <FooterBupati />
+    <AuthProtectGuard>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
+        enableSystem={false}
+      >
+        <Toaster richColors position="top-right" />
+        <div className="flex">
+          <BupatiSidebar
+            isSidebarOpen={isSidebarOpen}
+            toggleSidebar={toggleSidebar}
+          />
+          <div
+            className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
+              isSidebarOpen ? 'ml-64' : 'ml-20'
+            }`}
+          >
+            <HeaderBupati toggleSidebar={toggleSidebar} />
+            <main className="mt-20 p-6">{children}</main>
+            <FooterBupati />
+          </div>
         </div>
-      </div>
-    </ThemeProvider>
+      </ThemeProvider>
+    </AuthProtectGuard>
   );
 }

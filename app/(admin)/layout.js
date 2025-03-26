@@ -6,6 +6,7 @@ import AdminSidebar from '@/components/admin/partials/sidebar';
 import AdminFooter from '@/components/admin/partials/footer';
 import ClientThemeProvider from '@/providers/client-theme-provider';
 import { Toaster } from 'sonner';
+import AuthProtectGuard from '@/components/AuthProtectedGuard';
 
 export default function AdminLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -13,23 +14,25 @@ export default function AdminLayout({ children }) {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <ClientThemeProvider>
-      <Toaster richColors position="top-right" />
-      <div className="flex">
-        <AdminSidebar
-          isSidebarOpen={isSidebarOpen}
-          toggleSidebar={toggleSidebar}
-        />
-        <div
-          className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
-            isSidebarOpen ? 'ml-64' : 'ml-20'
-          }`}
-        >
-          <AdminHeader toggleSidebar={toggleSidebar} />
-          <main className="mt-20 p-6">{children}</main>
-          <AdminFooter />
+    <AuthProtectGuard>
+      <ClientThemeProvider>
+        <Toaster richColors position="top-right" />
+        <div className="flex">
+          <AdminSidebar
+            isSidebarOpen={isSidebarOpen}
+            toggleSidebar={toggleSidebar}
+          />
+          <div
+            className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
+              isSidebarOpen ? 'ml-64' : 'ml-20'
+            }`}
+          >
+            <AdminHeader toggleSidebar={toggleSidebar} />
+            <main className="mt-20 p-6">{children}</main>
+            <AdminFooter />
+          </div>
         </div>
-      </div>
-    </ClientThemeProvider>
+      </ClientThemeProvider>
+    </AuthProtectGuard>
   );
 }
