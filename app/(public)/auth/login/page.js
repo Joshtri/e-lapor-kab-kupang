@@ -85,7 +85,7 @@ export default function LoginPage() {
 
   return (
     <AuthRedirectGuard>
-      <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-gray-800 py-12 px-4">
+      <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-gray-800 py-12 px-4 mt-10">
         <div className="container mx-auto max-w-md">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
