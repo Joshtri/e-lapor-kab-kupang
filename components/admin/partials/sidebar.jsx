@@ -16,6 +16,7 @@ import {
   HiOutlineBell,
 } from 'react-icons/hi';
 import { useState } from 'react';
+import { FaBug } from 'react-icons/fa';
 
 const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const pathname = usePathname();
@@ -169,7 +170,9 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   <li>
                     <Link
                       href="/adm/notifications/send-notifications"
-                      className={navLinkClass('/adm/notifications/send-notifications')}
+                      className={navLinkClass(
+                        '/adm/notifications/send-notifications',
+                      )}
                     >
                       <HiOutlinePencilAlt className="h-5 w-5" />
                       Send Notification
@@ -178,7 +181,9 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   <li>
                     <Link
                       href="/adm/notifications/list-notifications"
-                      className={navLinkClass('/adm/notifications/list-notifications')}
+                      className={navLinkClass(
+                        '/adm/notifications/list-notifications',
+                      )}
                     >
                       <HiOutlineMail className="h-5 w-5" />
                       List Notification
@@ -186,6 +191,18 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   </li>
                 </ul>
               )}
+
+              <li>
+                <Link href="/adm/bugs" className={navLinkClass('/adm/bugs')}>
+                  <motion.div
+                    whileHover={{ y: [0, -3, 0], x: [0, 3, 0] }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <FaBug className="h-6 w-6" />
+                  </motion.div>
+                  {isSidebarOpen && 'Bug Report'}
+                </Link>
+              </li>
             </li>
           </ul>
         </div>
