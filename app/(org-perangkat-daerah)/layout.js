@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import ClientThemeProvider from '@/providers/client-theme-provider';
 import { Toaster } from 'sonner';
@@ -10,8 +10,15 @@ import AuthProtectGuard from '@/components/AuthProtectedGuard';
 
 export default function OpdLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+
+  if (!mounted) return null; // ⛔️ Cegah render sebelum client siap
 
   return (
     <AuthProtectGuard allowRole={['OPD']}>
@@ -29,7 +36,6 @@ export default function OpdLayout({ children }) {
           >
             <OpdHeader toggleSidebar={toggleSidebar} />
             <main className="mt-20 p-6">{children}</main>
-            {/* <AdminFooter /> */}
           </div>
         </div>
       </ClientThemeProvider>

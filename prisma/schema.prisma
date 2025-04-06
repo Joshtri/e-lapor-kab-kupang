@@ -29,10 +29,12 @@ model User {
   resetPasswordExpires DateTime?
 
   // ❌ HAPUS: fields dan references
-  opd            OPD?         @relation("UserToOPD")
-  sentEmails     Email[]      @relation("SentEmails")
-  receivedEmails Email[]      @relation("ReceivedEmails")
+  opd            OPD?          @relation("UserToOPD")
+  sentEmails     Email[]       @relation("SentEmails")
+  receivedEmails Email[]       @relation("ReceivedEmails")
   BugComment     BugComment[]
+  ChatRoom       ChatRoom[]
+  ChatMessage    ChatMessage[]
 }
 
 model OPD {
@@ -47,8 +49,9 @@ model OPD {
   staff       User @relation("UserToOPD", fields: [staffUserId], references: [id]) // ✅ hanya di sini pakai fields & references
 
   reports   Report[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  ChatRoom  ChatRoom[]
 }
 
 model Report {
@@ -153,6 +156,35 @@ model Email {
   sender    User @relation("SentEmails", fields: [senderId], references: [id])
   recipient User @relation("ReceivedEmails", fields: [recipientId], references: [id])
 }
+
+model ChatRoom {
+  id         Int      @id @default(autoincrement())
+  userId     Int                  // Pelapor
+  opdId      Int?                 // Jika chat ditujukan ke OPD
+  isToBupati Boolean              // true jika chat ke Bupati
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relasi
+  user       User       @relation(fields: [userId], references: [id])
+  opd        OPD?       @relation(fields: [opdId], references: [id])
+  messages   ChatMessage[]
+}
+
+
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  roomId    Int
+  senderId  Int
+  content   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relasi
+  room      ChatRoom @relation(fields: [roomId], references: [id])
+  sender    User     @relation(fields: [senderId], references: [id])
+}
+
 
 enum Role {
   BUPATI

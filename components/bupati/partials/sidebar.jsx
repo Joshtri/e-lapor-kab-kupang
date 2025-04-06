@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 import {
   HiOutlineMail,
   HiMailOpen,
@@ -12,24 +12,38 @@ import {
   HiOutlineChevronLeft,
   HiOutlineChevronRight,
   HiOutlinePencilAlt,
-} from "react-icons/hi"
+} from 'react-icons/hi';
+import { useEffect, useState } from 'react';
 
 const BupatiSidebar = ({ isSidebarOpen, toggleSidebar }) => {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const navLinkClass = (href) => {
-    const isActive = pathname === href
+    const isActive = pathname === href;
     return `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
       isActive
-        ? "bg-green-100 text-green-700 font-semibold dark:bg-green-900/30 dark:text-green-300"
-        : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
-    } ${!isSidebarOpen ? "justify-center" : ""}`
-  }
+        ? 'bg-green-100 text-green-700 font-semibold dark:bg-green-900/30 dark:text-green-300'
+        : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+    } ${!isSidebarOpen ? 'justify-center' : ''}`;
+  };
+  const [unreadCount, setUnreadCount] = useState(0);
+  useEffect(() => {
+    fetchUnreadCount();
+  }, []);
 
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await fetch('/api/bupati/chat/unread-count');
+      const data = await res.json();
+      setUnreadCount(data.unreadCount || 0);
+    } catch (err) {
+      console.error('Gagal ambil badge:', err);
+    }
+  };
   return (
     <aside
       className={`bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-screen transition-all shadow-lg fixed top-0 left-0 z-50 ${
-        isSidebarOpen ? "w-64" : "w-20"
+        isSidebarOpen ? 'w-64' : 'w-20'
       } flex flex-col duration-300`}
     >
       {/* Header Sidebar - Styled like mail header */}
@@ -39,14 +53,20 @@ const BupatiSidebar = ({ isSidebarOpen, toggleSidebar }) => {
             <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full mr-2">
               <HiOutlineMail className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
-            <span className="text-lg font-bold text-gray-800 dark:text-gray-200">Bupati Mail</span>
+            <span className="text-lg font-bold text-gray-800 dark:text-gray-200">
+              Bupati Mail
+            </span>
           </div>
         )}
         <button
           className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 p-2 rounded-full"
           onClick={toggleSidebar}
         >
-          {isSidebarOpen ? <HiOutlineChevronLeft size={20} /> : <HiOutlineChevronRight size={20} />}
+          {isSidebarOpen ? (
+            <HiOutlineChevronLeft size={20} />
+          ) : (
+            <HiOutlineChevronRight size={20} />
+          )}
         </button>
       </div>
 
@@ -60,22 +80,35 @@ const BupatiSidebar = ({ isSidebarOpen, toggleSidebar }) => {
           )}
           <ul className="space-y-1 mt-2">
             <li>
-              <Link href="/bupati-portal/dashboard" className={navLinkClass("/bupati-portal/dashboard")}>
-                <motion.div whileHover={{ rotate: [0, -10, 0] }} transition={{ duration: 0.5 }} className="relative">
+              <Link
+                href="/bupati-portal/dashboard"
+                className={navLinkClass('/bupati-portal/dashboard')}
+              >
+                <motion.div
+                  whileHover={{ rotate: [0, -10, 0] }}
+                  transition={{ duration: 0.5 }}
+                  className="relative"
+                >
                   <HiOutlineMail className="h-6 w-6" />
-                  {pathname === "/bupati-portal/dashboard" && (
+                  {pathname === '/bupati-portal/dashboard' && (
                     <span className="absolute -top-1 -right-1 h-2 w-2 bg-green-600 rounded-full"></span>
                   )}
                 </motion.div>
-                {isSidebarOpen && "Dashboard"}
+                {isSidebarOpen && 'Dashboard'}
               </Link>
             </li>
             <li>
-              <Link href="/bupati-portal/laporan-warga" className={navLinkClass("/bupati-portal/laporan-warga")}>
-                <motion.div whileHover={{ rotate: [0, -10, 0] }} transition={{ duration: 0.5 }}>
+              <Link
+                href="/bupati-portal/laporan-warga"
+                className={navLinkClass('/bupati-portal/laporan-warga')}
+              >
+                <motion.div
+                  whileHover={{ rotate: [0, -10, 0] }}
+                  transition={{ duration: 0.5 }}
+                >
                   <HiMailOpen className="h-6 w-6" />
                 </motion.div>
-                {isSidebarOpen && "Kelola Pengaduan"}
+                {isSidebarOpen && 'Kelola Pengaduan'}
               </Link>
             </li>
             {/* <li>
@@ -87,29 +120,58 @@ const BupatiSidebar = ({ isSidebarOpen, toggleSidebar }) => {
             <li>
               <Link
                 href="/bupati-portal/riwayat-pengaduan"
-                className={navLinkClass("/bupati-portal/riwayat-pengaduan")}
+                className={navLinkClass('/bupati-portal/riwayat-pengaduan')}
               >
-                <motion.div whileHover={{ y: [0, -2, 0] }} transition={{ repeat: 2, duration: 0.3 }}>
+                <motion.div
+                  whileHover={{ y: [0, -2, 0] }}
+                  transition={{ repeat: 2, duration: 0.3 }}
+                >
                   <HiOutlineDocumentReport className="h-6 w-6" />
                 </motion.div>
-                {isSidebarOpen && "Riwayat Pengaduan"}
+                {isSidebarOpen && 'Riwayat Pengaduan'}
               </Link>
             </li>
+
             <li>
-              <Link href="/bupati-portal/logs" className={navLinkClass("/bupati-portal/logs")}>
-                <motion.div whileHover={{ y: [0, -3, 0], x: [0, 3, 0] }} transition={{ duration: 0.5 }}>
+              <Link
+                href="/bupati-portal/chat"
+                className={navLinkClass('/bupati-portal/chat')}
+              >
+                <motion.div
+                  whileHover={{ rotate: [0, -10, 0] }}
+                  transition={{ duration: 0.5 }}
+                  className="relative"
+                >
+                  <HiOutlineMail className="h-6 w-6" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5">
+                      {unreadCount}
+                    </span>
+                  )}
+                </motion.div>
+                {isSidebarOpen && 'Pesan Masuk'}
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/bupati-portal/logs"
+                className={navLinkClass('/bupati-portal/logs')}
+              >
+                <motion.div
+                  whileHover={{ y: [0, -3, 0], x: [0, 3, 0] }}
+                  transition={{ duration: 0.5 }}
+                >
                   <HiOutlinePencilAlt className="h-6 w-6" />
                 </motion.div>
-                {isSidebarOpen && "Compose Mail"}
+                {isSidebarOpen && 'Compose Mail'}
               </Link>
             </li>
           </ul>
         </div>
- 
       </nav>
     </aside>
-  )
-}
+  );
+};
 
-export default BupatiSidebar
-
+export default BupatiSidebar;

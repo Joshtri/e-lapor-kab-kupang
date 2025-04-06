@@ -1,14 +1,29 @@
 'use client';
-import { Card } from 'flowbite-react';
+import { Card, Button } from 'flowbite-react';
 import {
   HiClipboardList,
   HiCheckCircle,
   HiUserGroup,
   HiXCircle,
   HiClock,
+  HiRefresh,
 } from 'react-icons/hi';
 
-export default function OpdIkhtisarTab({ data }) {
+export default function OpdIkhtisarTab({ data, onReload }) {
+  if (!data) {
+    return (
+      <div className="text-center py-10 text-gray-500 dark:text-gray-400 space-y-4">
+        <p>Gagal memuat data ikhtisar.</p>
+        {onReload && (
+          <Button color="purple" onClick={onReload}>
+            <HiRefresh className="mr-2 h-5 w-5" />
+            Coba Lagi
+          </Button>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <Card>

@@ -16,12 +16,13 @@ const NotificationDropdown = ({
       className="w-96 max-w-2xl" // ✅ batas lebar dropdown
       label={
         <div className="relative">
-          <motion.button
+          <motion.div
             whileHover={{ scale: 1.1 }}
-            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer"
+            role="button"
           >
             <HiOutlineBell className="h-5 w-5" />
-          </motion.button>
+          </motion.div>
           {unreadCount > 0 && (
             <motion.span
               initial={{ scale: 0 }}

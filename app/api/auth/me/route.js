@@ -7,8 +7,8 @@ import { verifyToken } from '@/lib/auth';
 
 export async function GET() {
   // Await the cookies function call
-  const authCookies = await cookies();
-  const token = authCookies.get('auth_token')?.value;
+  const token = cookies().get('auth_token')?.value; // ✅ BENAR
+
 
   if (!token) {
     return NextResponse.json(

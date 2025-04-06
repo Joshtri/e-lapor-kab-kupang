@@ -19,6 +19,7 @@ export default function UserFilterBar({
         <option value="PELAPOR">Pelapor</option>
         <option value="ADMIN">Admin</option>
         <option value="BUPATI">Bupati</option>
+        <option value="OPD">Opd</option>
       </Select>
 
       <div className="flex gap-2">
