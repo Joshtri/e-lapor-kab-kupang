@@ -20,7 +20,7 @@ import {
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { isMobile } from '@/utils/isMobile';
-import InstallPromptDialog from '@/components/InstallPromptDialog';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
 // Validation Schema
 const loginSchema = z.object({
@@ -87,7 +87,7 @@ export default function LoginPage() {
 
   return (
     <AuthRedirectGuard>
-      {isMobile() && <InstallPromptDialog />}
+      {isMobile() && <PWAInstallPrompt />}
 
       <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-gray-800 py-12 px-4 mt-10">
         <div className="container mx-auto max-w-md">

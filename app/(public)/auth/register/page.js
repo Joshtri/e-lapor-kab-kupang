@@ -21,6 +21,7 @@ import {
   HiEye,
   HiEyeOff,
 } from 'react-icons/hi';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
 // Skema validasi dengan Zod (dengan batasan NIK hanya angka)
 const formSchema = z.object({
@@ -94,6 +95,7 @@ export default function RegistrationPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-gray-800 py-12 px-4 mt-14">
+            {isMobile() && <PWAInstallPrompt />}
       <div className="container mx-auto max-w-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
