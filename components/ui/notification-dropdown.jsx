@@ -1,13 +1,19 @@
-"use client"
-import { Dropdown, Spinner } from "flowbite-react"
-import { HiOutlineBell, HiOutlineMailOpen } from "react-icons/hi"
-import { motion } from "framer-motion"
+'use client';
+import { Dropdown, Spinner } from 'flowbite-react';
+import { HiOutlineBell, HiOutlineMailOpen } from 'react-icons/hi';
+import { motion } from 'framer-motion';
 
-const NotificationDropdown = ({ notifications, unreadCount, handleNotificationClick, loadingNotifications }) => {
+const NotificationDropdown = ({
+  notifications,
+  unreadCount,
+  handleNotificationClick,
+  loadingNotifications,
+}) => {
   return (
     <Dropdown
       arrowIcon={false}
       inline
+      className="w-96 max-w-2xl" // ✅ batas lebar dropdown
       label={
         <div className="relative">
           <motion.button
@@ -30,9 +36,13 @@ const NotificationDropdown = ({ notifications, unreadCount, handleNotificationCl
     >
       <Dropdown.Header>
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-900 dark:text-white">Notifikasi</span>
+          <span className="text-sm font-medium text-gray-900 dark:text-white">
+            Notifikasi
+          </span>
           {unreadCount > 0 && (
-            <span className="text-xs font-medium text-blue-600 dark:text-blue-400">{unreadCount} baru</span>
+            <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
+              {unreadCount} baru
+            </span>
           )}
         </div>
       </Dropdown.Header>
@@ -54,15 +64,17 @@ const NotificationDropdown = ({ notifications, unreadCount, handleNotificationCl
               key={notif.id}
               onClick={() => handleNotificationClick(notif)}
               className={`border-b border-gray-100 dark:border-gray-700 ${
-                !notif.isRead ? "bg-blue-50 dark:bg-blue-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-700"
+                !notif.isRead
+                  ? 'bg-blue-50 dark:bg-blue-900/20'
+                  : 'hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               <div className="flex items-start gap-2">
                 <div
                   className={`p-2 rounded-full ${
                     !notif.isRead
-                      ? "bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-400"
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                      ? 'bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-400'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                   }`}
                 >
                   <HiOutlineMailOpen className="h-4 w-4" />
@@ -70,22 +82,28 @@ const NotificationDropdown = ({ notifications, unreadCount, handleNotificationCl
                 <div className="flex-1 min-w-0">
                   <p
                     className={`text-sm ${
-                      !notif.isRead ? "font-semibold text-gray-900 dark:text-white" : "text-gray-700 dark:text-gray-300"
+                      !notif.isRead
+                        ? 'font-semibold text-gray-900 dark:text-white'
+                        : 'text-gray-700 dark:text-gray-300'
                     }`}
                   >
                     {notif.title}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{notif.message}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[250px]">
+                    {notif.message}
+                  </p>
                   <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                    {new Date(notif.createdAt).toLocaleString("id-ID", {
-                      day: "numeric",
-                      month: "short",
-                      hour: "2-digit",
-                      minute: "2-digit",
+                    {new Date(notif.createdAt).toLocaleString('id-ID', {
+                      day: 'numeric',
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit',
                     })}
                   </p>
                 </div>
-                {!notif.isRead && <div className="h-2 w-2 bg-blue-600 dark:bg-blue-400 rounded-full"></div>}
+                {!notif.isRead && (
+                  <div className="h-2 w-2 bg-blue-600 dark:bg-blue-400 rounded-full"></div>
+                )}
               </div>
             </Dropdown.Item>
           ))
@@ -99,8 +117,7 @@ const NotificationDropdown = ({ notifications, unreadCount, handleNotificationCl
         Lihat Semua Notifikasi
       </Dropdown.Item>
     </Dropdown>
-  )
-}
+  );
+};
 
-export default NotificationDropdown
-
+export default NotificationDropdown;

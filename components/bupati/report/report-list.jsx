@@ -1,22 +1,23 @@
-"use client";
+'use client';
 
-import ReportFilterBar from "@/components/admin/report/ReportFilterBar";
-import ReportGrid from "@/components/bupati/report/report-grid-view";
-import ReportTable from "@/components/bupati/report/report-table-view";
-import PageHeader from "@/components/ui/page-header";
-import axios from "axios";
-import { Spinner } from "flowbite-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import ReportModal from "@/components/admin/report/ReportCreateModal";
+import ReportFilterBar from '@/components/admin/report/ReportFilterBar';
+import ReportGrid from '@/components/bupati/report/report-grid-view';
+import ReportTable from '@/components/bupati/report/report-table-view';
+import PageHeader from '@/components/ui/page-header';
+import axios from 'axios';
+import { Spinner } from 'flowbite-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import ReportModal from '@/components/admin/report/ReportCreateModal';
 
 export default function ReportList() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState("table");
-  const [filterStatus, setFilterStatus] = useState("ALL");
-  const [filterPriority, setFilterPriority] = useState("ALL");
+  const [viewMode, setViewMode] = useState('table');
+  const [filterStatus, setFilterStatus] = useState('ALL');
+  const [filterPriority, setFilterPriority] = useState('ALL');
   const [openModal, setOpenModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchReports();
@@ -25,20 +26,27 @@ export default function ReportList() {
   const fetchReports = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/api/reports");
+      const res = await axios.get('/api/reports');
       setReports(res.data);
     } catch (error) {
-      console.error("Gagal mengambil data laporan:", error);
-      toast.error("Gagal mengambil data laporan.");
+      console.error('Gagal mengambil data laporan:', error);
+      toast.error('Gagal mengambil data laporan.');
     } finally {
       setLoading(false);
     }
   };
 
   const filteredReports = reports.filter((report) => {
-    const statusMatch = filterStatus === "ALL" || report.status === filterStatus;
-    const priorityMatch = filterPriority === "ALL" || report.priority === filterPriority;
-    return statusMatch && priorityMatch;
+    const statusMatch =
+      filterStatus === 'ALL' || report.status === filterStatus;
+    const priorityMatch =
+      filterPriority === 'ALL' || report.priority === filterPriority;
+
+    const searchMatch =
+      report.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      report.description?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return statusMatch && priorityMatch && searchMatch;
   });
 
   if (loading) {
@@ -56,12 +64,17 @@ export default function ReportList() {
         showBackButton={false}
         showSearch
         showRefreshButton
+        searchQuery={searchQuery}
+        onSearchChange={(value) => setSearchQuery(value)}
         onRefreshClick={fetchReports}
         breadcrumbsProps={{
-          home: { label: "Beranda", href: "/bupati-portal/dashboard" },
-          "bupati-portal": { label: "Bupati Portal", href: "/bupati-portal/dashboard" },
+          home: { label: 'Beranda', href: '/bupati-portal/dashboard' },
+          'bupati-portal': {
+            label: 'Bupati Portal',
+            href: '/bupati-portal/dashboard',
+          },
           customRoutes: {
-            adm: { label: "Dashboard Admin", href: "/adm/dashboard" },
+            adm: { label: 'Dashboard Admin', href: '/adm/dashboard' },
           },
         }}
       />
@@ -81,7 +94,7 @@ export default function ReportList() {
         <p className="text-gray-600 dark:text-gray-400">
           Tidak ada laporan dengan filter ini.
         </p>
-      ) : viewMode === "table" ? (
+      ) : viewMode === 'table' ? (
         <ReportTable reports={filteredReports} />
       ) : (
         <ReportGrid reports={filteredReports} />

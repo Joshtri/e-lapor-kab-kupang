@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Table, Badge, Button } from "flowbite-react";
+import { useState } from 'react';
+import { Table, Badge, Button, Tooltip } from 'flowbite-react';
 import {
   HiOutlineEye,
   HiOutlineChatAlt2,
   HiOutlinePencilAlt,
-} from "react-icons/hi";
-import ReportView from "@/components/bupati/report/report-view";
-import UpdateStatusModal from "@/components/bupati/update-status-pelapor";
-import CommentModal from "@/components/bupati/comment/comment-modal";
-import { useRouter } from "next/navigation";
+} from 'react-icons/hi';
+import ReportView from '@/components/bupati/report/report-view';
+import UpdateStatusModal from '@/components/bupati/update-status-pelapor';
+import CommentModal from '@/components/bupati/comment/comment-modal';
+import { useRouter } from 'next/navigation';
 
 export default function ReportTable({ reports }) {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -32,7 +32,9 @@ export default function ReportTable({ reports }) {
           <Table.HeadCell>Nama Pelapor</Table.HeadCell>
           <Table.HeadCell>Subjek</Table.HeadCell>
           <Table.HeadCell>Kategori</Table.HeadCell>
-          <Table.HeadCell>Status</Table.HeadCell>
+          <Table.HeadCell>Status Bupati</Table.HeadCell>
+          <Table.HeadCell>Status OPD terkait</Table.HeadCell>
+          <Table.HeadCell>OPD Terkait</Table.HeadCell> {/* 🆕 */}
           <Table.HeadCell>Prioritas</Table.HeadCell>
           <Table.HeadCell>Tanggal</Table.HeadCell>
           <Table.HeadCell>Aksi</Table.HeadCell>
@@ -40,61 +42,88 @@ export default function ReportTable({ reports }) {
         <Table.Body>
           {reports.map((report) => (
             <Table.Row key={report.id}>
-              <Table.Cell>{report.user?.name || "Anonim"}</Table.Cell>
+              <Table.Cell>{report.user?.name || 'Anonim'}</Table.Cell>
               <Table.Cell>{report.title}</Table.Cell>
               <Table.Cell>{report.category}</Table.Cell>
               <Table.Cell>
                 <Badge
                   color={
-                    report.status === "SELESAI"
-                      ? "green"
-                      : report.status === "PROSES"
-                        ? "yellow"
-                        : report.status === "DITOLAK"
-                          ? "red"
-                          : "gray"
+                    report.bupatiStatus === 'SELESAI'
+                      ? 'green'
+                      : report.bupatiStatus === 'PROSES'
+                        ? 'yellow'
+                        : report.bupatiStatus === 'DITOLAK'
+                          ? 'red'
+                          : 'gray'
                   }
                 >
-                  {report.status}
+                  {report.bupatiStatus}
                 </Badge>
               </Table.Cell>
-              <Table.Cell>{report.priority}</Table.Cell>
               <Table.Cell>
-                {new Date(report.createdAt).toLocaleDateString("id-ID")}
-              </Table.Cell>
-              <Table.Cell className="flex gap-2">
-                <Button
-                  color="gray"
-                  size="sm"
-                  onClick={() =>
-                    router.push(`/bupati-portal/laporan-warga/${report.id}`)
+                <Badge
+                  color={
+                    report.opdStatus === 'SELESAI'
+                      ? 'green'
+                      : report.opdStatus === 'PROSES'
+                        ? 'yellow'
+                        : report.opdStatus === 'DITOLAK'
+                          ? 'red'
+                          : 'gray'
                   }
                 >
-                  <HiOutlineEye className="w-4 h-4 mr-1" />
-                  Detail
-                </Button>
-                <Button
-                  color="purple"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedReport(report);
-                    setOpenCommentModal(true);
-                  }}
-                >
-                  <HiOutlineChatAlt2 className="w-4 h-4 mr-1" />
-                  Komentar
-                </Button>
-                <Button
-                  color="blue"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedReport(report);
-                    setOpenStatusModal(true);
-                  }}
-                >
-                  <HiOutlinePencilAlt className="w-4 h-4 mr-1" />
-                  Ubah Status
-                </Button>
+                  {report.opdStatus}
+                </Badge>
+              </Table.Cell>
+              <Table.Cell>{report.opd?.name || '-'}</Table.Cell>
+
+              <Table.Cell>{report.priority}</Table.Cell>
+              <Table.Cell>
+                {new Date(report.createdAt).toLocaleDateString('id-ID')}
+              </Table.Cell>
+              <Table.Cell>
+                <div className="flex items-center gap-2 justify-start">
+                  <Tooltip content="Lihat Detail" placement="top">
+                    <Button
+                      color="gray"
+                      size="xs"
+                      onClick={() =>
+                        router.push(`/bupati-portal/laporan-warga/${report.id}`)
+                      }
+                      className="p-2"
+                    >
+                      <HiOutlineEye className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
+
+                  <Tooltip content="Komentar" placement="top">
+                    <Button
+                      color="purple"
+                      size="xs"
+                      onClick={() => {
+                        setSelectedReport(report);
+                        setOpenCommentModal(true);
+                      }}
+                      className="p-2"
+                    >
+                      <HiOutlineChatAlt2 className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
+
+                  <Tooltip content="Ubah Status" placement="top">
+                    <Button
+                      color="blue"
+                      size="xs"
+                      onClick={() => {
+                        setSelectedReport(report);
+                        setOpenStatusModal(true);
+                      }}
+                      className="p-2"
+                    >
+                      <HiOutlinePencilAlt className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
+                </div>
               </Table.Cell>
             </Table.Row>
           ))}
