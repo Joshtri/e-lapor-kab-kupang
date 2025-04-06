@@ -96,26 +96,7 @@ const OpdSidebar = ({ isSidebarOpen, toggleSidebar }) => {
           </ul>
         </div>
 
-        {isSidebarOpen && (
-          <div className="mt-8 px-4">
-            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 border border-purple-100 dark:border-purple-800/30">
-              <div className="flex items-center mb-2">
-                <HiPaperAirplane className="h-5 w-5 text-purple-600 dark:text-purple-400 mr-2 transform rotate-90" />
-                <h4 className="font-medium text-purple-800 dark:text-purple-300">Mail Stats</h4>
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                <p className="flex justify-between">
-                  <span>Unread:</span>
-                  <span className="font-medium text-purple-600 dark:text-purple-400">12</span>
-                </p>
-                <p className="flex justify-between mt-1">
-                  <span>Processed:</span>
-                  <span className="font-medium text-green-600 dark:text-green-400">87</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+
       </nav>
     </aside>
   )

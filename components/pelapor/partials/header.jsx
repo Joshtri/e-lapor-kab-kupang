@@ -269,7 +269,7 @@ const HeaderPelapor = () => {
                       img={`https://ui-avatars.com/api/?name=${user?.name || "User"}&background=random`}
                       rounded
                       size="sm"
-                      className="border-2 border-blue-200 dark:border-blue-800 hover:scale-110 transition-all duration-300"
+                      className="  dark:border-blue-800 hover:scale-110 transition-all duration-300"
                     />
                     {unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">

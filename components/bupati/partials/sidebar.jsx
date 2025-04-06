@@ -105,27 +105,7 @@ const BupatiSidebar = ({ isSidebarOpen, toggleSidebar }) => {
             </li>
           </ul>
         </div>
-
-        {isSidebarOpen && (
-          <div className="mt-8 px-4">
-            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 border border-green-100 dark:border-green-800/30">
-              <div className="flex items-center mb-2">
-                <HiPaperAirplane className="h-5 w-5 text-green-600 dark:text-green-400 mr-2 transform rotate-90" />
-                <h4 className="font-medium text-green-800 dark:text-green-300">Mail Stats</h4>
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                <p className="flex justify-between">
-                  <span>Unread:</span>
-                  <span className="font-medium text-green-600 dark:text-green-400">18</span>
-                </p>
-                <p className="flex justify-between mt-1">
-                  <span>Processed:</span>
-                  <span className="font-medium text-green-600 dark:text-green-400">132</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+ 
       </nav>
     </aside>
   )

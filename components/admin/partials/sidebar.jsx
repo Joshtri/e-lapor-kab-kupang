@@ -206,33 +206,7 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
             </li>
           </ul>
         </div>
-
-        {isSidebarOpen && (
-          <div className="mt-8 px-4">
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 border border-blue-100 dark:border-blue-800/30">
-              <div className="flex items-center mb-2">
-                <HiPaperAirplane className="h-5 w-5 text-blue-600 dark:text-blue-400 mr-2 transform rotate-90" />
-                <h4 className="font-medium text-blue-800 dark:text-blue-300">
-                  Mail Stats
-                </h4>
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                <p className="flex justify-between">
-                  <span>Unread:</span>
-                  <span className="font-medium text-blue-600 dark:text-blue-400">
-                    24
-                  </span>
-                </p>
-                <p className="flex justify-between mt-1">
-                  <span>Processed:</span>
-                  <span className="font-medium text-green-600 dark:text-green-400">
-                    156
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+ 
       </nav>
     </aside>
   );
