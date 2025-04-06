@@ -11,10 +11,33 @@ import {
 } from 'react-icons/hi';
 import UserEditModal from './UserEditModal';
 import { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'sonner'; // atau react-hot-toast jika kamu pakai itu
 
-export default function UserTable({ users, incompleteProfiles = [], onSuccess  }) {
+export default function UserTable({
+  users,
+  incompleteProfiles = [],
+  onSuccess,
+}) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [openEdit, setOpenEdit] = useState(false);
+
+  const handleDelete = async (userId) => {
+    const confirm = window.confirm(
+      'Apakah Anda yakin ingin menghapus user ini?',
+    );
+    if (!confirm) return;
+
+    try {
+      await axios.delete(`/api/users/${userId}`);
+      toast.success('User berhasil dihapus');
+      onSuccess?.(); // reload data jika diperlukan
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.error || 'Gagal menghapus user');
+    }
+  };
+
   return (
     <Table striped>
       <Table.Head>
@@ -106,7 +129,12 @@ export default function UserTable({ users, incompleteProfiles = [], onSuccess  }
                   </Tooltip>
 
                   <Tooltip content="Hapus">
-                    <Button color="failure" size="xs" className="p-2">
+                    <Button
+                      color="failure"
+                      size="xs"
+                      className="p-2"
+                      onClick={() => handleDelete(user.id)}
+                    >
                       <HiTrash className="w-4 h-4" />
                     </Button>
                   </Tooltip>
@@ -120,7 +148,7 @@ export default function UserTable({ users, incompleteProfiles = [], onSuccess  }
           setOpen={setOpenEdit}
           user={selectedUser}
           onSuccess={onSuccess}
-          />
+        />
       </Table.Body>
     </Table>
   );

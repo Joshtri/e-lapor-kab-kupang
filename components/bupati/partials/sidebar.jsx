@@ -71,7 +71,7 @@ const BupatiSidebar = ({ isSidebarOpen, toggleSidebar }) => {
               </Link>
             </li>
             <li>
-              <Link href="/bupati-portal/report-warga" className={navLinkClass("/bupati-portal/report-warga")}>
+              <Link href="/bupati-portal/laporan-warga" className={navLinkClass("/bupati-portal/laporan-warga")}>
                 <motion.div whileHover={{ rotate: [0, -10, 0] }} transition={{ duration: 0.5 }}>
                   <HiMailOpen className="h-6 w-6" />
                 </motion.div>

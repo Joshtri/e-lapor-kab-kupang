@@ -14,7 +14,7 @@ export default function AdminLayout({ children }) {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   return (
-    <AuthProtectGuard  allowRole={['ADMIN']}>
+    <AuthProtectGuard allowRole={['ADMIN']}>
       <ClientThemeProvider>
         <Toaster richColors position="top-right" />
         <div className="flex">

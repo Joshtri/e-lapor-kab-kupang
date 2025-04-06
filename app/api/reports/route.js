@@ -42,22 +42,23 @@ export async function POST(req) {
     // ⛔ Hapus ini karena tidak digunakan:
     // const data = await req.json();
 
-    const form = await req.formData();
+    const body = await req.json();
 
-    const userId = parseInt(form.get('userId'));
-    const title = form.get('title');
-    const category = form.get('category');
-    const priority = form.get('priority');
-    const location = form.get('location');
-    const description = form.get('description');
-    const opdId = parseInt(form.get('opdId'));
-    const files = form.getAll('files'); // kalau ada
+    const userId = parseInt(body.userId);
+    const title = body.title;
+    const category = body.category;
+    const priority = body.priority;
+    const subcategory = body.subcategory || '-'; // kalau belum dipakai
+    const location = body.location || '-'; // kalau belum dipakai
+    const description = body.description;
+    const opdId = parseInt(body.opdId);
 
     // ✅ Validasi input
     if (
       !userId ||
       !title ||
       !category ||
+      !subcategory ||
       !priority ||
       !location ||
       !description ||
@@ -100,6 +101,7 @@ export async function POST(req) {
         userId,
         title,
         category,
+        subcategory,
         priority,
         description,
         location,

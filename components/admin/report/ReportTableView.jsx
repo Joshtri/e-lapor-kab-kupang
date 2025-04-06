@@ -2,13 +2,57 @@
 
 import { useState } from 'react';
 import { Table, Badge, Button, Tooltip } from 'flowbite-react';
-import { HiOutlineEye, HiPencilAlt, HiChatAlt2 } from 'react-icons/hi';
+import {
+  HiOutlineEye,
+  HiPencilAlt,
+  HiChatAlt2,
+  HiOutlineExclamation,
+} from 'react-icons/hi';
 import ReportDetail from './ReportDetail';
 import UpdateStatusModalByAdmin from './ReportUpdateStatus';
 import CommentModal from '../comment/CommentModal';
 import InlineOPDSelector from './InlineOPDSelector';
 
-export default function ReportTable({ reports }) {
+// Status enum
+const Status = {
+  PENDING: 'PENDING',
+  PROSES: 'PROSES',
+  SELESAI: 'SELESAI',
+  DITOLAK: 'DITOLAK',
+};
+
+// Komponen PriorityBadge yang menyesuaikan warna dan ikon dengan prioritas
+const PriorityBadge = ({ priority }) => {
+  let color = 'blue';
+  let icon = null;
+
+  switch (priority?.toUpperCase()) {
+    case 'HIGH':
+      color = 'red';
+      icon = <HiOutlineExclamation className="mr-1" />;
+      break;
+    case 'MEDIUM':
+      color = 'yellow';
+      icon = <HiOutlineExclamation className="mr-1" />;
+      break;
+    case 'LOW':
+      color = 'green';
+      icon = <HiOutlineExclamation className="mr-1" />;
+      break;
+    default:
+      color = 'gray';
+      break;
+  }
+
+  return (
+    <Badge color={color} className="flex items-center w-fit">
+      {icon}
+      {priority}
+    </Badge>
+  );
+};
+
+export default function ReportTable({ reports, fetchReports }) {
   const [selectedReport, setSelectedReport] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -29,34 +73,42 @@ export default function ReportTable({ reports }) {
     setIsCommentModalOpen(true);
   };
 
+
+  
+
   return (
     <>
       {/* 📊 Tabel Laporan */}
       <Table striped>
         <Table.Head>
-          <Table.HeadCell>Nama Pelapor</Table.HeadCell>
+          <Table.HeadCell className="w-[180px]">Nama Pelapor</Table.HeadCell>
           <Table.HeadCell>Subjek</Table.HeadCell>
-          <Table.HeadCell>Kategori</Table.HeadCell>
-          <Table.HeadCell>Status Bupati</Table.HeadCell>
-          <Table.HeadCell>OPD Terkait</Table.HeadCell>
-          <Table.HeadCell>Prioritas</Table.HeadCell>
-          <Table.HeadCell>Tanggal</Table.HeadCell>
-          <Table.HeadCell>Aksi</Table.HeadCell>
+          <Table.HeadCell className="w-[120px]">Kategori</Table.HeadCell>
+          <Table.HeadCell className="w-[140px]">Status Bupati</Table.HeadCell>
+          <Table.HeadCell className="w-[200px]">OPD Terkait</Table.HeadCell>
+          <Table.HeadCell className="w-[130px]">Prioritas</Table.HeadCell>
+          <Table.HeadCell className="w-[120px]">Tanggal</Table.HeadCell>
+          <Table.HeadCell className="w-[140px] text-center">Aksi</Table.HeadCell>
         </Table.Head>
+
         <Table.Body>
           {reports.map((report) => (
             <Table.Row key={report.id}>
-              <Table.Cell>{report.user.name}</Table.Cell>
-              <Table.Cell>{report.title}</Table.Cell>
+              <Table.Cell className="truncate max-w-[180px]">
+                {report.user.name}
+              </Table.Cell>
+              <Table.Cell>
+                {report.title}
+              </Table.Cell>
               <Table.Cell>{report.category}</Table.Cell>
               <Table.Cell>
                 <Badge
                   color={
-                    report.status === 'SELESAI'
+                    report.bupatiStatus === Status.SELESAI
                       ? 'green'
-                      : report.status === 'PROSES'
+                      : report.bupatiStatus === Status.PROSES
                         ? 'yellow'
-                        : report.status === 'DITOLAK'
+                        : report.bupatiStatus === Status.DITOLAK
                           ? 'red'
                           : 'gray'
                   }
@@ -70,8 +122,9 @@ export default function ReportTable({ reports }) {
                   onUpdated={() => fetchReports()}
                 />
               </Table.Cell>
-              {/* <Table.Cell>{report.opd?.name || "not found"}</Table.Cell> */}
-              <Table.Cell>{report.priority}</Table.Cell>
+              <Table.Cell className="whitespace-nowrap">
+                <PriorityBadge priority={report.priority} />
+              </Table.Cell>
               <Table.Cell>
                 {new Date(report.createdAt).toLocaleDateString('id-ID')}
               </Table.Cell>

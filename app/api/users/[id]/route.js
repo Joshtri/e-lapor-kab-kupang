@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma'; // pastikan path prisma kamu benar
+import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
   const userId = parseInt(params.id);
@@ -53,5 +54,35 @@ export async function GET(req, { params }) {
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
     });
+  }
+}
+
+
+
+export async function DELETE(_req, { params }) {
+  const userId = parseInt(params.id);
+
+  if (isNaN(userId)) {
+    return NextResponse.json({ error: 'ID tidak valid' }, { status: 400 });
+  }
+
+  try {
+    // Hapus user (otomatis akan error kalau masih ada foreign key constraint)
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return NextResponse.json({ message: 'User berhasil dihapus' });
+  } catch (error) {
+    console.error('❌ Error deleting user:', error);
+    return NextResponse.json(
+      {
+        error:
+          error.code === 'P2025'
+            ? 'User tidak ditemukan'
+            : 'Gagal menghapus user',
+      },
+      { status: 500 },
+    );
   }
 }

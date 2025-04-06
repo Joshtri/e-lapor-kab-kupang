@@ -48,7 +48,7 @@ export default function CreateUserModal({ open, setOpen, onSuccess }) {
           <div>
             <Label htmlFor="role" value="Role" />
             <Select id="role" {...register('role', { required: true })}>
-              <option >Pilih Role</option>
+              <option>Pilih Role</option>
               <option value="PELAPOR">Pelapor</option>
               <option value="ADMIN">Admin</option>
               <option value="BUPATI">Bupati</option>
@@ -69,23 +69,20 @@ export default function CreateUserModal({ open, setOpen, onSuccess }) {
           </div>
 
           {/* NIK */}
+          {/* NIK */}
           <div>
-            <Label htmlFor="nikNumber" value="NIK (16 Digit)" />
+            <Label htmlFor="nikNumber" value="NIK (Maksimal 16 Digit)" />
             <TextInput
               id="nikNumber"
               placeholder="1234567890123456"
               {...register('nikNumber', {
                 required: 'NIK wajib diisi',
-                minLength: {
-                  value: 16,
-                  message: 'NIK harus 16 digit',
-                },
                 maxLength: {
                   value: 16,
-                  message: 'NIK harus 16 digit',
+                  message: 'NIK tidak boleh lebih dari 16 digit',
                 },
                 pattern: {
-                  value: /^\d{16}$/,
+                  value: /^\d+$/,
                   message: 'NIK hanya boleh berisi angka',
                 },
               })}

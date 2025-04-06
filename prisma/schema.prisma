@@ -56,10 +56,12 @@ model Report {
   userId Int
   opdId  Int? // mengacu ke userId OPD
 
-  title        String   @db.VarChar(255)
-  description  String
-  location     String   @default("empty")
-  category     Category
+  title       String  @db.VarChar(255)
+  description String
+  location    String  @default("empty")
+  category    String? @default("LAINNYA")
+  subcategory String? @default("LAINNYA") // ← subkategori baru
+
   priority     Priority
   bupatiStatus Status   @default(PENDING)
   opdStatus    Status?  @default(PENDING)

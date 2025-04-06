@@ -45,17 +45,17 @@ export default function ReportGrid({ reports }) {
           <div className="flex gap-2 mt-3">
             <Badge
               color={
-                report.status === "SELESAI"
+                report.bupatiStatus === "SELESAI"
                   ? "green"
-                  : report.status === "PROSES"
+                  : report.bupatiStatus === "PROSES"
                   ? "yellow"
-                  : report.status === "DITOLAK"
+                  : report.bupatiStatus === "DITOLAK"
                   ? "red"
                   : "gray"
               }
               className="text-xs font-semibold px-3 py-1"
             >
-              {report.status}
+              {report.bupatiStatus}
             </Badge>
             <Badge color="blue" className="text-xs font-semibold px-3 py-1">
               {report.priority}
