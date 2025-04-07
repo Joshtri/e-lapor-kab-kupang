@@ -50,3 +50,41 @@ export async function GET(req, context) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+
+export async function POST(req) {
+  try {
+    const user = await getUserFromCookie();
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { roomId, content } = await req.json();
+
+    if (!roomId || !content) {
+      return NextResponse.json({ error: 'roomId and content required' }, { status: 400 });
+    }
+
+    const room = await prisma.chatRoom.findUnique({
+      where: { id: Number(roomId) },
+    });
+
+    if (!room) {
+      return NextResponse.json({ error: 'Chat room not found' }, { status: 404 });
+    }
+
+    const message = await prisma.chatMessage.create({
+      data: {
+        roomId: Number(roomId),
+        content,
+        senderId: user.id,
+        isRead: false,
+      },
+    });
+
+    return NextResponse.json(message, { status: 201 });
+  } catch (error) {
+    console.error('[SEND MESSAGE ERROR]', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

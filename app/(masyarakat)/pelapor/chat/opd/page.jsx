@@ -4,7 +4,9 @@ import { useEffect, useState, useRef } from 'react';
 import { Card, Spinner, Textarea, Button } from 'flowbite-react';
 import axios from 'axios';
 import clsx from 'clsx';
-import { HiOutlinePaperAirplane } from 'react-icons/hi';
+import { HiOutlinePaperAirplane, HiArrowLeft, HiSearch } from 'react-icons/hi';
+import { motion, AnimatePresence } from 'framer-motion';
+import MessageBubble from '@/components/chat/message-bubble';
 
 export default function ChatOpdPage() {
   const [rooms, setRooms] = useState([]);
@@ -13,7 +15,9 @@ export default function ChatOpdPage() {
   const [message, setMessage] = useState('');
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [sending, setSending] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const bottomRef = useRef(null);
+  const textareaRef = useRef(null);
 
   // Ambil semua room OPD
   useEffect(() => {
@@ -62,6 +66,13 @@ export default function ChatOpdPage() {
       });
       setMessages((prev) => [...prev, { ...res.data, fromMe: true }]);
       setMessage('');
+
+      // Focus back on textarea after sending
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+        }
+      }, 0);
     } catch (err) {
       console.error('Gagal kirim pesan:', err);
     } finally {
@@ -69,100 +80,185 @@ export default function ChatOpdPage() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const filteredRooms = rooms.filter((room) => {
+    const name = room.opd?.name || '';
+    return name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-24 px-4 max-w-6xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-0 pt-24 px-4 max-w-7xl mx-auto h-[85vh]">
       {/* Sidebar Kontak */}
-      <div className="col-span-1">
-        <Card className="h-[75vh] overflow-y-auto">
-          <h2 className="text-lg font-semibold mb-2">Kontak OPD</h2>
-          {rooms.length === 0 ? (
-            <p className="text-sm text-gray-500">Belum ada kontak OPD</p>
-          ) : (
-            <ul className="space-y-2">
-              {rooms.map((room) => (
-                <li
-                  key={room.id}
-                  className={clsx(
-                    'p-2 rounded cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900',
-                    selectedRoom?.id === room.id &&
-                      'bg-blue-200 dark:bg-blue-800',
-                  )}
-                  onClick={() => handleRoomSelect(room)}
-                >
-                  <p className="font-medium">{room.opd?.name}</p>
-                  <p className="text-xs text-gray-500">
-                    {room.messages?.[0]?.content?.slice(0, 40) ||
-                      'Belum ada pesan'}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
+      <div
+        className={clsx('md:col-span-1', selectedRoom ? 'hidden md:block' : '')}
+      >
+        <Card className="h-full rounded-none md:rounded-l-lg">
+          <div className="flex flex-col h-full">
+            <div className="p-4 bg-green-600 text-white">
+              <h2 className="text-lg font-semibold">Kontak OPD</h2>
+            </div>
+
+            <div className="p-3 border-b">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Cari OPD..."
+                  className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-300"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <HiSearch className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              <AnimatePresence>
+                {filteredRooms.length === 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="p-4 text-center text-gray-500"
+                  >
+                    Belum ada kontak OPD
+                  </motion.div>
+                ) : (
+                  filteredRooms.map((room) => {
+                    const isSelected = selectedRoom?.id === room.id;
+
+                    return (
+                      <motion.div
+                        key={room.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        whileHover={{
+                          backgroundColor: 'rgba(236, 253, 245, 0.4)',
+                        }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => handleRoomSelect(room)}
+                        className={clsx(
+                          'p-3 cursor-pointer border-b',
+                          isSelected ? 'bg-green-50 dark:bg-green-900/20' : '',
+                        )}
+                      >
+                        <p className="font-medium">{room.opd?.name}</p>
+                        <p className="text-xs text-gray-500">
+                          {room.messages?.[0]?.content?.slice(0, 40) ||
+                            'Belum ada pesan'}
+                        </p>
+                      </motion.div>
+                    );
+                  })
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Chat Box */}
-      <div className="col-span-2">
-        <Card className="h-[75vh] flex flex-col">
+      <div
+        className={clsx('md:col-span-3', selectedRoom ? '' : 'hidden md:block')}
+      >
+        <Card className="h-full rounded-none md:rounded-r-lg">
           {selectedRoom ? (
-            <>
-              <h2 className="text-lg font-semibold mb-4">
-                Chat dengan {selectedRoom.opd?.name}
-              </h2>
+            <div className="flex flex-col h-full">
+              {/* Header */}
+              <div className="p-4 bg-green-600 text-white flex items-center">
+                <Button
+                  color="gray"
+                  pill
+                  size="sm"
+                  onClick={() => setSelectedRoom(null)}
+                  className="mr-2 md:hidden bg-green-700 hover:bg-green-800 text-white"
+                >
+                  <HiArrowLeft className="h-5 w-5" />
+                </Button>
+                <div>
+                  <h2 className="font-semibold">
+                    Chat dengan {selectedRoom.opd?.name}
+                  </h2>
+                </div>
+              </div>
 
-              <div className="flex-1 overflow-y-auto space-y-3 p-2">
+              {/* Messages */}
+              <div
+                className="flex-1 overflow-y-auto p-4"
+                style={{
+                  backgroundColor: '#e5ded8',
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fillOpacity='0.1' fillRule='evenodd'/%3E%3C/svg%3E\")",
+                  backgroundSize: '300px',
+                }}
+              >
                 {loadingMessages ? (
                   <div className="flex justify-center items-center h-full">
-                    <Spinner />
+                    <Spinner size="lg" color="success" />
                   </div>
                 ) : messages.length === 0 ? (
-                  <p className="text-center text-gray-500">Belum ada pesan</p>
+                  <div className="flex justify-center items-center h-full">
+                    <p className="text-center text-gray-500 bg-white p-3 rounded-lg shadow-sm">
+                      Belum ada pesan. Mulai percakapan!
+                    </p>
+                  </div>
                 ) : (
-                  messages.map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={clsx(
-                        'max-w-sm px-4 py-2 rounded-lg text-sm shadow w-fit',
-                        {
-                          'ml-auto bg-blue-600 text-white': msg.fromMe,
-                          'mr-auto bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white':
-                            !msg.fromMe,
-                        },
-                      )}
-                    >
-                      <p className="mb-1">{msg.content}</p>
-                      <span className="text-[10px] text-gray-500 block text-right">
-                        {new Date(msg.createdAt).toLocaleTimeString('id-ID')}
-                      </span>
+                  <AnimatePresence initial={false}>
+                    <div className="space-y-3">
+                      {messages.map((msg, index) => (
+                        <MessageBubble
+                          key={msg.id || index}
+                          message={msg}
+                          isConsecutive={
+                            index > 0 &&
+                            messages[index - 1].fromMe === msg.fromMe
+                          }
+                        />
+                      ))}
                     </div>
-                  ))
+                  </AnimatePresence>
                 )}
                 <div ref={bottomRef} />
               </div>
 
-              <div className="mt-4 flex gap-2">
-                <Textarea
-                  placeholder="Tulis pesan..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  rows={1}
-                  className="flex-1"
-                  onKeyDown={(e) =>
-                    e.key === 'Enter' && !e.shiftKey && handleSend()
-                  }
-                />
-                <Button
-                  onClick={handleSend}
-                  disabled={!message.trim() || sending}
-                >
-                  <HiOutlinePaperAirplane className="w-5 h-5" />
-                </Button>
+              {/* Input */}
+              <div className="p-3 bg-white border-t">
+                <div className="flex items-end gap-2">
+                  <Textarea
+                    ref={textareaRef}
+                    placeholder="Tulis pesan..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className="min-h-[50px] max-h-[150px] resize-none flex-1"
+                    rows={1}
+                  />
+                  <Button
+                    onClick={handleSend}
+                    disabled={!message.trim() || sending}
+                    color="success"
+                    pill
+                    className="h-[50px] w-[50px] p-0 flex items-center justify-center"
+                  >
+                    {sending ? (
+                      <Spinner size="sm" light />
+                    ) : (
+                      <HiOutlinePaperAirplane className="h-5 w-5" />
+                    )}
+                  </Button>
+                </div>
               </div>
-            </>
+            </div>
           ) : (
-            <p className="text-center text-gray-500 my-auto">
-              Pilih OPD untuk memulai percakapan.
-            </p>
+            <div className="flex items-center justify-center h-full text-gray-500">
+              <p>Pilih OPD untuk memulai percakapan.</p>
+            </div>
           )}
         </Card>
       </div>

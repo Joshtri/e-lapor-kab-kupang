@@ -2,17 +2,22 @@
 
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Card, Textarea, Button } from 'flowbite-react';
-import { HiOutlinePaperAirplane } from 'react-icons/hi';
+import { Card, Textarea, Button, Spinner } from 'flowbite-react';
+import { HiOutlinePaperAirplane, HiArrowLeft, HiSearch } from 'react-icons/hi';
 import clsx from 'clsx';
+import { motion, AnimatePresence } from 'framer-motion';
+import MessageBubble from '@/components/chat/message-bubble';
 
 export default function ChatOpdPage() {
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const bottomRef = useRef(null);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     fetchRooms();
@@ -22,19 +27,32 @@ export default function ChatOpdPage() {
     if (selectedRoom) fetchMessages(selectedRoom.id);
   }, [selectedRoom]);
 
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const fetchRooms = async () => {
-    const res = await axios.get('/api/opd/chat/rooms');
-    setRooms(res.data);
-    if (res.data.length > 0) setSelectedRoom(res.data[0]);
+    try {
+      const res = await axios.get('/api/opd/chat/rooms');
+      setRooms(res.data);
+      if (res.data.length > 0) {
+        setSelectedRoom(res.data[0]); // default buka pertama
+      }
+    } catch (err) {
+      console.error('Gagal mengambil daftar pelapor:', err);
+    }
   };
 
   const fetchMessages = async (roomId) => {
-    const res = await axios.get(`/api/opd/chat/rooms/${roomId}/messages`);
-    setMessages(res.data);
-    setTimeout(
-      () => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }),
-      100,
-    );
+    setLoading(true);
+    try {
+      const res = await axios.get(`/api/opd/chat/rooms/${roomId}/messages`);
+      setMessages(res.data);
+    } catch (err) {
+      console.error('Gagal mengambil pesan:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSend = async () => {
@@ -47,10 +65,13 @@ export default function ChatOpdPage() {
       });
       setMessages((prev) => [...prev, { ...res.data, fromMe: true }]);
       setMessage('');
-      setTimeout(
-        () => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }),
-        100,
-      );
+
+      // Focus back on textarea after sending
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+        }
+      }, 0);
     } catch (err) {
       console.error('Gagal kirim pesan:', err);
     } finally {
@@ -58,84 +79,220 @@ export default function ChatOpdPage() {
     }
   };
 
+  const handleSelectRoom = async (room) => {
+    setSelectedRoom(room);
+    await axios.post('/api/opd/chat/mark-read', { roomId: room.id });
+    fetchMessages(room.id);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const filteredRooms = rooms.filter((room) => {
+    const name = room.user?.name || '';
+    return name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-24 px-4 max-w-6xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-0 pt-24 px-4 max-w-7xl mx-auto h-[85vh]">
       {/* Daftar Pelapor */}
-      <div className="col-span-1">
-        <Card className="h-[75vh] overflow-y-auto">
-          <h2 className="text-lg font-semibold mb-2">Daftar Pelapor</h2>
-          {rooms.map((room) => {
-            const lastMsg = room.messages?.[0];
-            const lastTime = lastMsg?.createdAt
-              ? new Date(lastMsg.createdAt).toLocaleTimeString('id-ID', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
-              : '';
-            return (
-              <div
-                key={room.id}
-                onClick={() => setSelectedRoom(room)}
-                className="p-2 cursor-pointer hover:bg-gray-100 rounded"
-              >
-                <div className="flex justify-between items-center">
-                  <p className="font-semibold">{room.user.name}</p>
-                  <p className="text-xs text-gray-400">{lastTime}</p>
-                </div>
-                <p className="text-sm text-gray-500 truncate">
-                  {lastMsg?.content || 'Belum ada pesan'}
-                </p>
+      <div
+        className={clsx('md:col-span-1', selectedRoom ? 'hidden md:block' : '')}
+      >
+        <Card className="h-full rounded-none md:rounded-l-lg">
+          <div className="flex flex-col h-full">
+            <div className="p-4 bg-green-600 text-white">
+              <h2 className="text-lg font-semibold">Daftar Pelapor</h2>
+            </div>
+
+            <div className="p-3 border-b">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Cari pelapor..."
+                  className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-300"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <HiSearch className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
               </div>
-            );
-          })}
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              <AnimatePresence>
+                {filteredRooms.length === 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="p-4 text-center text-gray-500"
+                  >
+                    Belum ada chat masuk.
+                  </motion.div>
+                ) : (
+                  filteredRooms.map((room) => {
+                    const lastMsg = room.messages?.[0];
+                    const lastTime = lastMsg?.createdAt
+                      ? new Date(lastMsg.createdAt).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                      : '';
+                    const isSelected = selectedRoom?.id === room.id;
+                    const hasUnread = room.unreadCount > 0;
+
+                    return (
+                      <motion.div
+                        key={room.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        whileHover={{
+                          backgroundColor: 'rgba(236, 253, 245, 0.4)',
+                        }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => handleSelectRoom(room)}
+                        className={clsx(
+                          'p-3 cursor-pointer border-b',
+                          isSelected ? 'bg-green-50' : '',
+                          hasUnread ? 'font-medium' : '',
+                        )}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate">
+                              {room.user.name}
+                            </p>
+                            <p className="text-sm text-gray-500 truncate mt-1">
+                              {lastMsg
+                                ? lastMsg.content.slice(0, 40)
+                                : 'Belum ada pesan'}
+                            </p>
+                          </div>
+                          <div className="flex flex-col items-end ml-2">
+                            {lastTime && (
+                              <span className="text-xs text-gray-500">
+                                {lastTime}
+                              </span>
+                            )}
+                            {hasUnread && (
+                              <span className="bg-green-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center mt-1">
+                                {room.unreadCount}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Chat Box */}
-      <div className="col-span-2">
-        <Card className="h-[75vh] flex flex-col">
-          <div className="flex-1 overflow-y-auto space-y-4 p-3">
-            {messages.map((msg) => {
-              const isMe = msg.fromMe;
-              return (
-                <div
-                  key={msg.id}
-                  className={clsx(
-                    'max-w-sm px-4 py-2 rounded text-sm shadow',
-                    isMe
-                      ? 'ml-auto bg-green-600 text-white'
-                      : 'mr-auto bg-gray-100 text-gray-800',
-                  )}
+      <div
+        className={clsx('md:col-span-3', selectedRoom ? '' : 'hidden md:block')}
+      >
+        <Card className="h-full rounded-none md:rounded-r-lg">
+          {selectedRoom ? (
+            <div className="flex flex-col h-full">
+              {/* Header */}
+              <div className="p-4 bg-green-600 text-white flex items-center">
+                <Button
+                  color="gray"
+                  pill
+                  size="sm"
+                  onClick={() => setSelectedRoom(null)}
+                  className="mr-2 md:hidden bg-green-700 hover:bg-green-800 text-white"
                 >
-                  {!isMe && (
-                    <p className="text-xs text-gray-500 mb-1 font-semibold">
-                      Dari: {selectedRoom?.user.name}
-                    </p>
-                  )}
-                  {msg.content}
-                  <p className="text-[10px] text-gray-300 mt-1 text-right">
-                    {new Date(msg.createdAt).toLocaleTimeString('id-ID', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
+                  <HiArrowLeft className="h-5 w-5" />
+                </Button>
+                <div>
+                  <h2 className="font-semibold">
+                    Chat dengan {selectedRoom.user.name}
+                  </h2>
                 </div>
-              );
-            })}
-            <div ref={bottomRef} />
-          </div>
-          <div className="mt-4 flex gap-2 px-2 pb-2">
-            <Textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={1}
-              className="flex-1"
-              placeholder="Tulis pesan..."
-            />
-            <Button onClick={handleSend} disabled={sending}>
-              <HiOutlinePaperAirplane className="w-5 h-5" />
-            </Button>
-          </div>
+              </div>
+
+              {/* Messages */}
+              <div
+                className="flex-1 overflow-y-auto p-4"
+                style={{
+                  backgroundColor: '#e5ded8',
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fillOpacity='0.1' fillRule='evenodd'/%3E%3C/svg%3E\")",
+                  backgroundSize: '300px',
+                }}
+              >
+                {loading ? (
+                  <div className="flex justify-center items-center h-full">
+                    <Spinner size="lg" color="success" />
+                  </div>
+                ) : messages.length === 0 ? (
+                  <div className="flex justify-center items-center h-full">
+                    <p className="text-center text-gray-500 bg-white p-3 rounded-lg shadow-sm">
+                      Belum ada pesan. Mulai percakapan!
+                    </p>
+                  </div>
+                ) : (
+                  <AnimatePresence initial={false}>
+                    <div className="space-y-3">
+                      {messages.map((msg, index) => (
+                        <MessageBubble
+                          key={msg.id || index}
+                          message={msg}
+                          isConsecutive={
+                            index > 0 &&
+                            messages[index - 1].fromMe === msg.fromMe
+                          }
+                        />
+                      ))}
+                    </div>
+                  </AnimatePresence>
+                )}
+                <div ref={bottomRef} />
+              </div>
+
+              {/* Input */}
+              <div className="p-3 bg-white border-t">
+                <div className="flex items-end gap-2">
+                  <Textarea
+                    ref={textareaRef}
+                    placeholder="Tulis pesan..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className="min-h-[50px] max-h-[150px] resize-none flex-1"
+                    rows={1}
+                  />
+                  <Button
+                    onClick={handleSend}
+                    disabled={!message.trim() || sending}
+                    color="success"
+                    pill
+                    className="h-[50px] w-[50px] p-0 flex items-center justify-center"
+                  >
+                    {sending ? (
+                      <Spinner size="sm" light />
+                    ) : (
+                      <HiOutlinePaperAirplane className="h-5 w-5" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-500">
+              <p>Pilih pelapor untuk memulai percakapan.</p>
+            </div>
+          )}
         </Card>
       </div>
     </div>
