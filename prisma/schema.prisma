@@ -79,8 +79,9 @@ model Report {
   logs     Log[]
   user     User      @relation(fields: [userId], references: [id])
 
-  opd OPD? @relation(fields: [opdId], references: [id])
-
+  opd   OPD?   @relation(fields: [opdId], references: [id])
+  // ✅ Tambahkan ini untuk menyimpan file gambar langsung
+  image Bytes?
   // opd      OPD?      @relation("OpdReports", fields: [opdId], references: [userId])
 }
 
@@ -159,18 +160,17 @@ model Email {
 
 model ChatRoom {
   id         Int      @id @default(autoincrement())
-  userId     Int                  // Pelapor
-  opdId      Int?                 // Jika chat ditujukan ke OPD
-  isToBupati Boolean              // true jika chat ke Bupati
+  userId     Int // Pelapor
+  opdId      Int? // Jika chat ditujukan ke OPD
+  isToBupati Boolean // true jika chat ke Bupati
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   // Relasi
-  user       User       @relation(fields: [userId], references: [id])
-  opd        OPD?       @relation(fields: [opdId], references: [id])
-  messages   ChatMessage[]
+  user     User          @relation(fields: [userId], references: [id])
+  opd      OPD?          @relation(fields: [opdId], references: [id])
+  messages ChatMessage[]
 }
-
 
 model ChatMessage {
   id        Int      @id @default(autoincrement())
@@ -181,10 +181,9 @@ model ChatMessage {
   createdAt DateTime @default(now())
 
   // Relasi
-  room      ChatRoom @relation(fields: [roomId], references: [id])
-  sender    User     @relation(fields: [senderId], references: [id])
+  room   ChatRoom @relation(fields: [roomId], references: [id])
+  sender User     @relation(fields: [senderId], references: [id])
 }
-
 
 enum Role {
   BUPATI

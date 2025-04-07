@@ -9,9 +9,11 @@ import {
   TextInput,
   Textarea,
   Select,
+  FileInput,
 } from 'flowbite-react';
 import axios from 'axios';
 import { toast } from 'sonner';
+import imageCompression from 'browser-image-compression';
 import { useUser } from '@/contexts/UserContext';
 import {
   getMainCategories,
@@ -22,6 +24,7 @@ export default function ReportCreateModal({ openModal, setOpenModal }) {
   const { users } = useUser();
   const [opds, setOpds] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [imageFile, setImageFile] = useState(null); // ✅ untuk simpan file gambar
 
   const {
     register,
@@ -45,14 +48,33 @@ export default function ReportCreateModal({ openModal, setOpenModal }) {
 
   const onSubmit = async (data) => {
     try {
-      await axios.post('/api/reports', {
-        ...data,
-        userId: parseInt(data.userId),
-        opdId: parseInt(data.opdId),
-      });
+      const formData = new FormData();
+
+      formData.append('userId', data.userId);
+      formData.append('title', data.title);
+      formData.append('category', data.category);
+      formData.append('subcategory', data.subcategory);
+      formData.append('priority', data.priority);
+      formData.append('opdId', data.opdId);
+      formData.append('description', data.description);
+      formData.append('location', data.location || '-');
+
+      // ✅ kompres gambar jika ada
+      if (imageFile) {
+        const compressedFile = await imageCompression(imageFile, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 800,
+          useWebWorker: true,
+        });
+
+        formData.append('image', compressedFile);
+      }
+
+      await axios.post('/api/reports', formData);
 
       toast.success('Laporan berhasil dikirim!');
       reset();
+      setImageFile(null);
       setOpenModal(false);
     } catch (err) {
       toast.error(err.response?.data?.error || 'Gagal mengirim laporan.');
@@ -94,21 +116,18 @@ export default function ReportCreateModal({ openModal, setOpenModal }) {
           </div>
 
           {/* Kategori */}
-          {/* Kategori Utama */}
           <div>
             <Label htmlFor="category" value="Kategori *" />
             <Select
               id="category"
               {...register('category', { required: true })}
-              onChange={(e) => {
-                setSelectedCategory(e.target.value);
-              }}
+              onChange={(e) => setSelectedCategory(e.target.value)}
             >
               <option value="">Pilih Kategori</option>
               {getMainCategories().map((cat) => (
                 <option key={cat.value} value={cat.value}>
                   {cat.label}
-                </option>
+              </option>
               ))}
             </Select>
             {errors.category && (
@@ -141,6 +160,7 @@ export default function ReportCreateModal({ openModal, setOpenModal }) {
           <div>
             <Label htmlFor="priority" value="Prioritas *" />
             <Select id="priority" {...register('priority', { required: true })}>
+              <option value="">Pilih Prioritas</option>
               <option value="LOW">Rendah</option>
               <option value="MEDIUM">Sedang</option>
               <option value="HIGH">Tinggi</option>
@@ -177,6 +197,32 @@ export default function ReportCreateModal({ openModal, setOpenModal }) {
             )}
           </div>
 
+          {/* Lokasi */}
+          <div>
+            <Label htmlFor="location" value="Lokasi" />
+            <TextInput
+              id="location"
+              {...register('location')}
+              placeholder="Contoh: Jl. Ahmad Yani, Oesapa"
+            />
+          </div>
+
+          {/* ✅ Upload Gambar */}
+          <div>
+            <Label htmlFor="image" value="Gambar (opsional)" />
+            <FileInput
+              id="image"
+              accept="image/*"
+              capture="environment"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setImageFile(e.target.files[0]);
+                }
+              }}
+            />
+          </div>
+
+          {/* Tombol Kirim */}
           <div className="flex justify-end">
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Mengirim...' : 'Kirim'}

@@ -15,6 +15,15 @@ export async function GET(req, { params }) {
             name: true,
           },
         },
+        opd: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            telp: true,
+            alamat: true,
+          },
+        },
       },
     });
 
@@ -25,19 +34,32 @@ export async function GET(req, { params }) {
       );
     }
 
+    // ✅ Konversi image buffer ke base64 string
+    const base64Image = report.image
+      ? `data:image/jpeg;base64,${Buffer.from(report.image).toString('base64')}`
+      : null;
+
     return NextResponse.json({
       id: report.id,
       title: report.title,
       priority: report.priority,
       description: report.description,
-      pelapor: report.user?.name || 'Tidak diketahui',
       kategori: report.category,
+      subkategori: report.subcategory,
+      pelapor: report.user?.name || 'Tidak diketahui',
+      user: report.user,
+      opd: report.opd || null,
       bupatiStatus: report.bupatiStatus,
       opdStatus: report.opdStatus,
       createdAt: report.createdAt,
+      opdUpdatedAt: report.respondedAt || null,
+      bupatiUpdatedAt: report.updatedAt || null,
+      opdResponse: report.opdResponse || null,
+      bupatiResponse: report.bupatiResponse || null,
+      image: base64Image, // hasil konversi
     });
   } catch (error) {
-    console.error('Error fetching report details:', error.message, error);
+    console.error('❌ Gagal ambil detail laporan:', error);
     return NextResponse.json(
       { message: 'Gagal mengambil data laporan.', error: error.message },
       { status: 500 },

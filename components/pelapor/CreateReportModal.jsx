@@ -1,9 +1,17 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Modal, Button, Label, Textarea, Select, FileInput, TextInput } from "flowbite-react"
-import { toast } from "sonner"
-import axios from "axios"
+import { useState, useEffect } from 'react';
+import {
+  Modal,
+  Button,
+  Label,
+  Textarea,
+  Select,
+  FileInput,
+  TextInput,
+} from 'flowbite-react';
+import { toast } from 'sonner';
+import axios from 'axios';
 import {
   HiOutlineMail,
   HiMailOpen,
@@ -14,198 +22,209 @@ import {
   HiTag,
   HiFlag,
   HiOfficeBuilding,
-} from "react-icons/hi"
-import { motion, AnimatePresence } from "framer-motion"
+} from 'react-icons/hi';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  getMainCategories,
+  getSubcategoriesByText,
+} from '@/utils/reportCategories';
 
 const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    category: "",
-    priority: "LOW",
-    opdId: "",
-    location: "",
-    status: "PENDING",
-  })
-  const [opds, setOpds] = useState([])
-  const [files, setFiles] = useState([])
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [step, setStep] = useState(1)
-  const [errors, setErrors] = useState({})
-  const [loadingOpds, setLoadingOpds] = useState(true)
+    title: '',
+    description: '',
+    category: '',
+    priority: 'LOW',
+    opdId: '',
+    location: '',
+    status: 'PENDING',
+  });
+  const [opds, setOpds] = useState([]);
+  const [files, setFiles] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [step, setStep] = useState(1);
+  const [errors, setErrors] = useState({});
+  const [loadingOpds, setLoadingOpds] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [subcategory, setSubcategory] = useState('');
 
   // Fetch OPDs when component mounts
   useEffect(() => {
-    fetchOpds()
-  }, [])
+    fetchOpds();
+  }, []);
 
   const fetchOpds = async () => {
     try {
-      setLoadingOpds(true)
-      const res = await axios.get("/api/opd/list")
-      setOpds(res.data)
+      setLoadingOpds(true);
+      const res = await axios.get('/api/opd/list');
+      setOpds(res.data);
     } catch (error) {
-      console.error("Gagal mengambil OPD:", error)
-      toast.error("Gagal mengambil daftar OPD.")
+      console.error('Gagal mengambil OPD:', error);
+      toast.error('Gagal mengambil daftar OPD.');
     } finally {
-      setLoadingOpds(false)
+      setLoadingOpds(false);
     }
-  }
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
     // Clear error when user types
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }))
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
-  }
+  };
 
   const handleFileChange = (e) => {
-    setFiles(Array.from(e.target.files))
+    setFiles(Array.from(e.target.files));
 
     // Clear error when user selects files
     if (errors.files) {
-      setErrors((prev) => ({ ...prev, files: "" }))
+      setErrors((prev) => ({ ...prev, files: '' }));
     }
-  }
+  };
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case "HIGH":
-        return "red"
-      case "MEDIUM":
-        return "yellow"
-      case "LOW":
-        return "blue"
+      case 'HIGH':
+        return 'red';
+      case 'MEDIUM':
+        return 'yellow';
+      case 'LOW':
+        return 'blue';
       default:
-        return "blue"
+        return 'blue';
     }
-  }
+  };
 
   const validateStep1 = () => {
-    const newErrors = {}
+    const newErrors = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = "Judul laporan wajib diisi"
+      newErrors.title = 'Judul laporan wajib diisi';
     }
 
     if (!formData.category) {
-      newErrors.category = "Kategori wajib dipilih"
+      newErrors.category = 'Kategori wajib dipilih';
     }
 
     if (!formData.priority) {
-      newErrors.priority = "Prioritas wajib dipilih"
+      newErrors.priority = 'Prioritas wajib dipilih';
     }
 
     if (!formData.opdId) {
-      newErrors.opdId = "OPD tujuan wajib dipilih"
+      newErrors.opdId = 'OPD tujuan wajib dipilih';
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const validateStep2 = () => {
-    const newErrors = {}
+    const newErrors = {};
 
     if (!formData.description.trim()) {
-      newErrors.description = "Deskripsi laporan wajib diisi"
+      newErrors.description = 'Deskripsi laporan wajib diisi';
     } else if (formData.description.trim().length < 20) {
-      newErrors.description = "Deskripsi terlalu pendek (minimal 20 karakter)"
+      newErrors.description = 'Deskripsi terlalu pendek (minimal 20 karakter)';
     }
 
     if (!formData.location.trim()) {
-      newErrors.location = "Lokasi wajib diisi"
+      newErrors.location = 'Lokasi wajib diisi';
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const nextStep = () => {
     if (step === 1 && validateStep1()) {
-      setStep(2)
+      setStep(2);
     } else if (step === 2 && validateStep2()) {
-      setStep(3)
+      setStep(3);
     }
-  }
+  };
 
   const prevStep = () => {
-    setStep((prev) => Math.max(prev - 1, 1))
-  }
+    setStep((prev) => Math.max(prev - 1, 1));
+  };
 
   const handleSubmit = async () => {
     try {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
 
       // Create form data for file upload
-      const formDataObj = new FormData()
-      formDataObj.append("title", formData.title)
-      formDataObj.append("description", formData.description)
-      formDataObj.append("category", formData.category)
-      formDataObj.append("priority", formData.priority)
-      formDataObj.append("opdId", formData.opdId)
-      formDataObj.append("location", formData.location)
-      formDataObj.append("status", formData.status)
-      formDataObj.append("userId", user.id)
+      const formDataObj = new FormData();
+      formDataObj.append('title', formData.title);
+      formDataObj.append('description', formData.description);
+      formDataObj.append('category', formData.category);
+      formDataObj.append('priority', formData.priority);
+      formDataObj.append('opdId', formData.opdId);
+      formDataObj.append('location', formData.location);
+      formDataObj.append('status', formData.status);
+      formDataObj.append('userId', user.id);
+      formDataObj.append('subcategory', subcategory);
 
       // Append files
-      files.forEach((file) => {
-        formDataObj.append("files", file)
-      })
+      // Ambil file pertama saja (karena hanya satu yang digunakan untuk lampiran)
+      if (files.length > 0) {
+        formDataObj.append('image', files[0]);
+      }
 
-      await axios.post("/api/reports", formDataObj)
+      await axios.post('/api/reports', formDataObj);
 
-      toast.success("Laporan berhasil dikirim!", {
+      toast.success('Laporan berhasil dikirim!', {
         icon: <HiPaperAirplane className="h-5 w-5 text-green-500 rotate-90" />,
-      })
+      });
 
       // Reset form
       setFormData({
-        title: "",
-        description: "",
-        category: "",
-        priority: "LOW",
-        opdId: "",
-        location: "",
-        status: "PENDING",
-      })
-      setFiles([])
-      setStep(1)
-      setOpenModal(false)
+        title: '',
+        description: '',
+        category: '',
+        priority: 'LOW',
+        opdId: '',
+        location: '',
+        status: 'PENDING',
+      });
+      setFiles([]);
+      setStep(1);
+      setOpenModal(false);
 
       // Trigger refetch of stats
-      if (onSuccess) onSuccess()
+      if (onSuccess) onSuccess();
     } catch (error) {
-      console.error("Error submitting report:", error)
-      toast.error(error.response?.data?.error || "Gagal mengirim laporan. Silakan coba lagi.")
+      console.error('Error submitting report:', error);
+      toast.error(
+        error.response?.data?.error ||
+          'Gagal mengirim laporan. Silakan coba lagi.',
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleCloseModal = () => {
     if (!isSubmitting) {
-      setOpenModal(false)
+      setOpenModal(false);
       // Reset form state when modal is closed
       setTimeout(() => {
         setFormData({
-          title: "",
-          description: "",
-          category: "",
-          priority: "LOW",
-          opdId: "",
-          location: "",
-          status: "PENDING",
-        })
-        setFiles([])
-        setStep(1)
-        setErrors({})
-      }, 300)
+          title: '',
+          description: '',
+          category: '',
+          priority: 'LOW',
+          opdId: '',
+          location: '',
+          status: 'PENDING',
+        });
+        setFiles([]);
+        setStep(1);
+        setErrors({});
+      }, 300);
     }
-  }
+  };
 
   const renderStepIndicator = () => {
     return (
@@ -215,23 +234,32 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
             <div key={i} className="flex-1 flex items-center">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  step >= i ? "bg-blue-600 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                  step >= i
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                 }`}
               >
                 {i}
               </div>
               {i < 3 && (
-                <div className={`h-1 flex-1 ${step > i ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"}`}></div>
+                <div
+                  className={`h-1 flex-1 ${step > i ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
+                ></div>
               )}
             </div>
           ))}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
-    <Modal show={openModal} onClose={handleCloseModal} size="lg" className="mail-themed-modal">
+    <Modal
+      show={openModal}
+      onClose={handleCloseModal}
+      size="lg"
+      className="mail-themed-modal"
+    >
       <Modal.Header className="border-b-4 border-blue-500 relative">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
         <div className="flex items-center gap-2">
@@ -239,9 +267,9 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
           {step === 2 && <HiMailOpen className="h-5 w-5 text-blue-600" />}
           {step === 3 && <HiPaperAirplane className="h-5 w-5 text-blue-600" />}
           <span>
-            {step === 1 && "Buat Laporan Baru - Informasi Dasar"}
-            {step === 2 && "Buat Laporan Baru - Detail Laporan"}
-            {step === 3 && "Buat Laporan Baru - Konfirmasi"}
+            {step === 1 && 'Buat Laporan Baru - Informasi Dasar'}
+            {step === 2 && 'Buat Laporan Baru - Detail Laporan'}
+            {step === 3 && 'Buat Laporan Baru - Konfirmasi'}
           </span>
         </div>
       </Modal.Header>
@@ -256,7 +284,8 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
               <HiExclamation className="text-blue-600 dark:text-blue-400 h-5 w-5" />
             </div>
             <p className="text-sm text-blue-800 dark:text-blue-200">
-              Silakan isi formulir di bawah ini dengan lengkap dan jelas. Laporan Anda akan diteruskan ke OPD terkait dan Bupati.
+              Silakan isi formulir di bawah ini dengan lengkap dan jelas.
+              Laporan Anda akan diteruskan ke OPD terkait dan Bupati.
             </p>
           </div>
         </div>
@@ -274,7 +303,10 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                 <form className="space-y-5">
                   {/* Judul Laporan */}
                   <div className="space-y-2">
-                    <Label htmlFor="title" className="flex items-center text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="title"
+                      className="flex items-center text-gray-700 dark:text-gray-300"
+                    >
                       <HiTag className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                       Judul Laporan <span className="text-red-500 ml-1">*</span>
                     </Label>
@@ -286,7 +318,7 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       onChange={handleChange}
                       required
                       className={`border-gray-300 dark:border-gray-600 ${
-                        errors.title ? "border-red-500 dark:border-red-500" : ""
+                        errors.title ? 'border-red-500 dark:border-red-500' : ''
                       }`}
                     />
                     {errors.title ? (
@@ -296,33 +328,41 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       </div>
                     ) : (
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Berikan judul yang singkat dan jelas tentang laporan Anda
+                        Berikan judul yang singkat dan jelas tentang laporan
+                        Anda
                       </p>
                     )}
                   </div>
 
                   {/* Kategori */}
                   <div className="space-y-2">
-                    <Label htmlFor="category" className="flex items-center text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="category"
+                      className="flex items-center text-gray-700 dark:text-gray-300"
+                    >
                       <HiTag className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      Kategori Laporan <span className="text-red-500 ml-1">*</span>
+                      Kategori Laporan{' '}
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Select
                       id="category"
                       name="category"
                       value={formData.category}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        handleChange(e);
+                        setSelectedCategory(e.target.value);
+                        setSubcategory(''); // reset subcategory saat category berubah
+                      }}
                       required
-                      className={`border-gray-300 dark:border-gray-600 ${
-                        errors.category ? "border-red-500 dark:border-red-500" : ""
-                      }`}
                     >
                       <option value="">Pilih Kategori</option>
-                      <option value="INFRASTRUKTUR">Infrastruktur</option>
-                      <option value="PELAYANAN">Pelayanan Publik</option>
-                      <option value="SOSIAL">Permasalahan Sosial</option>
-                      <option value="LAINNYA">Lainnya</option>
+                      {getMainCategories().map((cat) => (
+                        <option key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </option>
+                      ))}
                     </Select>
+
                     {errors.category && (
                       <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
                         <HiOutlineExclamationCircle className="mr-1 h-4 w-4" />
@@ -331,9 +371,55 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                     )}
                   </div>
 
+                  <div className="space-y-2">
+                    {selectedCategory && (
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="subcategory"
+                          className="text-gray-700 dark:text-gray-300"
+                        >
+                          Subkategori{' '}
+                          <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                        <Select
+                          id="subcategory"
+                          name="subcategory"
+                          value={subcategory}
+                          onChange={(e) => {
+                            setSubcategory(e.target.value);
+                            if (errors.subcategory) {
+                              setErrors((prev) => ({
+                                ...prev,
+                                subcategory: '',
+                              }));
+                            }
+                          }}
+                          required
+                        >
+                          <option value="">Pilih Subkategori</option>
+                          {getSubcategoriesByText(selectedCategory).map(
+                            (sub) => (
+                              <option key={sub.value} value={sub.value}>
+                                {sub.label}
+                              </option>
+                            ),
+                          )}
+                        </Select>
+                        {errors.subcategory && (
+                          <div className="text-sm text-red-600 dark:text-red-400 mt-1">
+                            {errors.subcategory}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
                   {/* Prioritas */}
                   <div className="space-y-2">
-                    <Label htmlFor="priority" className="flex items-center text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="priority"
+                      className="flex items-center text-gray-700 dark:text-gray-300"
+                    >
                       <HiFlag className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                       Prioritas <span className="text-red-500 ml-1">*</span>
                     </Label>
@@ -344,7 +430,9 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       onChange={handleChange}
                       required
                       className={`border-gray-300 dark:border-gray-600 ${
-                        errors.priority ? "border-red-500 dark:border-red-500" : ""
+                        errors.priority
+                          ? 'border-red-500 dark:border-red-500'
+                          : ''
                       }`}
                     >
                       <option value="LOW">Rendah</option>
@@ -360,14 +448,16 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       <div className="flex items-center mt-1">
                         <div
                           className="w-3 h-3 rounded-full mr-1"
-                          style={{ backgroundColor: `var(--flowbite-${getPriorityColor(formData.priority)}-500)` }}
+                          style={{
+                            backgroundColor: `var(--flowbite-${getPriorityColor(formData.priority)}-500)`,
+                          }}
                         ></div>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {formData.priority === "HIGH"
-                            ? "Memerlukan penanganan segera"
-                            : formData.priority === "MEDIUM"
-                            ? "Penanganan dalam waktu dekat"
-                            : "Penanganan sesuai antrian"}
+                          {formData.priority === 'HIGH'
+                            ? 'Memerlukan penanganan segera'
+                            : formData.priority === 'MEDIUM'
+                              ? 'Penanganan dalam waktu dekat'
+                              : 'Penanganan sesuai antrian'}
                         </p>
                       </div>
                     )}
@@ -375,7 +465,10 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
 
                   {/* OPD Tujuan */}
                   <div className="space-y-2">
-                    <Label htmlFor="opdId" className="flex items-center text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="opdId"
+                      className="flex items-center text-gray-700 dark:text-gray-300"
+                    >
                       <HiOfficeBuilding className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                       OPD Tujuan <span className="text-red-500 ml-1">*</span>
                     </Label>
@@ -387,7 +480,7 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       required
                       disabled={loadingOpds}
                       className={`border-gray-300 dark:border-gray-600 ${
-                        errors.opdId ? "border-red-500 dark:border-red-500" : ""
+                        errors.opdId ? 'border-red-500 dark:border-red-500' : ''
                       }`}
                     >
                       <option value="">Pilih OPD</option>
@@ -425,9 +518,13 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                 <form className="space-y-5">
                   {/* Deskripsi */}
                   <div className="space-y-2">
-                    <Label htmlFor="description" className="flex items-center text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="description"
+                      className="flex items-center text-gray-700 dark:text-gray-300"
+                    >
                       <HiOutlineMail className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      Deskripsi Laporan <span className="text-red-500 ml-1">*</span>
+                      Deskripsi Laporan{' '}
+                      <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Textarea
                       id="description"
@@ -438,7 +535,9 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       onChange={handleChange}
                       required
                       className={`border-gray-300 dark:border-gray-600 ${
-                        errors.description ? "border-red-500 dark:border-red-500" : ""
+                        errors.description
+                          ? 'border-red-500 dark:border-red-500'
+                          : ''
                       }`}
                     />
                     {errors.description ? (
@@ -448,14 +547,18 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       </div>
                     ) : (
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Berikan informasi selengkap mungkin termasuk lokasi, waktu kejadian, dan detail lainnya
+                        Berikan informasi selengkap mungkin termasuk lokasi,
+                        waktu kejadian, dan detail lainnya
                       </p>
                     )}
                   </div>
 
                   {/* Lokasi */}
                   <div className="space-y-2">
-                    <Label htmlFor="location" className="flex items-center text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="location"
+                      className="flex items-center text-gray-700 dark:text-gray-300"
+                    >
                       <HiOfficeBuilding className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                       Lokasi <span className="text-red-500 ml-1">*</span>
                     </Label>
@@ -467,7 +570,9 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       onChange={handleChange}
                       required
                       className={`border-gray-300 dark:border-gray-600 ${
-                        errors.location ? "border-red-500 dark:border-red-500" : ""
+                        errors.location
+                          ? 'border-red-500 dark:border-red-500'
+                          : ''
                       }`}
                     />
                     {errors.location && (
@@ -478,9 +583,20 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                     )}
                   </div>
 
+                  {/* <div className="space-y-2">
+                    <Label className="text-gray-400 dark:text-gray-500">
+                      Lampiran tidak tersedia saat ini
+                    </Label>
+                    <p className="text-sm text-gray-400 dark:text-gray-500 italic">
+                      Upload file akan tersedia di pembaruan berikutnya.
+                    </p>
+                  </div> */}
                   {/* Lampiran */}
                   <div className="space-y-2">
-                    <Label htmlFor="files" className="flex items-center text-gray-700 dark:text-gray-300">
+                    <Label
+                      htmlFor="files"
+                      className="flex items-center text-gray-700 dark:text-gray-300"
+                    >
                       <HiOutlinePhotograph className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                       Lampiran (Opsional)
                     </Label>
@@ -489,12 +605,14 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       multiple
                       onChange={handleFileChange}
                       helperText="Upload foto atau dokumen pendukung (maks. 5MB per file)"
-                      accept="image/*, application/pdf"
+                      accept="image/*"
                       className="border-gray-300 dark:border-gray-600"
                     />
                     {files.length > 0 && (
                       <div className="mt-2">
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{files.length} file dipilih</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {files.length} file dipilih
+                        </p>
                       </div>
                     )}
                   </div>
@@ -517,7 +635,9 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                     <HiPaperAirplane className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-gray-800 dark:text-white">Konfirmasi Laporan</h3>
+                    <h3 className="text-base font-semibold text-gray-800 dark:text-white">
+                      Konfirmasi Laporan
+                    </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-300">
                       Periksa kembali laporan Anda sebelum dikirim
                     </p>
@@ -527,45 +647,69 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                 <div className="space-y-4 bg-blue-50 dark:bg-gray-800 p-4 rounded-lg border border-blue-100 dark:border-blue-900/30">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Judul Laporan:</p>
-                      <p className="text-gray-900 dark:text-white">{formData.title}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Kategori:</p>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Judul Laporan:
+                      </p>
                       <p className="text-gray-900 dark:text-white">
-                        {formData.category === "INFRASTRUKTUR" && "Infrastruktur"}
-                        {formData.category === "PELAYANAN" && "Pelayanan Publik"}
-                        {formData.category === "SOSIAL" && "Permasalahan Sosial"}
-                        {formData.category === "LAINNYA" && "Lainnya"}
+                        {formData.title}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Prioritas:</p>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Kategori:
+                      </p>
                       <p className="text-gray-900 dark:text-white">
-                        {formData.priority === "LOW" && "Rendah"}
-                        {formData.priority === "MEDIUM" && "Sedang"}
-                        {formData.priority === "HIGH" && "Tinggi"}
+                        {formData.category === 'INFRASTRUKTUR' &&
+                          'Infrastruktur'}
+                        {formData.category === 'PELAYANAN' &&
+                          'Pelayanan Publik'}
+                        {formData.category === 'SOSIAL' &&
+                          'Permasalahan Sosial'}
+                        {formData.category === 'LAINNYA' && 'Lainnya'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">OPD Tujuan:</p>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Prioritas:
+                      </p>
                       <p className="text-gray-900 dark:text-white">
-                        {opds.find((opd) => opd.id === formData.opdId)?.name || "-"}
+                        {formData.priority === 'LOW' && 'Rendah'}
+                        {formData.priority === 'MEDIUM' && 'Sedang'}
+                        {formData.priority === 'HIGH' && 'Tinggi'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Lokasi:</p>
-                      <p className="text-gray-900 dark:text-white">{formData.location}</p>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        OPD Tujuan:
+                      </p>
+                      <p className="text-gray-900 dark:text-white">
+                        {opds.find((opd) => opd.id === formData.opdId)?.name ||
+                          '-'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Lokasi:
+                      </p>
+                      <p className="text-gray-900 dark:text-white">
+                        {formData.location}
+                      </p>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Deskripsi:</p>
-                    <p className="text-gray-900 dark:text-white whitespace-pre-line">{formData.description}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Deskripsi:
+                    </p>
+                    <p className="text-gray-900 dark:text-white whitespace-pre-line">
+                      {formData.description}
+                    </p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Lampiran:</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Lampiran:
+                    </p>
                     {files.length > 0 ? (
                       <ul className="list-disc list-inside text-gray-900 dark:text-white">
                         {files.map((file, index) => (
@@ -573,7 +717,9 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-gray-500 dark:text-gray-400">Tidak ada lampiran</p>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        Tidak ada lampiran
+                      </p>
                     )}
                   </div>
                 </div>
@@ -582,7 +728,8 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                   <p className="text-sm text-yellow-800 dark:text-yellow-300 flex items-start">
                     <HiOutlineExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
                     <span>
-                      Dengan mengirim laporan ini, Anda menyatakan bahwa informasi yang diberikan adalah benar dan dapat
+                      Dengan mengirim laporan ini, Anda menyatakan bahwa
+                      informasi yang diberikan adalah benar dan dapat
                       dipertanggungjawabkan.
                     </span>
                   </p>
@@ -599,7 +746,11 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
             Kembali
           </Button>
         ) : (
-          <Button color="light" onClick={handleCloseModal} disabled={isSubmitting}>
+          <Button
+            color="light"
+            onClick={handleCloseModal}
+            disabled={isSubmitting}
+          >
             Batal
           </Button>
         )}
@@ -617,12 +768,12 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
             className="flex items-center gap-2"
           >
             <HiPaperAirplane className="h-5 w-5" />
-            {isSubmitting ? "Mengirim..." : "Kirim Laporan"}
+            {isSubmitting ? 'Mengirim...' : 'Kirim Laporan'}
           </Button>
         )}
       </Modal.Footer>
     </Modal>
-  )
-}
+  );
+};
 
-export default ReportModal
+export default ReportModal;

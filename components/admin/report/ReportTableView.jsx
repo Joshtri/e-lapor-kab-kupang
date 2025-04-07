@@ -8,10 +8,11 @@ import {
   HiChatAlt2,
   HiOutlineExclamation,
 } from 'react-icons/hi';
-import ReportDetail from './ReportDetail';
+import { useRouter } from 'next/navigation';
 import UpdateStatusModalByAdmin from './ReportUpdateStatus';
 import CommentModal from '../comment/CommentModal';
 import InlineOPDSelector from './InlineOPDSelector';
+import ImagePreviewModal from '@/components/admin/ImagePreviewModal';
 
 // Status enum
 const Status = {
@@ -53,15 +54,12 @@ const PriorityBadge = ({ priority }) => {
 };
 
 export default function ReportTable({ reports, fetchReports }) {
+  const router = useRouter();
   const [selectedReport, setSelectedReport] = useState(null);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-
-  const openDetailModal = (report) => {
-    setSelectedReport(report);
-    setIsDetailModalOpen(true);
-  };
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedImageReportId, setSelectedImageReportId] = useState(null);
 
   const openStatusModal = (report) => {
     setSelectedReport(report);
@@ -73,8 +71,14 @@ export default function ReportTable({ reports, fetchReports }) {
     setIsCommentModalOpen(true);
   };
 
+  const viewReportDetail = (reportId) => {
+    router.push(`/adm/report-warga/${reportId}`);
+  };
 
-  
+  const openImageModal = (reportId) => {
+    setSelectedImageReportId(reportId);
+    setIsImageModalOpen(true);
+  };
 
   return (
     <>
@@ -88,7 +92,10 @@ export default function ReportTable({ reports, fetchReports }) {
           <Table.HeadCell className="w-[200px]">OPD Terkait</Table.HeadCell>
           <Table.HeadCell className="w-[130px]">Prioritas</Table.HeadCell>
           <Table.HeadCell className="w-[120px]">Tanggal</Table.HeadCell>
-          <Table.HeadCell className="w-[140px] text-center">Aksi</Table.HeadCell>
+          <Table.HeadCell className="w-[100px]">Lampiran</Table.HeadCell>
+          <Table.HeadCell className="w-[140px] text-center">
+            Aksi
+          </Table.HeadCell>
         </Table.Head>
 
         <Table.Body>
@@ -97,9 +104,7 @@ export default function ReportTable({ reports, fetchReports }) {
               <Table.Cell className="truncate max-w-[180px]">
                 {report.user.name}
               </Table.Cell>
-              <Table.Cell>
-                {report.title}
-              </Table.Cell>
+              <Table.Cell>{report.title}</Table.Cell>
               <Table.Cell>{report.category}</Table.Cell>
               <Table.Cell>
                 <Badge
@@ -128,6 +133,19 @@ export default function ReportTable({ reports, fetchReports }) {
               <Table.Cell>
                 {new Date(report.createdAt).toLocaleDateString('id-ID')}
               </Table.Cell>
+              {/* 📷 Gambar lampiran */}
+              <Table.Cell className="text-center">
+                <Tooltip content="Lihat Gambar">
+                  <Button
+                    size="xs"
+                    color="gray"
+                    className="p-2"
+                    onClick={() => openImageModal(report.id)}
+                  >
+                    🖼️
+                  </Button>
+                </Tooltip>
+              </Table.Cell>
               <Table.Cell>
                 <div className="flex items-center gap-2">
                   <Tooltip content="Lihat Detail">
@@ -135,7 +153,7 @@ export default function ReportTable({ reports, fetchReports }) {
                       size="xs"
                       color="gray"
                       className="p-2"
-                      onClick={() => openDetailModal(report)}
+                      onClick={() => viewReportDetail(report.id)}
                     >
                       <HiOutlineEye className="w-4 h-4" />
                     </Button>
@@ -169,15 +187,6 @@ export default function ReportTable({ reports, fetchReports }) {
         </Table.Body>
       </Table>
 
-      {/* 🆕 Modal Detail */}
-      {selectedReport && isDetailModalOpen && (
-        <ReportDetail
-          report={selectedReport}
-          isOpen={isDetailModalOpen}
-          onClose={() => setIsDetailModalOpen(false)}
-        />
-      )}
-
       {/* 🆕 Modal Ubah Status */}
       {selectedReport && isStatusModalOpen && (
         <UpdateStatusModalByAdmin
@@ -193,6 +202,14 @@ export default function ReportTable({ reports, fetchReports }) {
           open={isCommentModalOpen}
           setOpen={setIsCommentModalOpen}
           reportId={selectedReport.id}
+        />
+      )}
+
+      {selectedImageReportId && (
+        <ImagePreviewModal
+          open={isImageModalOpen}
+          setOpen={setIsImageModalOpen}
+          reportId={selectedImageReportId}
         />
       )}
     </>

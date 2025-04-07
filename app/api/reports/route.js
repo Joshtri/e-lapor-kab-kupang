@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-
-// 📌 Ambil Semua Pengaduan
+// 📌 Ambil Semua Pengaduan (bisa by userId)
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
@@ -31,35 +30,47 @@ export async function GET(req) {
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json(reports);
+    // ✅ Jangan kirim gambar (image blob) untuk meringankan response
+    const formatted = reports.map((r) => {
+      const { image, ...rest } = r;
+      return {
+        ...rest,
+        image: null, // Atau bisa juga hapus saja field ini
+      };
+    });
+
+    return NextResponse.json(formatted);
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('❌ Gagal ambil daftar laporan:', error);
+    return NextResponse
+.json(
+      { error: 'Gagal mengambil daftar laporan.' },
+      { status: 500 },
+    );
   }
 }
 
 export async function POST(req) {
   try {
-    // ⛔ Hapus ini karena tidak digunakan:
-    // const data = await req.json();
+    const form = await req.formData();
 
-    const body = await req.json();
+    const userId = parseInt(form.get('userId'));
+    const title = form.get('title');
+    const category = form.get('category');
+    const priority = form.get('priority');
+    const subcategory = form.get('subcategory') || '-';
+    const location = form.get('location') || '-';
+    const description = form.get('description');
+    const opdId = parseInt(form.get('opdId'));
+    const file = form.get('image');
 
-    const userId = parseInt(body.userId);
-    const title = body.title;
-    const category = body.category;
-    const priority = body.priority;
-    const subcategory = body.subcategory || '-'; // kalau belum dipakai
-    const location = body.location || '-'; // kalau belum dipakai
-    const description = body.description;
-    const opdId = parseInt(body.opdId);
-
-    // ✅ Validasi input
+    // ✅ Validasi input dasar
     if (
       !userId ||
       !title ||
       !category ||
-      !subcategory ||
       !priority ||
+      !subcategory ||
       !location ||
       !description ||
       !opdId
@@ -70,7 +81,7 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Validasi OPD tujuan
+    // ✅ Validasi OPD
     const opd = await prisma.oPD.findUnique({
       where: { id: opdId },
       include: {
@@ -82,20 +93,34 @@ export async function POST(req) {
 
     if (!opd || opd.staff.role !== 'OPD') {
       return NextResponse.json(
-        { error: 'OPD yang dituju tidak valid atau tidak ditemukan.' },
+        { error: 'OPD tidak valid atau tidak ditemukan.' },
         { status: 400 },
       );
     }
 
-    // ⏳ Jika nanti upload file ke storage, lakukan di sini
-    // for (const file of files) {
-    //   console.log(file.name, file.type);
-    //   const buffer = await file.arrayBuffer();
-    //   const fileData = Buffer.from(buffer);
-    //   // Upload ke Cloudinary, Supabase, dsb
-    // }
+    // ✅ Konversi file ke Buffer (jika ada)
+    let imageBuffer = null;
+    if (file && typeof file.arrayBuffer === 'function') {
+      const arrayBuffer = await file.arrayBuffer();
+      imageBuffer = Buffer.from(arrayBuffer);
+    }
 
-    // ✅ Simpan laporan baru
+    if (file && !file.type.startsWith('image/')) {
+      return NextResponse.json(
+        { error: 'File yang diunggah bukan gambar.' },
+        { status: 400 },
+      );
+    }
+
+    if (file && file.size > 5_000_000) {
+      // batas 5MB misalnya
+      return NextResponse.json(
+        { error: 'Ukuran gambar terlalu besar (maks. 5MB).' },
+        { status: 400 },
+      );
+    }
+
+    // ✅ Simpan laporan ke DB
     const newReport = await prisma.report.create({
       data: {
         userId,
@@ -106,33 +131,30 @@ export async function POST(req) {
         description,
         location,
         opdId,
+        image: imageBuffer,
         bupatiStatus: 'PENDING',
         opdStatus: 'PENDING',
         assignedAt: new Date(),
       },
     });
 
-    // ✅ Notifikasi untuk ADMIN & BUPATI
+    // ✅ Buat notifikasi untuk ADMIN & BUPATI
     const adminBupati = await prisma.user.findMany({
       where: { role: { in: ['ADMIN', 'BUPATI'] } },
       select: { id: true, role: true },
     });
 
-    const notifAdminBupati = adminBupati.map((user) => {
-      const basePath =
+    const notifAdminBupati = adminBupati.map((user) => ({
+      userId: user.id,
+      message: `Laporan baru: "${newReport.title}" telah dibuat.`,
+      link:
         user.role === 'ADMIN'
-          ? '/adm/report-warga'
-          : '/bupati-portal/laporan-warga';
+          ? `/adm/report-warga/${newReport.id}`
+          : `/bupati-portal/laporan-warga/${newReport.id}`,
+      createdAt: new Date(),
+    }));
 
-      return {
-        userId: user.id,
-        message: `Laporan baru: "${newReport.title}" telah dibuat.`,
-        link: `${basePath}/${newReport.id}`,
-        createdAt: new Date(),
-      };
-    });
-
-    // ✅ Notifikasi untuk OPD tujuan
+    // ✅ Notifikasi OPD
     const notifOPD = {
       userId: opd.staff.id,
       message: `Anda menerima laporan baru: "${newReport.title}"`,
@@ -150,13 +172,14 @@ export async function POST(req) {
       { status: 201 },
     );
   } catch (error) {
-    console.error('❌ Error creating report:', error);
+    console.error('❌ Gagal membuat laporan:', error);
     return NextResponse.json(
-      { error: 'Terjadi kesalahan pada server.', detail: error.message },
+      { error: 'Terjadi kesalahan server.', detail: error.message },
       { status: 500 },
     );
   }
 }
+
 // 📌 Memperbarui Status Laporan (Hanya untuk Bupati)
 export async function PUT(req) {
   try {
