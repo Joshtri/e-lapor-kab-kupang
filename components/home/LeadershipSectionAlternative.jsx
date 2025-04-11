@@ -38,21 +38,21 @@ export default function LeadershipSectionAlternative() {
           </p>
         </motion.div>
 
-        <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-center flex-wrap gap-8 max-w-2xl mx-auto">
           {/* Bupati */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden shadow-xl"
+            className="flex-1 max-w-[360px] bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden shadow-xl mx-auto"
           >
-            <div className="relative h-[690px] overflow-hidden">
+            <div className="relative w-full h-[450px] overflow-hidden">
               <Image
                 src={BupImg}
                 alt="Bupati Kabupaten Kupang"
                 fill
-                className="object-cover object-center"
+                className="object-cover object-top"
                 priority
               />
             </div>
@@ -74,19 +74,21 @@ export default function LeadershipSectionAlternative() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden shadow-xl"
+            className="flex-1 max-w-[360px] bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden shadow-xl mx-auto"
           >
-            <div className="relative h-[690px] overflow-hidden">
+            <div className="relative w-full h-[450px] overflow-hidden">
               <Image
                 src={WabupImg}
                 alt="Wakil Bupati Kabupaten Kupang"
                 fill
-                className="object-cover object-center"
+                className="object-cover object-top"
                 priority
               />
             </div>
             <div className="p-6">
-              <h3 className="text-2xl font-bold mb-1">Aurum Obe Titu Eki, S.Ars., M.Ars.</h3>
+              <h3 className="text-2xl font-bold mb-1">
+                Aurum Obe Titu Eki, S.Ars., M.Ars.
+              </h3>
               <p className="text-blue-200 font-medium mb-4">
                 Wakil Bupati Kabupaten Kupang
               </p>
