@@ -19,6 +19,8 @@ import StatsSection from '@/components/home/StatsSection';
 import VisualizationSection from '@/components/home/VisualizationSection';
 import WhatsAppModal from '@/components/home/WhatsAppModal';
 import LeadershipSectionAlternative from './LeadershipSectionAlternative';
+import AppDownloadSection from '../AppDownloadSection';
+import ProductIntroSection from '../ProductIntroSection';
 
 export default function Home() {
   // Animation references
@@ -131,7 +133,14 @@ export default function Home() {
 
         {/* Leadership Section - Bupati & Wakil Bupati */}
         {/* <LeadershipSection /> */}
-          <LeadershipSectionAlternative/>
+        <LeadershipSectionAlternative />
+
+        {/* Product Introduction Section */}
+        <ProductIntroSection />
+
+        {/* App Download Section */}
+        <AppDownloadSection />
+
         {/* Stats Section */}
         <StatsSection />
 

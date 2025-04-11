@@ -41,7 +41,7 @@ export async function POST(req) {
         message: 'User berhasil didaftarkan!',
         user: { id: newUser.id, name: newUser.name, email: newUser.email },
       },
-      { status: 201 },
+    { status: 201 },
     );
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

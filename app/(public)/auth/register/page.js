@@ -25,31 +25,15 @@ import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { isMobile } from '@/utils/isMobile';
 
 // Skema validasi dengan Zod (dengan batasan NIK hanya angka)
-const formSchema = z
-  .object({
-    fullName: z.string().min(3, { message: 'Nama harus minimal 3 karakter.' }),
-    nikNumber: z
-      .string()
-      .length(16, { message: 'NIK harus tepat 16 digit.' })
-      .regex(/^\d+$/, { message: 'NIK hanya boleh berisi angka.' }),
-    contactNumber: z
-      .string()
-      .min(10, { message: 'Nomor kontak minimal 10 digit.' })
-      .regex(/^\d+$/, { message: 'Nomor kontak hanya boleh berisi angka.' }),
-    email: z.string().email({ message: 'Gunakan email yang valid.' }),
-    password: z.string().min(6, { message: 'Password minimal 6 karakter.' }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Konfirmasi password tidak cocok.',
-    path: ['confirmPassword'],
-  });
+import { registerSchema } from '@/lib/validations/registerSchema';
+import MaskedNikInput from '@/components/ui/MaskedNikInput';
 
 export default function RegistrationPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formProgress, setFormProgress] = useState(0);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -57,7 +41,8 @@ export default function RegistrationPage() {
     formState: { errors },
     watch,
   } = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(registerSchema),
+    mode: 'onChange', // validasi langsung saat mengetik
   });
 
   // Watch all form fields to calculate progress
@@ -166,28 +151,49 @@ export default function RegistrationPage() {
               </div>
 
               {/* NIK */}
-              <div>
-                <Label
+              
+                {/* <Label
                   htmlFor="nikNumber"
                   className="mb-2 flex gap-2 items-center"
                 >
                   <HiOutlineIdentification className="h-4 w-4 text-blue-600" />
                   <span>Nomor Identitas (NIK)</span>
-                </Label>
-                <TextInput
+                </Label> */}
+
+                <MaskedNikInput
+                  value={formValues.nikNumber}
+                  onChange={(val) => {
+                    const event = {
+                      target: {
+                        name: 'nikNumber',
+                        value: val,
+                      },
+                    };
+                    register('nikNumber').onChange(event);
+                  }}
+                  error={errors.nikNumber?.message}
+                  helperText="Pastikan NIK Anda berisi 16 digit angka."
+                />
+                {/* <TextInput
                   id="nikNumber"
                   placeholder="Masukkan NIK 16 digit"
                   {...register('nikNumber')}
                   maxLength={16}
+                  inputMode="numeric"
+                  pattern="\d*"
+                  onInput={(e) => {
+                    e.currentTarget.value = e.currentTarget.value.replace(
+                      /\D/g,
+                      '',
+                    );
+                  }}
                   helperText="Pastikan NIK Anda berisi 16 digit angka."
                   color={errors.nikNumber ? 'failure' : 'gray'}
-                />
-                {errors.nikNumber && (
-                  <span className="text-red-500 text-sm">
-                    {errors.nikNumber.message}
-                  </span>
-                )}
-              </div>
+                  className={`bg-blue-50 dark:bg-gray-800 border ${
+                    errors.nikNumber ? 'border-red-500' : 'border-blue-100'
+                  } focus:border-blue-500`}
+                /> */}
+            
 
               {/* Nomor Kontak */}
               <div>
@@ -204,9 +210,21 @@ export default function RegistrationPage() {
                   type="text"
                   placeholder="Masukkan nomor kontak"
                   {...register('contactNumber')}
+                  maxLength={15}
+                  inputMode="numeric"
+                  pattern="\d*"
+                  onInput={(e) => {
+                    e.currentTarget.value = e.currentTarget.value.replace(
+                      /\D/g,
+                      '',
+                    );
+                  }}
                   color={errors.contactNumber ? 'failure' : 'gray'}
-                  className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
+                  className={`bg-blue-50 dark:bg-gray-800 border ${
+                    errors.contactNumber ? 'border-red-500' : 'border-blue-100'
+                  } focus:border-blue-500`}
                 />
+
                 {errors.contactNumber && (
                   <span className="text-red-500 text-sm mt-1 block">
                     {errors.contactNumber.message}
@@ -250,10 +268,13 @@ export default function RegistrationPage() {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Masukkan Password"
                   {...register('password')}
+                  helperText={
+                    errors.password?.message ??
+                    'Minimal 6 karakter, ada huruf besar, angka, dan simbol.'
+                  }
                   color={errors.password ? 'failure' : 'gray'}
                   className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                 />
-                {/* Eye Icon Button */}
                 <button
                   type="button"
                   className="absolute right-3 top-9 text-gray-600"
@@ -261,11 +282,12 @@ export default function RegistrationPage() {
                 >
                   {showPassword ? <HiEyeOff size={18} /> : <HiEye size={18} />}
                 </button>
-                {errors.password && (
+
+                {/* {errors.password && (
                   <span className="text-red-500 text-sm mt-1 block">
                     {errors.password.message}
                   </span>
-                )}
+                )} */}
               </div>
 
               <div className="relative">
@@ -278,17 +300,31 @@ export default function RegistrationPage() {
                 </Label>
                 <TextInput
                   id="confirmPassword"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="Ulangi password"
                   {...register('confirmPassword')}
-                  helperText="Masukkan ulang password untuk konfirmasi."
+                  helperText={
+                    errors.confirmPassword?.message ??
+                    'Masukkan ulang password yang sama untuk konfirmasi.'
+                  }
                   color={errors.confirmPassword ? 'failure' : 'gray'}
                 />
-                {errors.confirmPassword && (
+                <button
+                  type="button"
+                  className="absolute right-3 top-9 text-gray-600"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <HiEyeOff size={18} />
+                  ) : (
+                    <HiEye size={18} />
+                  )}
+                </button>
+                {/* {errors.confirmPassword && (
                   <span className="text-red-500 text-sm">
                     {errors.confirmPassword.message}
                   </span>
-                )}
+                )} */}
               </div>
 
               <Button
