@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
  
 
 export const metadata = {
-  title: 'E-LAPOR',
-  description: 'Sampaikan laporan Anda melalui E-LAPOR',
+  title: 'Lapor KK Bupati',
+  description: 'Sampaikan laporan Anda melalui Lapor KK Bupati',
   manifest: '/manifest.json',
   icons: {
     icon: '/icons/icon-192.png',

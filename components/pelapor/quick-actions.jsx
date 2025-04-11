@@ -13,6 +13,9 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import useSWR from 'swr';
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const QuickActions = ({ setOpenModal }) => {
   const router = useRouter();
@@ -31,7 +34,11 @@ const QuickActions = ({ setOpenModal }) => {
     hidden: { y: 20, opacity: 0 },
     show: { y: 0, opacity: 1 },
   };
-  const [unreadCount, setUnreadCount] = useState(0);
+
+  const { data } = useSWR('/api/pelapor/chat/bupati/unread-count', fetcher, {
+    refreshInterval: 10000, // refresh tiap 10 detik
+  });
+  const unreadCount = data?.unreadCount || 0;
 
   return (
     <div className="mt-6">
@@ -109,10 +116,13 @@ const QuickActions = ({ setOpenModal }) => {
           <Link href="/pelapor/chat/bupati" passHref>
             <Card className="border-l-4 border-purple-500 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden">
               {unreadCount > 0 && (
-                <div className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] px-1.5 py-[1px] rounded-full shadow">
-                  {unreadCount > 9 ? '9+' : unreadCount}
+                <div className="absolute top-2 right-2">
+                  <div className="flex items-center justify-center w-6 h-6 text-xs font-semibold text-white bg-red-600 rounded-full shadow-lg ring-2 ring-white dark:ring-gray-800">
+                    {unreadCount > 10 ? '10+' : unreadCount}
+                  </div>
                 </div>
-              )}{' '}
+              )}
+
               <div className="flex items-start">
                 <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full mr-4 relative">
                   <HiOutlineChatAlt2 className="text-purple-600 dark:text-purple-400 h-6 w-6" />

@@ -19,7 +19,7 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({ count });
+    return NextResponse.json({ unreadCount: count });
   } catch (err) {
     return NextResponse.json({ count: 0 });
   }

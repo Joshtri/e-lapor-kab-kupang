@@ -59,18 +59,11 @@ const Statistics = ({ user, triggerRefetch }) => {
 
   const statItems = [
     {
-      title: "Total Laporan",
-      value: stats.total,
-      icon: HiOutlineMail,
+      title: "Pending",
+      value: stats.pending,
+      icon: HiOutlineCheckCircle,
       color: "blue",
       description: "Jumlah seluruh laporan yang telah Anda kirim",
-    },
-    {
-      title: "Laporan Selesai",
-      value: stats.completed,
-      icon: HiOutlineCheckCircle,
-      color: "green",
-      description: "Laporan yang telah selesai ditangani",
     },
     {
       title: "Dalam Proses",
@@ -78,6 +71,13 @@ const Statistics = ({ user, triggerRefetch }) => {
       icon: HiClock,
       color: "yellow",
       description: "Laporan yang sedang dalam proses penanganan",
+    },
+    {
+      title: "Laporan Selesai",
+      value: stats.completed,
+      icon: HiOutlineCheckCircle,
+      color: "green",
+      description: "Laporan yang telah selesai ditangani",
     },
     {
       title: "Ditolak",
@@ -90,10 +90,15 @@ const Statistics = ({ user, triggerRefetch }) => {
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
-        <HiMailOpen className="mr-2 h-5 w-5 text-blue-600 dark:text-blue-400" />
-        Statistik Laporan Anda
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+          <HiMailOpen className="mr-2 h-5 w-5 text-blue-500" />
+          Statistik Laporan Anda
+        </h2>
+        <span className="text-sm px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 rounded-full font-medium">
+          Total: {stats.total}
+        </span>
+      </div>
 
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"

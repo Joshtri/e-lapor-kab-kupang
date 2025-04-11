@@ -5,50 +5,56 @@ import axios from 'axios';
 import { Card, Textarea, Button, Spinner } from 'flowbite-react';
 import { HiOutlinePaperAirplane } from 'react-icons/hi';
 import clsx from 'clsx';
+import useSWR from 'swr';
+
+const fetcher = (url) => axios.get(url).then((res) => res.data);
 
 export default function ChatBupatiPage() {
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const bottomRef = useRef(null);
 
+  // Fetch daftar rooms
   useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const res = await axios.get('/api/bupati/chat/rooms');
+        setRooms(res.data);
+        if (res.data.length > 0) {
+          setSelectedRoom(res.data[0]);
+        }
+      } catch (err) {
+        console.error('Gagal memuat daftar chat:', err);
+      }
+    };
+
     fetchRooms();
   }, []);
 
-  useEffect(() => {
-    if (selectedRoom) fetchMessages(selectedRoom.id);
-  }, [selectedRoom]);
+  // Fetch messages pakai SWR
+  const {
+    data: messages = [],
+    isLoading,
+    mutate,
+  } = useSWR(
+    selectedRoom ? `/api/pelapor/chat/rooms/${selectedRoom.id}/messages` : null,
+    fetcher,
+    {
+      refreshInterval: 5000, // optional: fetch ulang setiap 5 detik
+    },
+  );
 
+  // Scroll ke bawah setiap pesan update
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const fetchRooms = async () => {
-    try {
-      const res = await axios.get('/api/bupati/chat/rooms');
-      setRooms(res.data);
-      if (res.data.length > 0) {
-        setSelectedRoom(res.data[0]); // default buka pertama
-      }
-    } catch (err) {
-      console.error('Gagal memuat daftar chat:', err);
-    }
-  };
-
-  const fetchMessages = async (roomId) => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`/api/pelapor/chat/rooms/${roomId}/messages`);
-      setMessages(res.data);
-    } catch (err) {
-      console.error('Gagal memuat pesan:', err);
-    } finally {
-      setLoading(false);
-    }
+  // Mark as read saat buka room
+  const handleSelectRoom = async (room) => {
+    setSelectedRoom(room);
+    await axios.post('/api/bupati/chat/mark-read', { roomId: room.id });
   };
 
   const handleSend = async () => {
@@ -59,19 +65,14 @@ export default function ChatBupatiPage() {
         roomId: selectedRoom.id,
         content: message,
       });
-      setMessages((prev) => [...prev, { ...res.data, fromMe: true }]);
+
       setMessage('');
+      mutate(); // fetch ulang pesan dari server
     } catch (err) {
       console.error('Gagal kirim pesan:', err);
     } finally {
       setSending(false);
     }
-  };
-
-  const handleSelectRoom = async (room) => {
-    setSelectedRoom(room);
-    await axios.post('/api/bupati/chat/mark-read', { roomId: room.id });
-    fetchMessages(room.id);
   };
 
   return (
@@ -90,7 +91,6 @@ export default function ChatBupatiPage() {
                   <li
                     key={room.id}
                     onClick={() => handleSelectRoom(room)}
-                    // onClick={() => setSelectedRoom(room)}
                     className={clsx(
                       'p-2 rounded cursor-pointer hover:bg-green-100 dark:hover:bg-green-900',
                       selectedRoom?.id === room.id &&
@@ -122,7 +122,7 @@ export default function ChatBupatiPage() {
               </h2>
 
               <div className="flex-1 overflow-y-auto space-y-3 p-2">
-                {loading ? (
+                {isLoading ? (
                   <div className="flex justify-center items-center h-full">
                     <Spinner />
                   </div>
@@ -135,9 +135,10 @@ export default function ChatBupatiPage() {
                       className={clsx(
                         'max-w-sm px-4 py-2 rounded-lg text-sm shadow w-fit',
                         {
-                          'ml-auto bg-green-600 text-white': msg.fromMe,
+                          'ml-auto bg-green-600 text-white':
+                            msg.sender?.role === 'BUPATI', // tampilkan kanan jika dari Bupati
                           'mr-auto bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white':
-                            !msg.fromMe,
+                            msg.sender?.role !== 'BUPATI', // tampilkan kiri jika bukan dari Bupati
                         },
                       )}
                     >

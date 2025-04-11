@@ -1,67 +1,69 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Card, Textarea, Button, Spinner } from 'flowbite-react';
 import { HiOutlinePaperAirplane } from 'react-icons/hi';
 import { AnimatePresence } from 'framer-motion';
+import useSWR from 'swr';
 import MessageBubble from '@/components/chat/message-bubble';
 
+const fetcher = (url) => axios.get(url).then((res) => res.data);
+
 export default function ChatBupatiPage() {
-  const [messages, setMessages] = useState([]);
+  const [roomId, setRoomId] = useState(null);
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const bottomRef = useRef(null);
-  const [roomId, setRoomId] = useState(null);
   const textareaRef = useRef(null);
 
+  // Init room only once
   useEffect(() => {
+    const initRoom = async () => {
+      try {
+        const res = await axios.get('/api/pelapor/chat/rooms');
+        let room = res.data.find((r) => r.isToBupati);
+
+        if (!room) {
+          const newRoom = await axios.post('/api/pelapor/chat/create-room', {
+            isToBupati: true,
+          });
+          room = newRoom.data;
+        }
+
+        setRoomId(room.id);
+      } catch (err) {
+        console.error('Gagal inisialisasi room:', err);
+      }
+    };
+
     initRoom();
   }, []);
 
-  useEffect(() => {
-    if (roomId) fetchMessages();
-  }, [roomId]);
+  // SWR untuk ambil pesan berdasarkan roomId
+  const {
+    data: messages = [],
+    isLoading,
+    mutate,
+  } = useSWR(
+    roomId ? `/api/pelapor/chat/rooms/${roomId}/messages` : null,
+    fetcher,
+    {
+      refreshInterval: 2000, // refresh otomatis setiap 5 detik
+    },
+  );
 
+  // Tandai sebagai sudah dibaca setiap kali data pesan berubah
+  useEffect(() => {
+    if (roomId && messages.length) {
+      axios.post('/api/pelapor/chat/bupati/mark-read', { roomId });
+    }
+  }, [roomId, messages]);
+
+  // Scroll ke bawah setiap kali pesan berubah
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  const initRoom = async () => {
-    try {
-      const res = await axios.get('/api/pelapor/chat/rooms');
-      let room = res.data.find((r) => r.isToBupati);
-
-      if (!room) {
-        const newRoom = await axios.post('/api/pelapor/chat/create-room', {
-          isToBupati: true,
-        });
-        room = newRoom.data;
-      }
-
-      setRoomId(room.id);
-    } catch (err) {
-      console.error('Gagal inisialisasi room:', err);
-    }
-  };
-
-  const fetchMessages = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`/api/pelapor/chat/rooms/${roomId}/messages`);
-      setMessages(res.data);
-
-      // ✅ Setelah pesan berhasil dimuat, tandai sebagai read
-      await axios.post('/api/pelapor/chat/bupati/mark-read', {
-        roomId,
-      });
-    } catch (error) {
-      console.error('Gagal memuat pesan:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSend = async () => {
     if (!message.trim()) return;
@@ -74,24 +76,23 @@ export default function ChatBupatiPage() {
 
       const newMsg = {
         ...res.data,
-        fromMe: true, // tandai sebagai pesan dari user
+        fromMe: true,
         sender: {
           name: 'Saya (Pelapor)',
           role: 'PELAPOR',
         },
       };
 
-      setMessages((prev) => [...prev, newMsg]);
+      // Tambahkan ke lokal state SWR agar langsung muncul
+      mutate((prev = []) => [...prev, newMsg], false);
+
       setMessage('');
 
-      // Focus back on textarea after sending
       setTimeout(() => {
-        if (textareaRef.current) {
-          textareaRef.current.focus();
-        }
+        textareaRef.current?.focus();
       }, 0);
-    } catch (error) {
-      console.error('Gagal mengirim pesan:', error);
+    } catch (err) {
+      console.error('Gagal mengirim pesan:', err);
     } finally {
       setSending(false);
     }
@@ -122,11 +123,11 @@ export default function ChatBupatiPage() {
           style={{
             backgroundColor: '#e5ded8',
             backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fillOpacity='0.1' fillRule='evenodd'/%3E%3C/svg%3E\")",
+              "url(\"data:image/svg+xml,%3Csvg width='100' height='100' ... svg pattern ...%3E\")",
             backgroundSize: '300px',
           }}
         >
-          {loading ? (
+          {isLoading ? (
             <div className="flex justify-center items-center h-full">
               <Spinner size="lg" color="success" />
             </div>
