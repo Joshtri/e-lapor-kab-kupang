@@ -1,19 +1,21 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function GET(req, { params }) {
   try {
+    const user = await getAuthenticatedUser(req);
+    if (!user || !['ADMIN', 'BUPATI', 'OPD'].includes(user.role)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { id } = params;
 
     const report = await prisma.report.findUnique({
       where: { id: Number(id) },
       include: {
         user: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-          },
+          select: { id: true, email: true, name: true },
         },
         opd: {
           select: {
@@ -34,7 +36,11 @@ export async function GET(req, { params }) {
       );
     }
 
-    // ✅ Konversi image buffer ke base64 string
+    // ✅ Jika role OPD, pastikan dia hanya bisa melihat laporan miliknya
+    if (user.role === 'OPD' && report.opdId !== user.opdId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const base64Image = report.image
       ? `data:image/jpeg;base64,${Buffer.from(report.image).toString('base64')}`
       : null;
@@ -56,7 +62,7 @@ export async function GET(req, { params }) {
       bupatiUpdatedAt: report.updatedAt || null,
       opdResponse: report.opdResponse || null,
       bupatiResponse: report.bupatiResponse || null,
-      image: base64Image, // hasil konversi
+      image: base64Image,
     });
   } catch (error) {
     console.error('❌ Gagal ambil detail laporan:', error);
@@ -67,12 +73,35 @@ export async function GET(req, { params }) {
   }
 }
 
-// 📌 Update Laporan Berdasarkan ID
 export async function PUT(req, { params }) {
   try {
+    const user = await getAuthenticatedUser(req);
+    if (!user || !['ADMIN', 'BUPATI', 'OPD'].includes(user.role)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = params;
     const updateData = await req.json();
+
+    const report = await prisma.report.findUnique({
+      where: { id: Number(id) },
+      select: { opdId: true },
+    });
+
+    if (!report) {
+      return NextResponse.json(
+        { error: 'Laporan tidak ditemukan.' },
+        { status: 404 },
+      );
+    }
+
+    // ✅ Jika OPD, hanya bisa update laporan yang ditujukan padanya
+    if (user.role === 'OPD' && report.opdId !== user.opdId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const updatedReport = await prisma.report.update({
-      where: { id: parseInt(params.id) },
+      where: { id: Number(id) },
       data: updateData,
     });
 
@@ -82,11 +111,17 @@ export async function PUT(req, { params }) {
   }
 }
 
-// 📌 Hapus Laporan
 export async function DELETE(req, { params }) {
   try {
+    const user = await getAuthenticatedUser(req);
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = params;
+
     await prisma.report.delete({
-      where: { id: parseInt(params.id) },
+      where: { id: Number(id) },
     });
 
     return NextResponse.json({ message: 'Report deleted successfully' });

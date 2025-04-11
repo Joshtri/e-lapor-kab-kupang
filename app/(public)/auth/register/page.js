@@ -25,19 +25,25 @@ import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { isMobile } from '@/utils/isMobile';
 
 // Skema validasi dengan Zod (dengan batasan NIK hanya angka)
-const formSchema = z.object({
-  fullName: z.string().min(3, { message: 'Nama harus minimal 3 karakter.' }),
-  nikNumber: z
-    .string()
-    .length(16, { message: 'NIK harus tepat 16 digit.' })
-    .regex(/^\d+$/, { message: 'NIK hanya boleh berisi angka.' }),
-  contactNumber: z
-    .string()
-    .min(10, { message: 'Nomor kontak minimal 10 digit.' })
-    .regex(/^\d+$/, { message: 'Nomor kontak hanya boleh berisi angka.' }),
-  email: z.string().email({ message: 'Email tidak valid.' }),
-  password: z.string().min(6, { message: 'Password minimal 6 karakter.' }),
-});
+const formSchema = z
+  .object({
+    fullName: z.string().min(3, { message: 'Nama harus minimal 3 karakter.' }),
+    nikNumber: z
+      .string()
+      .length(16, { message: 'NIK harus tepat 16 digit.' })
+      .regex(/^\d+$/, { message: 'NIK hanya boleh berisi angka.' }),
+    contactNumber: z
+      .string()
+      .min(10, { message: 'Nomor kontak minimal 10 digit.' })
+      .regex(/^\d+$/, { message: 'Nomor kontak hanya boleh berisi angka.' }),
+    email: z.string().email({ message: 'Gunakan email yang valid.' }),
+    password: z.string().min(6, { message: 'Password minimal 6 karakter.' }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Konfirmasi password tidak cocok.',
+    path: ['confirmPassword'],
+  });
 
 export default function RegistrationPage() {
   const router = useRouter();
@@ -163,23 +169,21 @@ export default function RegistrationPage() {
               <div>
                 <Label
                   htmlFor="nikNumber"
-                  value="NOMOR IDENTITAS (NIK)"
-                  className="flex items-center gap-2 mb-2"
+                  className="mb-2 flex gap-2 items-center"
                 >
                   <HiOutlineIdentification className="h-4 w-4 text-blue-600" />
                   <span>Nomor Identitas (NIK)</span>
                 </Label>
                 <TextInput
                   id="nikNumber"
-                  type="text"
-                  placeholder="Masukkan NIK"
-                  maxLength={16}
+                  placeholder="Masukkan NIK 16 digit"
                   {...register('nikNumber')}
+                  maxLength={16}
+                  helperText="Pastikan NIK Anda berisi 16 digit angka."
                   color={errors.nikNumber ? 'failure' : 'gray'}
-                  className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                 />
                 {errors.nikNumber && (
-                  <span className="text-red-500 text-sm mt-1 block">
+                  <span className="text-red-500 text-sm">
                     {errors.nikNumber.message}
                   </span>
                 )}
@@ -212,22 +216,18 @@ export default function RegistrationPage() {
 
               {/* Email */}
               <div>
-                <Label
-                  htmlFor="email"
-                  value="EMAIL"
-                  className="flex items-center gap-2 mb-2"
-                >
+                <Label htmlFor="email" className="mb-2 flex gap-2 items-center">
                   <HiOutlineMail className="h-4 w-4 text-blue-600" />
                   <span>Email</span>
                 </Label>
                 <TextInput
                   id="email"
-                  type="email"
-                  placeholder="Masukkan EMAIL"
+                  placeholder="email@example.com"
                   {...register('email')}
+                  helperText="Gunakan alamat email yang valid dan aktif."
                   color={errors.email ? 'failure' : 'gray'}
-                  className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                 />
+
                 {errors.email && (
                   <span className="text-red-500 text-sm mt-1 block">
                     {errors.email.message}
@@ -264,6 +264,29 @@ export default function RegistrationPage() {
                 {errors.password && (
                   <span className="text-red-500 text-sm mt-1 block">
                     {errors.password.message}
+                  </span>
+                )}
+              </div>
+
+              <div className="relative">
+                <Label
+                  htmlFor="confirmPassword"
+                  className="mb-2 flex gap-2 items-center"
+                >
+                  <HiOutlineLockClosed className="h-4 w-4 text-blue-600" />
+                  <span>Konfirmasi Password</span>
+                </Label>
+                <TextInput
+                  id="confirmPassword"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Ulangi password"
+                  {...register('confirmPassword')}
+                  helperText="Masukkan ulang password untuk konfirmasi."
+                  color={errors.confirmPassword ? 'failure' : 'gray'}
+                />
+                {errors.confirmPassword && (
+                  <span className="text-red-500 text-sm">
+                    {errors.confirmPassword.message}
                   </span>
                 )}
               </div>

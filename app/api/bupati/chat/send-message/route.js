@@ -1,19 +1,17 @@
-// File: /app/api/bupati/chat/room/[roomId]/messages/route.js
-
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ ganti ke helper fleksibel
 
+// GET: Ambil pesan di room tertentu (khusus Bupati)
 export async function GET(req, context) {
   try {
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req);
     if (!user || user.role !== 'BUPATI') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const roomId = Number(context.params.roomId);
 
-    // Pastikan bupati bisa akses room ini (chat dari pelapor ke bupati)
     const room = await prisma.chatRoom.findUnique({
       where: { id: roomId },
       select: { isToBupati: true },
@@ -41,7 +39,7 @@ export async function GET(req, context) {
       id: msg.id,
       content: msg.content,
       createdAt: msg.createdAt,
-      fromMe: msg.senderId === user.id, // ✅ Ini akan jadi false jika bukan dari bupati
+      fromMe: msg.senderId === user.id,
       sender: msg.sender,
     }));
 
@@ -51,10 +49,10 @@ export async function GET(req, context) {
   }
 }
 
-
+// POST: Kirim pesan ke room (bisa dari Bupati atau pelapor)
 export async function POST(req) {
   try {
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -62,7 +60,10 @@ export async function POST(req) {
     const { roomId, content } = await req.json();
 
     if (!roomId || !content) {
-      return NextResponse.json({ error: 'roomId and content required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'roomId and content required' },
+        { status: 400 },
+      );
     }
 
     const room = await prisma.chatRoom.findUnique({
@@ -70,7 +71,20 @@ export async function POST(req) {
     });
 
     if (!room) {
-      return NextResponse.json({ error: 'Chat room not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Chat room not found' },
+        { status: 404 },
+      );
+    }
+
+    // Validasi role: pelapor hanya boleh mengirim ke room miliknya
+    if (user.role === 'PELAPOR' && room.userId !== user.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    // Bupati hanya boleh mengirim ke room yang isToBupati
+    if (user.role === 'BUPATI' && !room.isToBupati) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     const message = await prisma.chatMessage.create({

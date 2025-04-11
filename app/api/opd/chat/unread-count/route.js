@@ -1,15 +1,15 @@
-// ✅ File: /app/api/opd/chat/unread-count/route.js
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ pakai helper auth baru
 
-export async function GET() {
-  const user = await getUserFromCookie();
+export async function GET(req) {
+  const user = await getAuthenticatedUser(req); // ✅ pakai req
+
   if (!user || user.role !== 'OPD') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Temukan OPD profil berdasarkan user
+  // ✅ Temukan profil OPD berdasarkan user yang login
   const opd = await prisma.oPD.findUnique({
     where: { staffUserId: user.id },
   });
@@ -18,7 +18,7 @@ export async function GET() {
     return NextResponse.json({ error: 'OPD not found' }, { status: 404 });
   }
 
-  // Ambil semua room yang ditujukan ke OPD ini
+  // ✅ Ambil semua room yang ditujukan ke OPD ini
   const rooms = await prisma.chatRoom.findMany({
     where: { opdId: opd.id },
     select: { id: true },
@@ -26,7 +26,11 @@ export async function GET() {
 
   const roomIds = rooms.map((r) => r.id);
 
-  // Hitung semua pesan yang belum dibaca dan bukan dari OPD
+  if (roomIds.length === 0) {
+    return NextResponse.json({ unreadCount: 0 });
+  }
+
+  // ✅ Hitung pesan yang belum dibaca dan bukan dari OPD (dari pelapor)
   const unreadCount = await prisma.chatMessage.count({
     where: {
       roomId: { in: roomIds },

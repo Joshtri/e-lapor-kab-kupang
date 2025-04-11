@@ -1,12 +1,11 @@
-// File: /app/api/bupati/chat/rooms/route.js
-
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ pakai helper baru
 
 export async function GET(req) {
   try {
-    const user = await getUserFromCookie(); // ✅ gunakan cookie
+    const user = await getAuthenticatedUser(req); // ✅ fleksibel dari cookie/header
+
     if (!user || user.role !== 'BUPATI') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -16,7 +15,14 @@ export async function GET(req) {
         isToBupati: true,
       },
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
         messages: {
           orderBy: { createdAt: 'desc' },
           take: 1,

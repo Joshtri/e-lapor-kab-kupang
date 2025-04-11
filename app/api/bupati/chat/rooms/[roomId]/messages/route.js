@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ ganti helper auth
 
 export async function POST(req, context) {
   try {
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req); // ✅ pakai req
     if (!user || user.role !== 'BUPATI') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

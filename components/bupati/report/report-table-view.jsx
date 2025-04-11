@@ -8,7 +8,7 @@ import {
   HiOutlinePencilAlt,
 } from 'react-icons/hi';
 import ReportView from '@/components/bupati/report/report-view';
-import UpdateStatusModal from '@/components/bupati/update-status-pelapor';
+import UpdateStatusModal from '@/components/bupati/UpdateStatusPelapor';
 import CommentModal from '@/components/bupati/comment/comment-modal';
 import { useRouter } from 'next/navigation';
 

@@ -1,28 +1,18 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { verify } from 'jsonwebtoken';
-import { cookies } from 'next/headers';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const token = cookies().get('auth_token')?.value;
-    if (!token) {
+    const user = await getAuthenticatedUser();
+    if (!user || user.role !== 'OPD') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const decoded = verify(token, process.env.JWT_SECRET);
-    const userId = decoded?.id;
-    const role = decoded?.role;
-
-    if (!userId || role !== 'OPD') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
     const opd = await prisma.oPD.findUnique({
-      where: { staffUserId: userId },
+      where: { staffUserId: user.id },
     });
 
-    // 🔒 Cek jika user belum punya profil OPD
     if (!opd) {
       return NextResponse.json(
         { error: 'Profil OPD belum lengkap', code: 'NO_PROFILE' },
@@ -52,6 +42,7 @@ export async function GET() {
     const selesaiReports = reports.filter(
       (r) => r.opdStatus === 'SELESAI' && r.assignedAt && r.respondedAt,
     );
+
     if (selesaiReports.length > 0) {
       const totalTime = selesaiReports.reduce((acc, curr) => {
         const duration =

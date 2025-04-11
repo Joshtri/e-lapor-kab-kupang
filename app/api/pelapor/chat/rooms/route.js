@@ -1,15 +1,16 @@
-// File: /app/api/pelapor/chat/rooms/route.js
-
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ auth helper
 
 export async function GET(req) {
   try {
-    const user = getUserFromCookie();
-    if (!user)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = await getAuthenticatedUser(req); // ✅ pakai req
 
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // ✅ Ambil semua room milik pelapor
     const rooms = await prisma.chatRoom.findMany({
       where: { userId: user.id },
       include: {
@@ -17,13 +18,20 @@ export async function GET(req) {
           orderBy: { createdAt: 'desc' },
           take: 1,
         },
-        opd: true,
+        opd: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
       orderBy: { updatedAt: 'desc' },
     });
 
     return NextResponse.json(rooms);
   } catch (error) {
+    console.error('[GET /pelapor/chat/rooms]', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

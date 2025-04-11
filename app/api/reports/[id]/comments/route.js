@@ -1,30 +1,36 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { getAuthenticatedUser } from '@/lib/auth';
 
-// POST komentar
+// POST komentar — Hanya user login yang bisa komen
 export async function POST(req, context) {
-  const { id } = context.params;
-  const { userId, comment } = await req.json();
-
-  if (!userId || !comment) {
-    return NextResponse.json(
-      { error: 'userId dan comment wajib diisi.' },
-      { status: 400 },
-    );
-  }
-
   try {
+    const user = await getAuthenticatedUser(req);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = context.params;
+    const { comment } = await req.json();
+
+    if (!comment) {
+      return NextResponse.json(
+        { error: 'Komentar tidak boleh kosong.' },
+        { status: 400 },
+      );
+    }
+
     const newComment = await prisma.comment.create({
       data: {
         reportId: Number(id),
-        userId,
+        userId: user.id, // ✅ pakai user ID dari token
         comment,
       },
     });
 
     return NextResponse.json(newComment, { status: 201 });
   } catch (error) {
-    console.error('Gagal menambahkan komentar:', error);
+    console.error('❌ Gagal menambahkan komentar:', error);
     return NextResponse.json(
       { error: 'Gagal menambahkan komentar.' },
       { status: 500 },
@@ -32,7 +38,7 @@ export async function POST(req, context) {
   }
 }
 
-// GET komentar
+// GET komentar — Optional: public access
 export async function GET(req, context) {
   const { id } = context.params;
 
@@ -45,9 +51,7 @@ export async function GET(req, context) {
             name: true,
             role: true,
             opd: {
-              select: {
-                name: true,
-              },
+              select: { name: true },
             },
           },
         },
@@ -57,10 +61,10 @@ export async function GET(req, context) {
 
     return NextResponse.json(comments);
   } catch (error) {
-    console.error('Gagal mengambil komentar:', error);
+    console.error('❌ Gagal mengambil komentar:', error);
     return NextResponse.json(
       { error: 'Gagal mengambil komentar.' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

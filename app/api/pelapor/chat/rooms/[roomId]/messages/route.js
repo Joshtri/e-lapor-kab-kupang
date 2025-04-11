@@ -2,25 +2,24 @@
 
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ GANTI helper auth
 
 export async function GET(req, context) {
   try {
-    const user = await getUserFromCookie(); // ✅ pakai await
+    const user = await getAuthenticatedUser(req); // ✅ pakai `req`
     if (!user)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const roomId = Number(context.params.roomId); // ✅ akses params dari context
+    const roomId = Number(context.params.roomId);
 
-    // Pastikan user adalah pemilik room
     const room = await prisma.chatRoom.findUnique({
       where: { id: roomId },
       select: { userId: true },
     });
 
-    if (!room || (user.role === 'PELAPOR' && room.userId !== user.id))
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-      
+    if (!room || (user.role === 'PELAPOR' && room.userId !== user.id)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
 
     const messages = await prisma.chatMessage.findMany({
       where: { roomId },
@@ -40,7 +39,7 @@ export async function GET(req, context) {
       id: msg.id,
       content: msg.content,
       createdAt: msg.createdAt,
-      fromMe: msg.sender.role === 'PELAPOR',
+      fromMe: msg.sender.id === user.id, // ✅ lebih akurat
       sender: msg.sender,
     }));
 

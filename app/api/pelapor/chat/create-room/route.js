@@ -1,19 +1,18 @@
-// File: /app/api/pelapor/chat/create-room/route.js
-
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ ganti helper
 
 export async function POST(req) {
   try {
-    const user = await getUserFromCookie();
-    if (!user)
+    const user = await getAuthenticatedUser(req); // ✅ pakai req
+
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    const body = await req.json();
-    const { opdId, isToBupati } = body;
+    const { opdId, isToBupati } = await req.json();
 
-    // ❗ Cek apakah room sudah ada
+    // ✅ Cek apakah room sudah ada antara pelapor & OPD atau pelapor & Bupati
     const existingRoom = await prisma.chatRoom.findFirst({
       where: {
         userId: user.id,
@@ -22,9 +21,12 @@ export async function POST(req) {
       },
     });
 
-    if (existingRoom) return NextResponse.json(existingRoom);
+    if (existingRoom) {
+      return NextResponse.json(existingRoom); // ✅ Room sudah ada
+    }
 
-    const room = await prisma.chatRoom.create({
+    // ✅ Buat room baru
+    const newRoom = await prisma.chatRoom.create({
       data: {
         userId: user.id,
         opdId: opdId || null,
@@ -32,8 +34,9 @@ export async function POST(req) {
       },
     });
 
-    return NextResponse.json(room);
+    return NextResponse.json(newRoom);
   } catch (error) {
+    console.error('[POST /pelapor/chat/create-room]', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

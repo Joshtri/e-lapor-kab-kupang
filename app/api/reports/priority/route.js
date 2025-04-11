@@ -1,14 +1,14 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const priority = searchParams.get("priority");
+    const priority = searchParams.get('priority');
 
     const reports = await prisma.report.findMany({
       where: { priority },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     });
 
     return NextResponse.json(reports);

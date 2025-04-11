@@ -1,15 +1,25 @@
-// /app/api/opd/chat/send-message/route.js
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ ganti helper auth
 
 export async function POST(req) {
-  const user = await getUserFromCookie();
+  const user = await getAuthenticatedUser(req); // ✅ pakai req
+
   if (!user || user.role !== 'OPD') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const { roomId, content } = await req.json();
+
+  if (!roomId || !content) {
+    return NextResponse.json(
+      { error: 'roomId dan content wajib diisi' },
+      { status: 400 },
+    );
+  }
+
+  // Opsional: validasi apakah user OPD memang terkait dengan room ini
+  // Tapi untuk sekarang kita anggap valid selama role OPD dan roomId valid
 
   const message = await prisma.chatMessage.create({
     data: {
@@ -24,6 +34,7 @@ export async function POST(req) {
     },
   });
 
+  // Update waktu terakhir interaksi pada chat room
   await prisma.chatRoom.update({
     where: { id: roomId },
     data: { updatedAt: new Date() },
@@ -31,6 +42,6 @@ export async function POST(req) {
 
   return NextResponse.json({
     ...message,
-    fromMe: true,
+    fromMe: true, // ✅ client bisa pakai ini untuk styling
   });
 }

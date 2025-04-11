@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ helper baru
 
-export async function GET() {
+export async function GET(req) {
   try {
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req); // ✅ pakai req
     if (!user || user.role !== 'BUPATI') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Hitung pesan belum dibaca dari pelapor ke bupati
+    // Hitung jumlah pesan belum dibaca yang dikirim pelapor ke Bupati
     const count = await prisma.chatMessage.count({
       where: {
         isRead: false,
@@ -17,7 +17,7 @@ export async function GET() {
           isToBupati: true,
         },
         NOT: {
-          senderId: user.id,
+          senderId: user.id, // ✅ hanya pesan dari pelapor
         },
       },
     });

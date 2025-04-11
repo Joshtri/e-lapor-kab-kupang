@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ gunakan nama yang benar
 
-export async function GET() {
+export async function GET(req) {
   try {
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req); // ✅ kirim `req` ke helper
     if (!user) return NextResponse.json({ count: 0 });
 
-    // Hitung pesan dari Bupati yang belum dibaca
     const count = await prisma.chatMessage.count({
       where: {
         room: {
@@ -15,7 +14,7 @@ export async function GET() {
           isToBupati: true,
         },
         isRead: false,
-        NOT: { senderId: user.id }, // hanya pesan dari Bupati
+        NOT: { senderId: user.id },
       },
     });
 

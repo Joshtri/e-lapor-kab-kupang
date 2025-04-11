@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth'; // ✅ GANTI dari getUserFromCookie
 
 export async function POST(req) {
   try {
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req); // ✅ kirim `req` ke helper
     if (!user)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    console.log('BODY:', body); // log ini penting
     const { roomId, content } = body;
 
     if (!roomId || !content)
@@ -18,7 +17,7 @@ export async function POST(req) {
         { status: 400 },
       );
 
-    // Opsional: validasi apakah user memang punya akses ke room ini
+    // Opsional: validasi akses room
     const room = await prisma.chatRoom.findUnique({
       where: { id: roomId },
     });
@@ -46,7 +45,7 @@ export async function POST(req) {
       fromMe: true,
       sender: message.sender,
     });
-  } catch (error) { 
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getAuthenticatedUser } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(req) {
   try {
+    const user = await getAuthenticatedUser(req);
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const reports = await prisma.report.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
@@ -12,7 +18,11 @@ export async function GET() {
             email: true,
           },
         },
-        
+        opd: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
@@ -35,7 +45,7 @@ export async function GET() {
 
     return NextResponse.json(formattedReports);
   } catch (error) {
-    console.error('Gagal mengambil data laporan:', error.message, error);
+    console.error('❌ Gagal mengambil data laporan:', error.message, error);
     return NextResponse.json(
       { message: 'Gagal mengambil data laporan.', error: error.message },
       { status: 500 },

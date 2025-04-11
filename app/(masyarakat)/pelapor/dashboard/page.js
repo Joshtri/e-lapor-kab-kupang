@@ -4,6 +4,7 @@ import DashboardPelapor from '@/components/pelapor/DashboardPelapor';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import LoadingOverlay from '@/components/ui/LoadingOverlay';
 
 export default function DashboardPelaporPage() {
   const router = useRouter();
@@ -29,11 +30,7 @@ export default function DashboardPelaporPage() {
   }, [router]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
-        Memuat dashboard...
-      </div>
-    );
+    return  <LoadingOverlay message='Memuat dashboard...' />; 
   }
 
   if (!user) {

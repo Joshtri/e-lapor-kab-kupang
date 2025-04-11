@@ -113,7 +113,7 @@ export default function Header() {
           </div>
 
           <Navbar.Collapse className="md:hidden">
-            <div className="flex flex-col gap-4 mt-4 items-center">
+            <div className="flex flex-col gap-4 mt-4 items-start pl-4">
               <Link
                 href="/"
                 className="text-black dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-2"

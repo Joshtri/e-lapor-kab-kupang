@@ -14,7 +14,7 @@ import {
   HiOutlineChatAlt2,
 } from 'react-icons/hi';
 import PageHeader from '@/components/ui/page-header';
-import UpdateStatusModal from '@/components/bupati/update-status-pelapor';
+import UpdateStatusModal from '@/components/bupati/UpdateStatusPelapor';
 import CommentModal from '@/components/bupati/comment/comment-modal';
 import ReportCommentView from './report-comment-view';
 
