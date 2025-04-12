@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function GET(req) {
   try {
-    const user = await getUserFromCookie();
+    // ✅ Validasi JWT dari req
+    const user = await getAuthenticatedUser(req);
     if (!user || !['ADMIN', 'BUPATI'].includes(user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // ✅ Ambil parameter bulan dan kategori
     const { searchParams } = new URL(req.url);
     const month = searchParams.get('month');
     const category = searchParams.get('category') || 'ALL';
@@ -24,6 +26,7 @@ export async function GET(req) {
     const endDate = new Date(startDate);
     endDate.setMonth(startDate.getMonth() + 1);
 
+    // ✅ Gunakan query raw dengan filter kategori opsional
     const dailyCategoryStatsRaw = await prisma.$queryRawUnsafe(`
       SELECT 
         TO_CHAR("createdAt", 'DD Mon') AS day, 

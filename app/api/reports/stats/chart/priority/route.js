@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(req) {
   try {
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req);
     if (!user || !['ADMIN', 'BUPATI'].includes(user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -16,9 +16,7 @@ export async function GET() {
       ORDER BY total DESC
     `);
 
-    const priorityStats = priorityStatsRaw || [];
-
-    return NextResponse.json({ priorityStats });
+    return NextResponse.json({ priorityStats: priorityStatsRaw || [] });
   } catch (error) {
     console.error(
       '❌ Error fetching priority chart data:',

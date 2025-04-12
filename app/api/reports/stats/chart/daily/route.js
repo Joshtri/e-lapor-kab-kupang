@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function GET(req) {
   try {
     // ✅ Auth check
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req);
     if (!user || !['ADMIN', 'BUPATI'].includes(user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // ✅ Ambil query param bulan
+    // ✅ Ambil query param bulan (YYYY-MM)
     const url = new URL(req.url);
     const month =
-      url.searchParams.get('month') || new Date().toISOString().slice(0, 7); // Default: bulan ini (YYYY-MM)
+      url.searchParams.get('month') || new Date().toISOString().slice(0, 7); // Default: bulan ini
 
     const dailyReportStatsRaw = await prisma.$queryRawUnsafe(
       `

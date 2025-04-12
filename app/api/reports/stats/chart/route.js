@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(req) {
   try {
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req);
+
     if (!user || !['ADMIN', 'BUPATI'].includes(user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -19,7 +20,7 @@ export async function GET() {
       LIMIT 6
     `);
 
-    const chartData = (chartDataRaw || []).reverse(); // agar urutan dari bulan terlama ke terbaru
+    const chartData = (chartDataRaw || []).reverse();
 
     return NextResponse.json({ chartData });
   } catch (error) {

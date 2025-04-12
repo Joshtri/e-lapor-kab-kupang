@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getUserFromCookie } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth';
 import { format } from 'date-fns';
 
-export async function GET() {
+export async function GET(req) {
   try {
-    const user = await getUserFromCookie();
+    const user = await getAuthenticatedUser(req);
     if (!user || user.role !== 'OPD') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
