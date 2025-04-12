@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import { headers } from 'next/headers';
+import { sendResetPasswordEmail } from '@/lib/email/sendResetPasswordEmail';
 
 // Konfigurasi Nodemailer dengan debug logging
 const transporter = nodemailer.createTransport({
@@ -88,7 +89,7 @@ export async function POST(req) {
             `,
     };
 
-    await transporter.sendMail(mailOptions);
+    await sendResetPasswordEmail(mailOptions);
     console.log('📩 Email sent to:', email);
 
     return NextResponse.json({

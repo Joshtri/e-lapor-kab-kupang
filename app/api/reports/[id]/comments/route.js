@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/auth';
+import { sendCommentEmailNotify } from '@/lib/email/sendCommentEmailNotify';
 
 // POST komentar — Hanya user login yang bisa komen
 export async function POST(req, context) {
@@ -20,13 +21,51 @@ export async function POST(req, context) {
       );
     }
 
+    // 🔧 Buat komentar
     const newComment = await prisma.comment.create({
       data: {
         reportId: Number(id),
-        userId: user.id, // ✅ pakai user ID dari token
+        userId: user.id,
         comment,
       },
+      include: {
+        report: {
+          select: {
+            id: true,
+            title: true,
+            userId: true,
+          },
+        },
+      },
     });
+
+    // 🔔 Buat notifikasi ke pemilik laporan (kecuali yang komen adalah dia sendiri)
+    if (newComment.report.userId !== user.id) {
+      // 🔔 Notifikasi ke pemilik laporan
+      await prisma.notification.create({
+        data: {
+          userId: newComment.report.userId,
+          message: `Ada komentar baru pada laporan "${newComment.report.title}".`,
+          link: null,
+          createdAt: new Date(),
+        },
+      });
+
+      // 📩 Kirim email notifikasi komentar
+      const targetUser = await prisma.user.findUnique({
+        where: { id: newComment.report.userId },
+        select: { name: true, email: true },
+      });
+
+      if (targetUser?.email) {
+        await sendCommentEmailNotify({
+          to: targetUser.email,
+          name: targetUser.name,
+          reportTitle: newComment.report.title,
+          commentText: comment,
+        });
+      }
+    }
 
     return NextResponse.json(newComment, { status: 201 });
   } catch (error) {

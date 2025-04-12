@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/auth';
+import { sendStatusUpdateEmail } from '@/lib/email/sendStatusUpdateEmail';
 
 export async function PATCH(req, { params }) {
   const { id } = params;
@@ -20,9 +21,32 @@ export async function PATCH(req, { params }) {
       );
     }
 
+    // ✅ Update report + ambil relasi user
     const updatedReport = await prisma.report.update({
       where: { id: Number(id) },
       data: { opdStatus },
+      include: {
+        user: true,
+      },
+    });
+
+    // ✅ Simpan notifikasi untuk pelapor
+    await prisma.notification.create({
+      data: {
+        userId: updatedReport.user.id,
+        message: `Laporan "${updatedReport.title}" Anda telah ditindaklanjuti oleh OPD. Status diperbarui menjadi "${opdStatus}".`,
+        link: '/pelapor/log-laporan',
+        createdAt: new Date(),
+      },
+    });
+    
+
+    // ✅ Kirim email ke pelapor
+    await sendStatusUpdateEmail({
+      to: updatedReport.user.email,
+      name: updatedReport.user.name,
+      title: updatedReport.title,
+      status: opdStatus,
     });
 
     return NextResponse.json(updatedReport);
