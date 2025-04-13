@@ -1,20 +1,25 @@
 // /app/api/notifications/send/route.js
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
+// import { verifyToken } from '@/lib/auth'; // opsional jika ingin proteksi admin
 
 export async function POST(req) {
   try {
-    // const authUser = verifyToken(req);
+    // Opsi verifikasi JWT jika ingin membatasi hanya ADMIN:
+    // const authUser = await verifyToken(req);
     // if (!authUser || authUser.role !== 'ADMIN') {
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     // }
 
     const body = await req.json();
-    const { message, link, recipientType, recipients } = body;
+    const { message, recipientType, recipients } = body;
 
+    // Validasi input dasar
     if (!message || !recipientType || !recipients) {
-      return NextResponse.json({ error: 'Data tidak lengkap.' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Data tidak lengkap.' },
+        { status: 400 },
+      );
     }
 
     let notificationsToCreate = [];
@@ -24,30 +29,30 @@ export async function POST(req) {
         where: { role: recipients.role },
         select: { id: true },
       });
+
       notificationsToCreate = users.map((user) => ({
         userId: user.id,
         message,
-        link,
       }));
-    }
-
-    else if (recipientType === 'specific') {
+    } else if (recipientType === 'specific') {
       notificationsToCreate = recipients.userIds.map((id) => ({
         userId: id,
         message,
-        link,
       }));
-    }
-
-    else if (recipientType === 'opd') {
+    } else if (recipientType === 'opd') {
       notificationsToCreate = recipients.opdIds.map((opdId) => ({
         opdId,
         message,
-        link,
       }));
     }
 
-    // Simpan notifikasi ke DB
+    if (notificationsToCreate.length === 0) {
+      return NextResponse.json(
+        { error: 'Tidak ada target notifikasi.' },
+        { status: 400 },
+      );
+    }
+
     const created = await prisma.notification.createMany({
       data: notificationsToCreate,
       skipDuplicates: true,
@@ -55,7 +60,10 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true, count: created.count });
   } catch (error) {
-    console.error('Gagal mengirim notifikasi:', error);
-    return NextResponse.json({ error: 'Gagal mengirim notifikasi' }, { status: 500 });
+    console.error('[SEND_NOTIFICATION_ERROR]', error);
+    return NextResponse.json(
+      { error: 'Gagal mengirim notifikasi' },
+      { status: 500 },
+    );
   }
 }

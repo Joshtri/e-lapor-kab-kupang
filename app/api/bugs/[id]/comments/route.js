@@ -1,10 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getAuthenticatedUser } from '@/lib/auth'; // Pastikan path sesuai
 
-// Get all comments for a bug report
-export async function GET(_request, params, id) {
+// GET /api/bugs/:id/comments
+export async function GET(req, { params }) {
   try {
     const bugId = parseInt(params.id);
+
+    if (isNaN(bugId)) {
+      return NextResponse.json({ error: 'ID tidak valid' }, { status: 400 });
+    }
 
     const comments = await prisma.bugComment.findMany({
       where: { bugReportId: bugId },
@@ -13,7 +18,7 @@ export async function GET(_request, params, id) {
           select: { id: true, name: true, email: true, role: true },
         },
       },
-      orderBy: { createdAt: 'asc' }, // Chronological order
+      orderBy: { createdAt: 'asc' },
     });
 
     return NextResponse.json(comments);
@@ -26,25 +31,28 @@ export async function GET(_request, params, id) {
   }
 }
 
-// Add a new comment to a bug report
-export async function POST(request, params, id) {
+// POST /api/bugs/:id/comments
+export async function POST(req, { params }) {
   try {
     const bugId = parseInt(params.id);
-    const { userId, message } = await request.json();
+    const { message } = await req.json();
 
-    // Validate input
-    if (!userId || !message) {
+    const user = await getAuthenticatedUser(req);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (!message) {
       return NextResponse.json(
-        { error: 'User ID dan pesan tidak boleh kosong' },
+        { error: 'Pesan tidak boleh kosong' },
         { status: 400 },
       );
     }
 
-    // Create new comment
     const newComment = await prisma.bugComment.create({
       data: {
         bugReportId: bugId,
-        userId,
+        userId: user.id,
         message,
       },
       include: {
@@ -54,7 +62,6 @@ export async function POST(request, params, id) {
       },
     });
 
-    // Update the bug's updatedAt timestamp
     await prisma.bugReport.update({
       where: { id: bugId },
       data: { updatedAt: new Date() },

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { getCookie } from "cookies-next";
+import { getCookie } from 'cookies-next';
 
 export const isAuthenticated = () => {
-  if (typeof window === "undefined") return false;
+  if (typeof window === 'undefined') return false;
 
   try {
-    const cookieToken = getCookie("auth_token");
+    const cookieToken = getCookie('auth_token');
 
-    if (!cookieToken || cookieToken === "undefined" || cookieToken === "null") {
+    if (!cookieToken || cookieToken === 'undefined' || cookieToken === 'null') {
       return false;
     }
     return true;
@@ -18,7 +18,7 @@ export const isAuthenticated = () => {
 };
 
 export const redirectToLogin = () => {
-  if (typeof window !== "undefined") {
-    window.location.href = "/auth/login";
+  if (typeof window !== 'undefined') {
+    window.location.href = '/auth/login';
   }
 };

@@ -8,8 +8,9 @@ import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
 import axios from 'axios';
+import { formatDate } from '@/utils/formatDate';
 
-export default function BugComments({ bugId, currentUser }) {
+export default function BugComments({ bugId }) {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState('');
@@ -22,7 +23,6 @@ export default function BugComments({ bugId, currentUser }) {
       const { data } = await axios.get(`/api/bugs/${bugId}/comments`);
       setComments(data);
     } catch (error) {
-      console.error('Error fetching comments:', error);
       toast.error('Gagal memuat komentar');
     } finally {
       setLoading(false);
@@ -33,43 +33,24 @@ export default function BugComments({ bugId, currentUser }) {
     fetchComments();
   }, [bugId]);
 
-  useEffect(() => {
-    if (comments.length > 0) {
-      commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [comments]);
-
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return toast.error('Komentar tidak boleh kosong');
-    if (!currentUser)
-      return toast.error('Anda harus login untuk mengirim komentar');
 
     try {
       setSubmitting(true);
       const { data } = await axios.post(`/api/bugs/${bugId}/comments`, {
-        userId: currentUser.id,
         message: newComment,
       });
       setComments((prev) => [...prev, data]);
       setNewComment('');
       toast.success('Komentar berhasil dikirim');
     } catch (error) {
-      console.error('Error submitting comment:', error);
       toast.error('Gagal mengirim komentar');
     } finally {
       setSubmitting(false);
     }
   };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return {
-      formatted: format(date, 'dd MMM yyyy, HH:mm', { locale: id }),
-      relative: formatDistanceToNow(date, { addSuffix: true, locale: id }),
-    };
-  };
-
   return (
     <div className="mb-6">
       <motion.div
@@ -91,7 +72,7 @@ export default function BugComments({ bugId, currentUser }) {
           </div>
         </div>
 
-        {/* Comments list */}
+        {/* Daftar Komentar */}
         <div className="space-y-4 max-h-[500px] overflow-y-auto mb-6 p-2">
           {loading ? (
             <div className="flex justify-center p-4">
@@ -100,7 +81,7 @@ export default function BugComments({ bugId, currentUser }) {
           ) : comments.length === 0 ? (
             <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
               <p className="text-gray-500 dark:text-gray-400">
-                Belum ada komentar untuk laporan bug ini
+                Belum ada komentar untuk laporan bug ini.
               </p>
             </div>
           ) : (
@@ -122,33 +103,25 @@ export default function BugComments({ bugId, currentUser }) {
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0">
-                      <Avatar
-                        rounded
-                        size="md"
-                        img={null}
-                        placeholderInitials={
-                          comment.user?.name?.charAt(0) || 'U'
-                        }
-                        color={isAdmin ? 'blue' : 'gray'}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="font-medium text-gray-900 dark:text-white">
-                            {comment.user?.name || 'Unknown'}
-                            {isAdmin && (
-                              <span className="ml-2 text-xs font-medium px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                {comment.user?.role}
-                              </span>
-                            )}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {dateInfo.formatted} ({dateInfo.relative})
-                          </p>
-                        </div>
-                      </div>
+                    <Avatar
+                      rounded
+                      size="md"
+                      img={null}
+                      placeholderInitials={comment.user?.name?.charAt(0) || 'U'}
+                      color={isAdmin ? 'blue' : 'gray'}
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {comment.user?.name || 'Unknown'}
+                        {isAdmin && (
+                          <span className="ml-2 text-xs font-medium px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                            {comment.user?.role}
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {dateInfo.formatted} ({dateInfo.relative})
+                      </p>
                       <div className="mt-2 text-gray-700 dark:text-gray-300 whitespace-pre-line">
                         {comment.message}
                       </div>
@@ -161,51 +134,41 @@ export default function BugComments({ bugId, currentUser }) {
           <div ref={commentsEndRef} />
         </div>
 
-        {/* Comment form */}
-        {currentUser && (
-          <Card>
-            <h5 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-2">
-              Tambahkan Komentar
-            </h5>
-            <form onSubmit={handleSubmitComment}>
-              <div className="mb-4">
-                <Textarea
-                  placeholder="Tulis komentar Anda di sini..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  required
-                  rows={4}
-                  className="resize-none"
-                />
-              </div>
-              <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  color="blue"
-                  disabled={submitting || !newComment.trim()}
-                  isProcessing={submitting}
-                >
-                  {submitting ? (
-                    'Mengirim...'
-                  ) : (
-                    <>
-                      <HiOutlinePaperAirplane className="mr-2 h-5 w-5" />
-                      Kirim Komentar
-                    </>
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Card>
-        )}
-
-        {!currentUser && (
-          <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <p className="text-gray-500 dark:text-gray-400">
-              Anda harus login untuk mengirim komentar
-            </p>
-          </div>
-        )}
+        {/* Form Komentar */}
+        <Card>
+          <h5 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+            Tambahkan Komentar
+          </h5>
+          <form onSubmit={handleSubmitComment}>
+            <div className="mb-4">
+              <Textarea
+                placeholder="Tulis komentar Anda di sini..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                required
+                rows={4}
+                className="resize-none"
+              />
+            </div>
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                color="blue"
+                disabled={submitting || !newComment.trim()}
+                isProcessing={submitting}
+              >
+                {submitting ? (
+                  'Mengirim...'
+                ) : (
+                  <>
+                    <HiOutlinePaperAirplane className="mr-2 h-5 w-5" />
+                    Kirim Komentar
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </Card>
       </motion.div>
     </div>
   );

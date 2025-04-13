@@ -131,7 +131,7 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 {isSidebarOpen && 'Riwayat Pengaduan'}
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="/adm/mail" className={navLinkClass('/adm/mail')}>
                 <motion.div
                   whileHover={{ y: [0, -3, 0], x: [0, 3, 0] }}
@@ -141,15 +141,15 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 </motion.div>
                 {isSidebarOpen && 'Compose Mail'}
               </Link>
-            </li>
+            </li> */}
             {/* Notification group menu (expandable) */}
             <li className="space-y-1">
               <button
                 type="button"
                 onClick={() => setIsNotifOpen(!isNotifOpen)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm transition-all ${
-                  pathname.startsWith('/adm/send-notification') ||
-                  pathname.startsWith('/adm/notification-list')
+                  pathname?.startsWith('/adm/send-notification') ||
+                  pathname?.startsWith('/adm/notification-list')
                     ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                 } ${!isSidebarOpen ? 'justify-center' : ''}`}

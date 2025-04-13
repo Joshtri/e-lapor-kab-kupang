@@ -1,15 +1,21 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { Table, Button, Badge } from 'flowbite-react'
+import Link from 'next/link';
+import { Table, Button, Badge } from 'flowbite-react';
 import {
   HiOutlineEye,
   HiOutlineChat,
   HiOutlineCalendar,
   HiOutlineUser,
-} from 'react-icons/hi'
+  HiOutlinePencil,
+} from 'react-icons/hi';
 
-export default function BugTableView({ bugs, formatDate, openCommentModal }) {
+export default function BugTableView({
+  bugs,
+  formatDate,
+  openCommentModal,
+  openEditModal,
+}) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
       <Table hoverable>
@@ -23,7 +29,7 @@ export default function BugTableView({ bugs, formatDate, openCommentModal }) {
         </Table.Head>
         <Table.Body className="divide-y">
           {bugs.map((bug) => {
-            const dateInfo = formatDate(bug.createdAt)
+            const dateInfo = formatDate(bug.createdAt);
 
             return (
               <Table.Row
@@ -85,29 +91,43 @@ export default function BugTableView({ bugs, formatDate, openCommentModal }) {
                     >
                       <HiOutlineChat className="h-4 w-4" />
                     </Button>
+
+                    <Button
+                      color="gray"
+                      size="xs"
+                      onClick={() => openEditModal(bug)} // Tambahkan handler ini
+                    >
+                      <HiOutlinePencil className="h-4 w-4" />
+                    </Button>
                   </div>
                 </Table.Cell>
               </Table.Row>
-            )
+            );
           })}
         </Table.Body>
       </Table>
     </div>
-  )
+  );
 }
 
 function getStatusBadgeColor(status) {
-  return { OPEN: 'red', IN_PROGRESS: 'yellow', RESOLVED: 'green' }[status] || 'gray'
+  return (
+    { OPEN: 'red', IN_PROGRESS: 'yellow', RESOLVED: 'green' }[status] || 'gray'
+  );
 }
 
 function getStatusText(status) {
-  return { OPEN: 'Open', IN_PROGRESS: 'In Progress', RESOLVED: 'Resolved' }[status] || status
+  return (
+    { OPEN: 'Open', IN_PROGRESS: 'In Progress', RESOLVED: 'Resolved' }[
+      status
+    ] || status
+  );
 }
 
 function getPriorityBadgeColor(priority) {
-  return { LOW: 'blue', MEDIUM: 'yellow', HIGH: 'red' }[priority] || 'gray'
+  return { LOW: 'blue', MEDIUM: 'yellow', HIGH: 'red' }[priority] || 'gray';
 }
 
 function getPriorityText(priority) {
-  return { LOW: 'Low', MEDIUM: 'Medium', HIGH: 'High' }[priority] || priority
+  return { LOW: 'Low', MEDIUM: 'Medium', HIGH: 'High' }[priority] || priority;
 }

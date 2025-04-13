@@ -90,7 +90,7 @@ export default function BugCommentCreateModal({
       const res = await fetch(`/api/bugs/${bugId}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUser.id, message: newComment }),
+        body: JSON.stringify({ message: newComment }),
       });
 
       if (!res.ok) throw new Error();
@@ -204,33 +204,27 @@ export default function BugCommentCreateModal({
             )}
           </div>
 
-          {currentUser ? (
-            <form onSubmit={handleSubmit}>
-              <Textarea
-                placeholder="Tulis komentar Anda di sini..."
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                rows={3}
-                className="resize-none mb-4"
-                required
-              />
-              <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  color="blue"
-                  isProcessing={submitting}
-                  disabled={submitting || !newComment.trim()}
-                >
-                  <HiOutlinePaperAirplane className="mr-2 h-5 w-5" />
-                  Kirim Komentar
-                </Button>
-              </div>
-            </form>
-          ) : (
-            <div className="text-center text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-              Anda harus login untuk mengirim komentar
+          <form onSubmit={handleSubmit}>
+            <Textarea
+              placeholder="Tulis komentar Anda di sini..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              rows={3}
+              className="resize-none mb-4"
+              required
+            />
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                color="blue"
+                isProcessing={submitting}
+                disabled={submitting || !newComment.trim()}
+              >
+                <HiOutlinePaperAirplane className="mr-2 h-5 w-5" />
+                Kirim Komentar
+              </Button>
             </div>
-          )}
+          </form>
         </div>
       </Modal.Body>
     </Modal>
