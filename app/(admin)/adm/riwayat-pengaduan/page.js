@@ -1,5 +1,5 @@
-import RiwayatPengaduanList from "@/components/admin/riwayat-report/riwayat-report-list";
-import React from "react";
+import RiwayatPengaduanList from '@/components/admin/riwayat-report/RiwayatPengaduanList';
+import React from 'react';
 
 export default function RiwayatPenganduanPage() {
   return <RiwayatPengaduanList />;
