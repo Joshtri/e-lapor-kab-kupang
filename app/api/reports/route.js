@@ -45,8 +45,9 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const user = await getAuthenticatedUser(req);
-    if (!user || user.role === 'PELAPOR')
+    if (!user || !['PELAPOR', 'ADMIN', 'BUPATI'].includes(user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const form = await req.formData();
     const userId = parseInt(form.get('userId'));
