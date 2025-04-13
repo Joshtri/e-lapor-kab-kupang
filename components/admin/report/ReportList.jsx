@@ -6,12 +6,13 @@ import { Spinner, Modal, Button } from 'flowbite-react';
 import { toast } from 'sonner';
 import ReportFilterBar from '@/components/admin/report/ReportFilterBar';
 import ReportGrid from '@/components/admin/report/ReportGridView';
-import ReportTable from '@/components/admin/report/ReportTableView';
+import ReportTable from '@/components/admin/report/ReportTable';
 import PageHeader from '@/components/ui/page-header';
 import ReportCreateModal from './ReportCreateModal';
 import { HiOutlinePlus } from 'react-icons/hi';
 import EmptyState from '@/components/ui/empty-state';
 import { exportToExcel } from '@/utils/export/exportToExcel';
+import Pagination from '@/components/ui/Pagination';
 
 export default function ReportList() {
   const [reports, setReports] = useState([]);
@@ -22,6 +23,9 @@ export default function ReportList() {
 
   const [filterPriority, setFilterPriority] = useState('ALL');
   const [openModal, setOpenModal] = useState(false); // ✅ State untuk modal
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6;
+
 
   useEffect(() => {
     fetchReports();
@@ -100,6 +104,11 @@ export default function ReportList() {
     return bupatiMatch && opdMatch && searchMatch;
   });
 
+  const paginatedReports = filteredReports.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
@@ -148,19 +157,28 @@ export default function ReportList() {
       </div>
 
       {filteredReports.length === 0 ? (
-        <EmptyState message="Tidak ada laporan yang cocok dengan filter saat ini.">
-          <p className="text-sm">
-            Coba ubah filter status, prioritas, atau gunakan kata kunci yang
-            berbeda.
-          </p>
+        <EmptyState message="Tidak ada laporan ...">
+          <p className="text-sm">Coba ubah filter ...</p>
           <Button color="gray" onClick={handleResetFilter}>
             Reset Filter
           </Button>
         </EmptyState>
-      ) : viewMode === 'table' ? (
-        <ReportTable reports={filteredReports} />
       ) : (
-        <ReportGrid reports={filteredReports} />
+        <>
+          {viewMode === 'table' ? (
+            <ReportTable reports={paginatedReports} />
+          ) : (
+            <ReportGrid reports={paginatedReports} />
+          )}
+
+          {/* Panggil Pagination di sini */}
+          <Pagination
+            totalItems={filteredReports.length}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+          />
+        </>
       )}
 
       <ReportCreateModal openModal={openModal} setOpenModal={setOpenModal} />
