@@ -1,6 +1,6 @@
 'use client';
 
-import ReportList from '@/components/bupati/report/report-list';
+import ReportList from '@/components/bupati/report/ReportList';
 
 export default function LaporanBupatiPage() {
   return (
