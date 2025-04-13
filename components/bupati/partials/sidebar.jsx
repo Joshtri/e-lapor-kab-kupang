@@ -26,20 +26,30 @@ const BupatiSidebar = ({ isSidebarOpen, toggleSidebar }) => {
         : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
     } ${!isSidebarOpen ? 'justify-center' : ''}`;
   };
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadLaporan, setUnreadLaporan] = useState(0);
+  const [unreadChat, setUnreadChat] = useState(0);
+
   useEffect(() => {
     fetchUnreadCount();
   }, []);
 
   const fetchUnreadCount = async () => {
     try {
-      const res = await fetch('/api/bupati/chat/unread-count');
-      const data = await res.json();
-      setUnreadCount(data.unreadCount || 0);
+      const [laporanRes, chatRes] = await Promise.all([
+        fetch('/api/bupati/laporan/unread-count'),
+        fetch('/api/bupati/chat/unread-count'),
+      ]);
+
+      const laporan = await laporanRes.json();
+      const chat = await chatRes.json();
+
+      setUnreadLaporan(laporan.unreadCount || 0);
+      setUnreadChat(chat.unreadCount || 0);
     } catch (err) {
       console.error('Gagal ambil badge:', err);
     }
   };
+
   return (
     <aside
       className={`bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-screen transition-all shadow-lg fixed top-0 left-0 z-50 ${
@@ -105,8 +115,14 @@ const BupatiSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 <motion.div
                   whileHover={{ rotate: [0, -10, 0] }}
                   transition={{ duration: 0.5 }}
+                  className="relative"
                 >
                   <HiMailOpen className="h-6 w-6" />
+                  {unreadLaporan > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] rounded-full px-1.5 py-0.5 leading-none shadow">
+                      {unreadLaporan}
+                    </span>
+                  )}
                 </motion.div>
                 {isSidebarOpen && 'Kelola Pengaduan'}
               </Link>
@@ -143,9 +159,9 @@ const BupatiSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   className="relative"
                 >
                   <HiOutlineMail className="h-6 w-6" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5">
-                      {unreadCount}
+                  {unreadChat > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] rounded-full px-1.5 py-0.5 leading-none shadow">
+                      {unreadChat}
                     </span>
                   )}
                 </motion.div>
