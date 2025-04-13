@@ -73,7 +73,9 @@ model Report {
   updatedAt   DateTime  @updatedAt
   assignedAt  DateTime? // waktu laporan ditugaskan ke OPD
   respondedAt DateTime? // waktu OPD mulai merespon laporan
-
+  isReadByBupati Boolean   @default(false)
+  isReadByOpd    Boolean   @default(false) // ✅ Tambahan ini
+  
   // Relasi
   comments Comment[]
   logs     Log[]
@@ -114,6 +116,7 @@ model BugReport {
   description     String
   priorityProblem BugPriority @default(LOW)
   statusProblem   BugStatus   @default(OPEN)
+  attachment      Bytes?      // Added attachment field for images and other files
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
