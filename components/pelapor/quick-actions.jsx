@@ -8,12 +8,14 @@ import {
   HiMailOpen,
   HiPaperAirplane,
   HiOutlineChatAlt2,
+  HiExclamationCircle,
 } from 'react-icons/hi';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import useSWR from 'swr';
+import CornerDot from '../CornerDot';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -63,7 +65,9 @@ const QuickActions = ({ setOpenModal }) => {
             <div className="flex items-start">
               <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mr-4 relative">
                 <HiPlus className="text-blue-600 dark:text-blue-400 h-6 w-6" />
-                <div className="absolute -top-1 -right-1 h-2 w-2 bg-blue-500 rounded-full"></div>
+                <CornerDot color="blue" animate />
+
+                {/* <div className="absolute -top-1 -right-1 h-2 w-2 bg-blue-500 rounded-full"></div> */}
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
@@ -92,7 +96,9 @@ const QuickActions = ({ setOpenModal }) => {
               <div className="flex items-start">
                 <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full mr-4 relative">
                   <HiOutlineDocumentText className="text-green-600 dark:text-green-400 h-6 w-6" />
-                  <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div>
+                  <CornerDot color="green" animate />
+
+                  {/* <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div> */}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
@@ -126,7 +132,8 @@ const QuickActions = ({ setOpenModal }) => {
               <div className="flex items-start">
                 <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full mr-4 relative">
                   <HiOutlineChatAlt2 className="text-purple-600 dark:text-purple-400 h-6 w-6" />
-                  <div className="absolute -top-1 -right-1 h-2 w-2 bg-purple-500 rounded-full"></div>
+                  <CornerDot color="purple" animate />
+                  {/* <div className="absolute -top-1 -right-1 h-2 w-2 bg-purple-500 rounded-full"></div> */}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
@@ -149,7 +156,9 @@ const QuickActions = ({ setOpenModal }) => {
               <div className="flex items-start">
                 <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mr-4 relative">
                   <HiOutlineChatAlt2 className="text-indigo-600 dark:text-indigo-400 h-6 w-6" />
-                  <div className="absolute -top-1 -right-1 h-2 w-2 bg-indigo-500 rounded-full"></div>
+                  <CornerDot color="indigo" animate />
+
+                  {/* <div className="absolute -top-1 -right-1 h-2 w-2 bg-indigo-500 rounded-full"></div> */}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
@@ -158,6 +167,71 @@ const QuickActions = ({ setOpenModal }) => {
                   <p className="text-gray-600 dark:text-gray-300 mt-1">
                     Kirim pesan ke OPD terkait.
                   </p>
+                </div>
+              </div>
+            </Card>
+          </Link>
+        </motion.div>
+      </motion.div>
+
+      <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mt-8 mb-4 flex items-center">
+        <HiExclamationCircle className="mr-2 h-5 w-5 text-red-600 dark:text-red-400" />
+        Laporan Sistem
+      </h2>
+      {/* Laporkan Bug */}
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6"
+        variants={container}
+        initial="hidden"
+        animate="show"
+      >
+        {/* Laporkan Bug */}
+        <motion.div variants={item}>
+          <Link href="/pelapor/lapor-bug/create" passHref>
+            <Card className="border-l-4 border-red-500 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-red-500" />
+              <div className="flex items-start">
+                <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full mr-4 relative">
+                  <HiExclamationCircle className="text-red-600 dark:text-red-400 h-6 w-6" />
+                  <CornerDot color="red" animate />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    Laporkan Bug
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mt-1">
+                    Laporkan masalah teknis yang Anda temui.
+                  </p>
+                  <span className="mt-3 text-red-600 dark:text-red-400 font-medium flex items-center hover:underline">
+                    <HiExclamationCircle className="mr-1 h-4 w-4" />
+                    Mulai Laporan Bug
+                  </span>
+                </div>
+              </div>
+            </Card>
+          </Link>
+        </motion.div>
+
+        {/* Daftar Bug */}
+        <motion.div variants={item}>
+          <Link href="/pelapor/lapor-bug" passHref>
+            <Card className="border-l-4 border-orange-500 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-orange-500" />
+              <div className="flex items-start">
+                <div className="bg-orange-100 dark:bg-orange-900/30 p-3 rounded-full mr-4 relative">
+                  <HiOutlineDocumentText className="text-orange-600 dark:text-orange-400 h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    Daftar Laporan Bug
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mt-1">
+                    Lihat riwayat bug yang telah Anda laporkan.
+                  </p>
+                  <span className="mt-3 text-orange-600 dark:text-orange-400 font-medium flex items-center hover:underline">
+                    <HiMailOpen className="mr-1 h-4 w-4" />
+                    Lihat Semua Bug
+                  </span>
                 </div>
               </div>
             </Card>
