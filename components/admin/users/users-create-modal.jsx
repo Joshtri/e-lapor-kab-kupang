@@ -70,30 +70,38 @@ export default function CreateUserModal({ open, setOpen, onSuccess }) {
 
           {/* NIK */}
           {/* NIK */}
-          <div>
-            <Label htmlFor="nikNumber" value="NIK (Maksimal 16 Digit)" />
-            <TextInput
-              id="nikNumber"
-              placeholder="1234567890123456"
-              {...register('nikNumber', {
-                required: 'NIK wajib diisi',
-                maxLength: {
-                  value: 16,
-                  message: 'NIK tidak boleh lebih dari 16 digit',
-                },
-                pattern: {
-                  value: /^\d+$/,
-                  message: 'NIK hanya boleh berisi angka',
-                },
-              })}
-              maxLength={16}
-              inputMode="numeric"
-              color={errors.nikNumber ? 'failure' : 'gray'}
-              helperText={errors.nikNumber?.message}
-            />
-          </div>
+          {/* NIK/NIP */}
+                <div>
+                <Label
+                  htmlFor="nikNumber"
+                  value={role === 'OPD' ? 'NIP (18 Digit)' : 'NIK (16 Digit)'}
+                />
+                <TextInput
+                  id="nikNumber"
+                  placeholder={role === 'OPD' ? '18 digit angka' : '16 digit angka'}
+                  {...register('nikNumber', {
+                  required: `${role === 'OPD' ? 'NIP' : 'NIK'} wajib diisi`,
+                  minLength: {
+                    value: role === 'OPD' ? 18 : 16,
+                    message: `${role === 'OPD' ? 'NIP' : 'NIK'} harus ${role === 'OPD' ? '18' : '16'} digit`,
+                  },
+                  maxLength: {
+                    value: role === 'OPD' ? 18 : 16,
+                    message: `${role === 'OPD' ? 'NIP' : 'NIK'} tidak boleh lebih dari ${role === 'OPD' ? '18' : '16'} digit`,
+                  },
+                  pattern: {
+                    value: /^\d+$/,
+                    message: `${role === 'OPD' ? 'NIP' : 'NIK'} hanya boleh berisi angka`,
+                  },
+                  })}
+                  maxLength={role === 'OPD' ? 18 : 16}
+                  inputMode="numeric"
+                  color={errors.nikNumber ? 'failure' : 'gray'}
+                  helperText={errors.nikNumber?.message}
+                />
+                </div>
 
-          {/* Kontak */}
+                {/* Kontak */}
           <div>
             <Label htmlFor="contactNumber" value="No. Kontak" />
             <TextInput

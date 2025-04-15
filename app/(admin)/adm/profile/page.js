@@ -6,8 +6,7 @@ export default function ProfileManagementPage() {
     <>
       <div className="max-w-7xl mx-auto p-6  mt-10">
         <PageHeader
-          title={'Profil Saya'}
-          backHref="/adm/dashboard"
+           backHref="/adm/dashboard"
           breadcrumbsProps={{
             home: { label: 'Beranda', href: '/adm/dashboard' },
             customRoutes: {

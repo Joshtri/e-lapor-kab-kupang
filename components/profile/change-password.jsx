@@ -26,7 +26,7 @@ const ChangePasswordModal = ({ open, setOpen }) => {
     setIsSubmitting(true);
 
     try {
-      await axios.patch("/api/user/change-password", {
+      await axios.patch("/api/auth/change-password", {
         currentPassword,
         newPassword,
       });

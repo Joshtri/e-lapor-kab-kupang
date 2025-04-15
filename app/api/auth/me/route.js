@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/auth';
+import { getMaskedNik } from '@/utils/mask';
 
 export async function GET(req) {
-  const decoded = await getAuthenticatedUser(req); // ✅ fleksibel
+  const decoded = await getAuthenticatedUser(req);
 
   if (!decoded) {
     return NextResponse.json(
@@ -19,7 +20,7 @@ export async function GET(req) {
       name: true,
       email: true,
       role: true,
-      nikNumber: true,
+      nikNumber: true, // masih terenkripsi
       contactNumber: true,
       createdAt: true,
       updatedAt: true,
@@ -30,5 +31,10 @@ export async function GET(req) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  return NextResponse.json({ user });
+  return NextResponse.json({
+    user: {
+      ...user,
+      nikNumber: user.nikNumber ? getMaskedNik(user.nikNumber) : null, // masking nik
+    },
+  });
 }

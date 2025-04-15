@@ -64,6 +64,25 @@ export default function UserDetailPage() {
           {user.name}
         </h1>
         <p className="text-gray-600 dark:text-gray-300">{user.email}</p>
+
+        {/* ⬇️ TAMBAHKAN INI */}
+        {user.nikMasked && (
+          <p className="text-sm text-gray-500">
+            NIK: <span className="font-mono">{user.nikMasked}</span>
+          </p>
+        )}
+
+        {user.contactNumber && (
+          <p className="text-gray-500 text-sm">Kontak: {user.contactNumber}</p>
+        )}
+
+        <p className="text-xs text-gray-400 mt-2">
+          Dibuat: {dayjs(user.createdAt).format('DD MMM YYYY HH:mm')}
+        </p>
+        <p className="text-xs text-gray-400">
+          Update terakhir: {dayjs(user.updatedAt).format('DD MMM YYYY HH:mm')}
+        </p>
+
         <p className="text-sm">
           Role:{' '}
           <CustomBadge

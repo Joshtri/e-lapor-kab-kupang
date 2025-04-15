@@ -1,58 +1,44 @@
-import { getSession } from "@/lib/auth"; // Pastikan Anda memiliki middleware auth
-import  prisma from "@/lib/prisma"; // Pastikan path sesuai dengan setup Prisma
-import { hash } from "bcrypt";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function POST(req) {
   try {
-    // ✅ Periksa sesi pengguna (hanya admin yang boleh akses)
-    // const session = await getSession(req);
-    // if (!session || session.user.role !== "ADMIN") {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    // }
+    const body = await req.json();
+    const { name, alamat, email, telp, website, staffUserId } = body;
 
-    // ✅ Ambil data dari request body
-    const { name, email, password, phoneNumber } = await req.json();
-
-    // ✅ Validasi input
-    if (!name || !email || !password || !phoneNumber) {
-      return NextResponse.json(
-        { error: "Name, email, and password are required." },
-        { status: 400 }
-      );
-    }
-
-    // ✅ Cek apakah email OPD sudah digunakan
-    const existingOpd = await prisma.oPD.findUnique({
-      where: { email },
+    // Cek apakah user ada dan role-nya OPD
+    const user = await prisma.user.findUnique({
+      where: { id: staffUserId },
     });
 
-    if (existingOpd) {
-      return NextResponse.json(
-        { error: "Email OPD already exists." },
-        { status: 400 }
-      );
+    if (!user || user.role !== 'OPD') {
+      return NextResponse.json({ error: 'User tidak valid atau bukan OPD' }, { status: 400 });
     }
 
-    // ✅ Hash password sebelum menyimpan ke database
-    const hashedPassword = await hash(password, 10);
+    // Cek apakah user sudah jadi staff OPD
+    const existingOPD = await prisma.oPD.findUnique({
+      where: { staffUserId },
+    });
 
-    // ✅ Buat OPD baru
+    if (existingOPD) {
+      return NextResponse.json({ error: 'User ini sudah memiliki data OPD' }, { status: 400 });
+    }
+
+    // Simpan data OPD
     const newOpd = await prisma.oPD.create({
       data: {
         name,
-        email,
-        phoneNumber,
-        password: hashedPassword,
+        alamat: alamat || null,
+        email: email || null,
+        telp: telp || null,
+        website: website || null,
+        staffUserId,
       },
     });
 
-    return NextResponse.json({ message: "OPD created successfully", opd: newOpd }, { status: 201 });
+    return NextResponse.json(newOpd);
   } catch (error) {
-    console.error("Error creating OPD:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    console.error('❌ Gagal membuat data OPD:', error);
+    return NextResponse.json({ error: 'Gagal membuat data OPD' }, { status: 500 });
   }
 }

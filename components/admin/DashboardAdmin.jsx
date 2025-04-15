@@ -9,6 +9,9 @@ import axios from 'axios';
 import DashboardKinerjaOpd from './dashboard/DashboardKinerjaOpd';
 import { motion } from "framer-motion"
 import { HiOutlineMail } from "react-icons/hi"
+import { HiOutlineSpeakerphone } from 'react-icons/hi';
+import { Card } from 'flowbite-react';
+import DashboardNotificationPanel from '@/components/DashboardNotificationPanel'; // ✅
 
 const AdminDashboard = ({titleHeader}) => {
   const [stats, setStats] = useState(null);
@@ -75,6 +78,7 @@ const AdminDashboard = ({titleHeader}) => {
           </div>
         </div>
       </div>{' '}
+      <DashboardNotificationPanel/>
       <TabsComponent
         tabs={[
           {

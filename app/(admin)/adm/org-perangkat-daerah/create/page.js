@@ -1,8 +1,8 @@
-import OPDForm from '@/components/admin/opd/opd-create'
+import OPDCreateForm from '@/components/admin/opd/OpdCreate'
 import React from 'react'
 
 export default function OpdCreatePage() {
   return (
-     <OPDForm/>
+     <OPDCreateForm/>
   )
 }

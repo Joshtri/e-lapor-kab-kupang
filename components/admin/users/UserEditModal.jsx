@@ -8,7 +8,7 @@ import {
   Select,
 } from 'flowbite-react';
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 
@@ -19,7 +19,9 @@ const UserEditModal = ({ open, setOpen, user, onSuccess }) => {
     reset,
     formState: { isSubmitting },
   } = useForm();
-
+  const [nikLabel, setNikLabel] = useState('NIK');
+  const [decryptedNik, setDecryptedNik] = useState('');
+  
   // Prefill data ketika modal dibuka
   useEffect(() => {
     if (user && open) {

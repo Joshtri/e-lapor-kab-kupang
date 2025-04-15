@@ -89,7 +89,11 @@ export async function POST(req) {
             `,
     };
 
-    await sendResetPasswordEmail(mailOptions);
+    await sendResetPasswordEmail({
+      name: user.name,
+      email: user.email,
+      resetLink,
+    });
     console.log('📩 Email sent to:', email);
 
     return NextResponse.json({

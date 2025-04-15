@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcrypt';
-import { verifyToken } from '@/lib/auth'; // ✅ pakai utilitas
+import { decrypt, encrypt } from '@/lib/encryption';
 
-// 📌 Create User
 export async function POST(req) {
   try {
     const { name, nikNumber, contactNumber, email, password, role } =
       await req.json();
 
-    // Validasi field wajib
     if (!name || !contactNumber || !email || !password || !role || !nikNumber) {
       return NextResponse.json(
         { error: 'Semua field wajib diisi termasuk NIK.' },
@@ -24,25 +22,30 @@ export async function POST(req) {
       );
     }
 
-    // Validasi NIK (wajib, 16 digit, hanya angka)
-    if (nikNumber.length !== 16) {
+    // Validasi panjang dan format NIK berdasarkan role
+    const isValidNik =
+      (role === 'OPD' && /^\d{18}$/.test(nikNumber)) ||
+      (role !== 'OPD' && /^\d{16}$/.test(nikNumber));
+
+    if (!isValidNik) {
       return NextResponse.json(
-        { error: 'NIK harus terdiri dari 16 digit.' },
+        {
+          error:
+            role === 'OPD'
+              ? 'NIK OPD harus 18 digit angka.'
+              : 'NIK harus 16 digit angka.',
+        },
         { status: 400 },
       );
     }
 
-    if (!/^\d{16}$/.test(nikNumber)) {
-      return NextResponse.json(
-        { error: 'NIK hanya boleh berisi angka.' },
-        { status: 400 },
-      );
-    }
+    // Enkripsi NIK
+    const encryptedNik = encrypt(nikNumber);
 
     // Cek user existing
     const existingUser = await prisma.user.findFirst({
       where: {
-        OR: [{ email }, { nikNumber }],
+        OR: [{ email }, { nikNumber: encryptedNik }],
       },
     });
 
@@ -53,7 +56,6 @@ export async function POST(req) {
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Simpan user
@@ -64,11 +66,22 @@ export async function POST(req) {
         password: hashedPassword,
         contactNumber,
         role,
-        nikNumber,
+        nikNumber: encryptedNik,
       },
     });
 
-    return NextResponse.json(newUser, { status: 201 });
+    return NextResponse.json(
+      {
+        message: 'User berhasil dibuat.',
+        user: {
+          id: newUser.id,
+          name: newUser.name,
+          email: newUser.email,
+          role: newUser.role,
+        },
+      },
+      { status: 201 },
+    );
   } catch (error) {
     console.error('Gagal membuat user:', error);
     return NextResponse.json(
@@ -100,7 +113,12 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(users, { status: 200 });
+    const result = users.map((user) => ({
+      ...user,
+      nikNumber: decrypt(user.nikNumber), // aman, fallback jika error
+    }));
+
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.error('Gagal mengambil data users:', error);
     return NextResponse.json(
