@@ -1,12 +1,13 @@
-import { verifyToken } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(req) {
-  const token = cookies().get('auth_token')?.value;
-  const user = await verifyToken(token);
+  const user = await getAuthenticatedUser(req);
 
-  if (!user) return new Response('Unauthorized', { status: 401 });
+  if (!user) {
+    return new Response('Unauthorized', { status: 401 });
+  }
 
-  // Cek role, misalnya hanya PELAPOR boleh
   if (user.role !== 'PELAPOR') {
     return new Response('Forbidden', { status: 403 });
   }
