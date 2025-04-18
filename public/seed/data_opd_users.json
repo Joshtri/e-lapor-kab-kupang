@@ -1,486 +1,554 @@
 [
-
   {
-    "name":"name User5",
-    "nikNumber":"198111192000121000",
-    "namaLengkap":"Nama Lengkap User5",
-    "email":"user5@gmail.com",
-    "contactNumber":"081234567005"
+    "name": "name User5",
+    "NIP": "198111192000121000",
+    "namaLengkap": "Nama Lengkap User5",
+    "email": "user5@gmail.com",
+    "contactNumber": "081234567005",
+    "OPD": "Sekretariat Daerah Bagian Pemerintahan"
   },
   {
-    "name":"name User6",
-    "nikNumber":"196906071991022003",
-    "namaLengkap":"Nama Lengkap User6",
-    "email":"user6@gmail.com",
-    "contactNumber":"081234567006"
+    "name": "name User6",
+    "NIP": "196906071991022003",
+    "namaLengkap": "Nama Lengkap User6",
+    "email": "user6@gmail.com",
+    "contactNumber": "081234567006",
+    "OPD": "Sekretariat Daerah Bagian Hukum"
   },
   {
-    "name":"name User7",
-    "nikNumber":"197011291999031008",
-    "namaLengkap":"Nama Lengkap User7",
-    "email":"user7@gmail.com",
-    "contactNumber":"081234567007"
+    "name": "name User7",
+    "NIP": "197011291999031008",
+    "namaLengkap": "Nama Lengkap User7",
+    "email": "user7@gmail.com",
+    "contactNumber": "081234567007",
+    "OPD": "Sekretariat Daerah Bagian Administrasi Kesejahteraan Rakyat"
   },
   {
-    "name":"name User8",
-    "nikNumber":"197005191998031005",
-    "namaLengkap":"Nama Lengkap User8",
-    "email":"user8@gmail.com",
-    "contactNumber":"081234567008"
+    "name": "name User8",
+    "NIP": "197005191998031005",
+    "namaLengkap": "Nama Lengkap User8",
+    "email": "user8@gmail.com",
+    "contactNumber": "081234567008",
+    "OPD": "Sekretariat Daerah Bagian Perekonomian Dan Sumber Daya Alam"
   },
   {
-    "name":"name User9",
-    "nikNumber":"197307171999031008",
-    "namaLengkap":"Nama Lengkap User9",
-    "email":"user9@gmail.com",
-    "contactNumber":"081234567009"
+    "name": "name User9",
+    "NIP": "197307171999031008",
+    "namaLengkap": "Nama Lengkap User9",
+    "email": "user9@gmail.com",
+    "contactNumber": "081234567009",
+    "OPD": "Sekretariat Daerah Bagian Pengadaan Barang Dan Jasa"
   },
   {
-    "name":"name User10",
-    "nikNumber":"196908171997032007",
-    "namaLengkap":"Nama Lengkap User10",
-    "email":"user10@gmail.com",
-    "contactNumber":"081234567010"
+    "name": "name User10",
+    "NIP": "196908171997032007",
+    "namaLengkap": "Nama Lengkap User10",
+    "email": "user10@gmail.com",
+    "contactNumber": "081234567010",
+    "OPD": "Sekretariat Daerah Bagian Administrasi Pembangunan"
   },
   {
-    "name":"name User11",
-    "nikNumber":"197706262009031004",
-    "namaLengkap":"Nama Lengkap User11",
-    "email":"user11@gmail.com",
-    "contactNumber":"081234567011"
+    "name": "name User11",
+    "NIP": "197706262009031004",
+    "namaLengkap": "Nama Lengkap User11",
+    "email": "user11@gmail.com",
+    "contactNumber": "081234567011",
+    "OPD": "Sekretariat Daerah Bagian Organisasi"
   },
   {
-    "name":"name User73",
-    "nikNumber":"197505281997031004",
-    "namaLengkap":"Nama Lengkap User73",
-    "email":"user73@gmail.com",
-    "contactNumber":"0581234567011"
+    "name": "name User73",
+    "NIP": "197505281997031004",
+    "namaLengkap": "Nama Lengkap User73",
+    "email": "user73@gmail.com",
+    "contactNumber": "0581234567011",
+    "OPD": "Sekretariat Daerah Bagian Umum"
   },
   {
-    "name":"name User12",
-    "nikNumber":"198609042010011013",
-    "namaLengkap":"Nama Lengkap User12",
-    "email":"user12@gmail.com",
-    "contactNumber":"081234567012"
+    "name": "name User12",
+    "NIP": "198609042010011013",
+    "namaLengkap": "Nama Lengkap User12",
+    "email": "user12@gmail.com",
+    "contactNumber": "081234567012",
+    "OPD": "Sekretariat Daerah Bagian Protokol Dan Komunikasi Pimpinan"
   },
   {
-    "name":"name User13",
-    "nikNumber":"197502222005011006",
-    "namaLengkap":"Nama Lengkap User13",
-    "email":"user13@gmail.com",
-    "contactNumber":"081234567013"
+    "name": "name User13",
+    "NIP": "197502222005011006",
+    "namaLengkap": "Nama Lengkap User13",
+    "email": "user13@gmail.com",
+    "contactNumber": "081234567013",
+    "OPD": "Sekretariat Daerah Bagian Perencanaan Dan Keuangan"
   },
   {
-    "name":"name User14",
-    "nikNumber":"196709261989031010",
-    "namaLengkap":"Nama Lengkap User14",
-    "email":"user14@gmail.com",
-    "contactNumber":"081234567014"
+    "name": "name User14",
+    "NIP": "196709261989031010",
+    "namaLengkap": "Nama Lengkap User14",
+    "email": "user14@gmail.com",
+    "contactNumber": "081234567014",
+    "OPD": "Sekretariat DPRD"
   },
   {
-    "name":"name User15",
-    "nikNumber":"197208191994031005",
-    "namaLengkap":"Nama Lengkap User15",
-    "email":"user15@gmail.com",
-    "contactNumber":"081234567015"
+    "name": "name User15",
+    "NIP": "197208191994031005",
+    "namaLengkap": "Nama Lengkap User15",
+    "email": "user15@gmail.com",
+    "contactNumber": "081234567015",
+    "OPD": "Inspektorat Daerah"
   },
   {
-    "name":"name User16",
-    "nikNumber":"197306132000121002",
-    "namaLengkap":"Nama Lengkap User16",
-    "email":"user16@gmail.com",
-    "contactNumber":"081234567016"
+    "name": "name User16",
+    "NIP": "197306132000121002",
+    "namaLengkap": "Nama Lengkap User16",
+    "email": "user16@gmail.com",
+    "contactNumber": "081234567016",
+    "OPD": "Dinas Pendidikan Dan Kebudayaan"
   },
   {
-    "name":"name User17",
-    "nikNumber":"197702271997031002",
-    "namaLengkap":"Nama Lengkap User17",
-    "email":"user17@gmail.com",
-    "contactNumber":"081234567017"
+    "name": "name User17",
+    "NIP": "197702271997031002",
+    "namaLengkap": "Nama Lengkap User17",
+    "email": "user17@gmail.com",
+    "contactNumber": "081234567017",
+    "OPD": ""
   },
   {
-    "name":"name User18",
-    "nikNumber":"197507252000121002",
-    "namaLengkap":"Nama Lengkap User18",
-    "email":"user18@gmail.com",
-    "contactNumber":"081234567018"
+    "name": "name User18",
+    "NIP": "197507252000121002",
+    "namaLengkap": "Nama Lengkap User18",
+    "email": "user18@gmail.com",
+    "contactNumber": "081234567018",
+    "OPD": ""
   },
   {
-    "name":"name User19",
-    "nikNumber":"196910241997031004",
-    "namaLengkap":"Nama Lengkap User19",
-    "email":"user19@gmail.com",
-    "contactNumber":"081234567019"
+    "name": "name User19",
+    "NIP": "196910241997031004",
+    "namaLengkap": "Nama Lengkap User19",
+    "email": "user19@gmail.com",
+    "contactNumber": "081234567019",
+    "OPD": ""
   },
   {
-    "name":"name User20",
-    "nikNumber":"196706061989031012",
-    "namaLengkap":"Nama Lengkap User20",
-    "email":"user20@gmail.com",
-    "contactNumber":"081234567020"
+    "name": "name User20",
+    "NIP": "196706061989031012",
+    "namaLengkap": "Nama Lengkap User20",
+    "email": "user20@gmail.com",
+    "contactNumber": "081234567020",
+    "OPD": "Satuan Polisi Pamong Praja Dan Kebakaran"
   },
   {
-    "name":"name User21",
-    "nikNumber":"197311021993121001",
-    "namaLengkap":"Nama Lengkap User21",
-    "email":"user21@gmail.com",
-    "contactNumber":"081234567021"
+    "name": "name User21",
+    "NIP": "197311021993121001",
+    "namaLengkap": "Nama Lengkap User21",
+    "email": "user21@gmail.com",
+    "contactNumber": "081234567021",
+    "OPD": ""
   },
   {
-    "name":"name User72",
-    "nikNumber":"`196709251998031000`",
-    "namaLengkap":"Nama Lengkap User72",
-    "email":"user72@gmail.com",
-    "contactNumber":"081234547022"
+    "name": "name User72",
+    "NIP": "`196709251998031000`",
+    "namaLengkap": "Nama Lengkap User72",
+    "email": "user72@gmail.com",
+    "contactNumber": "081234547022",
+    "OPD": "Dinas Tenaga Kerja Dan Transmigrasi"
   },
   {
-    "name":"name User22",
-    "nikNumber":"`197311021993121000`",
-    "namaLengkap":"Nama Lengkap User22",
-    "email":"user22@gmail.com",
-    "contactNumber":"081234567022"
+    "name": "name User22",
+    "NIP": "`197311021993121000`",
+    "namaLengkap": "Nama Lengkap User22",
+    "email": "user22@gmail.com",
+    "contactNumber": "081234567022",
+    "OPD": "Dinas Sosial"
   },
   {
-    "name":"name User23",
-    "nikNumber":"197502192005012000",
-    "namaLengkap":"Nama Lengkap User23",
-    "email":"user23@gmail.com",
-    "contactNumber":"081234567023"
+    "name": "name User23",
+    "NIP": "197502192005012000",
+    "namaLengkap": "Nama Lengkap User23",
+    "email": "user23@gmail.com",
+    "contactNumber": "081234567023",
+    "OPD": "Dinas Pengendalian Penduduk, Keluarga Berencana, Pemberdayaan Perempuan Dan Perlindungan Anak"
   },
   {
-    "name":"name User24",
-    "nikNumber":"197303272000032006",
-    "namaLengkap":"Nama Lengkap User24",
-    "email":"user24@gmail.com",
-    "contactNumber":"081234567024"
+    "name": "name User24",
+    "NIP": "197303272000032006",
+    "namaLengkap": "Nama Lengkap User24",
+    "email": "user24@gmail.com",
+    "contactNumber": "081234567024",
+    "OPD": " "
   },
   {
-    "name":"name User25",
-    "nikNumber":"197206052006041010",
-    "namaLengkap":"Nama Lengkap User25",
-    "email":"user25@gmail.com",
-    "contactNumber":"081234567025"
+    "name": "name User25",
+    "NIP": "197206052006041010",
+    "namaLengkap": "Nama Lengkap User25",
+    "email": "user25@gmail.com",
+    "contactNumber": "081234567025",
+    "OPD": "Dinas Kependudukan Dan Pencatatan Sipil"
   },
   {
-    "name":"name User26",
-    "nikNumber":"197408082002121004",
-    "namaLengkap":"Nama Lengkap User26",
-    "email":"user26@gmail.com",
-    "contactNumber":"081234567026"
+    "name": "name User26",
+    "NIP": "197408082002121004",
+    "namaLengkap": "Nama Lengkap User26",
+    "email": "user26@gmail.com",
+    "contactNumber": "081234567026",
+    "OPD": " "
   },
   {
-    "name":"name User27",
-    "nikNumber":"196902161997031002",
-    "namaLengkap":"Nama Lengkap User27",
-    "email":"user27@gmail.com",
-    "contactNumber":"081234567027"
+    "name": "name User27",
+    "NIP": "196902161997031002",
+    "namaLengkap": "Nama Lengkap User27",
+    "email": "user27@gmail.com",
+    "contactNumber": "081234567027",
+    "OPD": " "
   },
   {
-    "name":"name User28",
-    "nikNumber":"196904271997021003",
-    "namaLengkap":"Nama Lengkap User28",
-    "email":"user28@gmail.com",
-    "contactNumber":"081234567028"
+    "name": "name User28",
+    "NIP": "196904271997021003",
+    "namaLengkap": "Nama Lengkap User28",
+    "email": "user28@gmail.com",
+    "contactNumber": "081234567028",
+    "OPD": " "
   },
   {
-    "name":"name User29",
-    "nikNumber":"196808281994121004",
-    "namaLengkap":"Nama Lengkap User29",
-    "email":"user29@gmail.com",
-    "contactNumber":"081234567029"
+    "name": "name User29",
+    "NIP": "196808281994121004",
+    "namaLengkap": "Nama Lengkap User29",
+    "email": "user29@gmail.com",
+    "contactNumber": "081234567029",
+    "OPD": "Dinas Penanaman Modal Dan Pelayanan Terpadu Satu Pintu"
   },
   {
-    "name":"name User30",
-    "nikNumber":"197204161992032010",
-    "namaLengkap":"Nama Lengkap User30",
-    "email":"user30@gmail.com",
-    "contactNumber":"081234567030"
+    "name": "name User30",
+    "NIP": "197204161992032010",
+    "namaLengkap": "Nama Lengkap User30",
+    "email": "user30@gmail.com",
+    "contactNumber": "081234567030",
+    "OPD": "Dinas Kepemudaan Dan Olah Raga"
   },
   {
-    "name":"name User31",
-    "nikNumber":"196607041997021003",
-    "namaLengkap":"Nama Lengkap User31",
-    "email":"user31@gmail.com",
-    "contactNumber":"081234567031"
+    "name": "name User31",
+    "NIP": "196607041997021003",
+    "namaLengkap": "Nama Lengkap User31",
+    "email": "user31@gmail.com",
+    "contactNumber": "081234567031",
+    "OPD": "Dinas Kearsipan Dan Perpustakaan"
   },
   {
-    "name":"name User32",
-    "nikNumber":"196607061989031016",
-    "namaLengkap":"Nama Lengkap User32",
-    "email":"user32@gmail.com",
-    "contactNumber":"081234567032"
+    "name": "name User32",
+    "NIP": "196607061989031016",
+    "namaLengkap": "Nama Lengkap User32",
+    "email": "user32@gmail.com",
+    "contactNumber": "081234567032",
+    "OPD": "Dinas Perikanan"
   },
   {
-    "name":"name User33",
-    "nikNumber":"196604111986031009",
-    "namaLengkap":"Nama Lengkap User33",
-    "email":"user33@gmail.com",
-    "contactNumber":"081234567033"
+    "name": "name User33",
+    "NIP": "196604111986031009",
+    "namaLengkap": "Nama Lengkap User33",
+    "email": "user33@gmail.com",
+    "contactNumber": "081234567033",
+    "OPD": ""
   },
   {
-    "name":"name User34",
-    "nikNumber":"196611131987032005",
-    "namaLengkap":"Nama Lengkap User34",
-    "email":"user34@gmail.com",
-    "contactNumber":"081234567034"
+    "name": "name User34",
+    "NIP": "196611131987032005",
+    "namaLengkap": "Nama Lengkap User34",
+    "email": "user34@gmail.com",
+    "contactNumber": "081234567034",
+    "OPD": ""
   },
   {
-    "name":"name User35",
-    "nikNumber":"196604081996031002",
-    "namaLengkap":"Nama Lengkap User35",
-    "email":"user35@gmail.com",
-    "contactNumber":"081234567035"
+    "name": "name User35",
+    "NIP": "196604081996031002",
+    "namaLengkap": "Nama Lengkap User35",
+    "email": "user35@gmail.com",
+    "contactNumber": "081234567035",
+    "OPD": ""
   },
   {
-    "name":"name User36",
-    "nikNumber":"196907131998031011",
-    "namaLengkap":"Nama Lengkap User36",
-    "email":"user36@gmail.com",
-    "contactNumber":"081234567036"
+    "name": "name User36",
+    "NIP": "196907131998031011",
+    "namaLengkap": "Nama Lengkap User36",
+    "email": "user36@gmail.com",
+    "contactNumber": "081234567036",
+    "OPD": ""
   },
   {
-    "name":"name User37",
-    "nikNumber":"197907242000031003",
-    "namaLengkap":"Nama Lengkap User37",
-    "email":"user37@gmail.com",
-    "contactNumber":"081234567037"
+    "name": "name User37",
+    "NIP": "197907242000031003",
+    "namaLengkap": "Nama Lengkap User37",
+    "email": "user37@gmail.com",
+    "contactNumber": "081234567037",
+    "OPD": ""
   },
   {
-    "name":"name User38",
-    "nikNumber":"196510021989121001",
-    "namaLengkap":"Nama Lengkap User38",
-    "email":"user38@gmail.com",
-    "contactNumber":"081234567038"
+    "name": "name User38",
+    "NIP": "196510021989121001",
+    "namaLengkap": "Nama Lengkap User38",
+    "email": "user38@gmail.com",
+    "contactNumber": "081234567038",
+    "OPD": ""
   },
   {
-    "name":"name User39",
-    "nikNumber":"196702151986031002",
-    "namaLengkap":"Nama Lengkap User39",
-    "email":"user39@gmail.com",
-    "contactNumber":"081234567039"
+    "name": "name User39",
+    "NIP": "196702151986031002",
+    "namaLengkap": "Nama Lengkap User39",
+    "email": "user39@gmail.com",
+    "contactNumber": "081234567039",
+    "OPD": ""
   },
   {
-    "name":"name User40",
-    "nikNumber":"196906151992122002",
-    "namaLengkap":"Nama Lengkap User40",
-    "email":"user40@gmail.com",
-    "contactNumber":"081234567040"
+    "name": "name User40",
+    "NIP": "196906151992122002",
+    "namaLengkap": "Nama Lengkap User40",
+    "email": "user40@gmail.com",
+    "contactNumber": "081234567040",
+    "OPD": "Badan Kepegawaian Dan Pengembangan Sumber Daya Manusia"
   },
   {
-    "name":"name User41",
-    "nikNumber":"196809301988031004",
-    "namaLengkap":"Nama Lengkap User41",
-    "email":"user41@gmail.com",
-    "contactNumber":"081234567041"
+    "name": "name User41",
+    "NIP": "196809301988031004",
+    "namaLengkap": "Nama Lengkap User41",
+    "email": "user41@gmail.com",
+    "contactNumber": "081234567041",
+    "OPD": "Badan Penanggulangan Bencana Daerah"
   },
   {
-    "name":"name User42",
-    "nikNumber":"196606151992031012",
-    "namaLengkap":"Nama Lengkap User42",
-    "email":"user42@gmail.com",
-    "contactNumber":"081234567042"
+    "name": "name User42",
+    "NIP": "196606151992031012",
+    "namaLengkap": "Nama Lengkap User42",
+    "email": "user42@gmail.com",
+    "contactNumber": "081234567042",
+    "OPD": "Badan Pengelola Perbatasan Daerah"
   },
   {
-    "name":"name User43",
-    "nikNumber":"196807102000031010",
-    "namaLengkap":"Nama Lengkap User43",
-    "email":"user43@gmail.com",
-    "contactNumber":"081234567043"
+    "name": "name User43",
+    "NIP": "196807102000031010",
+    "namaLengkap": "Nama Lengkap User43",
+    "email": "user43@gmail.com",
+    "contactNumber": "081234567043",
+    "OPD": "Badan Kesatuan Bangsa Dan Politik"
   },
   {
-    "name":"name User44",
-    "nikNumber":"197112182006041002",
-    "namaLengkap":"Nama Lengkap User44",
-    "email":"user44@gmail.com",
-    "contactNumber":"081234567044"
+    "name": "name User44",
+    "NIP": "197112182006041002",
+    "namaLengkap": "Nama Lengkap User44",
+    "email": "user44@gmail.com",
+    "contactNumber": "081234567044",
+    "OPD": "RSUD Naibonat"
   },
   {
-    "name":"name User45",
-    "nikNumber":"197103112009011006",
-    "namaLengkap":"Nama Lengkap User45",
-    "email":"user45@gmail.com",
-    "contactNumber":"081234567045"
+    "name": "name User45",
+    "NIP": "197103112009011006",
+    "namaLengkap": "Nama Lengkap User45",
+    "email": "user45@gmail.com",
+    "contactNumber": "081234567045",
+    "OPD": "Kecamatan Semau"
   },
   {
-    "name":"name User46",
-    "nikNumber":"197211122006041012",
-    "namaLengkap":"Nama Lengkap User46",
-    "email":"user46@gmail.com",
-    "contactNumber":"081234567046"
+    "name": "name User46",
+    "NIP": "197211122006041012",
+    "namaLengkap": "Nama Lengkap User46",
+    "email": "user46@gmail.com",
+    "contactNumber": "081234567046",
+    "OPD": "Kecamatan Semau Selatan"
   },
   {
-    "name":"name User47",
-    "nikNumber":"196704282000121004",
-    "namaLengkap":"Nama Lengkap User47",
-    "email":"user47@gmail.com",
-    "contactNumber":"081234567047"
+    "name": "name User47",
+    "NIP": "196704282000121004",
+    "namaLengkap": "Nama Lengkap User47",
+    "email": "user47@gmail.com",
+    "contactNumber": "081234567047",
+    "OPD": "Kecamatan Kupang Barat"
   },
   {
-    "name":"name User48",
-    "nikNumber":"197108201991031006",
-    "namaLengkap":"Nama Lengkap User48",
-    "email":"user48@gmail.com",
-    "contactNumber":"081234567048"
+    "name": "name User48",
+    "NIP": "197108201991031006",
+    "namaLengkap": "Nama Lengkap User48",
+    "email": "user48@gmail.com",
+    "contactNumber": "081234567048",
+    "OPD": "Kecamatan Nekamese"
   },
   {
-    "name":"name User49",
-    "nikNumber":"197505142010011012",
-    "namaLengkap":"Nama Lengkap User49",
-    "email":"user49@gmail.com",
-    "contactNumber":"081234567049"
+    "name": "name User49",
+    "NIP": "197505142010011012",
+    "namaLengkap": "Nama Lengkap User49",
+    "email": "user49@gmail.com",
+    "contactNumber": "081234567049",
+    "OPD": ""
   },
   {
-    "name":"name User50",
-    "nikNumber":"197505142010011012",
-    "namaLengkap":"Nama Lengkap User50",
-    "email":"user50@gmail.com",
-    "contactNumber":"081234567050"
+    "name": "name User50",
+    "NIP": "197505142010011012",
+    "namaLengkap": "Nama Lengkap User50",
+    "email": "user50@gmail.com",
+    "contactNumber": "081234567050",
+    "OPD": "Kecamatan Amarasi"
   },
   {
-    "name":"name User51",
-    "nikNumber":"197401242000121002",
-    "namaLengkap":"Nama Lengkap User51",
-    "email":"user51@gmail.com",
-    "contactNumber":"081234567051"
+    "name": "name User51",
+    "NIP": "197401242000121002",
+    "namaLengkap": "Nama Lengkap User51",
+    "email": "user51@gmail.com",
+    "contactNumber": "081234567051",
+    "OPD": ""
   },
   {
-    "name":"name User52",
-    "nikNumber":"196902231989031005",
-    "namaLengkap":"Nama Lengkap User52",
-    "email":"user52@gmail.com",
-    "contactNumber":"081234567052"
+    "name": "name User52",
+    "NIP": "196902231989031005",
+    "namaLengkap": "Nama Lengkap User52",
+    "email": "user52@gmail.com",
+    "contactNumber": "081234567052",
+    "OPD": "Kecamatan Amarasi Barat"
   },
   {
-    "name":"name User53",
-    "nikNumber":"197408282006041008",
-    "namaLengkap":"Nama Lengkap User53",
-    "email":"user53@gmail.com",
-    "contactNumber":"081234567053"
+    "name": "name User53",
+    "NIP": "197408282006041008",
+    "namaLengkap": "Nama Lengkap User53",
+    "email": "user53@gmail.com",
+    "contactNumber": "081234567053",
+    "OPD": "Kecamatan Amarasi Selatan"
   },
   {
-    "name":"name User54",
-    "nikNumber":"196912311990031062",
-    "namaLengkap":"Nama Lengkap User54",
-    "email":"user54@gmail.com",
-    "contactNumber":"081234567054"
+    "name": "name User54",
+    "NIP": "196912311990031062",
+    "namaLengkap": "Nama Lengkap User54",
+    "email": "user54@gmail.com",
+    "contactNumber": "081234567054",
+    "OPD": "Kecamatan Amarasi Timur"
   },
   {
-    "name":"name User55",
-    "nikNumber":"198601162004121002",
-    "namaLengkap":"Nama Lengkap User55",
-    "email":"user55@gmail.com",
-    "contactNumber":"081234567055"
+    "name": "name User55",
+    "NIP": "198601162004121002",
+    "namaLengkap": "Nama Lengkap User55",
+    "email": "user55@gmail.com",
+    "contactNumber": "081234567055",
+    "OPD": "Kecamatan Kupang Timur"
   },
   {
-    "name":"name User56",
-    "nikNumber":"196903101994031012",
-    "namaLengkap":"Nama Lengkap User56",
-    "email":"user56@gmail.com",
-    "contactNumber":"081234567056"
+    "name": "name User56",
+    "NIP": "196903101994031012",
+    "namaLengkap": "Nama Lengkap User56",
+    "email": "user56@gmail.com",
+    "contactNumber": "081234567056",
+    "OPD": "Kecamatan Amabi Oefeto Timur"
   },
   {
-    "name":"name User57",
-    "nikNumber":"197507201998031006",
-    "namaLengkap":"Nama Lengkap User57",
-    "email":"user57@gmail.com",
-    "contactNumber":"081234567057"
+    "name": "name User57",
+    "NIP": "197507201998031006",
+    "namaLengkap": "Nama Lengkap User57",
+    "email": "user57@gmail.com",
+    "contactNumber": "081234567057",
+    "OPD": "Kecamatan Amabi Oefeto"
   },
   {
-    "name":"name User58",
-    "nikNumber":"196910201990031008",
-    "namaLengkap":"Nama Lengkap User58",
-    "email":"user58@gmail.com",
-    "contactNumber":"081234567058"
+    "name": "name User58",
+    "NIP": "196910201990031008",
+    "namaLengkap": "Nama Lengkap User58",
+    "email": "user58@gmail.com",
+    "contactNumber": "081234567058",
+    "OPD": "Kecamatan Sulamu"
   },
   {
-    "name":"name User59",
-    "nikNumber":"198608142006021003",
-    "namaLengkap":"Nama Lengkap User59",
-    "email":"user59@gmail.com",
-    "contactNumber":"081234567059"
-  },
-  {
-    "name":"name User60",
-    "nikNumber":"197302072006041010",
-    "namaLengkap":"Nama Lengkap User60",
-    "email":"user60@gmail.com",
-    "contactNumber":"081234567060"
-  },
-  {
-    "name":"name User61",
-    "nikNumber":"197307162000121003",
-    "namaLengkap":"Nama Lengkap User61",
-    "email":"user61@gmail.com",
-    "contactNumber":"081234567061"
-  },
-  {
-    "name":"name User62",
-    "nikNumber":"197206102000121004",
-    "namaLengkap":"Nama Lengkap User62",
-    "email":"user62@gmail.com",
-    "contactNumber":"081234567062"
-  },
-  {
-    "name":"name User63",
-    "nikNumber":"196905061994031005",
-    "namaLengkap":"Nama Lengkap User63",
-    "email":"user63@gmail.com",
-    "contactNumber":"081234567063"
-  },
-  {
-    "name":"name User64",
-    "nikNumber":"197411062010011007",
-    "namaLengkap":"Nama Lengkap User64",
-    "email":"user64@gmail.com",
-    "contactNumber":"081234567064"
-  },
-  {
-    "name":"name User65",
-    "nikNumber":"197101032000121006",
-    "namaLengkap":"Nama Lengkap User65",
-    "email":"user65@gmail.com",
-    "contactNumber":"081234567065"
-  },
-  {
-    "name":"name User66",
-    "nikNumber":"196708161990121001",
-    "namaLengkap":"Nama Lengkap User66",
-    "email":"user66@gmail.com",
-    "contactNumber":"081234567066"
-  },
-  {
-    "name":"name User67",
-    "nikNumber":"197101251994031010",
-    "namaLengkap":"Nama Lengkap User67",
-    "email":"user67@gmail.com",
-    "contactNumber":"081234567067"
-  },
-  {
-    "name":"name User68",
-    "nikNumber":"197703262007011009",
-    "namaLengkap":"Nama Lengkap User68",
-    "email":"user68@gmail.com",
-    "contactNumber":"081234567068"
-  },
-  {
-    "name":"name User69",
-    "nikNumber":"197110061997031006",
-    "namaLengkap":"Nama Lengkap User69",
-    "email":"user69@gmail.com",
-    "contactNumber":"081234567069"
-  },
-  {
-    "name":"name User70",
-    "nikNumber":"197604082006041009",
-    "namaLengkap":"Nama Lengkap User70",
-    "email":"user70@gmail.com",
-    "contactNumber":"081234567070"
-  },
-  {
-    "name":"name User71",
-    "nikNumber":"197203051994032000",
-    "namaLengkap":"Nama Lengkap User71",
-    "email":"user71@gmail.com",
-    "contactNumber":"081232322070"
+    "name": "name User59",
+    "NIP": "198608142006021003",
+    "namaLengkap": "Nama Lengkap User59",
+    "email": "user59@gmail.com",
+    "contactNumber": "081234567059",
+    "OPD": "Kecamatan Fatuleu"
+  },
+  {
+    "name": "name User60",
+    "NIP": "197302072006041010",
+    "namaLengkap": "Nama Lengkap User60",
+    "email": "user60@gmail.com",
+    "contactNumber": "081234567060",
+    "OPD": "Kecamatan Fatuleu Barat"
+  },
+  {
+    "name": "name User61",
+    "NIP": "197307162000121003",
+    "namaLengkap": "Nama Lengkap User61",
+    "email": "user61@gmail.com",
+    "contactNumber": "081234567061",
+    "OPD": "Kecamatan Fatuleu Tengah"
+  },
+  {
+    "name": "name User62",
+    "NIP": "197206102000121004",
+    "namaLengkap": "Nama Lengkap User62",
+    "email": "user62@gmail.com",
+    "contactNumber": "081234567062",
+    "OPD": "Kecamatan Takari"
+  },
+  {
+    "name": "name User63",
+    "NIP": "196905061994031005",
+    "namaLengkap": "Nama Lengkap User63",
+    "email": "user63@gmail.com",
+    "contactNumber": "081234567063",
+    "OPD": "Kecamatan Amfoang Selatan"
+  },
+  {
+    "name": "name User64",
+    "NIP": "197411062010011007",
+    "namaLengkap": "Nama Lengkap User64",
+    "email": "user64@gmail.com",
+    "contactNumber": "081234567064",
+    "OPD": "Kecamatan Amfoang Barat Daya"
+  },
+  {
+    "name": "name User65",
+    "NIP": "197101032000121006",
+    "namaLengkap": "Nama Lengkap User65",
+    "email": "user65@gmail.com",
+    "contactNumber": "081234567065",
+    "OPD": "Kecamatan Amfoang Utara"
+  },
+  {
+    "name": "name User66",
+    "NIP": "196708161990121001",
+    "namaLengkap": "Nama Lengkap User66",
+    "email": "user66@gmail.com",
+    "contactNumber": "081234567066",
+    "OPD": "Kecamatan Amfoang Barat Laut"
+  },
+  {
+    "name": "name User67",
+    "NIP": "197101251994031010",
+    "namaLengkap": "Nama Lengkap User67",
+    "email": "user67@gmail.com",
+    "contactNumber": "081234567067",
+    "OPD": "Kecamatan Amfoang Timur"
+  },
+  {
+    "name": "name User68",
+    "NIP": "197703262007011009",
+    "namaLengkap": "Nama Lengkap User68",
+    "email": "user68@gmail.com",
+    "contactNumber": "081234567068",
+    "OPD": " "
+  },
+  {
+    "name": "name User69",
+    "NIP": "197110061997031006",
+    "namaLengkap": "Nama Lengkap User69",
+    "email": "user69@gmail.com",
+    "contactNumber": "081234567069",
+    "OPD": "Kecamatan Amfoang Tengah"
+  },
+  {
+    "name": "name User70",
+    "NIP": "197604082006041009",
+    "namaLengkap": "Nama Lengkap User70",
+    "email": "user70@gmail.com",
+    "contactNumber": "081234567070",
+    "OPD": "Verifikator Pendukung"
+  },
+  {
+    "name": "name User71",
+    "NIP": "197203051994032000",
+    "namaLengkap": "Nama Lengkap User71",
+    "email": "user71@gmail.com",
+    "contactNumber": "081232322070",
+    "OPD": "Lembaga Penyiaran Publik Lokal Radio Suara"
   }
 ]

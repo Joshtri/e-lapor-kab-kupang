@@ -1,17 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import TabsComponent from '@/components/ui/tabs-group'; // ✅ Import Tabs
-import DashboardStats from '@/components/admin/dashboard/dashboard-stats'; // ✅ Statistik
 import DashboardChart from '@/components/admin/dashboard/dashboard-chart'; // ✅ Grafik
 import DashboardReports from '@/components/admin/dashboard/dashboard-latest-reports'; // ✅ Laporan
+import DashboardStats from '@/components/admin/dashboard/dashboard-stats'; // ✅ Statistik
+import NotificationPanel from '@/components/DashboardNotificationPanel'; // ✅
+import TabsComponent from '@/components/ui/tabs-group'; // ✅ Import Tabs
 import axios from 'axios';
+import { motion } from "framer-motion";
+import { useEffect, useState } from 'react';
+import { HiOutlineMail } from "react-icons/hi";
 import DashboardKinerjaOpd from './dashboard/DashboardKinerjaOpd';
-import { motion } from "framer-motion"
-import { HiOutlineMail } from "react-icons/hi"
-import { HiOutlineSpeakerphone } from 'react-icons/hi';
-import { Card } from 'flowbite-react';
-import DashboardNotificationPanel from '@/components/DashboardNotificationPanel'; // ✅
 
 const AdminDashboard = ({titleHeader}) => {
   const [stats, setStats] = useState(null);
@@ -78,7 +76,7 @@ const AdminDashboard = ({titleHeader}) => {
           </div>
         </div>
       </div>{' '}
-      <DashboardNotificationPanel/>
+      <NotificationPanel/>
       <TabsComponent
         tabs={[
           {

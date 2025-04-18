@@ -37,9 +37,9 @@ export async function GET(req, { params }) {
     }
 
     // ✅ Jika role OPD, pastikan dia hanya bisa melihat laporan miliknya
-    if (user.role === 'OPD' && report.opdId !== user.opdId) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    // if (user.role === 'OPD' && report.opdId !== user.opdId) {
+    //   return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    // }
 
     const base64Image = report.image
       ? `data:image/jpeg;base64,${Buffer.from(report.image).toString('base64')}`

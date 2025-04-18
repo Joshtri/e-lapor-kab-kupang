@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/auth';
-import { format } from 'date-fns';
+import { format, subMonths, differenceInDays } from 'date-fns';
 
 export async function GET(req) {
   try {
@@ -10,7 +10,6 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Ambil data OPD berdasarkan user login
     const opd = await prisma.oPD.findUnique({
       where: { staffUserId: user.id },
     });
@@ -22,16 +21,14 @@ export async function GET(req) {
       );
     }
 
-    // Ambil semua laporan berdasarkan opdId
     const reports = await prisma.report.findMany({
       where: { opdId: opd.id },
     });
 
-    // 📊 Laporan per bulan (12 bulan terakhir)
+    // 1️⃣ Laporan per bulan (12 bulan terakhir)
     const monthMap = {};
-    for (let i = 0; i < 12; i++) {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
+    for (let i = 11; i >= 0; i--) {
+      const date = subMonths(new Date(), i);
       const key = format(date, 'MMM yyyy');
       monthMap[key] = 0;
     }
@@ -41,57 +38,63 @@ export async function GET(req) {
       if (monthMap[key] !== undefined) monthMap[key]++;
     });
 
-    const laporanPerBulan = Object.entries(monthMap)
-      .reverse()
-      .map(([bulan, jumlah]) => ({ bulan, jumlah }));
+    const laporanPerBulan = Object.entries(monthMap).map(([bulan, jumlah]) => ({
+      bulan,
+      jumlah,
+    }));
 
-    // 🥧 Distribusi Kategori
-    const kategoriDistribusi = {};
-    const allKategori = [
-      'INFRASTRUKTUR',
-      'PELAYANAN',
-      'SOSIAL',
-      'KEAMANAN',
-      'LAINNYA',
-    ];
-
-    for (const kategori of allKategori) {
-      kategoriDistribusi[kategori] = 0;
-    }
-
+    // 2️⃣ Distribusi Kategori (dinamis)
+    const kategoriMap = {};
     reports.forEach((r) => {
-      if (kategoriDistribusi[r.category] !== undefined) {
-        kategoriDistribusi[r.category]++;
-      }
+      const kategori = r.category || 'LAINNYA';
+      if (!kategoriMap[kategori]) kategoriMap[kategori] = 0;
+      kategoriMap[kategori]++;
     });
 
-    const kategoriPie = Object.entries(kategoriDistribusi).map(
-      ([kategori, jumlah]) => ({
-        kategori,
-        jumlah,
-      }),
+    const kategoriDistribusi = Object.entries(kategoriMap).map(
+      ([kategori, jumlah]) => ({ kategori, jumlah }),
     );
 
-    // ⏱️ Rata-rata waktu penanganan laporan
+    // 3️⃣ Rata-rata waktu penanganan (assignedAt → respondedAt)
     const selesai = reports.filter(
       (r) => r.opdStatus === 'SELESAI' && r.assignedAt && r.respondedAt,
     );
-
-    let avgHandlingTime = 0;
+    
+    let avgHandlingTime = null;
     if (selesai.length > 0) {
       const totalDays = selesai.reduce((sum, r) => {
-        const diff =
-          (new Date(r.respondedAt) - new Date(r.assignedAt)) /
-          (1000 * 60 * 60 * 24);
+        const diff = (new Date(r.respondedAt) - new Date(r.assignedAt)) / (1000 * 60 * 60 * 24);
         return sum + diff;
       }, 0);
       avgHandlingTime = parseFloat((totalDays / selesai.length).toFixed(1));
     }
+    
+
+    // 4️⃣ Distribusi Prioritas
+    const prioritasMap = { LOW: 0, MEDIUM: 0, HIGH: 0 };
+    reports.forEach((r) => {
+      if (prioritasMap[r.priority] !== undefined) {
+        prioritasMap[r.priority]++;
+      }
+    });
+
+    const distribusiPrioritas = prioritasMap;
+
+    // 5️⃣ Laporan Tertunda > 7 Hari (status masih PENDING dan lebih dari 7 hari)
+    const now = new Date();
+    const laporanTertundaLebih7Hari = reports.filter((r) => {
+      return (
+        r.opdStatus === 'PENDING' &&
+        differenceInDays(now, new Date(r.createdAt)) > 7
+      );
+    }).length;
 
     return NextResponse.json({
       laporanPerBulan,
-      kategoriDistribusi: kategoriPie,
+      kategoriDistribusi,
       avgHandlingTime,
+      distribusiPrioritas,
+      laporanTertundaLebih7Hari,
     });
   } catch (err) {
     console.error('❌ Gagal generate statistik OPD:', err);

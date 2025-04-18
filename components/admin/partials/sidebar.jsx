@@ -143,13 +143,12 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
               </Link>
             </li> */}
             {/* Notification group menu (expandable) */}
-            <li className="space-y-1">
+            <div className="space-y-1">
               <button
                 type="button"
                 onClick={() => setIsNotifOpen(!isNotifOpen)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm transition-all ${
-                  pathname?.startsWith('/adm/send-notification') ||
-                  pathname?.startsWith('/adm/notification-list')
+                  pathname?.startsWith('/adm/notifications')
                     ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                 } ${!isSidebarOpen ? 'justify-center' : ''}`}
@@ -160,7 +159,9 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 )}
                 {isSidebarOpen && (
                   <HiOutlineChevronRight
-                    className={`h-4 w-4 transition-transform duration-300 ${isNotifOpen ? 'rotate-90' : ''}`}
+                    className={`h-4 w-4 transition-transform duration-300 ${
+                      isNotifOpen ? 'rotate-90' : ''
+                    }`}
                   />
                 )}
               </button>
@@ -203,10 +204,9 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                   {isSidebarOpen && 'Bug Report'}
                 </Link>
               </li>
-            </li>
+            </div>
           </ul>
         </div>
- 
       </nav>
     </aside>
   );

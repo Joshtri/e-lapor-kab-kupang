@@ -5,6 +5,7 @@ import ClientThemeProvider from '@/providers/client-theme-provider';
 import { Toaster } from 'sonner';
 import { UserProvider } from '@/contexts/UserContext';
 import ScrollToTopButton from '@/components/ui/scroll-to-top-button';
+import RouteLoadingIndicator from '@/components/ui/RouteLoadingIndicator'; // pastikan path-nya sesuai
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -36,13 +37,12 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="id">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-r from-blue-50 to-indigo-100 min-h-screen`}
-      >
+    <html lang="id" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`} >
         <UserProvider>
           <ClientThemeProvider>
             <Toaster position="top-right" />
+            <RouteLoadingIndicator />
             <ScrollToTopButton />
             <FloatingHelper />
             {children}

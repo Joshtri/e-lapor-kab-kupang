@@ -27,6 +27,8 @@ export async function GET() {
     const now = new Date();
     const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);
+    const sevenDaysAgo = new Date(now);
+    sevenDaysAgo.setDate(now.getDate() - 7);
 
     const grouped = {
       totalMasuk: reports.length,
@@ -36,9 +38,19 @@ export async function GET() {
       totalPelapor: new Set(reports.map((r) => r.userId)).size,
       laporanBaru: reports.filter((r) => new Date(r.createdAt) > yesterday)
         .length,
+      laporanTertundaLebih7Hari: reports.filter(
+        (r) =>
+          r.opdStatus === 'PENDING' && new Date(r.createdAt) < sevenDaysAgo,
+      ).length,
       avgHandlingTime: null,
+      distribusiPrioritas: {
+        LOW: 0,
+        MEDIUM: 0,
+        HIGH: 0,
+      },
     };
 
+    // Hitung waktu rata-rata penanganan
     const selesaiReports = reports.filter(
       (r) => r.opdStatus === 'SELESAI' && r.assignedAt && r.respondedAt,
     );
@@ -50,7 +62,16 @@ export async function GET() {
           (1000 * 60 * 60 * 24);
         return acc + duration;
       }, 0);
-      grouped.avgHandlingTime = (totalTime / selesaiReports.length).toFixed(1);
+      grouped.avgHandlingTime = parseFloat(
+        (totalTime / selesaiReports.length).toFixed(1),
+      );
+    }
+
+    // Hitung distribusi prioritas
+    for (const report of reports) {
+      if (report.priority in grouped.distribusiPrioritas) {
+        grouped.distribusiPrioritas[report.priority]++;
+      }
     }
 
     return NextResponse.json(grouped);

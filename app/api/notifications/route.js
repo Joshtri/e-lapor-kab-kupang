@@ -1,20 +1,48 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function GET(req) {
+  const user = await getAuthenticatedUser(req);
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
-    const notifications = await prisma.notification.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
+    let notifications = [];
+
+    if (user.role === 'PELAPOR') {
+      // Notifikasi untuk user pelapor
+      notifications = await prisma.notification.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: 'desc' },
+      });
+    } else if (user.role === 'OPD') {
+      // Notifikasi untuk OPD berdasarkan opdId = user.id (user login sebagai OPD staff)
+      notifications = await prisma.notification.findMany({
+        where: { opdId: user.id },
+        orderBy: { createdAt: 'desc' },
+      });
+    } else {
+      // Role lain seperti BUPATI atau ADMIN, misalnya bisa lihat semua
+      // Atau bisa juga batasi sesuai kebutuhan
+      notifications = await prisma.notification.findMany({
+        where: { userId: null, opdId: null }, // notifikasi global
+        orderBy: { createdAt: 'desc' },
+      });
+    }
 
     return NextResponse.json(notifications, { status: 200 });
   } catch (error) {
+    console.error('Gagal ambil notifikasi:', error);
     return NextResponse.json(
       { error: 'Gagal mengambil notifikasi' },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
+
 
 export async function POST(req) {
   try {

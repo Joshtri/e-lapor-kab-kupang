@@ -1,7 +1,5 @@
-import { Geist, Geist_Mono } from 'next/font/google';
-import '../globals.css';
 import Header from '@/components/partials/header';
-import ScrollToTopButton from '@/components/ui/scroll-to-top-button';
+import '../globals.css';
 
 export const metadata = {
   title: 'LAPOR KK BUPATI',
@@ -10,7 +8,7 @@ export const metadata = {
 
 export default function PublicLayout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-r from-blue-50 to-indigo-100">
       <Header />
       <main className="flex-grow">{children}</main>
     </div>

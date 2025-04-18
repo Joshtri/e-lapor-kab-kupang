@@ -132,7 +132,7 @@ export async function POST(req) {
     }));
 
     const notifOPD = {
-      userId: opd.staff.id,
+      opdId: opd.staff.id, // ✅ ganti dari userId → opdId
       message: `Anda menerima laporan baru: "${newReport.title}"`,
       link: `/opd/laporan-warga/${newReport.id}`,
       createdAt: new Date(),
@@ -140,6 +140,16 @@ export async function POST(req) {
 
     await prisma.notification.createMany({
       data: [...notifAdminBupati, notifOPD],
+    });
+
+    // ✅ Notifikasi ke pelapor sendiri
+    await prisma.notification.create({
+      data: {
+        userId,
+        message: `Laporan Anda dengan judul "${newReport.title}" telah berhasil dikirim.`,
+        link: '/pelapor/log-laporan',
+        createdAt: new Date(),
+      },
     });
 
     return NextResponse.json(

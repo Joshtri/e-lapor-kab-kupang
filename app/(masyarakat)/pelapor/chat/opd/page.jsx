@@ -1,33 +1,52 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { Card, Spinner, Textarea, Button } from 'flowbite-react';
+import { Card, Spinner, Textarea, Button, Modal, Select } from 'flowbite-react';
 import axios from 'axios';
 import clsx from 'clsx';
-import { HiOutlinePaperAirplane, HiArrowLeft, HiSearch } from 'react-icons/hi';
+import {
+  HiOutlinePaperAirplane,
+  HiArrowLeft,
+  HiSearch,
+  HiPlus,
+} from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
 import MessageBubble from '@/components/chat/message-bubble';
 
 export default function ChatOpdPage() {
   const [rooms, setRooms] = useState([]);
+  const [allOpds, setAllOpds] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [sending, setSending] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showNewChatModal, setShowNewChatModal] = useState(false);
+  const [selectedOpd, setSelectedOpd] = useState('');
+  const [creatingChat, setCreatingChat] = useState(false);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
 
-  // Ambil semua room OPD
+  // Fetch all OPDs and existing chat rooms
   useEffect(() => {
+    fetchOpds();
     fetchRooms();
   }, []);
 
-  // Scroll otomatis saat messages berubah
+  // Auto-scroll when messages change
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const fetchOpds = async () => {
+    try {
+      const res = await axios.get('/api/opd');
+      setAllOpds(res.data);
+    } catch (err) {
+      console.error('Gagal mengambil daftar OPD:', err);
+    }
+  };
 
   const fetchRooms = async () => {
     try {
@@ -35,7 +54,7 @@ export default function ChatOpdPage() {
       const opdRooms = res.data.filter((r) => r.opdId); // hanya yang ke OPD
       setRooms(opdRooms);
     } catch (err) {
-      console.error('Gagal mengambil daftar OPD:', err);
+      console.error('Gagal mengambil daftar chat:', err);
     }
   };
 
@@ -87,10 +106,44 @@ export default function ChatOpdPage() {
     }
   };
 
+  const handleCreateNewChat = async () => {
+    if (!selectedOpd) return;
+    setCreatingChat(true);
+    try {
+      // Check if room already exists
+      const existingRoom = rooms.find((r) => r.opdId === Number(selectedOpd));
+
+      if (existingRoom) {
+        handleRoomSelect(existingRoom);
+        setShowNewChatModal(false);
+        return;
+      }
+
+      // Create new room
+      const res = await axios.post('/api/pelapor/chat/create-room', {
+        opdId: Number(selectedOpd),
+      });
+
+      // Add to rooms list and select it
+      const newRoom = res.data;
+      setRooms((prev) => [newRoom, ...prev]);
+      handleRoomSelect(newRoom);
+      setShowNewChatModal(false);
+    } catch (err) {
+      console.error('Gagal membuat chat baru:', err);
+    } finally {
+      setCreatingChat(false);
+    }
+  };
+
   const filteredRooms = rooms.filter((room) => {
     const name = room.opd?.name || '';
     return name.toLowerCase().includes(searchTerm.toLowerCase());
   });
+
+  const availableOpds = allOpds.filter(
+    (opd) => !rooms.some((room) => room.opdId === opd.id),
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-0 pt-24 px-4 max-w-7xl mx-auto h-[85vh]">
@@ -100,8 +153,17 @@ export default function ChatOpdPage() {
       >
         <Card className="h-full rounded-none md:rounded-l-lg">
           <div className="flex flex-col h-full">
-            <div className="p-4 bg-green-600 text-white">
+            <div className="p-4 bg-green-600 text-white flex justify-between items-center">
               <h2 className="text-lg font-semibold">Kontak OPD</h2>
+              <Button
+                color="light"
+                size="xs"
+                pill
+                onClick={() => setShowNewChatModal(true)}
+                className="bg-green-700 hover:bg-green-800 text-white"
+              >
+                <HiPlus className="h-4 w-4" />
+              </Button>
             </div>
 
             <div className="p-3 border-b">
@@ -126,7 +188,21 @@ export default function ChatOpdPage() {
                     exit={{ opacity: 0 }}
                     className="p-4 text-center text-gray-500"
                   >
-                    Belum ada kontak OPD
+                    {rooms.length === 0 ? (
+                      <div>
+                        <p>Belum ada chat dengan OPD</p>
+                        <Button
+                          color="success"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => setShowNewChatModal(true)}
+                        >
+                          Mulai Chat Baru
+                        </Button>
+                      </div>
+                    ) : (
+                      'Tidak ditemukan OPD yang sesuai'
+                    )}
                   </motion.div>
                 ) : (
                   filteredRooms.map((room) => {
@@ -149,7 +225,7 @@ export default function ChatOpdPage() {
                         )}
                       >
                         <p className="font-medium">{room.opd?.name}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 truncate">
                           {room.messages?.[0]?.content?.slice(0, 40) ||
                             'Belum ada pesan'}
                         </p>
@@ -205,7 +281,7 @@ export default function ChatOpdPage() {
                 ) : messages.length === 0 ? (
                   <div className="flex justify-center items-center h-full">
                     <p className="text-center text-gray-500 bg-white p-3 rounded-lg shadow-sm">
-                      Belum ada pesan. Mulai percakapan!
+                      Mulai percakapan dengan {selectedRoom.opd?.name}!
                     </p>
                   </div>
                 ) : (
@@ -256,12 +332,62 @@ export default function ChatOpdPage() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-gray-500">
-              <p>Pilih OPD untuk memulai percakapan.</p>
+            <div className="flex flex-col items-center justify-center h-full text-gray-500 p-4">
+              <p className="mb-4">Pilih OPD untuk memulai percakapan</p>
+              <Button
+                color="success"
+                onClick={() => setShowNewChatModal(true)}
+                className="flex items-center gap-2"
+              >
+                <HiPlus className="h-4 w-4" />
+                Mulai Chat Baru
+              </Button>
             </div>
           )}
         </Card>
       </div>
+
+      {/* Modal untuk memulai chat baru */}
+      <Modal
+        show={showNewChatModal}
+        onClose={() => setShowNewChatModal(false)}
+        size="md"
+      >
+        <Modal.Header>Mulai Chat Baru</Modal.Header>
+        <Modal.Body>
+          <div className="space-y-4">
+            <p>Pilih OPD yang ingin Anda hubungi:</p>
+            <Select
+              value={selectedOpd}
+              onChange={(e) => setSelectedOpd(e.target.value)}
+              required
+            >
+              <option value="">-- Pilih OPD --</option>
+              {allOpds.map((opd) => (
+                <option key={opd.id} value={opd.id}>
+                  {opd.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            color="gray"
+            onClick={() => setShowNewChatModal(false)}
+            disabled={creatingChat}
+          >
+            Batal
+          </Button>
+          <Button
+            color="success"
+            onClick={handleCreateNewChat}
+            disabled={!selectedOpd || creatingChat}
+          >
+            {creatingChat ? <Spinner size="sm" /> : 'Mulai Chat'}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

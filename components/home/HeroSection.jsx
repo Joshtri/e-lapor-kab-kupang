@@ -24,7 +24,7 @@ export default function HeroSection({ scrollYProgress, startTour }) {
 
   return (
     <motion.div
-      className="relative bg-gradient-to-br mt-10 from-blue-900 to-blue-700 text-white overflow-hidden shadow-2xl"
+      className="relative bg-gradient-to-br mt-4 from-blue-900 to-blue-700 text-white overflow-hidden shadow-2xl"
       style={{ y: heroY }}
     >
       {/* Envelope pattern background */}
@@ -106,27 +106,6 @@ export default function HeroSection({ scrollYProgress, startTour }) {
               Pelajari Proses
             </Button>
           </motion.div>
-
-          {/* Scroll indicator */}
-          <AnimatePresence>
-            {showScrollIndicator && (
-              <motion.div
-                className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0, transition: { delay: 1.2, duration: 0.5 } }}
-                exit={{ opacity: 0 }}
-              >
-                <motion.div
-                  animate={{ y: [0, 10, 0] }}
-                  transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5 }}
-                  className="flex flex-col items-center"
-                >
-                  <span className="text-sm mb-2">Scroll untuk informasi lebih lanjut</span>
-                  <HiOutlineArrowDown className="h-6 w-6" />
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </motion.div>
       </div>
     </motion.div>

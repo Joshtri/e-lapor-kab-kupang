@@ -7,6 +7,8 @@ import OPDOnboardingDialog from '@/components/opd/Onboard/OnboardingDialog';
 import OpdIkhtisarTab from '@/components/opd/Dashboard/OpdIkhtisarTab';
 import OpdStatistikTab from '@/components/opd/Dashboard/OpdStatistikTab';
 import TabsComponent from '@/components/ui/tabs-group';
+import NotificationPanel from '@/components/DashboardNotificationPanel';
+import DashboardNotificationPanelOpd from '@/components/DashboardNotificationPanelOpd';
 
 const DashboardMain = () => {
   const [data, setData] = useState(null);
@@ -14,12 +16,12 @@ const DashboardMain = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [loadingOnboarding, setLoadingOnboarding] = useState(true);
   const [userId, setUserId] = useState(null);
+  const [opdProfile, setOpdProfile] = useState(null);
 
   useEffect(() => {
     setMounted(true);
     checkProfileAndData();
   }, []);
-
   const checkProfileAndData = async () => {
     try {
       const me = await axios.get('/api/auth/me');
@@ -30,13 +32,17 @@ const DashboardMain = () => {
 
       const check = await axios.get('/api/opd/check-profile');
       if (!check.data?.hasProfile) {
-        setShowOnboarding(true); // ✅ tampilkan form onboarding
+        setShowOnboarding(true);
         return;
       }
 
-      // ✅ Jika sudah ada profil OPD, lanjut fetch data dashboard
+      // ✅ Ambil data dashboard
       const res = await axios.get('/api/reports/stats/opd-summary');
       setData(res.data);
+
+      // ✅ Ambil data profil OPD
+      const opdRes = await axios.get('/api/opd/staff-profile');
+      setOpdProfile(opdRes.data);
     } catch (error) {
       console.error('Gagal memuat dashboard atau profil:', error);
       toast.error('Gagal memuat data dashboard.');
@@ -71,7 +77,21 @@ const DashboardMain = () => {
         <div className="p-6 space-y-6">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
             Dashboard OPD
+            {opdProfile?.name && (
+              <span className="text-blue-600 dark:text-blue-400">
+                {' '}
+                - {opdProfile.name}
+              </span>
+            )}
           </h1>
+          {opdProfile?.staff?.name && (
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
+              Selamat datang,{' '}
+              <span className="font-medium">{opdProfile.staff.name}</span>
+            </p>
+          )}
+          
+          <DashboardNotificationPanelOpd />
           <TabsComponent tabs={tabs} />
         </div>
       )}

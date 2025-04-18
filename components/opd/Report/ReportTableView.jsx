@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Table, Badge, Button } from 'flowbite-react';
-import { HiOutlineEye, HiPencilAlt, HiChatAlt2 } from 'react-icons/hi';
+import { Table, Badge, Button, Tooltip } from 'flowbite-react';
+import { HiOutlineEye, HiPencilAlt, HiChatAlt2, HiEye } from 'react-icons/hi';
 import ReportDetail from './ReportDetail';
 import UpdateStatusModalByOpd from './ReportUpdateStatusByOpd';
 import CommentModal from '../comment/CommentModal';
+import Link from 'next/link';
 
 export default function ReportTable({ reports }) {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -71,30 +72,45 @@ export default function ReportTable({ reports }) {
               </Table.Cell>
               <Table.Cell>
                 <div className="flex flex-wrap gap-2">
-                  <Button
-                    size="xs"
-                    color="blue"
-                    onClick={() => openDetailModal(report)}
-                  >
-                    <HiOutlineEye className="mr-1 h-4 w-4" />
-                    Lihat
-                  </Button>
-                  <Button
-                    size="xs"
-                    color="purple"
-                    onClick={() => openStatusModal(report)} // pastikan state `report` terisi
-                  >
-                    <HiPencilAlt className="mr-1 h-4 w-4" />
-                    Status OPD
-                  </Button>
-                  <Button
-                    size="xs"
-                    color="teal"
-                    onClick={() => openCommentModal(report)}
-                  >
-                    <HiChatAlt2 className="mr-1 h-4 w-4" />
-                    Komentar
-                  </Button>
+                  {/* Lihat Detail */}
+                  <Tooltip content="Lihat Detail">
+                    <Link href={`/opd/laporan-warga/${report.id}`}>
+                      <Button
+                        size="xs"
+                        color="gray"
+                        className="p-2"
+                        aria-label="Lihat Detail Laporan"
+                      >
+                        <HiEye className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                  </Tooltip>
+
+                  {/* Ubah Status */}
+                  <Tooltip content="Ubah Status">
+                    <Button
+                      size="xs"
+                      color="purple"
+                      onClick={() => openStatusModal(report)}
+                      className="p-2"
+                      aria-label="Ubah Status"
+                    >
+                      <HiPencilAlt className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
+
+                  {/* Ubah Komentar */}
+                  <Tooltip content="Komentar Laporan">
+                    <Button
+                      size="xs"
+                      color="teal"
+                      onClick={() => openCommentModal(report)}
+                      className="p-2"
+                      aria-label="Komentar Laporan"
+                    >
+                      <HiChatAlt2 className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
                 </div>
               </Table.Cell>
             </Table.Row>

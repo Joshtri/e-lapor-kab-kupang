@@ -1,95 +1,99 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import { Navbar, Button, Modal, Dropdown, Avatar } from "flowbite-react"
-import { BsMoonStarsFill, BsSunFill } from "react-icons/bs"
+import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
+import NotificationDropdown from '@/components/ui/NotificationDropdown';
+import axios from 'axios';
+import { Avatar, Dropdown, Navbar } from 'flowbite-react';
+import { useTheme } from 'next-themes';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
 import {
-  HiOutlineMail,
   HiMailOpen,
-  HiPaperAirplane,
   HiOutlineLogout,
   HiOutlineMenu,
   HiOutlineUserCircle,
-} from "react-icons/hi"
-import { useTheme } from "next-themes"
-import axios from "axios"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-import NotificationDropdown from "@/components/ui/notification-dropdown"
-import { motion } from "framer-motion"
+} from 'react-icons/hi';
+import { toast } from 'sonner';
 
 const OpdHeader = ({ toggleSidebar, isSidebarOpen }) => {
-  const { theme, setTheme } = useTheme()
-  const [openModal, setOpenModal] = useState(false)
-  const router = useRouter()
+  const { theme, setTheme } = useTheme();
+  const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
 
-  const [user, setUser] = useState(null)
-  const [loadingUser, setLoadingUser] = useState(true)
-  const [notifications, setNotifications] = useState([])
-  const [loadingNotifications, setLoadingNotifications] = useState(true)
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [notifications, setNotifications] = useState([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get("/api/auth/me")
+        const response = await axios.get('/api/auth/me');
         if (response.status === 200) {
-          setUser(response.data.user)
+          setUser(response.data.user);
         }
       } catch (error) {
-        console.error("Gagal mengambil data user:", error)
+        console.error('Gagal mengambil data user:', error);
       } finally {
-        setLoadingUser(false)
+        setLoadingUser(false);
       }
-    }
+    };
 
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get("/api/notifications")
+        const response = await axios.get('/api/notifications');
         if (response.status === 200) {
-          setNotifications(response.data)
+          setNotifications(response.data);
         }
       } catch (error) {
-        console.error("Gagal mengambil notifikasi:", error)
+        console.error('Gagal mengambil notifikasi:', error);
       } finally {
-        setLoadingNotifications(false)
+        setLoadingNotifications(false);
       }
-    }
+    };
 
-    fetchUser()
-    fetchNotifications()
-  }, [])
+    fetchUser();
+    fetchNotifications();
+  }, []);
 
   // Filter notifications for OPD
-  const filteredNotifications = notifications.filter((notif) => notif.link.startsWith("/opd/"))
+  const filteredNotifications = notifications.filter((notif) =>
+    notif.link.startsWith('/opd/'),
+  );
 
-  const unreadCount = filteredNotifications.filter((notif) => !notif.isRead).length
+  const unreadCount = filteredNotifications.filter(
+    (notif) => !notif.isRead,
+  ).length;
 
   const handleNotificationClick = async (notif) => {
     try {
-      await axios.post("/api/notifications/read", { notificationId: notif.id })
-      router.push(notif.link)
+      await axios.post('/api/notifications/read', { notificationId: notif.id });
+      router.push(notif.link);
 
-      setNotifications((prev) => prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n)))
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n)),
+      );
     } catch (error) {
-      console.error("Gagal memperbarui notifikasi:", error)
+      console.error('Gagal memperbarui notifikasi:', error);
     }
-  }
+  };
 
   const handleLogout = async () => {
     try {
-      await axios.post("/api/auth/logout", null, {
+      await axios.post('/api/auth/logout', null, {
         withCredentials: true,
-      })
-      toast.success("Berhasil logout! Mengarahkan ke halaman utama...")
+      });
+      toast.success('Berhasil logout! Mengarahkan ke halaman utama...');
 
       setTimeout(() => {
-        router.push("/auth/login")
-      }, 1500)
+        router.push('/auth/login');
+      }, 1500);
     } catch (error) {
-      console.error("Logout Error:", error)
-      toast.error("Gagal logout. Silakan coba lagi.")
+      console.error('Logout Error:', error);
+      toast.error('Gagal logout. Silakan coba lagi.');
     }
-  }
+  };
 
   return (
     <Navbar
@@ -106,20 +110,6 @@ const OpdHeader = ({ toggleSidebar, isSidebarOpen }) => {
           >
             <HiOutlineMenu className="h-6 w-6" />
           </button>
-
-          {/* <div className="flex items-center">
-            <motion.div
-              className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full mr-3"
-              animate={{ rotate: [0, 5, 0, -5, 0] }}
-              transition={{ repeat: Number.POSITIVE_INFINITY, duration: 5, ease: "easeInOut" }}
-            >
-              <HiOutlineMail className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-            </motion.div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200">OPD Mail</h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Department correspondence</p>
-            </div>
-          </div> */}
         </div>
 
         {/* Right: Notifications, Theme Toggle, User Menu */}
@@ -138,11 +128,11 @@ const OpdHeader = ({ toggleSidebar, isSidebarOpen }) => {
           <div className="flex items-center space-x-3 bg-purple-50 dark:bg-purple-900/20 px-3 py-2 rounded-lg border border-purple-100 dark:border-purple-800/30">
             {/* Theme Toggle */}
             <button
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
               className="p-2 rounded-full bg-white dark:bg-gray-700 transition duration-300 hover:bg-gray-100 dark:hover:bg-gray-600 shadow-sm"
               aria-label="Toggle Dark Mode"
             >
-              {theme === "light" ? (
+              {theme === 'light' ? (
                 <BsMoonStarsFill className="text-gray-700 dark:text-gray-300 text-lg" />
               ) : (
                 <BsSunFill className="text-yellow-400 text-lg" />
@@ -158,8 +148,12 @@ const OpdHeader = ({ toggleSidebar, isSidebarOpen }) => {
                 </div>
               ) : (
                 <div>
-                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{user?.name || "OPD"}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{user?.role || "OPD"}</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                    {user?.name || 'OPD'}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {user?.role || 'OPD'}
+                  </p>
                 </div>
               )}
             </div>
@@ -172,7 +166,7 @@ const OpdHeader = ({ toggleSidebar, isSidebarOpen }) => {
                 <div className="relative">
                   <Avatar
                     alt="User Avatar"
-                    img={`https://ui-avatars.com/api/?name=${user?.name || "OPD"}&background=random`}
+                    img={`https://ui-avatars.com/api/?name=${user?.name || 'OPD'}&background=random`}
                     rounded
                     size="sm"
                     className="border-2 border-purple-200 dark:border-purple-800 hover:scale-110 transition-all duration-300"
@@ -187,17 +181,23 @@ const OpdHeader = ({ toggleSidebar, isSidebarOpen }) => {
             >
               <Dropdown.Header>
                 <span className="block text-sm font-medium text-gray-800 dark:text-gray-200">
-                  {user?.name || "OPD"}
+                  {user?.name || 'OPD'}
                 </span>
                 <span className="block truncate text-sm text-gray-500 dark:text-gray-400">
-                  {user?.email || "opd@email.com"}
+                  {user?.email || 'opd@email.com'}
                 </span>
               </Dropdown.Header>
               <Dropdown.Divider />
-              <Dropdown.Item icon={HiOutlineUserCircle} onClick={() => router.push("/opd/profile")}>
+              <Dropdown.Item
+                icon={HiOutlineUserCircle}
+                onClick={() => router.push('/opd/profile')}
+              >
                 Profile
               </Dropdown.Item>
-              <Dropdown.Item icon={HiMailOpen} onClick={() => router.push("/opd/dashboard")}>
+              <Dropdown.Item
+                icon={HiMailOpen}
+                onClick={() => router.push('/opd/dashboard')}
+              >
                 Inbox
               </Dropdown.Item>
               <Dropdown.Divider />
@@ -214,34 +214,13 @@ const OpdHeader = ({ toggleSidebar, isSidebarOpen }) => {
       </div>
 
       {/* Modal Logout */}
-      <Modal show={openModal} onClose={() => setOpenModal(false)} size="md">
-        <Modal.Header className="border-b-2 border-purple-100 dark:border-purple-900">
-          <div className="flex items-center">
-            <HiOutlineMail className="mr-2 h-5 w-5 text-purple-600 dark:text-purple-400" />
-            <span>Konfirmasi Logout</span>
-          </div>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
-              <HiPaperAirplane className="h-6 w-6 text-purple-600 dark:text-purple-400 transform rotate-90" />
-            </div>
-            <p className="text-gray-600 dark:text-gray-300">Apakah Anda yakin ingin logout dari akun ini?</p>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button color="failure" onClick={handleLogout} className="flex items-center gap-2">
-            <HiOutlineLogout className="h-4 w-4" />
-            Ya, Logout
-          </Button>
-          <Button color="gray" onClick={() => setOpenModal(false)}>
-            Batal
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <LogoutConfirmationModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onConfirm={handleLogout}
+      />
     </Navbar>
-  )
-}
+  );
+};
 
-export default OpdHeader
-
+export default OpdHeader;

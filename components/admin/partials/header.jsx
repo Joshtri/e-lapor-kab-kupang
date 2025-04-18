@@ -15,11 +15,12 @@ import { useTheme } from 'next-themes';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import NotificationDropdown from '@/components/ui/notification-dropdown';
+import NotificationDropdown from '@/components/ui/NotificationDropdown';
 import { motion } from 'framer-motion';
+import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
 
 const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
 
@@ -27,7 +28,11 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [loadingNotifications, setLoadingNotifications] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -151,17 +156,21 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
           {/* User Card */}
           <div className="flex items-center space-x-3 bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-lg border border-blue-100 dark:border-blue-800/30">
             {/* Theme Toggle */}
-            <button
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              className="p-2 rounded-full bg-white dark:bg-gray-700 transition duration-300 hover:bg-gray-100 dark:hover:bg-gray-600 shadow-sm"
-              aria-label="Toggle Dark Mode"
-            >
-              {theme === 'light' ? (
-                <BsMoonStarsFill className="text-gray-700 dark:text-gray-300 text-lg" />
-              ) : (
-                <BsSunFill className="text-yellow-400 text-lg" />
-              )}
-            </button>
+            {mounted && (
+              <button
+                onClick={() =>
+                  setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+                }
+                className="p-2 rounded-full bg-white dark:bg-gray-700 transition duration-300 hover:bg-gray-100 dark:hover:bg-gray-600 shadow-sm"
+                aria-label="Toggle Dark Mode"
+              >
+                {resolvedTheme === 'dark' ? (
+                  <BsSunFill className="text-yellow-400 text-lg" />
+                ) : (
+                  <BsMoonStarsFill className="text-gray-700 dark:text-gray-300 text-lg" />
+                )}
+              </button>
+            )}
 
             {/* User Info */}
             <div className="hidden md:block">
@@ -238,37 +247,12 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
       </div>
 
       {/* Modal Logout */}
-      <Modal show={openModal} onClose={() => setOpenModal(false)} size="md">
-        <Modal.Header className="border-b-2 border-blue-100 dark:border-blue-900">
-          <div className="flex items-center">
-            <HiOutlineMail className="mr-2 h-5 w-5 text-blue-600 dark:text-blue-400" />
-            <span>Konfirmasi Logout</span>
-          </div>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
-              <HiPaperAirplane className="h-6 w-6 text-blue-600 dark:text-blue-400 transform rotate-90" />
-            </div>
-            <p className="text-gray-600 dark:text-gray-300">
-              Apakah Anda yakin ingin logout dari akun ini?
-            </p>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            color="failure"
-            onClick={handleLogout}
-            className="flex items-center gap-2"
-          >
-            <HiOutlineLogout className="h-4 w-4" />
-            Ya, Logout
-          </Button>
-          <Button color="gray" onClick={() => setOpenModal(false)}>
-            Batal
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* Modal Logout */}
+      <LogoutConfirmationModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onConfirm={handleLogout}
+      />
     </Navbar>
   );
 };

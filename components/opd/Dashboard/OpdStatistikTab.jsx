@@ -17,7 +17,14 @@ import {
   Legend,
 } from 'recharts';
 
-const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#6366F1'];
+const COLORS = [
+  '#3B82F6',
+  '#10B981',
+  '#F59E0B',
+  '#EF4444',
+  '#6366F1',
+  '#EC4899',
+];
 
 export default function OpdStatistikTab() {
   const [data, setData] = useState(null);
@@ -32,7 +39,7 @@ export default function OpdStatistikTab() {
   const fetchData = async () => {
     try {
       const res = await axios.get('/api/reports/stats/chart/opd-chart');
-      const result = res.data?.data || res.data; // support nested or flat
+      const result = res.data?.data || res.data;
       setData(result);
     } catch (err) {
       console.error('Gagal fetch data statistik OPD', err);
@@ -41,10 +48,7 @@ export default function OpdStatistikTab() {
     }
   };
 
-  // Jangan render komponen sebelum ter-mount untuk menghindari mismatch
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   if (loading || !data) {
     return (
@@ -54,11 +58,17 @@ export default function OpdStatistikTab() {
     );
   }
 
+  const distribusiPrioritasArray = Object.entries(
+    data.distribusiPrioritas || {},
+  ).map(([priority, jumlah]) => ({ priority, jumlah }));
+
   return (
     <div className="space-y-4">
       {/* Grafik Jumlah Laporan per Bulan */}
       <Card>
-        <p className="font-semibold text-lg mb-2">Grafik Jumlah Laporan per Bulan</p>
+        <p className="font-semibold text-lg mb-2">
+          Grafik Jumlah Laporan per Bulan
+        </p>
         <div className="h-[300px]">
           {data.laporanPerBulan?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -79,9 +89,11 @@ export default function OpdStatistikTab() {
         </div>
       </Card>
 
-      {/* Distribusi Kategori Laporan */}
+      {/* Pie Chart Distribusi Kategori */}
       <Card>
-        <p className="font-semibold text-lg mb-2">Distribusi Kategori Laporan</p>
+        <p className="font-semibold text-lg mb-2">
+          Distribusi Kategori Laporan
+        </p>
         <div className="h-[300px] flex justify-center items-center">
           {data.kategoriDistribusi?.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -96,7 +108,10 @@ export default function OpdStatistikTab() {
                   label
                 >
                   {data.kategoriDistribusi.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-kategori-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -109,6 +124,51 @@ export default function OpdStatistikTab() {
             </p>
           )}
         </div>
+      </Card>
+
+      {/* Pie Chart Distribusi Prioritas */}
+      <Card>
+        <p className="font-semibold text-lg mb-2">
+          Distribusi Prioritas Laporan
+        </p>
+        <div className="h-[300px] flex justify-center items-center">
+          {distribusiPrioritasArray.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={distribusiPrioritasArray}
+                  dataKey="jumlah"
+                  nameKey="priority"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  label
+                >
+                  {distribusiPrioritasArray.map((_, index) => (
+                    <Cell
+                      key={`cell-priority-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-sm text-gray-500 text-center">
+              Tidak ada data prioritas laporan.
+            </p>
+          )}
+        </div>
+      </Card>
+
+      {/* Jumlah Laporan Tertunda > 7 Hari */}
+      <Card>
+        <p className="font-semibold text-lg">Laporan Tertunda &gt; 7 Hari</p>
+        <p className="text-2xl font-bold">
+          {data.laporanTertundaLebih7Hari ?? 0}
+        </p>
       </Card>
 
       {/* Waktu Rata-rata Penanganan */}

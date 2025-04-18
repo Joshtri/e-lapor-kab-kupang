@@ -4,25 +4,32 @@
 
 
 .masonry-column {
-    background-clip: padding-box;
+  background-clip: padding-box;
 }
 
 
 .twinkle-dot {
-    animation: twinkle-glow 3s infinite ease-in-out;
-    box-shadow: 0 0 1px rgba(255, 255, 255, 0.6);
+  animation: twinkle-glow 3s infinite ease-in-out;
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes twinkle-glow {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
   }
-  
-  @keyframes twinkle-glow {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
-    }
-    50% {
-      opacity: 0.7;
-      transform: scale(1.4);
-      box-shadow: 0 0 7px rgba(255, 255, 255, 0.3);
-    }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.4);
+    box-shadow: 0 0 7px rgba(255, 255, 255, 0.3);
   }
-  
+}
+
+
+html {
+  transition: color 0.3s ease, background-color 0.3s ease;
+}

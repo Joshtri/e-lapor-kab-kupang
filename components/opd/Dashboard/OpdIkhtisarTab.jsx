@@ -7,6 +7,10 @@ import {
   HiXCircle,
   HiClock,
   HiRefresh,
+  HiExclamationCircle,
+  HiArrowNarrowUp,
+  HiArrowNarrowDown,
+  HiLightningBolt,
 } from 'react-icons/hi';
 
 export default function OpdIkhtisarTab({ data, onReload }) {
@@ -39,7 +43,7 @@ export default function OpdIkhtisarTab({ data, onReload }) {
       <Card>
         <p className="text-sm text-gray-500">Dalam Proses</p>
         <p className="text-2xl font-bold">{data.totalProses}</p>
-        <HiClock className="w-6 h-6 text-yellow-600" />
+        <HiClock className="w-6 h-6 text-yellow-500" />
       </Card>
       <Card>
         <p className="text-sm text-gray-500">Ditolak</p>
@@ -54,6 +58,40 @@ export default function OpdIkhtisarTab({ data, onReload }) {
       <Card>
         <p className="text-sm text-gray-500">Laporan Baru (24 jam)</p>
         <p className="text-2xl font-bold">{data.laporanBaru}</p>
+        <HiArrowNarrowUp className="w-6 h-6 text-blue-400" />
+      </Card>
+      <Card>
+        <p className="text-sm text-gray-500">Tertunda {'>'} 7 Hari</p>
+        <p className="text-2xl font-bold">{data.laporanTertundaLebih7Hari}</p>
+        <HiExclamationCircle className="w-6 h-6 text-orange-600" />
+      </Card>
+      <Card>
+        <p className="text-sm text-gray-500">Rata-rata Penanganan</p>
+        <p className="text-2xl font-bold">
+          {data.avgHandlingTime ? `${data.avgHandlingTime} hari` : '-'}
+        </p>
+        <HiClock className="w-6 h-6 text-indigo-500" />
+      </Card>
+      <Card>
+        <p className="text-sm text-gray-500">Prioritas Rendah</p>
+        <p className="text-2xl font-bold">
+          {data.distribusiPrioritas?.LOW || 0}
+        </p>
+        <HiArrowNarrowDown className="w-6 h-6 text-green-500" />
+      </Card>
+      <Card>
+        <p className="text-sm text-gray-500">Prioritas Sedang</p>
+        <p className="text-2xl font-bold">
+          {data.distribusiPrioritas?.MEDIUM || 0}
+        </p>
+        <HiLightningBolt className="w-6 h-6 text-yellow-600" />
+      </Card>
+      <Card>
+        <p className="text-sm text-gray-500">Prioritas Tinggi</p>
+        <p className="text-2xl font-bold">
+          {data.distribusiPrioritas?.HIGH || 0}
+        </p>
+        <HiArrowNarrowUp className="w-6 h-6 text-red-600" />
       </Card>
     </div>
   );
