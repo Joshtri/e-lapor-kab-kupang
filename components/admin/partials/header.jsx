@@ -91,11 +91,9 @@ const AdminHeader = ({ toggleSidebar, isSidebarOpen }) => {
       await axios.post('/api/auth/logout', null, {
         withCredentials: true,
       });
-      toast.success('Berhasil logout! Mengarahkan ke halaman utama...');
-
-      setTimeout(() => {
-        router.push('/auth/login');
-      }, 1500);
+      toast.success('Berhasil logout! Mengarahkan ke halaman utama...', {
+        onAutoClose: () => router.push('/auth/login')
+      });
     } catch (error) {
       console.error('Logout Error:', error);
       toast.error('Gagal logout. Silakan coba lagi.');

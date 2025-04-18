@@ -109,20 +109,7 @@ const OpdSidebar = ({ isSidebarOpen, toggleSidebar }) => {
                 {isSidebarOpen && 'Kelola Pengaduan'}
               </Link>
             </li>
-            <li>
-              <Link
-                href="/opd/riwayat-pengaduan"
-                className={navLinkClass('/opd/riwayat-pengaduan')}
-              >
-                <motion.div
-                  whileHover={{ y: [0, -2, 0] }}
-                  transition={{ repeat: 2, duration: 0.3 }}
-                >
-                  <HiOutlineDocumentReport className="h-6 w-6" />
-                </motion.div>
-                {isSidebarOpen && 'Riwayat Pengaduan'}
-              </Link>
-            </li>
+ 
             <li>
               <Link href="/opd/chat" className={navLinkClass('/opd/chat')}>
                 <motion.div
