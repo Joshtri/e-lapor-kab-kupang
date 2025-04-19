@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
-import AdminHeader from '@/components/admin/partials/header';
-import AdminSidebar from '@/components/admin/partials/sidebar';
-import AdminFooter from '@/components/admin/partials/footer';
-import { ThemeProvider } from 'next-themes'; // ✅ langsung pakai ini
-import { Toaster } from 'sonner';
 import AuthProtectGuard from '@/components/AuthProtectedGuard';
+import Footer from '@/components/partials/UserCorePartials/footer';
+import Header from '@/components/partials/UserCorePartials/header';
+import Sidebar from '@/components/partials/UserCorePartials/sidebar';
 import RouteLoadingIndicator from '@/components/ui/RouteLoadingIndicator';
+import ClientThemeProvider from '@/providers/client-theme-provider';
+import { useState } from 'react';
 
 export default function AdminLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -15,17 +14,12 @@ export default function AdminLayout({ children }) {
 
   return (
     <AuthProtectGuard allowRole={['ADMIN']}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light" // atau "system" kalau kamu mau ikuti preferensi OS
-        enableSystem={false}
-        storageKey="theme" // ✅ supaya persist
-      >
+      <ClientThemeProvider>
         <div className="flex min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
-          <Toaster richColors position="top-right" />
           <RouteLoadingIndicator />
 
-          <AdminSidebar
+          <Sidebar
+            role="admin"
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
           />
@@ -35,12 +29,17 @@ export default function AdminLayout({ children }) {
               isSidebarOpen ? 'ml-64' : 'ml-20'
             }`}
           >
-            <AdminHeader toggleSidebar={toggleSidebar} />
+            <Header
+              role="admin"
+              toggleSidebar={toggleSidebar}
+              isSidebarOpen={isSidebarOpen}
+            />
+
             <main className="flex-1 mt-20 p-6">{children}</main>
-            <AdminFooter />
-          </div>
+            <Footer role="admin" />
+            </div>
         </div>
-      </ThemeProvider>
+      </ClientThemeProvider>
     </AuthProtectGuard>
   );
 }
