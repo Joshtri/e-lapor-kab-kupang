@@ -1,20 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Button, Spinner } from 'flowbite-react';
-import { HiOutlinePlus } from 'react-icons/hi';
-import { toast } from 'sonner';
-import OPDFilterBar from '@/components/admin/opd/opd-filter-bar';
-import OPDGrid from '@/components/admin/opd/opd-grid-view';
-import OPDTable from '@/components/admin/opd/opd-table-view';
-import PageHeader from '@/components/ui/page-header';
+import { HiOutlinePlus, HiOutlineOfficeBuilding } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
-import EmptyState from '@/components/ui/empty-state';
-import Pagination from '@/components/ui/Pagination';
+import { toast } from 'sonner';
+import axios from 'axios';
+import ListGrid from '@/components/ui/data-view/ListGrid';
+import GridDataList from '@/components/ui/data-view/GridDataList';
+import DataCard from '@/components/ui/data-view/DataCard';
+import { truncateText } from '@/utils/common';
+import TruncatedWithTooltip from '@/components/ui/TruncatedWithTooltip';
 
 export default function OPDList() {
-  const [opdList, setOpdList] = useState([]);
+  const [opds, setOpds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('table');
   const [filterWilayah, setFilterWilayah] = useState('ALL');
@@ -25,20 +24,35 @@ export default function OPDList() {
   const router = useRouter();
 
   useEffect(() => {
-    fetchOPD();
+    fetchOpds();
   }, []);
 
-  const fetchOPD = async () => {
+  const fetchOpds = async () => {
+    setLoading(true);
     try {
-      const res = await axios.get('/api/opd/list');
-      setOpdList(res.data);
-    } catch (error) {
-      console.error('Gagal mengambil data OPD:', error);
-      toast.error('Gagal mengambil data OPD.');
+      const { data } = await axios.get('/api/opd/list');
+      setOpds(data);
+    } catch (err) {
+      toast.error('Gagal memuat data OPD');
     } finally {
       setLoading(false);
     }
   };
+
+  const filteredOpds = opds.filter((opd) => {
+    const wilayahMatch =
+      filterWilayah === 'ALL' || opd.wilayah === filterWilayah;
+    const searchMatch = [opd.name, opd.email, opd.website, opd.alamat, opd.telp]
+      .join(' ')
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    return wilayahMatch && searchMatch;
+  });
+
+  const paginatedOpds = filteredOpds.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
 
   const handleResetFilter = () => {
     setFilterWilayah('ALL');
@@ -46,93 +60,129 @@ export default function OPDList() {
     setCurrentPage(1);
   };
 
-  const handleAddOPD = () => {
-    router.push('/adm/org-perangkat-daerah/create');
-  };
+  const columns = [
+    {
+      header: 'Nama OPD',
+      accessor: 'name',
+      cell: (opd) => (
+        <TruncatedWithTooltip text={opd.name} length={25} />
+      ),
 
-  const filteredOPD = opdList.filter((opd) => {
-    const wilayahMatch =
-      filterWilayah === 'ALL' || opd.wilayah === filterWilayah;
-
-    const searchMatch = [opd.name, opd.email, opd.alamat, opd.website, opd.telp]
-      .join(' ')
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-
-    return wilayahMatch && searchMatch;
-  });
-
-  const paginatedOPD = filteredOPD.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
-  );
+    },
+    {
+      header: 'Staff PJ',
+      accessor: 'staff.name',
+      cell: (opd) => opd.staff?.name || '-',
+    },
+    {
+      header: 'Jumlah Laporan',
+      accessor: 'reports',
+      cell: (opd) => opd.reports?.length ?? 0,
+    },
+    {
+      header: 'Email',
+      accessor: 'email',
+    },
+    {
+      header: 'Wilayah',
+      accessor: 'wilayah',
+    },
+    {
+      header: 'Alamat',
+      accessor: 'alamat',
+      cell: (opd) => truncateText(opd.alamat, 40),
+    },
+    {
+      header: 'Telepon',
+      accessor: 'telp',
+    },
+    {
+      header: 'Website',
+      accessor: 'website',
+    },
+  ];
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center min-h-screen">
         <Spinner size="lg" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-full mx-auto p-4 space-y-6">
-      <PageHeader
+    <div className="p-4 space-y-6">
+      <ListGrid
+        title="Daftar OPD"
         showBackButton={false}
-        title="Manajemen OPD"
-        showSearch={true}
+        searchBar
         searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        breadcrumbsProps={{
-          home: { label: 'Beranda', href: '/adm/dashboard' },
-          customRoutes: {
-            adm: { label: 'Data', href: '#' },
-          },
+        onSearchChange={(val) => {
+          setSearchQuery(val);
+          setCurrentPage(1);
         }}
-      />
-
-      <div className="flex justify-between items-center mb-6">
-        <OPDFilterBar
-          filterWilayah={filterWilayah}
-          setFilterWilayah={setFilterWilayah}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-        />
-
-        <Button
-          color="blue"
-          onClick={() => handleAddOPD(true)}
-          icon={HiOutlinePlus}
-        >
-          Tambah OPD
-        </Button>
-      </div>
-
-      {filteredOPD.length === 0 ? (
-        <EmptyState message="Tidak ada data OPD yang cocok dengan filter saat ini.">
-          <p className="text-sm">
-            Coba ubah filter atau gunakan kata kunci lain.
-          </p>
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        columns={columns}
+        data={paginatedOpds}
+        loading={loading}
+        gridComponent={
+          <GridDataList
+            data={paginatedOpds}
+            renderItem={(opd) => (
+              <DataCard
+                avatar={opd.name}
+                title={opd.name}
+                subtitle={opd.staff?.name || '–'}
+                meta={opd.wilayah}
+                badges={[
+                  {
+                    label: `Laporan: ${opd.reports?.length ?? 0}`,
+                    color: 'blue',
+                  },
+                  { label: opd.telp, color: 'gray' },
+                ]}
+                icon={HiOutlineOfficeBuilding}
+              />
+            )}
+          />
+        }
+        showCreateButton
+        createButtonLabel="Tambah OPD"
+        onCreate={() => router.push('/adm/org-perangkat-daerah/create')}
+        filtersComponent={
+          <div className="space-y-3">
+            <select
+              className="w-full p-2 border rounded"
+              value={filterWilayah}
+              onChange={(e) => {
+                setFilterWilayah(e.target.value);
+                setCurrentPage(1);
+              }}
+            >
+              <option value="ALL">Semua Wilayah</option>
+              <option value="AMARASI">Amarasi</option>
+              <option value="FATULEU">Fatuleu</option>
+              <option value="SOUTH_CENTRAL">South Central</option>
+            </select>
+            <Button color="gray" onClick={handleResetFilter}>
+              Reset Filter
+            </Button>
+          </div>
+        }
+        paginationProps={{
+          totalItems: filteredOpds.length,
+          currentPage,
+          pageSize,
+          onPageChange: setCurrentPage,
+        }}
+        emptyMessage="Tidak ada OPD ditemukan"
+        emptyAction={
           <Button color="gray" onClick={handleResetFilter}>
             Reset Filter
           </Button>
-        </EmptyState>
-      ) : (
-        <>
-          {viewMode === 'table' ? (
-            <OPDTable opdList={paginatedOPD} />
-          ) : (
-            <OPDGrid opdList={paginatedOPD} />
-          )}
-
-          <Pagination
-            totalItems={filteredOPD.length}
-            currentPage={currentPage}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-          />
-        </>
-      )}
+        }
+      />
     </div>
   );
 }
