@@ -81,19 +81,7 @@ export default function ReportTable({ reports, fetchReports }) {
   };
 
   const markAsRead = async (report) => {
-    // try {
-    //   if (!report.isReadByAdmin) {
-    //     setLoadingId(report.id);
-    //     await fetch(`/api/reports/${report.id}/mark-read-admin`, {
-    //       method: 'PATCH',
-    //     });
-    //   }
-      router.push(`/adm/report-warga/${report.id}`);
-    // } catch (err) {
-    //   console.error('Gagal update status terbaca:', err);
-    // } finally {
-    //   setLoadingId(null);
-    // }
+    router.push(`/adm/report-warga/${report.id}`);
   };
 
   const openImageModal = (reportId) => {
@@ -299,7 +287,7 @@ export default function ReportTable({ reports, fetchReports }) {
           open={isImageModalOpen}
           setOpen={setIsImageModalOpen}
           reportId={selectedImageReportId}
-          type='report'  
+          type="report"
         />
       )}
     </div>
