@@ -12,7 +12,28 @@ export async function GET() {
             email: true,
           },
         },
-        reports: true, // opsional: tampilkan semua laporan untuk instansi ini
+        reports: {
+          select: {
+            id: true,
+            userId: true,
+            title: true,
+            description: true,
+            location: true,
+            category: true,
+            subcategory: true,
+            priority: true,
+            bupatiStatus: true,
+            opdStatus: true,
+            createdAt: true,
+            updatedAt: true,
+            assignedAt: true,
+            respondedAt: true,
+            isReadByBupati: true,
+            isReadByOpd: true,
+            // image: false  ← you simply omit it
+          },
+          orderBy: { createdAt: 'desc' }, // if you still need to order the reports
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -24,7 +45,7 @@ export async function GET() {
     console.error('Gagal ambil data OPD:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
