@@ -10,7 +10,7 @@ import {
   HiOutlineLightningBolt,
 } from 'react-icons/hi';
 import { toast } from 'sonner';
-import PageHeader from '@/components/ui/page-header';
+import PageHeader from '@/components/ui/PageHeader';
 import { formatDate } from '@/utils/formatDate';
 import BugCommentThread from '@/components/admin/bugs/BugComments'; // optional
 
