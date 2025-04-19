@@ -14,6 +14,7 @@ import UpdateStatusModal from '@/components/bupati/UpdateStatusPelapor';
 import CommentModal from '@/components/bupati/comment/comment-modal';
 import { useRouter } from 'next/navigation';
 import ImagePreviewModal from '@/components/admin/ImagePreviewModal';
+import ReportStatusModal from '@/components/common/ReportStatusModal';
 
 export default function ReportTable({ reports }) {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -261,7 +262,7 @@ export default function ReportTable({ reports }) {
 
       {/* Modal Ubah Status */}
       {selectedReport && (
-        <UpdateStatusModal
+        <ReportStatusModal
           open={openStatusModal}
           setOpen={setOpenStatusModal}
           report={selectedReport}
