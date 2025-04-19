@@ -1,41 +1,82 @@
 'use client';
 
-import UserFilterBar from '@/components/admin/users/user-filter-bar';
-import UserGrid from '@/components/admin/users/UserGridView';
-import UserTable from '@/components/admin/users/UserTableView';
-import CreateUserModal from '@/components/admin/users/users-create-modal';
-import EmptyState from '@/components/ui/empty-state';
-import PageHeader from '@/components/ui/page-header';
-import { exportToExcel } from '@/utils/export/exportToExcel';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Spinner } from 'flowbite-react';
-import { useEffect, useState } from 'react';
-import { HiOutlinePlus } from 'react-icons/hi';
+import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import { Button } from 'flowbite-react';
+import {
+  HiOutlinePlus,
+  HiOutlineEye,
+  HiPencilAlt,
+  HiTrash,
+  HiOfficeBuilding,
+  HiExclamationCircle,
+} from 'react-icons/hi';
+
+import ListGrid from '@/components/ui/data-view/ListGrid';
+import DataCard from '@/components/ui/data-view/DataCard';
+import GridDataList from '@/components/ui/data-view/GridDataList';
+import ActionsButton from '@/components/ui/ActionsButton';
+import UserCreateModal from '@/components/admin/users/users-create-modal';
+import UserEditModal from '@/components/admin/users/UserEditModal';
+import { exportToExcel } from '@/utils/export/exportToExcel';
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [openModal, setOpenModal] = useState(false);
-  const [viewMode, setViewMode] = useState('table'); // default ke tabel
+  const [incompleteProfiles, setIncompleteProfiles] = useState([]); // ⚠️
+
+  const [viewMode, setViewMode] = useState('table');
   const [filterRole, setFilterRole] = useState('ALL');
-  const [searchQuery, setSearchQuery] = useState(''); // ✅ NEW
+  const [searchQuery, setSearchQuery] = useState('');
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
-  const handleExportExcel = () => {
-    const exportData = filteredUsers.map((user) => ({
-      Nama: user.name,
-      Username: user.username,
-      Email: user.email,
-      Role: user.role,
-      Instansi: user.opd?.name || '-',
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  useEffect(() => {
+    fetchUsers();
+    fetchIncompleteProfiles();
+  }, []);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get('/api/users');
+      setUsers(data);
+    } catch (err) {
+      console.error(err);
+      toast.error('Gagal mengambil data user.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchIncompleteProfiles = async () => {
+    try {
+      const { data } = await axios.get('/api/opd/incompleted-users');
+      // misal data.incompleteUsers memberikan array user.id
+      setIncompleteProfiles(data.incompleteUsers.map((u) => u.id));
+    } catch {
+      console.error('Gagal load incompleteProfiles');
+    }
+  };
+
+  const handleExport = () => {
+    const rows = filtered.slice().map((u) => ({
+      Nama: u.name,
+      Email: u.email,
+      Role: u.role,
+      Instansi: u.opd?.name || '-',
     }));
-  
     exportToExcel({
-      data: exportData,
+      data: rows,
       columns: [
         { header: 'Nama', key: 'Nama' },
-        { header: 'Username', key: 'Username' },
         { header: 'Email', key: 'Email' },
         { header: 'Role', key: 'Role' },
         { header: 'Instansi', key: 'Instansi' },
@@ -44,130 +85,221 @@ export default function UserList() {
     });
   };
 
-  useEffect(() => {
-    fetchUsers();
-    fetchIncompleteProfiles();
-  }, []);
-
-  const fetchUsers = async () => {
+  const handleDelete = async (id) => {
+    if (!confirm('Hapus user ini?')) return;
     try {
-      const res = await axios.get('/api/users');
-      setUsers(res.data);
-    } catch (error) {
-      console.error('Gagal mengambil data users:', error);
-      toast.error('Gagal mengambil data users.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  
-  const handleResetFilter = () => {
-    setFilterStatus('ALL');
-    setFilterPriority('ALL');
-    setSearchQuery('');
-  };
-
-  const filteredUsers = users.filter((user) => {
-    const roleMatch = filterRole === 'ALL' || user.role === filterRole;
-  
-    const searchMatch = [
-      user.name,
-      user.email,
-      user.username,
-      user.role,
-      user.opd?.name, // Jika relasi ada
-    ]
-      .join(" ")
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-  
-    return roleMatch && searchMatch;
-  });
-  
-  const [incompleteOPDProfiles, setIncompleteOPDProfiles] = useState([]);
-
-  const fetchIncompleteProfiles = async () => {
-    try {
-      const res = await axios.get('/api/opd/incompleted-users');
-      // console.log('🧩 Incomplete OPD profiles:', res.data.incompleteUsers);
-      setIncompleteOPDProfiles(res.data.incompleteUsers.map((u) => u.id));
+      await axios.delete(`/api/users/${id}`);
+      toast.success('User dihapus.');
+      fetchUsers();
     } catch (err) {
-      console.error('Gagal cek incomplete OPD:', err);
+      console.error(err);
+      toast.error('Gagal menghapus user.');
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
+  // filters & search
+  // filter + search
+  const filtered = users.filter((u) => {
+    const matchRole = filterRole === 'ALL' || u.role === filterRole;
+    const text = [u.name, u.email, u.role, u.opd?.name].join(' ').toLowerCase();
+    return matchRole && text.includes(searchQuery.toLowerCase());
+  });
+
+  const paginated = filtered.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
+
+  const columns = [
+    {
+      header: 'Nama',
+      accessor: 'name',
+      width: 'w-1/3',
+      cell: (user) => {
+        const isIncomplete = incompleteProfiles.includes(user.id);
+        return (
+          <div className="flex flex-col">
+            <span className="font-medium">{user.name}</span>
+
+            {user.role === 'OPD' && user.opd?.name && (
+              <span className="text-sm text-gray-500 dark:text-gray-300 flex items-center gap-1">
+                <HiOfficeBuilding className="inline h-4 w-4" />
+                {user.opd.name}
+              </span>
+            )}
+
+            {isIncomplete && (
+              <span className="text-xs text-red-600 dark:text-red-300 flex items-center gap-1">
+                <HiExclamationCircle className="inline h-4 w-4" />
+                Profil instansi OPD belum lengkap
+              </span>
+            )}
+          </div>
+        );
+      },
+    },
+    { header: 'Email', accessor: 'email' },
+    { header: 'Role', accessor: 'role' },
+    { header: 'Instansi', accessor: 'opd.name' },
+  ];
+
+  const actionButtons = [
+    (u) => (
+      <ActionsButton
+        key="view"
+        icon={HiOutlineEye}
+        tooltip="Detail"
+        color="gray"
+        onClick={() => (window.location.href = `/adm/users/${u.id}`)}
+      />
+    ),
+    (u) => (
+      <ActionsButton
+        key="edit"
+        icon={HiPencilAlt}
+        tooltip="Edit"
+        color="blue"
+        onClick={() => {
+          setSelectedUser(u);
+          setOpenEdit(true);
+        }}
+      />
+    ),
+    (u) => (
+      <ActionsButton
+        key="del"
+        icon={HiTrash}
+        tooltip="Hapus"
+        color="red"
+        onClick={() => handleDelete(u.id)}
+      />
+    ),
+  ];
 
   return (
-    <div className="max-w-full mx-auto p-4 space-y-6">
-      <PageHeader
-        showBackButton={false}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="p-4 max-w-full mx-auto space-y-6"
+    >
+      <ListGrid
+        // header
         title="Manajemen Users"
-        showSearch={true}
-        onExportExcel={handleExportExcel}
-        searchQuery={searchQuery} // ✅ terhubung
-        onSearchChange={(val) => setSearchQuery(val)} // ✅ tambahkan ini
+        showBackButton={false}
+        searchBar={true}
+        showSearch
+        searchQuery={searchQuery}
+        onSearchChange={(q) => {
+          setSearchQuery(q);
+          setCurrentPage(1);
+        }}
+        onExportExcel={handleExport}
+        showRefreshButton
+        onRefreshClick={fetchUsers}
         breadcrumbsProps={{
           home: { label: 'Beranda', href: '/adm/dashboard' },
-
           customRoutes: {
             adm: { label: 'Dashboard Admin', href: '/adm/dashboard' },
           },
         }}
-      />
-      <div className="flex justify-between items-center mb-6">
-        <UserFilterBar
-          filterRole={filterRole}
-          setFilterRole={setFilterRole}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-        />
-        <Button
-          color="blue"
-          onClick={() => setOpenModal(true)}
-          icon={HiOutlinePlus}
-        >
-          Tambah User
-        </Button>
-      </div>
-
-      {filteredUsers.length === 0 ? (
-        <EmptyState message="Tidak ada laporan yang cocok dengan filter saat ini.">
-          <p className="text-sm">
-            Coba ubah filter status, prioritas, atau gunakan kata kunci yang
-            berbeda.
-          </p>
-          <Button color="gray" onClick={handleResetFilter}>
+        // filter & view controls
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        filtersComponent={
+          <div className="p-4 space-y-3">
+            <div>
+              <label className="block text-sm mb-1">Role</label>
+              <select
+                className="w-full p-2 border rounded"
+                value={filterRole}
+                onChange={(e) => {
+                  setFilterRole(e.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="ALL">Semua Role</option>
+                <option value="ADMIN">ADMIN</option>
+                <option value="OPD">OPD</option>
+                <option value="PELAPOR">PELAPOR</option>
+                <option value="BUPATI">BUPATI</option>
+              </select>
+            </div>
+            <Button
+              color="gray"
+              className="w-full"
+              onClick={() => {
+                setFilterRole('ALL');
+                setSearchQuery('');
+              }}
+            >
+              Reset Filter
+            </Button>
+          </div>
+        }
+        showCreateButton
+        createButtonLabel="Tambah User"
+        onCreate={() => setOpenCreate(true)}
+        // data
+        data={paginated}
+        columns={columns}
+        actionButtons={actionButtons}
+        gridComponent={
+          <GridDataList
+            data={paginated}
+            renderItem={(u) => (
+              <DataCard
+                avatar={u.name}
+                title={u.name}
+                subtitle={u.role}
+                meta={u.email}
+                badges={u.opd ? [{ label: u.opd.name, color: 'blue' }] : []}
+              />
+            )}
+          />
+        }
+        loading={loading}
+        emptyMessage="Tidak ada user ditemukan."
+        emptyAction={
+          <Button
+            color="gray"
+            onClick={() => {
+              setFilterRole('ALL');
+              setSearchQuery('');
+              setCurrentPage(1);
+            }}
+          >
             Reset Filter
           </Button>
-        </EmptyState>
-      ) : viewMode === 'table' ? (
-        <UserTable
-          users={filteredUsers}
-          incompleteProfiles={incompleteOPDProfiles}
-          onSuccess={fetchUsers}
-        />
-      ) : (
-        <UserGrid
-          users={filteredUsers}
-          onShow={(user) => console.log('Show', user)}
-          onEdit={(user) => console.log('Edit', user)}
-          onDelete={(user) => console.log('Delete', user)}
+        }
+        // pagination
+        paginationProps={{
+          totalItems: filtered.length,
+          currentPage,
+          pageSize,
+          onPageChange: setCurrentPage,
+        }}
+      />
+
+      <UserCreateModal
+        open={openCreate}
+        setOpen={setOpenCreate}
+        onSuccess={() => {
+          setOpenCreate(false);
+          fetchUsers();
+        }}
+      />
+
+      {selectedUser && (
+        <UserEditModal
+          open={openEdit}
+          setOpen={setOpenEdit}
+          user={selectedUser}
+          onSuccess={() => {
+            setOpenEdit(false);
+            fetchUsers();
+          }}
         />
       )}
-
-      <CreateUserModal
-        open={openModal}
-        setOpen={setOpenModal}
-        onSuccess={fetchUsers}
-      />
-    </div>
+    </motion.div>
   );
 }
