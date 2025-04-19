@@ -7,7 +7,12 @@ import {
   HiPaperAirplane,
 } from 'react-icons/hi';
 
-const LogoutConfirmationModal = ({ open, onClose, onConfirm }) => {
+const LogoutConfirmationModal = ({
+  open,
+  onClose,
+  onConfirm,
+  isLoggingOut,
+}) => {
   return (
     <Modal show={open} onClose={onClose} size="md">
       <Modal.Header className="border-b-2 border-purple-100 dark:border-purple-900">
@@ -27,7 +32,12 @@ const LogoutConfirmationModal = ({ open, onClose, onConfirm }) => {
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button color="failure" onClick={onConfirm} className="flex items-center gap-2">
+        <Button
+          color="failure"
+          onClick={onConfirm}
+          className="flex items-center gap-2"
+          disabled={isLoggingOut} // ⛔ mencegah spam klik
+        >
           <HiOutlineLogout className="h-4 w-4" />
           Ya, Logout
         </Button>
