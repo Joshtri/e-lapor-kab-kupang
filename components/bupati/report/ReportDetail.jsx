@@ -13,7 +13,7 @@ import {
   HiOutlinePencilAlt,
   HiOutlineChatAlt2,
 } from 'react-icons/hi';
-import PageHeader from '@/components/ui/page-header';
+import PageHeader from '@/components/ui/PageHeader';
 import UpdateStatusModal from '@/components/bupati/UpdateStatusPelapor';
 import CommentModal from '@/components/bupati/comment/comment-modal';
 import ReportCommentView from './ReportComment';
