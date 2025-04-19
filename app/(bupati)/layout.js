@@ -1,7 +1,6 @@
 'use client';
 
 import AuthProtectGuard from '@/components/AuthProtectedGuard';
-import BupatiSidebar from '@/components/bupati/partials/sidebar';
 import Footer from '@/components/partials/UserCorePartials/footer';
 import Header from '@/components/partials/UserCorePartials/header';
 import Sidebar from '@/components/partials/UserCorePartials/sidebar';

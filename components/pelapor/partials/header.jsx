@@ -1,27 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Button, Dropdown, Modal, Avatar } from 'flowbite-react';
-import {
-  HiOutlineMail,
-  HiMailOpen,
-  HiPaperAirplane,
-  HiOutlineUserCircle,
-  HiOutlineLogout,
-  HiOutlineDocumentReport,
-  HiOutlineHome,
-  HiOutlineBell,
-  HiOutlineMenuAlt2,
-} from 'react-icons/hi';
-import { useTheme } from 'next-themes';
-import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { toast } from 'sonner';
-import axios from 'axios';
-import { motion, AnimatePresence } from 'framer-motion';
 import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
 import NotificationDropdown from '@/components/ui/NotificationDropdown';
+import axios from 'axios';
+import { Avatar, Button, Dropdown } from 'flowbite-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
+import {
+  HiMailOpen,
+  HiOutlineDocumentReport,
+  HiOutlineHome,
+  HiOutlineLogout,
+  HiOutlineMail,
+  HiOutlineMenuAlt2,
+  HiOutlineUserCircle,
+  HiPaperAirplane
+} from 'react-icons/hi';
+import { toast } from 'sonner';
 
 const HeaderPelapor = () => {
   const { theme, setTheme } = useTheme();

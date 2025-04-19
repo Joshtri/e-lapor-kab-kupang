@@ -11,17 +11,7 @@ const FooterPelapor = () => {
           &copy; {new Date().getFullYear()} Lapor KK Bupati. All Rights
           Reserved.
         </span>
-        {/* <div className="flex space-x-6 mt-4 md:mt-0">
-          <a href="/tentang" className="text-gray-200 hover:underline">
-            Tentang
-          </a>
-          <a href="/privasi" className="text-gray-200 hover:underline">
-            Kebijakan Privasi
-          </a>
-          <a href="/kontak" className="text-gray-200 hover:underline">
-            Kontak
-          </a>
-        </div> */}
+ 
       </div>
     </Footer>
   );

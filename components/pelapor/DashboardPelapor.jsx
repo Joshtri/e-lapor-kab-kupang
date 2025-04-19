@@ -102,7 +102,7 @@ const DashboardPelapor = ({ user }) => {
         <ReportModal openModal={openModal} setOpenModal={setOpenModal} user={user} onSuccess={handleRefetch} />
 
         {/* Floating Action Button - Mobile Only */}
-        <div className="fixed bottom-6 right-6 md:hidden z-10">
+        {/* <div className="fixed bottom-6 right-6 md:hidden z-10">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -111,7 +111,7 @@ const DashboardPelapor = ({ user }) => {
           >
             <HiPaperAirplane className="h-6 w-6" />
           </motion.button>
-        </div>
+        </div> */}
       </div>
     </div>
   )
