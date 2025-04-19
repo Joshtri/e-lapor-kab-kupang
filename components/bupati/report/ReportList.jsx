@@ -3,7 +3,7 @@
 import ReportFilterBar from '@/components/admin/report/ReportFilterBar';
 import ReportGrid from '@/components/bupati/report/ReportGrid';
 import ReportTable from '@/components/bupati/report/ReportTable';
-import PageHeader from '@/components/ui/page-header';
+import PageHeader from '@/components/ui/PageHeader';
 import axios from 'axios';
 import { Button, Spinner } from 'flowbite-react';
 import { useEffect, useState } from 'react';
