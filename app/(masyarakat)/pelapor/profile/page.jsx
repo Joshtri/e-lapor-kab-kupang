@@ -1,5 +1,5 @@
 import ProfileManagement from '@/components/profile';
-import PageHeader from '@/components/ui/page-header';
+import PageHeader from '@/components/ui/PageHeader';
 import React from 'react';
 
 export default function ProfileManagementPage() {
@@ -12,7 +12,7 @@ export default function ProfileManagementPage() {
           breadcrumbsProps={{
             home: { label: 'Beranda', href: '/pelapor/dashboard' },
             customRoutes: {
-              'pelapor': {
+              pelapor: {
                 label: 'Dashboard pelapor',
                 href: '/pelapor/dashboard',
               },
