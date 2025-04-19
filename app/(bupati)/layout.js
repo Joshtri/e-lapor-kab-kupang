@@ -1,12 +1,13 @@
 'use client';
 
-import { ThemeProvider } from 'next-themes';
-import { useEffect, useState } from 'react';
-import HeaderBupati from '@/components/bupati/partials/header';
-import FooterBupati from '@/components/bupati/partials/footer';
-import { Toaster } from 'sonner';
 import AuthProtectGuard from '@/components/AuthProtectedGuard';
 import BupatiSidebar from '@/components/bupati/partials/sidebar';
+import Footer from '@/components/partials/UserCorePartials/footer';
+import Header from '@/components/partials/UserCorePartials/header';
+import Sidebar from '@/components/partials/UserCorePartials/sidebar';
+import { ThemeProvider } from 'next-themes';
+import { useEffect, useState } from 'react';
+import { Toaster } from 'sonner';
 
 export default function BupatiLayout({ children }) {
   const [mounted, setMounted] = useState(false);
@@ -30,7 +31,8 @@ export default function BupatiLayout({ children }) {
       >
         <Toaster richColors position="top-right" />
         <div className="flex">
-          <BupatiSidebar
+          <Sidebar
+            role="bupati"
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
           />
@@ -39,9 +41,13 @@ export default function BupatiLayout({ children }) {
               isSidebarOpen ? 'ml-64' : 'ml-20'
             }`}
           >
-            <HeaderBupati toggleSidebar={toggleSidebar} />
+            <Header
+              role="bupati"
+              toggleSidebar={toggleSidebar}
+              isSidebarOpen={isSidebarOpen}
+            />{' '}
             <main className="mt-20 p-6">{children}</main>
-            <FooterBupati />
+            <Footer role="bupati" />
           </div>
         </div>
       </ThemeProvider>
