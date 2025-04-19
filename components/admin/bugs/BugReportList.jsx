@@ -1,23 +1,27 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Spinner, Button } from 'flowbite-react';
+import { Button } from 'flowbite-react';
+import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import {
-  HiOutlinePlus,
-  HiOutlineViewList,
-  HiOutlineViewGrid,
+  HiOutlineChatAlt2,
+  HiOutlineEye,
+  HiOutlinePencilAlt,
+  HiCheckCircle,
+  HiOutlineClock,
 } from 'react-icons/hi';
-import PageHeader from '@/components/ui/page-header';
-import ReportFilterBar from '@/components/admin/report/ReportFilterBar';
-import BugTableView from './BugTableView';
-import BugGridView from './BugGridView';
+import { Badge } from 'flowbite-react'; // ⬅️ tambahkan ini di atas
+
+import ListGrid from '@/components/ui/data-view/ListGrid';
+import GridDataList from '@/components/ui/data-view/GridDataList';
+import DataCard from '@/components/ui/data-view/DataCard';
+import { getStatusColor } from '@/utils/statusColor';
+import { truncateText } from '@/utils/common';
+import BugStatusEditModal from './BugStatusEditModal';
 import BugCommentCreateModal from './BugCommentCreateModal';
-import EmptyState from '@/components/ui/empty-state';
-import Pagination from '@/components/ui/Pagination';
-import BugStatusEditModal from '@/components/admin/bugs/BugStatusEditModal';
-import Link from 'next/link';
-import { formatDate } from '@/utils/formatDate';
+import ActionsButton from '@/components/ui/ActionsButton';
+
 export default function BugReportList() {
   const [bugs, setBugs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,25 +30,17 @@ export default function BugReportList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [filterPriority, setFilterPriority] = useState('ALL');
-  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-  const [selectedBugId, setSelectedBugId] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState('ALL');
-
-  // const { formatted, relative } = formatDate(bug.createdAt);
   const [selectedBug, setSelectedBug] = useState(null);
+  const [selectedBugId, setSelectedBugId] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
+
   const pageSize = 8;
 
   const fetchBugs = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const params = new URLSearchParams({
-        search: searchQuery,
-        ...(filterStatus !== 'ALL' && { status: filterStatus }),
-        ...(filterPriority !== 'ALL' && { priority: filterPriority }),
-      });
-
-      const res = await fetch(`/api/bugs?${params}`);
+      const res = await fetch('/api/bugs');
       if (!res.ok) throw new Error();
       const data = await res.json();
       setBugs(data);
@@ -64,10 +60,10 @@ export default function BugReportList() {
       filterStatus === 'ALL' || bug.statusProblem === filterStatus;
     const priorityMatch =
       filterPriority === 'ALL' || bug.priorityProblem === filterPriority;
-    const searchMatch = bug.title
+    const searchMatch = [bug.title, bug.description]
+      .join(' ')
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-
     return statusMatch && priorityMatch && searchMatch;
   });
 
@@ -80,109 +76,195 @@ export default function BugReportList() {
     setFilterStatus('ALL');
     setFilterPriority('ALL');
     setSearchQuery('');
-    setCurrentPage(1);
   };
 
-  const openCommentModal = (bugId) => {
-    setSelectedBugId(bugId);
-    setIsCommentModalOpen(true);
-  };
+  const columns = [
+    {
+      header: 'Judul',
+      accessor: 'title',
+      cell: (bug) => (
+        <div className="flex items-center gap-2 max-w-[240px] truncate">
+          <span title={bug.title}>{truncateText(bug.title, 40)}</span>
+          {!bug.isReadByAdmin ? (
+            <HiOutlineClock className="text-yellow-500 w-4 h-4" />
+          ) : (
+            <HiCheckCircle className="text-green-500 w-4 h-4" />
+          )}
+        </div>
+      ),
+    },
+    {
+      header: 'Pelapor',
+      accessor: 'user.name',
+      cell: (bug) => bug.user?.name || 'Anonim',
+    },
+    {
+      header: 'Status',
+      accessor: 'statusProblem',
+      cell: (bug) => (
+        <Badge color={getStatusColor(bug.statusProblem)}>
+          {bug.statusProblem}
+        </Badge>
+      ),
+    },
+    {
+      header: 'Prioritas',
+      accessor: 'priorityProblem',
+      cell: (bug) => (
+        <Badge color={getStatusColor(bug.priorityProblem)}>
+          {bug.priorityProblem}
+        </Badge>
+      ),
+    },
+    {
+      header: 'Tanggal',
+      accessor: 'createdAt',
+      cell: (bug) => new Date(bug.createdAt).toLocaleDateString('id-ID'),
+    },
+  ];
 
-  const closeCommentModal = () => {
-    setIsCommentModalOpen(false);
-    setSelectedBugId(null);
-  };
-
-  const openEditModal = (bug) => {
-    setSelectedBug(bug);
-    setEditModalOpen(true);
-  };
-
-  return (
-    <div className="max-w-full mx-auto p-4 space-y-6">
-      <PageHeader
-        title="Manajemen Bug Report"
-        showBackButton={false}
-        showSearch
-        searchQuery={searchQuery}
-        onSearchChange={(val) => setSearchQuery(val)}
-        onRefreshClick={fetchBugs}
-        breadcrumbsProps={{
-          home: { label: 'Beranda', href: '/adm/dashboard' },
-          customRoutes: {
-            adm: { label: 'Dashboard Admin', href: '/adm/dashboard' },
-          },
+  const actionButtons = [
+    (bug) => (
+      <ActionsButton
+        icon={HiOutlineEye}
+        tooltip="Lihat Detail"
+        href={`/adm/bugs/${bug.id}`}
+        color="gray"
+      />
+    ),
+    (bug) => (
+      <ActionsButton
+        icon={HiOutlineChatAlt2}
+        tooltip="Komentar"
+        color="blue"
+        onClick={() => {
+          setSelectedBugId(bug.id);
+          setCommentModalOpen(true);
         }}
       />
+    ),
+    (bug) => (
+      <ActionsButton
+        icon={HiOutlinePencilAlt}
+        tooltip="Ubah Status"
+        color="dark"
+        onClick={() => {
+          setSelectedBug(bug);
+          setEditModalOpen(true);
+        }}
+      />
+    ),
+  ];
 
-      <div className="flex justify-between items-center mb-6">
-        <ReportFilterBar
-          filterStatus={filterStatus}
-          setFilterStatus={setFilterStatus}
-          filterPriority={filterPriority}
-          setFilterPriority={setFilterPriority}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-        />
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="p-4 space-y-6"
+    >
+      <ListGrid
+        data={paginatedBugs}
+        loading={loading}
+        title="Laporan Bug"
+        searchBar
+        searchQuery={searchQuery}
+        onSearchChange={(val) => {
+          setSearchQuery(val);
+          setCurrentPage(1); // reset ke halaman awal saat cari
+        }}
+        showSearch={true}
+        showBackButton={false}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        columns={columns}
+        actionButtons={actionButtons}
+        gridComponent={
+          <GridDataList
+            data={paginatedBugs}
+            renderItem={(bug) => (
+              <DataCard
+                avatar={bug.user?.name}
+                title={truncateText(bug.title, 50)}
+                subtitle={bug.priorityProblem}
+                meta={new Date(bug.createdAt).toLocaleDateString('id-ID')}
+                badges={[
+                  {
+                    label: bug.statusProblem,
+                    color: getStatusColor(bug.statusProblem),
+                  },
+                ]}
+              />
+            )}
+          />
+        }
+        rowClassName={(bug) =>
+          !bug.isReadByAdmin
+            ? 'bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400'
+            : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+        }
+        paginationProps={{
+          totalItems: filteredBugs.length,
+          currentPage,
+          pageSize,
+          onPageChange: setCurrentPage,
+        }}
+        filtersComponent={
+          <div className="space-y-3">
+            <select
+              className="w-full p-2 border rounded"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="ALL">Semua Status</option>
+              <option value="OPEN">Open</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="RESOLVED">Resolved</option>
+            </select>
 
-        {/* <Link href="/adm/bugs/create">
-          <Button color="red" className="flex items-center gap-2">
-            <HiOutlinePlus className="h-5 w-5" />
-            Tambah Bug Report
-          </Button>
-        </Link> */}
-      </div>
+            <select
+              className="w-full p-2 border rounded"
+              value={filterPriority}
+              onChange={(e) => setFilterPriority(e.target.value)}
+            >
+              <option value="ALL">Semua Prioritas</option>
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
+            </select>
 
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <Spinner size="lg" />
-        </div>
-      ) : filteredBugs.length === 0 ? (
-        <EmptyState message="Tidak ada laporan bug ...">
-          <p className="text-sm">Coba ubah filter atau cari kata kunci lain.</p>
+            <Button
+              color="gray"
+              onClick={() => {
+                setFilterStatus('ALL');
+                setFilterPriority('ALL');
+                setSearchQuery('');
+                setCurrentPage(1);
+              }}
+            >
+              Reset Filter
+            </Button>
+          </div>
+        }
+        emptyMessage="Tidak ada bug ditemukan"
+        emptyAction={
           <Button color="gray" onClick={handleResetFilter}>
             Reset Filter
           </Button>
-        </EmptyState>
-      ) : (
-        <>
-          {viewMode === 'table' ? (
-            <BugTableView
-              bugs={paginatedBugs}
-              formatDate={formatDate}
-              openCommentModal={openCommentModal}
-              openEditModal={openEditModal} // ✅ tambahkan ini
-            />
-          ) : (
-            <BugGridView
-              bugs={paginatedBugs}
-              formatDate={formatDate}
-              openCommentModal={openCommentModal}
-              openEditModal={openEditModal} // ✅ tambahkan ini
-            />
-          )}
-
-          <Pagination
-            totalItems={filteredBugs.length}
-            currentPage={currentPage}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-          />
-        </>
-      )}
+        }
+      />
 
       <BugCommentCreateModal
-        isOpen={isCommentModalOpen}
-        onClose={closeCommentModal}
+        isOpen={commentModalOpen}
         bugId={selectedBugId}
+        onClose={() => setCommentModalOpen(false)}
       />
 
       <BugStatusEditModal
-        open={editModalOpen} // ✅ pakai state boolean, bukan function
+        open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         bug={selectedBug}
-        onSave={fetchBugs} // refetch
+        onSave={fetchBugs}
       />
-    </div>
+    </motion.div>
   );
 }
