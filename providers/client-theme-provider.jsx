@@ -1,7 +1,6 @@
 'use client';
 
 import { ThemeProvider } from 'next-themes';
-import { Toaster } from 'sonner';
 
 export default function ClientThemeProvider({ children }) {
   return (
@@ -11,7 +10,6 @@ export default function ClientThemeProvider({ children }) {
       enableSystem={false}
       storageKey="theme"
     >
-      <Toaster richColors position="top-right" />
       {children}
     </ThemeProvider>
   );
