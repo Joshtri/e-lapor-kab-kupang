@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import ReportFilterBar from '@/components/opd/Report/ReportFilterBar';
 import ReportGrid from '@/components/opd/Report/ReportGridView';
 import ReportTable from '@/components/opd/Report/ReportTableView';
-import PageHeader from '@/components/ui/page-header';
+import PageHeader from '@/components/ui/PageHeader';
 import { HiOutlinePlus } from 'react-icons/hi';
 import EmptyState from '@/components/ui/empty-state';
 
@@ -64,17 +64,18 @@ export default function ReportList() {
       filterStatus === 'ALL' || report.bupatiStatus === filterStatus;
     const opdMatch =
       filterPriority === 'ALL' || report.opdStatus === filterPriority;
-      const searchMatch = [
-        report.title,
-        report.description,
-        report.category,
-        report.priority,
-        report.bupatiStatus,
-        report.opdStatus,
-        report.user?.name,
-        report.opd?.name,
-        report.createdAt,
-      ]      .join(" ")
+    const searchMatch = [
+      report.title,
+      report.description,
+      report.category,
+      report.priority,
+      report.bupatiStatus,
+      report.opdStatus,
+      report.user?.name,
+      report.opd?.name,
+      report.createdAt,
+    ]
+      .join(' ')
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
 
