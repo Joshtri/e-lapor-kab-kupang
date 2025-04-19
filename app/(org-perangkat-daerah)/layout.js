@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import ClientThemeProvider from '@/providers/client-theme-provider';
-import { Toaster } from 'sonner';
-import OpdSidebar from '@/components/opd/partials/sidebar';
-import OpdHeader from '@/components/opd/partials/header';
 import AuthProtectGuard from '@/components/AuthProtectedGuard';
+import Footer from '@/components/partials/UserCorePartials/footer';
+import Header from '@/components/partials/UserCorePartials/header';
+import Sidebar from '@/components/partials/UserCorePartials/sidebar';
+import ClientThemeProvider from '@/providers/client-theme-provider';
 
 export default function OpdLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -23,9 +23,9 @@ export default function OpdLayout({ children }) {
   return (
     <AuthProtectGuard allowRole={['OPD']}>
       <ClientThemeProvider>
-        <Toaster richColors position="top-right" />
-        <div className="flex">
-          <OpdSidebar
+         <div className="flex">
+         <Sidebar
+            role="opd"
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
           />
@@ -34,8 +34,14 @@ export default function OpdLayout({ children }) {
               isSidebarOpen ? 'ml-64' : 'ml-20'
             }`}
           >
-            <OpdHeader toggleSidebar={toggleSidebar} />
+            <Header
+              role="opd"
+              toggleSidebar={toggleSidebar}
+              isSidebarOpen={isSidebarOpen}
+            />
             <main className="mt-20 p-6">{children}</main>
+            <Footer role="opd" />
+
           </div>
         </div>
       </ClientThemeProvider>
