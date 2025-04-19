@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import PageHeader from "./PageHeader";
-import DataFilterBar from "./DataFilterBar";
+import DataFilterBar from "./FilterBar";
 import DataTable from "./DataTable";
 import DataGrid from "./DataGrid";
 import * as entityConfigs from "./entityConfigs";
