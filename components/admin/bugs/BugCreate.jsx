@@ -21,7 +21,7 @@ import {
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { FaBug } from 'react-icons/fa';
-import PageHeader from '@/components/ui/page-header';
+import PageHeader from '@/components/ui/PageHeader';
 export default function AddBugReport({ currentUser }) {
   // Form state
   const [title, setTitle] = useState('');
@@ -148,9 +148,7 @@ export default function AddBugReport({ currentUser }) {
       <PageHeader
         title="Tambah Laporan Bug"
         description="Buat laporan bug baru atas nama pengguna"
-        backHref='/adm/bugs'
-        
-        
+        backHref="/adm/bugs"
       />
 
       {/* Header */}
