@@ -7,19 +7,30 @@ export async function GET() {
     const bugs = await prisma.bugReport.findMany({
       include: {
         user: {
-          select: { id: true, name: true, email: true },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
         },
       },
+      // ❌ Jangan gunakan `select` bersama `include`
+      // ✅ Gunakan `exclude` langsung lewat custom mapping (tanpa Prisma select)
       orderBy: {
         createdAt: 'desc',
       },
-    })
-    return NextResponse.json(bugs)
+    });
+
+    // ⛔ Jangan kirim attachment dalam response JSON
+    const filtered = bugs.map(({ attachment, ...bug }) => bug);
+
+    return NextResponse.json(filtered);
   } catch (error) {
-    console.error('[BUGS_GET]', error)
-    return NextResponse.json({ error: 'Gagal mengambil data bug' }, { status: 500 })
+    console.error('[BUGS_GET]', error);
+    return NextResponse.json({ error: 'Gagal mengambil data bug' }, { status: 500 });
   }
 }
+
 
 export async function POST(req) {
   try {
