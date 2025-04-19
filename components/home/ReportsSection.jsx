@@ -1,19 +1,25 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { Button, Badge, Tooltip, Avatar } from 'flowbite-react';
 import {
   HiMailOpen,
   HiOutlineCalendar,
   HiOutlineTag,
   HiOutlineCheckCircle,
+  HiOutlineHeart,
+  HiHeart,
+  HiOutlineReply,
+  HiOutlineShare,
 } from 'react-icons/hi';
 
 export default function ReportsSection() {
   const [reports, setReports] = useState([]);
+  const [expandedReports, setExpandedReports] = useState({});
+  const [likedReports, setLikedReports] = useState({});
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -29,87 +35,182 @@ export default function ReportsSection() {
     fetchReports();
   }, []);
 
+  const toggleExpand = (id) => {
+    setExpandedReports((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const toggleLike = (id) => {
+    setLikedReports((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   const currentMonthLabel = format(new Date(), 'MMMM yyyy', { locale: id });
 
   return (
-    <div className="py-20 bg-white dark:bg-gray-700">
-      <div className="container mx-auto px-4">
+    <div className="py-12 bg-white dark:bg-gray-800">
+      <div className="container mx-auto px-4 max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8"
         >
           <div className="inline-flex items-center justify-center mb-4">
-            <div className="bg-blue-100 p-3 rounded-full">
-              <HiMailOpen className="text-blue-600 h-8 w-8" />
+            <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-full">
+              <HiMailOpen className="text-blue-600 dark:text-blue-300 h-6 w-6" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-gray-200">
+          <h2 className="text-2xl font-bold text-gray-900 mb-3 dark:text-white">
             Laporan Terbaru
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-200">
-            Berikut adalah laporan yang diselesaikan pada bulan{' '}
-            <strong>{currentMonthLabel}</strong> oleh Pemerintah Kabupaten
-            Kupang.
+          <p className="text-base text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
+            Berikut adalah laporan pada bulan{' '}
+            <span className="font-medium">{currentMonthLabel}</span> oleh
+            Pemerintah Kabupaten Kupang.
           </p>
         </motion.div>
 
         {reports.length === 0 ? (
-          <p className="text-center text-gray-500 dark:text-gray-300">
-            Belum ada laporan selesai bulan ini.
-          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 text-center"
+          >
+            <p className="text-gray-500 dark:text-gray-300">
+              Belum ada laporan selesai bulan ini.
+            </p>
+          </motion.div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="space-y-4">
             {reports.map((report, index) => (
               <motion.div
                 key={report.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-200 hover:shadow-lg transition-shadow"
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+                whileHover={{ y: -2 }}
+                className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-5 shadow-sm hover:shadow-md transition-all"
               >
-                <div className="bg-blue-500 h-3"></div>
-
-                <div className="h-48 bg-gray-200 relative">
-                  <Image
-                    src="/placeholder.svg?height=600&width=400"
-                    alt={report.title}
-                    fill
-                    className="object-cover"
+                <div className="flex items-start gap-3">
+                  <Avatar
+                    img={`https://ui-avatars.com/api/?name=${encodeURIComponent(report.user?.name || 'Pelapor')}&background=random&color=fff&size=128&bold=true&font-size=0.5`}
+                    alt={report.user?.name || 'Pelapor'}
+                    size="sm"
+                    rounded
+                    className="shadow-md"
                   />
-                  <div className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center">
-                    <HiOutlineCheckCircle className="mr-1 h-3 w-3" />
-                    {report.bupatiStatus}
-                  </div>
 
-                  <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm border border-gray-300 rounded-md p-2 shadow-sm transform rotate-6">
-                    <div className="text-xs font-medium text-gray-800 flex items-center">
-                      <HiOutlineCalendar className="mr-1 h-3 w-3" />
-                      {format(new Date(report.createdAt), 'dd MMM yyyy', {
-                        locale: id,
-                      })}
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start mb-1">
+                      <div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                          <HiOutlineCalendar className="h-3 w-3" />
+                          {format(new Date(report.createdAt), 'dd MMM yyyy', {
+                            locale: id,
+                          })}
+                          <span className="ml-2">
+                            • Ditujukan ke: {report.opd?.name || 'OPD'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <Tooltip content={report.bupatiStatus}>
+                        <Badge
+                          color={
+                            report.bupatiStatus === 'SELESAI'
+                              ? 'success'
+                              : 'warning'
+                          }
+                          size="sm"
+                          className="flex items-center gap-1"
+                        >
+                          <HiOutlineCheckCircle className="h-3 w-3" />
+                          <span>
+                            {report.bupatiStatus === 'SELESAI'
+                              ? 'Selesai'
+                              : 'Proses'}
+                          </span>
+                        </Badge>
+                      </Tooltip>
+                    </div>
+
+                    <div className="mt-2">
+                      <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                        {report.title}
+                      </h4>
+
+                      <AnimatePresence>
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{
+                            height: expandedReports[report.id]
+                              ? 'auto'
+                              : report.description?.length > 100
+                                ? '2.5rem'
+                                : 'auto',
+                            opacity: 1,
+                          }}
+                          className="overflow-hidden"
+                        >
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            {report.description}
+                          </p>
+                        </motion.div>
+                      </AnimatePresence>
+                      {report.description?.length > 100 && (
+                        <button
+                          onClick={() => toggleExpand(report.id)}
+                          className="text-blue-600 dark:text-blue-400 text-xs font-medium mt-1 hover:underline"
+                        >
+                          {expandedReports[report.id]
+                            ? 'Lihat lebih sedikit'
+                            : 'Lihat selengkapnya'}
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="mt-3 pt-2 border-t border-gray-100 dark:border-gray-600">
+                      <div className="flex flex-wrap gap-2">
+                        <Badge
+                          color="blue"
+                          className="inline-flex items-center max-w-full"
+                        >
+                          <div className="flex items-center gap-1 truncate">
+                            <HiOutlineTag className="h-3 w-3 flex-shrink-0" />
+                            <span className="font-medium whitespace-nowrap">
+                              Kategori:
+                            </span>
+                            <span className="truncate">
+                              {report.category || 'LAINNYA'}
+                            </span>
+                          </div>
+                        </Badge>
+
+                        <Badge
+                          color="purple"
+                          className="inline-flex items-center max-w-full"
+                        >
+                          <div className="flex items-center gap-1 truncate">
+                            <HiOutlineTag className="h-3 w-3 flex-shrink-0" />
+                            <span className="font-medium whitespace-nowrap">
+                              Subkategori:
+                            </span>
+                            <span className="truncate">
+                              {report.subcategory || 'LAINNYA'}
+                            </span>
+                          </div>
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between mt-1"></div>
                     </div>
                   </div>
-                </div>
-
-                <div className="p-5 dark:bg-gray-700">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-xs font-medium text-blue-600 bg-blue-100 rounded-full px-3 py-1 flex items-center">
-                      <HiOutlineTag className="mr-1 h-3 w-3" />
-                      {report.category || 'LAINNYA'}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 dark:text-gray-200">
-                    {report.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4 dark:text-gray-300">
-                    Laporan ini telah ditindaklanjuti oleh OPD terkait dan telah
-                    diselesaikan dengan baik.
-                  </p>
                 </div>
               </motion.div>
             ))}

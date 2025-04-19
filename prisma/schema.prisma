@@ -62,8 +62,8 @@ model Report {
   title       String  @db.VarChar(255)
   description String
   location    String  @default("empty")
-  category    String? @default("LAINNYA")
-  subcategory String? @default("LAINNYA") // ← subkategori baru
+  category    String
+  subcategory String
 
   priority     Priority
   bupatiStatus Status   @default(PENDING)

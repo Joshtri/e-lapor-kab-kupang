@@ -11,16 +11,15 @@ import ComparisonSection from '@/components/home/ComparisonSection';
 import FaqSection from '@/components/home/FaqSection';
 import Footer from '@/components/home/Footer';
 import HeroSection from '@/components/home/HeroSection';
-import LeadershipSection from '@/components/home/LeadershipSection'; // Import komponen baru
 import ParticlesBackground from '@/components/home/ParticlesBackground';
 import ProcessSection from '@/components/home/ProcessSection';
 import ReportsSection from '@/components/home/ReportsSection';
 import StatsSection from '@/components/home/StatsSection';
 import VisualizationSection from '@/components/home/VisualizationSection';
 import WhatsAppModal from '@/components/home/WhatsAppModal';
-import LeadershipSectionAlternative from './LeadershipSectionAlternative';
 import AppDownloadSection from '../AppDownloadSection';
 import ProductIntroSection from '../ProductIntroSection';
+import LeadershipSectionAlternative from './LeadershipSectionAlternative';
 
 export default function Home() {
   // Animation references

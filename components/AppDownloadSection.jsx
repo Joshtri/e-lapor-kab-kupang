@@ -214,7 +214,7 @@ export default function AppDownloadSection() {
                           <HiOutlineLocationMarker className="text-blue-600 h-5 w-5" />
                         </div>
                         <div className="flex-1">
-                          <div className="text-sm font-medium">
+                          <div className="text-sm font-medium dark:text-slate-700">
                             Laporan Jalan Rusak
                           </div>
                           <div className="text-xs text-gray-500">
@@ -231,7 +231,7 @@ export default function AppDownloadSection() {
                           <HiOutlineBell className="text-blue-600 h-5 w-5" />
                         </div>
                         <div className="flex-1">
-                          <div className="text-sm font-medium">
+                          <div className="text-sm font-medium dark:text-slate-700">
                             Laporan Lampu Jalan
                           </div>
                           <div className="text-xs text-gray-500">
@@ -248,7 +248,7 @@ export default function AppDownloadSection() {
                           <HiOutlineClock className="text-blue-600 h-5 w-5" />
                         </div>
                         <div className="flex-1">
-                          <div className="text-sm font-medium">
+                          <div className="text-sm font-medium dark:text-slate-700">
                             Laporan Sampah
                           </div>
                           <div className="text-xs text-gray-500">
@@ -309,8 +309,11 @@ export default function AppDownloadSection() {
                   Scan QR
                 </div>
                 <div className="w-24 h-24 relative flex items-center justify-center bg-white">
-                  {/* Replace with your actual QR code */}
-                  <div className="w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMzAgMjMwIj48cGF0aCBkPSJNMCAwaDIzMHYyMzBIMHoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMCAwaDUwdjUwSDB6TTYwIDBoNTB2NTBINjB6TTEyMCAwaDUwdjUwSDEyMHpNMTgwIDBoNTB2NTBIMTgwek0wIDYwaDUwdjUwSDB6TTEyMCA2MGg1MHY1MEgxMjB6TTE4MCA2MGg1MHY1MEgxODB6TTAgMTIwaDUwdjUwSDB6TTYwIDEyMGg1MHY1MEg2MHpNMTIwIDEyMGg1MHY1MEgxMjB6TTAgMTgwaDUwdjUwSDB6TTEyMCAxODBoNTB2NTBIMTIweiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==')] bg-contain"></div>
+                  <img
+                    src="/path-to-your-qr-code.png"
+                    alt="QR Code"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </motion.div>
 

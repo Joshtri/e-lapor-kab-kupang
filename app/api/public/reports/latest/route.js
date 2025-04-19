@@ -24,11 +24,19 @@ export async function GET() {
         id: true,
         title: true,
         category: true,
+        subcategory: true,
+        description: true,
         createdAt: true,
         bupatiStatus: true,
         opd: {
           select: {
             name: true,
+          },
+        },
+        user: {
+          select: {
+            name: true,
+            email: true,
           },
         },
       },
