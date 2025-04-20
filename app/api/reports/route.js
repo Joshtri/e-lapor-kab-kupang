@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/auth';
+import { transporter } from '@/lib/email/transporter'; // atau path sesuai lokasi transporter kamu
+// import { render } from '@react-email/render'; // jika kamu gunakan templating, opsional
 
 export async function GET(req) {
   try {
@@ -118,7 +120,7 @@ export async function POST(req) {
 
     const adminBupati = await prisma.user.findMany({
       where: { role: { in: ['ADMIN', 'BUPATI'] } },
-      select: { id: true, role: true },
+      select: { id: true, role: true, email: true, name: true },
     });
 
     const notifAdminBupati = adminBupati.map((u) => ({
@@ -132,7 +134,7 @@ export async function POST(req) {
     }));
 
     const notifOPD = {
-      opdId: opd.staff.id, // ✅ ganti dari userId → opdId
+      opdId: opd.staff.id,
       message: `Anda menerima laporan baru: "${newReport.title}"`,
       link: `/opd/laporan-warga/${newReport.id}`,
       createdAt: new Date(),
@@ -142,7 +144,6 @@ export async function POST(req) {
       data: [...notifAdminBupati, notifOPD],
     });
 
-    // ✅ Notifikasi ke pelapor sendiri
     await prisma.notification.create({
       data: {
         userId,
@@ -151,6 +152,43 @@ export async function POST(req) {
         createdAt: new Date(),
       },
     });
+
+    // ✅ Kirim email ke semua BUPATI
+    const bupatiEmails = adminBupati.filter(
+      (u) => u.role === 'BUPATI' && u.email,
+    );
+
+    for (const bupati of bupatiEmails) {
+      try {
+        // Get host from request headers to build dynamic URL
+        const host = req.headers.get('host');
+        const protocol = host.includes('localhost') ? 'http' : 'https';
+        const reportLink = `${protocol}://${host}/bupati-portal/laporan-warga/${newReport.id}`;
+
+        await transporter.sendMail({
+          from: `"LAPOR KK BUPATI" <${process.env.EMAIL_USER}>`,
+          to: bupati.email,
+          subject: '📬 Laporan Baru Telah Dikirim',
+          html: `
+        <p>Yth. ${bupati.name || 'Bupati'},</p>
+        <p>Sebuah laporan baru telah dikirim oleh warga.</p>
+        <p><strong>Judul:</strong> ${newReport.title}</p>
+        <p><strong>Kategori:</strong> ${newReport.category}</p>
+        <p><strong>Prioritas:</strong> ${newReport.priority}</p>
+        <p>
+          Silakan tinjau laporan ini melalui portal Bupati:<br/>
+          <a href="${reportLink}">
+            Lihat Laporan
+          </a>
+        </p>
+        <br/>
+        <p>Hormat kami,<br/>Sistem Lapor Warga</p>
+          `,
+        });
+      } catch (emailErr) {
+        console.error(`❌ Gagal kirim email ke ${bupati.email}:`, emailErr);
+      }
+    }
 
     return NextResponse.json(
       { message: 'Laporan berhasil dikirim.', report: newReport },
