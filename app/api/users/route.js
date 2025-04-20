@@ -3,9 +3,17 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import { decrypt, encrypt } from '@/lib/encryption';
  import { getMaskedNik } from '@/utils/mask';
+ import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function POST(req) {
   try {
+
+    const user = await getAuthenticatedUser(req);
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    
     const { name, nikNumber, contactNumber, email, password, role } =
       await req.json();
 
@@ -24,18 +32,11 @@ export async function POST(req) {
     }
 
     // Validasi panjang dan format NIK berdasarkan role
-    const isValidNik =
-      (role === 'OPD' && /^\d{18}$/.test(nikNumber)) ||
-      (role !== 'OPD' && /^\d{16}$/.test(nikNumber));
+    const isValidNik = /^\d{16}$/.test(nikNumber) || /^\d{18}$/.test(nikNumber);
 
     if (!isValidNik) {
       return NextResponse.json(
-        {
-          error:
-            role === 'OPD'
-              ? 'NIK OPD harus 18 digit angka.'
-              : 'NIK harus 16 digit angka.',
-        },
+        { error: 'NIK/NIP harus 16 atau 18 digit angka.' },
         { status: 400 },
       );
     }
@@ -96,7 +97,14 @@ export async function POST(req) {
 
 
 
-export async function GET() {
+export async function GET(req) {
+  const user = await getAuthenticatedUser(req);
+
+  // Proteksi: hanya ADMIN yang boleh akses
+  if (!user || user.role !== 'ADMIN') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const users = await prisma.user.findMany({
       orderBy: { createdAt: 'desc' },
@@ -120,10 +128,7 @@ export async function GET() {
       let decryptedNik = user.nikNumber;
 
       try {
-        if (
-          typeof user.nikNumber === 'string' &&
-          user.nikNumber.includes(':')
-        ) {
+        if (typeof user.nikNumber === 'string' && user.nikNumber.includes(':')) {
           decryptedNik = decrypt(user.nikNumber);
         }
       } catch (e) {
@@ -132,7 +137,7 @@ export async function GET() {
 
       return {
         ...user,
-        nikNumber: user.nikNumber, // tetap simpan encrypted as-is
+        nikNumber: user.nikNumber, // tetap terenkripsi
         nikMasked: decryptedNik ? getMaskedNik(decryptedNik) : null,
       };
     });
@@ -142,7 +147,7 @@ export async function GET() {
     console.error('Gagal mengambil data users:', error);
     return NextResponse.json(
       { error: 'Gagal mengambil data users.' },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
