@@ -24,11 +24,8 @@ export async function GET(req) {
         where: { opdId: user.id },
         orderBy: { createdAt: 'desc' },
       });
-    } else {
-      // Role lain seperti BUPATI atau ADMIN, misalnya bisa lihat semua
-      // Atau bisa juga batasi sesuai kebutuhan
+    } else if (user.role === 'ADMIN' || user.role === 'BUPATI') {
       notifications = await prisma.notification.findMany({
-        where: { userId: null, opdId: null }, // notifikasi global
         orderBy: { createdAt: 'desc' },
       });
     }

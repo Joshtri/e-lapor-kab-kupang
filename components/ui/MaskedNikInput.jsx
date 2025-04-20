@@ -5,34 +5,34 @@ import { TextInput, Label } from 'flowbite-react';
 import { HiOutlineIdentification, HiEye, HiEyeOff } from 'react-icons/hi';
 
 export default function MaskedNikInput({
-  value = '', // default untuk menghindari uncontrolled warning
+  value = '',
   onChange,
   error,
   helperText = '',
   id = 'nikNumber',
+  type = 'NIK', // 'NIK' | 'NIP'
 }) {
-  const [localValue, setLocalValue] = useState(value);
+  const [localValue, setLocalValue] = useState(value || '');
   const [isMasked, setIsMasked] = useState(false);
   const [showTemporarily, setShowTemporarily] = useState(false);
 
-  // Sync prop to local state (biar bisa di-reset dari luar)
+  const maxLength = type === 'NIP' ? 18 : 16;
+
   useEffect(() => {
-    setLocalValue(value || '');
+    setLocalValue(typeof value === 'string' ? value : '');
   }, [value]);
 
   useEffect(() => {
-    if (localValue?.length === 16) {
+    if (typeof localValue === 'string' && localValue.length === maxLength) {
       setIsMasked(true);
     } else {
       setIsMasked(false);
     }
-  }, [localValue]);
+  }, [localValue, maxLength]);
 
   useEffect(() => {
     if (showTemporarily) {
-      const timer = setTimeout(() => {
-        setShowTemporarily(false);
-      }, 3000);
+      const timer = setTimeout(() => setShowTemporarily(false), 3000);
       return () => clearTimeout(timer);
     }
   }, [showTemporarily]);
@@ -40,11 +40,12 @@ export default function MaskedNikInput({
   const handleChange = (e) => {
     const raw = e.target.value.replace(/\D/g, '');
     setLocalValue(raw);
-    onChange?.(raw); // kirim ke parent
+    onChange?.(raw);
   };
 
   const getMaskedValue = () => {
-    if (!localValue || localValue.length < 4) return localValue;
+    if (typeof localValue !== 'string' || localValue.length < 4)
+      return localValue || '';
     return '*'.repeat(localValue.length - 4) + localValue.slice(-4);
   };
 
@@ -52,7 +53,11 @@ export default function MaskedNikInput({
     <div>
       <Label htmlFor={id} className="mb-2 flex gap-2 items-center">
         <HiOutlineIdentification className="h-4 w-4 text-blue-600" />
-        <span>Nomor Identitas (NIK)</span>
+        <span>
+          {type === 'NIP'
+            ? 'Nomor Induk Pegawai (NIP)'
+            : 'Nomor Induk Kependudukan (NIK)'}
+        </span>
       </Label>
 
       <div className="relative">
@@ -60,13 +65,12 @@ export default function MaskedNikInput({
           id={id}
           type="text"
           inputMode="numeric"
-          maxLength={16}
-        
+          maxLength={maxLength}
           value={isMasked && !showTemporarily ? getMaskedValue() : localValue}
           onChange={handleChange}
           color={error ? 'failure' : 'gray'}
           helperText={error || helperText}
-         />
+        />
 
         {isMasked && (
           <button

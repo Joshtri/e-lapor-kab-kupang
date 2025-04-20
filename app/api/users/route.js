@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcrypt';
 import { decrypt, encrypt } from '@/lib/encryption';
+ import { getMaskedNik } from '@/utils/mask';
 
 export async function POST(req) {
   try {
@@ -93,6 +94,8 @@ export async function POST(req) {
 
 // 📌 GET (optional, kalau mau list semua user)
 
+
+
 export async function GET() {
   try {
     const users = await prisma.user.findMany({
@@ -113,10 +116,26 @@ export async function GET() {
       },
     });
 
-    const result = users.map((user) => ({
-      ...user,
-      nikNumber: decrypt(user.nikNumber), // aman, fallback jika error
-    }));
+    const result = users.map((user) => {
+      let decryptedNik = user.nikNumber;
+
+      try {
+        if (
+          typeof user.nikNumber === 'string' &&
+          user.nikNumber.includes(':')
+        ) {
+          decryptedNik = decrypt(user.nikNumber);
+        }
+      } catch (e) {
+        console.warn('❌ Gagal decrypt nikNumber user:', user.id);
+      }
+
+      return {
+        ...user,
+        nikNumber: user.nikNumber, // tetap simpan encrypted as-is
+        nikMasked: decryptedNik ? getMaskedNik(decryptedNik) : null,
+      };
+    });
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {

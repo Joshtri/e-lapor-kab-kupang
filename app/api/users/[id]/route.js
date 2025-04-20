@@ -94,21 +94,15 @@ export async function PATCH(req, { params }) {
     }
 
     // Validasi format NIK
-    const isValidNik =
-      (role === 'OPD' && /^\d{18}$/.test(nikNumber)) ||
-      (role !== 'OPD' && /^\d{16}$/.test(nikNumber));
+    const isValidIdentitas = /^\d{16}$/.test(nikNumber) || /^\d{18}$/.test(nikNumber);
 
-    if (!isValidNik) {
+    if (!isValidIdentitas) {
       return NextResponse.json(
-        {
-          error:
-            role === 'OPD'
-              ? 'NIP OPD harus 18 digit angka.'
-              : 'NIK harus 16 digit angka.',
-        },
+        { error: 'Nomor identitas harus terdiri dari 16 atau 18 digit angka.' },
         { status: 400 }
       );
     }
+    
 
     const encryptedNik = encrypt(nikNumber);
 

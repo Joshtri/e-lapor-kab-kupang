@@ -1,28 +1,31 @@
 'use client';
 
-import {
-  Modal,
-  Button,
-  Label,
-  TextInput,
-  Select,
-} from 'flowbite-react';
-import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Button, Label, Modal, Select, TextInput } from 'flowbite-react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import MaskedNikInput from '@/components/ui/MaskedNikInput';
+import ResetButton from '@/components/ui/ResetButton';
 
-const UserEditModal = ({ open, setOpen, user, onSuccess }) => {
+const UserEditModal = ({
+  open,
+  setOpen,
+  user,
+  onSuccess,
+  identitasType: initialType = 'NIK',
+}) => {
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { isSubmitting },
   } = useForm();
-  const [nikLabel, setNikLabel] = useState('NIK');
-  const [decryptedNik, setDecryptedNik] = useState('');
-  
-  // Prefill data ketika modal dibuka
+
+  const [nikDisplay, setNikDisplay] = useState('');
+  const [identitasType, setIdentitasType] = useState(initialType);
+
   useEffect(() => {
     if (user && open) {
       reset({
@@ -32,8 +35,10 @@ const UserEditModal = ({ open, setOpen, user, onSuccess }) => {
         nikNumber: user.nikNumber || '',
         role: user.role || '',
       });
+      setNikDisplay(user.nikMasked || '');
+      setIdentitasType(initialType); // reset tipe identitas ke default
     }
-  }, [user, open, reset]);
+  }, [user, open, reset, initialType]);
 
   const onSubmit = async (data) => {
     try {
@@ -59,7 +64,12 @@ const UserEditModal = ({ open, setOpen, user, onSuccess }) => {
 
           <div>
             <Label htmlFor="email" value="Email" />
-            <TextInput id="email" type="email" {...register('email')} required />
+            <TextInput
+              id="email"
+              type="email"
+              {...register('email')}
+              required
+            />
           </div>
 
           <div>
@@ -68,8 +78,31 @@ const UserEditModal = ({ open, setOpen, user, onSuccess }) => {
           </div>
 
           <div>
-            <Label htmlFor="nikNumber" value="NIK" />
-            <TextInput id="nikNumber" {...register('nikNumber')} readOnly />
+            <Label htmlFor="tipe" value="Tipe Identitas" />
+            <Select
+              id="tipe"
+              value={identitasType}
+              onChange={(e) => setIdentitasType(e.target.value)}
+            >
+              <option value="NIK">NIK (16 digit)</option>
+              <option value="NIP">NIP (18 digit)</option>
+            </Select>
+          </div>
+
+          <div>
+            <Label
+              htmlFor="nikNumber"
+              value={`${identitasType} (${identitasType === 'NIP' ? '18' : '16'} digit)`}
+            />
+            <MaskedNikInput
+              type={identitasType}
+              value={nikDisplay}
+              onChange={(val) => {
+                setNikDisplay(val);
+                setValue('nikNumber', val);
+              }}
+              helperText={`Masukkan ${identitasType === 'NIP' ? '18' : '16'} digit ${identitasType}`}
+            />
           </div>
 
           <div>
@@ -84,6 +117,19 @@ const UserEditModal = ({ open, setOpen, user, onSuccess }) => {
         </Modal.Body>
 
         <Modal.Footer className="flex justify-end">
+          <ResetButton
+            onReset={() => {
+              reset({
+                name: user.name || '',
+                email: user.email || '',
+                contactNumber: user.contactNumber || '',
+                nikNumber: user.nikNumber || '',
+                role: user.role || '',
+              });
+              setNikDisplay(user.nikMasked || '');
+              setIdentitasType(initialType); // reset tipe identitas
+            }}
+          />
           <Button type="submit" color="blue" isProcessing={isSubmitting}>
             Simpan
           </Button>

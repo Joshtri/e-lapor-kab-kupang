@@ -162,15 +162,15 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
             transition: { duration: 0.5 },
           },
         },
-        {
-          path: '/bupati-portal/logs',
-          name: 'Compose Mail',
-          icon: HiOutlinePencilAlt,
-          motion: {
-            whileHover: { y: [0, -3, 0], x: [0, 3, 0] },
-            transition: { duration: 0.5 },
-          },
-        },
+        // {
+        //   path: '/bupati-portal/logs',
+        //   name: 'Compose Mail',
+        //   icon: HiOutlinePencilAlt,
+        //   motion: {
+        //     whileHover: { y: [0, -3, 0], x: [0, 3, 0] },
+        //     transition: { duration: 0.5 },
+        //   },
+        // },
       ],
     },
   };
