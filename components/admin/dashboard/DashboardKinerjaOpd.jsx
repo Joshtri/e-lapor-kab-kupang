@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import jsPDF from "jspdf"
-import autoTable from "jspdf-autotable"
-import { motion } from "framer-motion"
+import { useEffect, useState } from 'react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { motion } from 'framer-motion';
 import {
   HiOutlineMail,
   HiOutlineDocumentDownload,
@@ -13,47 +13,47 @@ import {
   HiOutlineExclamation,
   HiOutlineFolder,
   HiOutlineCalendar,
-} from "react-icons/hi"
+} from 'react-icons/hi';
 
 const DashboardKinerjaOpd = () => {
-  const [summary, setSummary] = useState(null)
-  const [list, setList] = useState([])
-  const [ranking, setRanking] = useState(null)
-  const [overdue, setOverdue] = useState([])
-  const [categories, setCategories] = useState([])
-  const [monthlyTrend, setMonthlyTrend] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [summary, setSummary] = useState(null);
+  const [list, setList] = useState([]);
+  const [ranking, setRanking] = useState(null);
+  const [overdue, setOverdue] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [monthlyTrend, setMonthlyTrend] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleExportPDF = () => {
-    const doc = new jsPDF()
+    const doc = new jsPDF();
 
     // Add header with mail theme
-    doc.setFillColor(59, 130, 246) // Blue color
-    doc.rect(0, 0, 210, 10, "F")
+    doc.setFillColor(59, 130, 246); // Blue color
+    doc.rect(0, 0, 210, 10, 'F');
 
-    doc.setFont("helvetica", "bold")
-    doc.setFontSize(18)
-    doc.setTextColor(59, 130, 246) // Blue color
-    doc.text("Laporan Kinerja OPD", 14, 20)
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(59, 130, 246); // Blue color
+    doc.text('Laporan Kinerja OPD', 14, 20);
 
-    doc.setFontSize(10)
-    doc.setTextColor(100, 100, 100)
-    doc.text(`Dicetak pada: ${new Date().toLocaleDateString("id-ID")}`, 14, 28)
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Dicetak pada: ${new Date().toLocaleDateString('id-ID')}`, 14, 28);
 
-    doc.setDrawColor(220, 220, 220)
-    doc.line(14, 32, 196, 32)
+    doc.setDrawColor(220, 220, 220);
+    doc.line(14, 32, 196, 32);
 
     const tableColumn = [
-      "OPD",
-      "Total",
-      "Selesai",
-      "Proses",
-      "Ditolak",
-      "Pending",
-      "Rasio (%)",
-      "Waktu Respon",
-      "Waktu Selesai",
-    ]
+      'OPD',
+      'Total',
+      'Selesai',
+      'Proses',
+      'Ditolak',
+      'Pending',
+      'Rasio (%)',
+      'Waktu Respon',
+      'Waktu Selesai',
+    ];
 
     const tableRows = list.map((item) => [
       item.name,
@@ -65,53 +65,65 @@ const DashboardKinerjaOpd = () => {
       item.completionRate,
       item.avgResponseTime,
       item.avgCompletionTime,
-    ])
+    ]);
 
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
       startY: 40,
-      theme: "grid",
+      theme: 'grid',
       headStyles: {
         fillColor: [235, 245, 255],
         textColor: [59, 130, 246],
-        fontStyle: "bold",
+        fontStyle: 'bold',
       },
       alternateRowStyles: {
         fillColor: [248, 250, 252],
       },
-    })
+    });
 
-    doc.save("kinerja-opd.pdf")
-  }
+    doc.save('kinerja-opd.pdf');
+  };
 
   useEffect(() => {
     async function fetchAll() {
       try {
         const [s, l, r, o, c, m] = await Promise.all([
-          fetch("/api/reports/stats/admin-summary/opd?type=summary").then((res) => res.json()),
-          fetch("/api/reports/stats/admin-summary/opd?type=list").then((res) => res.json()),
-          fetch("/api/reports/stats/admin-summary/opd?type=ranking&sortBy=completionRate").then((res) => res.json()),
-          fetch("/api/reports/stats/admin-summary/opd?type=overdue").then((res) => res.json()),
-          fetch("/api/reports/stats/admin-summary/opd?type=categories").then((res) => res.json()),
-          fetch("/api/reports/stats/admin-summary/opd?type=monthlyTrend").then((res) => res.json()),
-        ])
+          fetch('/api/reports/stats/admin-summary/opd?type=summary').then(
+            (res) => res.json(),
+          ),
+          fetch('/api/reports/stats/admin-summary/opd?type=list').then((res) =>
+            res.json(),
+          ),
+          fetch(
+            '/api/reports/stats/admin-summary/opd?type=ranking&sortBy=completionRate',
+          ).then((res) => res.json()),
+          fetch('/api/reports/stats/admin-summary/opd?type=overdue').then(
+            (res) => res.json(),
+          ),
+          fetch('/api/reports/stats/admin-summary/opd?type=categories').then(
+            (res) => res.json(),
+          ),
+          fetch('/api/reports/stats/admin-summary/opd?type=monthlyTrend').then(
+            (res) => res.json(),
+          ),
+        ]);
 
-        setSummary(s)
-        setList(l)
-        setRanking(r)
-        setOverdue(o)
-        setCategories(c)
-        setMonthlyTrend(m)
+        setSummary(s);
+        setList(l);
+        setRanking(r);
+        setOverdue(o);
+        setCategories(c);
+        setMonthlyTrend(m);
       } catch (error) {
-        console.error("Error fetching dashboard data:", error)
+        'Error fetching dashboard data:', error;
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchAll()
-  }, [])
+    fetchAll();
+  }, []);
 
   if (loading)
     return (
@@ -122,7 +134,7 @@ const DashboardKinerjaOpd = () => {
           <div className="h-3 bg-blue-100 rounded w-24"></div>
         </div>
       </div>
-    )
+    );
 
   return (
     <motion.div
@@ -136,7 +148,9 @@ const DashboardKinerjaOpd = () => {
           <div className="bg-blue-100 p-2 rounded-full mr-3">
             <HiOutlineOfficeBuilding className="h-6 w-6 text-blue-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Kinerja OPD</h1>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+            Kinerja OPD
+          </h1>
         </div>
         <button
           onClick={handleExportPDF}
@@ -160,31 +174,31 @@ const DashboardKinerjaOpd = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <Card
             title="Total OPD"
-            value={summary?.totalOpd ?? "-"}
+            value={summary?.totalOpd ?? '-'}
             icon={<HiOutlineOfficeBuilding className="h-5 w-5" />}
             color="bg-blue-100 text-blue-600"
           />
           <Card
             title="Total Laporan"
-            value={summary?.totalReports ?? "-"}
+            value={summary?.totalReports ?? '-'}
             icon={<HiOutlineMail className="h-5 w-5" />}
             color="bg-purple-100 text-purple-600"
           />
           <Card
             title="Laporan Selesai"
-            value={summary?.selesai ?? "-"}
+            value={summary?.selesai ?? '-'}
             icon={<HiOutlineCheckCircle className="h-5 w-5" />}
             color="bg-green-100 text-green-600"
           />
           <Card
             title="Laporan Ditolak"
-            value={summary?.ditolak ?? "-"}
+            value={summary?.ditolak ?? '-'}
             icon={<HiOutlineExclamation className="h-5 w-5" />}
             color="bg-red-100 text-red-600"
           />
           <Card
             title="Rata-rata Respon"
-            value={summary?.avgResponseTime ?? "-"}
+            value={summary?.avgResponseTime ?? '-'}
             icon={<HiOutlineClock className="h-5 w-5" />}
             color="bg-orange-100 text-orange-600"
           />
@@ -218,10 +232,14 @@ const DashboardKinerjaOpd = () => {
                 ranking.top3.map((opd, i) => (
                   <li key={i} className="flex items-center">
                     <div className="w-8 h-8 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center mr-3 shadow-sm">
-                      <span className="text-blue-600 dark:text-blue-400 font-bold">{i + 1}</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-bold">
+                        {i + 1}
+                      </span>
                     </div>
                     <div className="flex-1">
-                      <div className="text-gray-800 dark:text-gray-200 font-medium">{opd.name}</div>
+                      <div className="text-gray-800 dark:text-gray-200 font-medium">
+                        {opd.name}
+                      </div>
                       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-1">
                         <div
                           className="bg-blue-600 h-2.5 rounded-full"
@@ -229,11 +247,15 @@ const DashboardKinerjaOpd = () => {
                         ></div>
                       </div>
                     </div>
-                    <span className="ml-3 font-bold text-blue-600 dark:text-blue-400">{opd.completionRate}%</span>
+                    <span className="ml-3 font-bold text-blue-600 dark:text-blue-400">
+                      {opd.completionRate}%
+                    </span>
                   </li>
                 ))
               ) : (
-                <li className="text-gray-500 dark:text-gray-400 italic">Tidak ada data</li>
+                <li className="text-gray-500 dark:text-gray-400 italic">
+                  Tidak ada data
+                </li>
               )}
             </ul>
           </div>
@@ -249,10 +271,14 @@ const DashboardKinerjaOpd = () => {
                 ranking.bottom3.map((opd, i) => (
                   <li key={i} className="flex items-center">
                     <div className="w-8 h-8 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center mr-3 shadow-sm">
-                      <span className="text-red-600 dark:text-red-400 font-bold">{i + 1}</span>
+                      <span className="text-red-600 dark:text-red-400 font-bold">
+                        {i + 1}
+                      </span>
                     </div>
                     <div className="flex-1">
-                      <div className="text-gray-800 dark:text-gray-200 font-medium">{opd.name}</div>
+                      <div className="text-gray-800 dark:text-gray-200 font-medium">
+                        {opd.name}
+                      </div>
                       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-1">
                         <div
                           className="bg-red-600 h-2.5 rounded-full"
@@ -260,11 +286,15 @@ const DashboardKinerjaOpd = () => {
                         ></div>
                       </div>
                     </div>
-                    <span className="ml-3 font-bold text-red-600 dark:text-red-400">{opd.completionRate}%</span>
+                    <span className="ml-3 font-bold text-red-600 dark:text-red-400">
+                      {opd.completionRate}%
+                    </span>
                   </li>
                 ))
               ) : (
-                <li className="text-gray-500 dark:text-gray-400 italic">Tidak ada data</li>
+                <li className="text-gray-500 dark:text-gray-400 italic">
+                  Tidak ada data
+                </li>
               )}
             </ul>
           </div>
@@ -288,7 +318,9 @@ const DashboardKinerjaOpd = () => {
         {overdue.length === 0 ? (
           <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-800/30 text-center">
             <HiOutlineCheckCircle className="h-10 w-10 mx-auto mb-2 text-green-500" />
-            <p className="text-green-800 dark:text-green-300 font-medium">Tidak ada laporan terlambat</p>
+            <p className="text-green-800 dark:text-green-300 font-medium">
+              Tidak ada laporan terlambat
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -301,7 +333,9 @@ const DashboardKinerjaOpd = () => {
                   <HiOutlineClock className="h-5 w-5 text-orange-500" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800 dark:text-gray-200">{opd.name}</div>
+                  <div className="font-medium text-gray-800 dark:text-gray-200">
+                    {opd.name}
+                  </div>
                   <div className="text-orange-600 dark:text-orange-400 font-bold">
                     {opd.overdueReports} laporan terlambat
                   </div>
@@ -336,9 +370,12 @@ const DashboardKinerjaOpd = () => {
                 <HiOutlineFolder className="h-5 w-5 text-purple-500" />
               </div>
               <div>
-                <div className="font-medium text-gray-800 dark:text-gray-200">{item.name}</div>
+                <div className="font-medium text-gray-800 dark:text-gray-200">
+                  {item.name}
+                </div>
                 <div className="text-purple-600 dark:text-purple-400">
-                  <span className="font-bold">{item.topCategory}</span> ({item.count} laporan)
+                  <span className="font-bold">{item.topCategory}</span> (
+                  {item.count} laporan)
                 </div>
               </div>
             </div>
@@ -379,15 +416,25 @@ const DashboardKinerjaOpd = () => {
               {list.map((item, index) => (
                 <tr
                   key={item.opdId}
-                  className={`border-t hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors ${index % 2 === 0 ? "bg-gray-50 dark:bg-gray-800/50" : ""}`}
+                  className={`border-t hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors ${index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-800/50' : ''}`}
                 >
                   <td className="p-3 font-medium">{item.name}</td>
                   <td className="p-3 text-center">{item.totalReports}</td>
-                  <td className="p-3 text-center text-green-600 dark:text-green-400 font-medium">{item.selesai}</td>
-                  <td className="p-3 text-center text-yellow-600 dark:text-yellow-400">{item.proses}</td>
-                  <td className="p-3 text-center text-red-600 dark:text-red-400">{item.ditolak}</td>
-                  <td className="p-3 text-center text-blue-600 dark:text-blue-400">{item.pending}</td>
-                  <td className="p-3 text-center font-bold">{item.completionRate}%</td>
+                  <td className="p-3 text-center text-green-600 dark:text-green-400 font-medium">
+                    {item.selesai}
+                  </td>
+                  <td className="p-3 text-center text-yellow-600 dark:text-yellow-400">
+                    {item.proses}
+                  </td>
+                  <td className="p-3 text-center text-red-600 dark:text-red-400">
+                    {item.ditolak}
+                  </td>
+                  <td className="p-3 text-center text-blue-600 dark:text-blue-400">
+                    {item.pending}
+                  </td>
+                  <td className="p-3 text-center font-bold">
+                    {item.completionRate}%
+                  </td>
                   <td className="p-3 text-center">{item.avgResponseTime}</td>
                   <td className="p-3 text-center">{item.avgCompletionTime}</td>
                 </tr>
@@ -428,15 +475,21 @@ const DashboardKinerjaOpd = () => {
                       <HiOutlineCalendar className="h-4 w-4 text-green-500" />
                     </div>
                     <div className="flex-1">
-                      <div className="text-gray-700 dark:text-gray-300">{m.month}</div>
+                      <div className="text-gray-700 dark:text-gray-300">
+                        {m.month}
+                      </div>
                       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
                         <div
                           className="bg-green-600 h-2 rounded-full"
-                          style={{ width: `${(m.count / Math.max(...opd.monthlyData.map((d) => d.count))) * 100}%` }}
+                          style={{
+                            width: `${(m.count / Math.max(...opd.monthlyData.map((d) => d.count))) * 100}%`,
+                          }}
                         ></div>
                       </div>
                     </div>
-                    <span className="ml-3 font-medium text-green-600 dark:text-green-400">{m.count} laporan</span>
+                    <span className="ml-3 font-medium text-green-600 dark:text-green-400">
+                      {m.count} laporan
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -445,8 +498,8 @@ const DashboardKinerjaOpd = () => {
         </div>
       </motion.section>
     </motion.div>
-  )
-}
+  );
+};
 
 function Card({ title, value, icon, color }) {
   return (
@@ -458,18 +511,38 @@ function Card({ title, value, icon, color }) {
         <div className={`p-2 rounded-full ${color} mr-3`}>{icon}</div>
         <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
       </div>
-      <p className="text-xl font-semibold text-gray-800 dark:text-white">{value}</p>
+      <p className="text-xl font-semibold text-gray-800 dark:text-white">
+        {value}
+      </p>
 
       {/* Envelope stamp-like decoration */}
       <div className="absolute bottom-2 right-2 opacity-10">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="2" width="20" height="20" rx="2" stroke="currentColor" strokeWidth="2" />
-          <path d="M8 12H16M12 8V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="2"
+            y="2"
+            width="20"
+            height="20"
+            rx="2"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <path
+            d="M8 12H16M12 8V16"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </svg>
       </div>
     </motion.div>
-  )
+  );
 }
 
-export default DashboardKinerjaOpd
-
+export default DashboardKinerjaOpd;

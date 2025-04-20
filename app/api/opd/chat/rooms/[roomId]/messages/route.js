@@ -53,7 +53,7 @@ export async function GET(req, { params }) {
 
     return NextResponse.json(formatted);
   } catch (err) {
-    console.error('Gagal ambil pesan:', err);
+    'Gagal ambil pesan:', err;
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },

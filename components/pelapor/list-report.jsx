@@ -1,10 +1,9 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Card, Badge, Spinner } from "flowbite-react";
-import { HiOutlineClock, HiOutlineExclamationCircle } from "react-icons/hi";
-
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Card, Badge, Spinner } from 'flowbite-react';
+import { HiOutlineClock, HiOutlineExclamationCircle } from 'react-icons/hi';
 
 const ListReport = ({ user }) => {
   const [reports, setReports] = useState([]);
@@ -18,7 +17,7 @@ const ListReport = ({ user }) => {
         );
         setReports(res.data);
       } catch (error) {
-        console.error("Gagal mengambil data laporan", error);
+        // ("Gagal mengambil data laporan", error);
       } finally {
         setLoading(false);
       }
@@ -73,15 +72,15 @@ const ListReport = ({ user }) => {
               </p>
               <div className="flex justify-between items-center mt-3">
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {new Date(report.createdAt).toLocaleDateString("id-ID")}
+                  {new Date(report.createdAt).toLocaleDateString('id-ID')}
                 </span>
                 <Badge
                   color={
-                    report.priority === "high"
-                      ? "red"
-                      : report.priority === "normal"
-                        ? "blue"
-                        : "green"
+                    report.priority === 'high'
+                      ? 'red'
+                      : report.priority === 'normal'
+                        ? 'blue'
+                        : 'green'
                   }
                 >
                   <HiOutlineExclamationCircle className="inline-block mr-1" />

@@ -65,7 +65,7 @@ export default function LaporBugCreatePage() {
 
       router.push('/pelapor/lapor-bug'); // Redirect to the bug report list page
     } catch (err) {
-      console.error(err);
+      err;
       toast.error('Gagal mengirim laporan bug.');
     }
   };

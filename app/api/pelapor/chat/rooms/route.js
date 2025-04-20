@@ -31,7 +31,7 @@ export async function GET(req) {
 
     return NextResponse.json(rooms);
   } catch (error) {
-    console.error('[GET /pelapor/chat/rooms]', error);
+    '[GET /pelapor/chat/rooms]', error;
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

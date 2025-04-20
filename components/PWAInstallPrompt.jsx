@@ -40,9 +40,9 @@ export default function PWAInstallPrompt() {
     const choice = await deferredPrompt.userChoice;
 
     if (choice.outcome === 'accepted') {
-      console.log('✅ User accepted install');
+      ('✅ User accepted install');
     } else {
-      console.log('❌ User dismissed install');
+      ('❌ User dismissed install');
     }
 
     setShowInstallPrompt(false);

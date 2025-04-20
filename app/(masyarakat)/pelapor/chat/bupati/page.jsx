@@ -33,7 +33,7 @@ export default function ChatBupatiPage() {
 
         setRoomId(room.id);
       } catch (err) {
-        console.error('Gagal inisialisasi room:', err);
+        'Gagal inisialisasi room:', err;
       }
     };
 
@@ -92,7 +92,7 @@ export default function ChatBupatiPage() {
         textareaRef.current?.focus();
       }, 0);
     } catch (err) {
-      console.error('Gagal mengirim pesan:', err);
+      'Gagal mengirim pesan:', err;
     } finally {
       setSending(false);
     }

@@ -22,7 +22,7 @@ export async function PATCH(req) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('❌ Gagal update opdId laporan:', error.message);
+    '❌ Gagal update opdId laporan:', error.message;
     return NextResponse.json(
       { error: 'Gagal mengupdate data.', detail: error.message },
       { status: 500 },

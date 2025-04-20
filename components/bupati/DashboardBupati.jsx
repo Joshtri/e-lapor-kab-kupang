@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Card, Spinner } from "flowbite-react";
+import React, { useState, useEffect } from 'react';
+import { Card, Spinner } from 'flowbite-react';
 import {
   FaClipboardList,
   FaUserFriends,
   FaCheckCircle,
   FaSpinner as FaSpinnerIcon,
   FaTimesCircle,
-} from "react-icons/fa";
-import axios from "axios";
+} from 'react-icons/fa';
+import axios from 'axios';
 
 const BupatiDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -22,11 +22,11 @@ const BupatiDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoadingStats(true);
-      const response = await axios.get("/api/reports/stats/admin-summary"); // API baru
+      const response = await axios.get('/api/reports/stats/admin-summary'); // API baru
 
       setStats(response.data.stats);
     } catch (error) {
-      console.error("Gagal mengambil data dashboard:", error);
+      'Gagal mengambil data dashboard:', error;
     } finally {
       setLoadingStats(false);
     }

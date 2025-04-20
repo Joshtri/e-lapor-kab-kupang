@@ -17,7 +17,7 @@ export async function PATCH(req, { params }) {
     if (!opdStatus) {
       return NextResponse.json(
         { error: 'Status OPD diperlukan.' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -39,7 +39,6 @@ export async function PATCH(req, { params }) {
         createdAt: new Date(),
       },
     });
-    
 
     // ✅ Kirim email ke pelapor
     await sendStatusUpdateEmail({
@@ -51,10 +50,10 @@ export async function PATCH(req, { params }) {
 
     return NextResponse.json(updatedReport);
   } catch (error) {
-    console.error('❌ Gagal update opdStatus:', error);
+    '❌ Gagal update opdStatus:', error;
     return NextResponse.json(
       { error: 'Gagal memperbarui status OPD.' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

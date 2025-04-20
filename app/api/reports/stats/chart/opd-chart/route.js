@@ -59,16 +59,17 @@ export async function GET(req) {
     const selesai = reports.filter(
       (r) => r.opdStatus === 'SELESAI' && r.assignedAt && r.respondedAt,
     );
-    
+
     let avgHandlingTime = null;
     if (selesai.length > 0) {
       const totalDays = selesai.reduce((sum, r) => {
-        const diff = (new Date(r.respondedAt) - new Date(r.assignedAt)) / (1000 * 60 * 60 * 24);
+        const diff =
+          (new Date(r.respondedAt) - new Date(r.assignedAt)) /
+          (1000 * 60 * 60 * 24);
         return sum + diff;
       }, 0);
       avgHandlingTime = parseFloat((totalDays / selesai.length).toFixed(1));
     }
-    
 
     // 4️⃣ Distribusi Prioritas
     const prioritasMap = { LOW: 0, MEDIUM: 0, HIGH: 0 };
@@ -97,7 +98,7 @@ export async function GET(req) {
       laporanTertundaLebih7Hari,
     });
   } catch (err) {
-    console.error('❌ Gagal generate statistik OPD:', err);
+    '❌ Gagal generate statistik OPD:', err;
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

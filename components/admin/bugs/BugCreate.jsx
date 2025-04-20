@@ -55,7 +55,7 @@ export default function AddBugReport({ currentUser }) {
         setUsers(data);
         setFilteredUsers(data);
       } catch (error) {
-        console.error('Error fetching users:', error);
+        'Error fetching users:', error;
         toast.error('Gagal memuat data pengguna');
       } finally {
         setLoadingUsers(false);
@@ -136,7 +136,7 @@ export default function AddBugReport({ currentUser }) {
         setSuccess(false);
       }, 3000);
     } catch (error) {
-      console.error('Error creating bug report:', error);
+      'Error creating bug report:', error;
       toast.error('Gagal membuat laporan bug');
     } finally {
       setSubmitting(false);

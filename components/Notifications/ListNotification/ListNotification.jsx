@@ -63,7 +63,7 @@ export default function NotificationList() {
       const totalItems = data.pagination?.total || data.length;
       setTotalPages(Math.ceil(totalItems / itemsPerPage));
     } catch (error) {
-      console.error(error);
+      error;
       toast.error('Gagal memuat notifikasi');
     } finally {
       setLoading(false);

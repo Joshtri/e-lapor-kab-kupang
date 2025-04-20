@@ -26,13 +26,16 @@ module.exports = {
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'no-debugger': 'warn',
     'no-unused-vars': 'off', // off default, pakai versi TS di bawah
-    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
     'unused-imports/no-unused-imports': 'error',
     'no-undef': 'error',
 
     // 🧹 Style (opsional, tapi bikin kode lebih rapi)
-    'semi': ['warn', 'never'],
-    'quotes': ['warn', 'single', { avoidEscape: true }],
+    semi: ['warn', 'never'],
+    quotes: ['warn', 'single', { avoidEscape: true }],
     'comma-dangle': ['warn', 'only-multiline'],
     'object-curly-spacing': ['warn', 'always'],
     'arrow-body-style': ['warn', 'as-needed'],
@@ -46,4 +49,4 @@ module.exports = {
       version: 'detect',
     },
   },
-}
+};

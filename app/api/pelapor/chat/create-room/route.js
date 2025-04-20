@@ -36,7 +36,7 @@ export async function POST(req) {
 
     return NextResponse.json(newRoom);
   } catch (error) {
-    console.error('[POST /pelapor/chat/create-room]', error);
+    '[POST /pelapor/chat/create-room]', error;
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

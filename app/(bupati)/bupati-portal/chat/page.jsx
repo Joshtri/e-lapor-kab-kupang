@@ -26,7 +26,7 @@ export default function ChatBupatiPage() {
           setSelectedRoom(res.data[0]);
         }
       } catch (err) {
-        console.error('Gagal memuat daftar chat:', err);
+        'Gagal memuat daftar chat:', err;
       }
     };
 
@@ -69,7 +69,7 @@ export default function ChatBupatiPage() {
       setMessage('');
       mutate(); // fetch ulang pesan dari server
     } catch (err) {
-      console.error('Gagal kirim pesan:', err);
+      'Gagal kirim pesan:', err;
     } finally {
       setSending(false);
     }

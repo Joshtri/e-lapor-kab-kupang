@@ -42,7 +42,7 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({ image: base64Image });
   } catch (error) {
-    console.error('[GET /reports/:id/image]', error);
+    '[GET /reports/:id/image]', error;
     return NextResponse.json(
       { message: 'Gagal mengambil gambar', error: error.message },
       { status: 500 },

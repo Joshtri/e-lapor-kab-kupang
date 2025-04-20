@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Spinner, Tooltip } from "flowbite-react";
+import { useState, useEffect } from 'react';
+import { Spinner, Tooltip } from 'flowbite-react';
 import {
   CartesianGrid,
   Line,
@@ -10,16 +10,16 @@ import {
   XAxis,
   YAxis,
   Tooltip as RechartsTooltip,
-} from "recharts";
-import axios from "axios";
+} from 'recharts';
+import axios from 'axios';
 
 const StatsReportByDailyCategory = () => {
   const [dailyCategoryStats, setDailyCategoryStats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(
-    new Date().toISOString().slice(0, 7)
+    new Date().toISOString().slice(0, 7),
   );
-  const [selectedCategory, setSelectedCategory] = useState("ALL");
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
 
   useEffect(() => {
     fetchDailyCategoryStats(selectedMonth, selectedCategory);
@@ -32,14 +32,11 @@ const StatsReportByDailyCategory = () => {
         `/api/reports/stats/chart/daily/daily-category`,
         {
           params: { month, category },
-        }
+        },
       );
       setDailyCategoryStats(response.data.dailyCategoryStats);
     } catch (error) {
-      console.error(
-        "Gagal mengambil data laporan harian berdasarkan kategori:",
-        error
-      );
+      'Gagal mengambil data laporan harian berdasarkan kategori:', error;
     } finally {
       setLoading(false);
     }
@@ -51,8 +48,8 @@ const StatsReportByDailyCategory = () => {
         Statistik Laporan Harian Berdasarkan Kategori
       </h1>
       <p className="mb-3 text-gray-500 dark:text-gray-400">
-        Statistik ini menampilkan jumlah laporan harian dalam bulan yang
-        dipilih berdasarkan kategori laporan.
+        Statistik ini menampilkan jumlah laporan harian dalam bulan yang dipilih
+        berdasarkan kategori laporan.
       </p>
 
       {/* 🔽 Dropdown untuk memilih bulan */}
@@ -71,9 +68,9 @@ const StatsReportByDailyCategory = () => {
             const month = date.toISOString().slice(0, 7);
             return (
               <option key={month} value={month}>
-                {date.toLocaleDateString("id-ID", {
-                  year: "numeric",
-                  month: "long",
+                {date.toLocaleDateString('id-ID', {
+                  year: 'numeric',
+                  month: 'long',
                 })}
               </option>
             );
@@ -119,8 +116,15 @@ const StatsReportByDailyCategory = () => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="day" />
             <YAxis />
-            <RechartsTooltip content={<CustomTooltip category={selectedCategory} />} />
-            <Line type="monotone" dataKey="total" stroke="#ff7300" strokeWidth={3} />
+            <RechartsTooltip
+              content={<CustomTooltip category={selectedCategory} />}
+            />
+            <Line
+              type="monotone"
+              dataKey="total"
+              stroke="#ff7300"
+              strokeWidth={3}
+            />
           </LineChart>
         </ResponsiveContainer>
       )}
@@ -140,10 +144,10 @@ const CustomTooltip = ({ active, payload, category }) => {
           <span className="font-semibold">Jumlah: </span>
           {payload[0].value} laporan
         </p>
-        {category === "ALL" && (
+        {category === 'ALL' && (
           <p className="text-sm text-gray-600 dark:text-gray-300">
             <span className="font-semibold">Kategori: </span>
-            {payload[0].payload.category || "Tidak diketahui"}
+            {payload[0].payload.category || 'Tidak diketahui'}
           </p>
         )}
       </div>

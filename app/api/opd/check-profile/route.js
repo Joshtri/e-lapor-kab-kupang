@@ -21,7 +21,7 @@ export async function GET() {
     if (!userId || role !== 'OPD') {
       return NextResponse.json(
         { error: 'Unauthorized or invalid role' },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -35,10 +35,10 @@ export async function GET() {
       profile: opdProfile ?? null,
     });
   } catch (error) {
-    console.error('Cek OPD profile error:', error);
+    'Cek OPD profile error:', error;
     return NextResponse.json(
       { error: 'Internal Server Error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

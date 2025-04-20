@@ -84,27 +84,6 @@ export default function Footer() {
                   Masuk
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/reports"
-                  className="text-gray-400 hover:text-white"
-                >
-                  Laporan Publik
-                </Link>
-              </li>
-              <li>
-                <Link href="/faq" className="text-gray-400 hover:text-white">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/privacy-policy"
-                  className="text-gray-400 hover:text-white"
-                >
-                  Kebijakan Privasi
-                </Link>
-              </li>
             </ul>
           </div>
         </div>

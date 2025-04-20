@@ -30,7 +30,7 @@ export async function PUT(request, params, id) {
 
     return NextResponse.json(updatedBug);
   } catch (error) {
-    console.error('[BUG_STATUS_UPDATE]', error);
+    // ('[BUG_STATUS_UPDATE]', error);
     return NextResponse.json(
       { error: 'Gagal mengubah status bug' },
       { status: 500 },

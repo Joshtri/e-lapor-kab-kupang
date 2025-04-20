@@ -53,7 +53,7 @@ export async function GET(req) {
 
     return NextResponse.json(reports);
   } catch (error) {
-    console.error('[GET_REPORTS_OPD_NOTIF_DASHBOARD]', error);
+    '[GET_REPORTS_OPD_NOTIF_DASHBOARD]', error;
     return NextResponse.json(
       { error: 'Gagal mengambil data notifikasi laporan untuk OPD.' },
       { status: 500 },

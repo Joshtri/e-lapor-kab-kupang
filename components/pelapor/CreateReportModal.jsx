@@ -59,7 +59,7 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
       const res = await axios.get('/api/opd/list');
       setOpds(res.data);
     } catch (error) {
-      console.error('Gagal mengambil OPD:', error);
+      // ('Gagal mengambil OPD:', error);
       toast.error('Gagal mengambil daftar OPD.');
     } finally {
       setLoadingOpds(false);
@@ -195,7 +195,7 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
       // Trigger refetch of stats
       if (onSuccess) onSuccess();
     } catch (error) {
-      console.error('Error submitting report:', error);
+      // ('Error submitting report:', error);
       toast.error(
         error.response?.data?.error ||
           'Gagal mengirim laporan. Silakan coba lagi.',

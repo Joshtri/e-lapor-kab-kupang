@@ -37,7 +37,7 @@ export async function PATCH(req, { params }) {
 
     return NextResponse.json(updatedReport);
   } catch (error) {
-    console.error('❌ Error updating report status:', error);
+    '❌ Error updating report status:', error;
     return NextResponse.json(
       { error: 'Gagal mengupdate status laporan.' },
       { status: 500 },

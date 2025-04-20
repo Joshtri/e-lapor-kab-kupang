@@ -17,7 +17,7 @@ export async function GET() {
 
     return NextResponse.json(availableUsers);
   } catch (error) {
-    console.error('❌ Gagal ambil user OPD yang tersedia:', error);
+    '❌ Gagal ambil user OPD yang tersedia:', error;
     return NextResponse.json(
       { error: 'Gagal memuat data user OPD' },
       { status: 500 },

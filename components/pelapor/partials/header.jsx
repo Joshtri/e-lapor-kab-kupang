@@ -18,7 +18,7 @@ import {
   HiOutlineMail,
   HiOutlineMenuAlt2,
   HiOutlineUserCircle,
-  HiPaperAirplane
+  HiPaperAirplane,
 } from 'react-icons/hi';
 import { toast } from 'sonner';
 
@@ -46,7 +46,7 @@ const HeaderPelapor = () => {
           notifRes.data.filter((n) => n.link.startsWith('/pelapor/')),
         );
       } catch (err) {
-        console.error('Gagal mengambil data:', err);
+        // ('Gagal mengambil data:', err);
       } finally {
         setLoadingUser(false);
         setLoadingNotifications(false);
@@ -73,7 +73,7 @@ const HeaderPelapor = () => {
         router.push('/auth/login');
       }, 1000);
     } catch (error) {
-      console.error('Logout Error:', error);
+      // ('Logout Error:', error);
       toast.error('Gagal logout. Silakan coba lagi.');
     }
   };
@@ -88,7 +88,7 @@ const HeaderPelapor = () => {
       );
       router.push(notif.link);
     } catch (err) {
-      console.error('Gagal memperbarui notifikasi:', err);
+      // ('Gagal memperbarui notifikasi:', err);
     }
   };
 

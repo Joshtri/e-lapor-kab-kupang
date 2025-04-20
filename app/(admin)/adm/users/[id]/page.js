@@ -35,7 +35,7 @@ export default function UserDetailPage() {
       setUser(user);
       setReports(reports || []);
     } catch (error) {
-      console.error('Gagal ambil detail user:', error);
+      // ('Gagal ambil detail user:', error);
     } finally {
       setLoading(false);
     }

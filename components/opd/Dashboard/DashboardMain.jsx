@@ -45,7 +45,7 @@ const DashboardMain = () => {
       const opdRes = await axios.get('/api/opd/staff-profile');
       setOpdProfile(opdRes.data);
     } catch (error) {
-      console.error('Gagal memuat dashboard atau profil:', error);
+      // ('Gagal memuat dashboard atau profil:', error);
       toast.error('Gagal memuat data dashboard.');
     } finally {
       setLoadingOnboarding(false);

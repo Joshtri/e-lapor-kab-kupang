@@ -66,7 +66,7 @@
 //       },
 //     );
 //   } catch (error) {
-//     console.error('Login Error:', error);
+//     ('Login Error:', error);
 //     return NextResponse.json(
 //       { error: 'Terjadi kesalahan pada server.' },
 //       { status: 500 },
@@ -161,7 +161,7 @@ export async function POST(req) {
       },
     );
   } catch (error) {
-    console.error('Login Error:', error);
+    ('Login Error:', error);
     return NextResponse.json(
       { error: 'Terjadi kesalahan pada server.' },
       { status: 500 },

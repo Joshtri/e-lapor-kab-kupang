@@ -80,7 +80,7 @@ export default function Header({
         const { data, status } = await axios.get('/api/auth/me');
         if (status === 200) setUser(data.user);
       } catch (e) {
-        console.error('fetch user error', e);
+        // ('fetch user error', e);
       } finally {
         setLoadingUser(false);
       }
@@ -90,7 +90,7 @@ export default function Header({
         const { data, status } = await axios.get('/api/notifications');
         if (status === 200) setNotifications(data);
       } catch (e) {
-        console.error('fetch notifications error', e);
+        // ('fetch notifications error', e);
       } finally {
         setLoadingNotifications(false);
       }
@@ -113,7 +113,7 @@ export default function Header({
         prev.map((x) => (x.id === n.id ? { ...x, isRead: true } : x)),
       );
     } catch (e) {
-      console.error(e);
+      // (e);
     }
   };
 
@@ -125,7 +125,7 @@ export default function Header({
       toast.success(cfg.logoutMsg);
       setTimeout(() => router.push('/auth/login'), 1500);
     } catch (e) {
-      console.error(e);
+      // (e);
       toast.error('Gagal logout. Silakan coba lagi.');
     } finally {
       setIsLoggingOut(false);

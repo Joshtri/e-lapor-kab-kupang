@@ -42,7 +42,7 @@ export async function GET(req) {
 
     return NextResponse.json({ dailyCategoryStats: dailyCategoryStatsRaw });
   } catch (error) {
-    console.error(
+    (
       '❌ Error fetching daily category report stats:',
       error.message,
       error,

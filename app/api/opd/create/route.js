@@ -12,7 +12,10 @@ export async function POST(req) {
     });
 
     if (!user || user.role !== 'OPD') {
-      return NextResponse.json({ error: 'User tidak valid atau bukan OPD' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'User tidak valid atau bukan OPD' },
+        { status: 400 },
+      );
     }
 
     // Cek apakah user sudah jadi staff OPD
@@ -21,7 +24,10 @@ export async function POST(req) {
     });
 
     if (existingOPD) {
-      return NextResponse.json({ error: 'User ini sudah memiliki data OPD' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'User ini sudah memiliki data OPD' },
+        { status: 400 },
+      );
     }
 
     // Simpan data OPD
@@ -38,7 +44,10 @@ export async function POST(req) {
 
     return NextResponse.json(newOpd);
   } catch (error) {
-    console.error('❌ Gagal membuat data OPD:', error);
-    return NextResponse.json({ error: 'Gagal membuat data OPD' }, { status: 500 });
+    '❌ Gagal membuat data OPD:', error;
+    return NextResponse.json(
+      { error: 'Gagal membuat data OPD' },
+      { status: 500 },
+    );
   }
 }

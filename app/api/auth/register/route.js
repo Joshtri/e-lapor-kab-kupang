@@ -9,7 +9,7 @@ export async function POST(req) {
     const { fullName, nikNumber, contactNumber, email, password } =
       await req.json();
 
-      const encryptedNik = encrypt(nikNumber);
+    const encryptedNik = encrypt(nikNumber);
 
     // Cek duplikasi
     const existingUser = await prisma.user.findFirst({
@@ -18,7 +18,7 @@ export async function POST(req) {
       },
     });
 
-    if (existingUser) { 
+    if (existingUser) {
       return NextResponse.json(
         { error: 'Email atau NIK sudah terdaftar' },
         { status: 400 },
@@ -49,7 +49,7 @@ export async function POST(req) {
       { status: 201 },
     );
   } catch (error) {
-    console.error(error);
+    error;
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

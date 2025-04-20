@@ -6,12 +6,12 @@ import DashboardStats from '@/components/admin/dashboard/dashboard-stats'; // �
 import NotificationPanel from '@/components/DashboardNotificationPanel'; // ✅
 import TabsComponent from '@/components/ui/tabs-group'; // ✅ Import Tabs
 import axios from 'axios';
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { HiOutlineMail } from "react-icons/hi";
+import { HiOutlineMail } from 'react-icons/hi';
 import DashboardKinerjaOpd from './dashboard/DashboardKinerjaOpd';
 
-const AdminDashboard = ({titleHeader}) => {
+const AdminDashboard = ({ titleHeader }) => {
   const [stats, setStats] = useState(null);
   const [chartData, setChartData] = useState([]);
   const [recentReports, setRecentReports] = useState([]);
@@ -42,7 +42,7 @@ const AdminDashboard = ({titleHeader}) => {
       setCategoryStats(categoryRes.data.categoryStats);
       setRecentReports(reportsRes.data.recentReports);
     } catch (error) {
-      console.error('Gagal mengambil data dashboard:', error);
+      'Gagal mengambil data dashboard:', error;
     } finally {
       setLoadingStats(false);
       setLoadingChart(false);
@@ -50,7 +50,6 @@ const AdminDashboard = ({titleHeader}) => {
     }
   };
 
- 
   return (
     <div className="p-6">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md border border-gray-200 dark:border-gray-700 mb-6">
@@ -76,7 +75,7 @@ const AdminDashboard = ({titleHeader}) => {
           </div>
         </div>
       </div>{' '}
-      <NotificationPanel/>
+      <NotificationPanel />
       <TabsComponent
         tabs={[
           {

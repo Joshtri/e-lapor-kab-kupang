@@ -45,7 +45,7 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({ user: userWithMaskedNik, reports });
   } catch (error) {
-    console.error('❌ Error fetching user detail:', error);
+    '❌ Error fetching user detail:', error;
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
     });
@@ -67,7 +67,7 @@ export async function DELETE(_req, { params }) {
 
     return NextResponse.json({ message: 'User berhasil dihapus' });
   } catch (error) {
-    console.error('❌ Error deleting user:', error);
+    '❌ Error deleting user:', error;
     return NextResponse.json(
       {
         error:
@@ -80,29 +80,29 @@ export async function DELETE(_req, { params }) {
   }
 }
 
-
 export async function PATCH(req, { params }) {
   try {
     const { id } = params;
-    const { name, email, contactNumber, role, nikNumber, password } = await req.json();
+    const { name, email, contactNumber, role, nikNumber, password } =
+      await req.json();
 
     if (!name || !email || !role || !nikNumber) {
       return NextResponse.json(
         { error: 'Field nama, email, role, dan NIK wajib diisi.' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Validasi format NIK
-    const isValidIdentitas = /^\d{16}$/.test(nikNumber) || /^\d{18}$/.test(nikNumber);
+    const isValidIdentitas =
+      /^\d{16}$/.test(nikNumber) || /^\d{18}$/.test(nikNumber);
 
     if (!isValidIdentitas) {
       return NextResponse.json(
         { error: 'Nomor identitas harus terdiri dari 16 atau 18 digit angka.' },
-        { status: 400 }
+        { status: 400 },
       );
     }
-    
 
     const encryptedNik = encrypt(nikNumber);
 
@@ -134,10 +134,10 @@ export async function PATCH(req, { params }) {
       },
     });
   } catch (error) {
-    console.error('Gagal mengupdate user:', error);
+    'Gagal mengupdate user:', error;
     return NextResponse.json(
       { error: 'Terjadi kesalahan saat mengupdate user.' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -49,7 +49,7 @@ export default function UserList() {
       const { data } = await axios.get('/api/users');
       setUsers(data);
     } catch (err) {
-      console.error(err);
+      err;
       toast.error('Gagal mengambil data user.');
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ export default function UserList() {
       // misal data.incompleteUsers memberikan array user.id
       setIncompleteProfiles(data.incompleteUsers.map((u) => u.id));
     } catch {
-      console.error('Gagal load incompleteProfiles');
+      ('Gagal load incompleteProfiles');
     }
   };
 
@@ -92,7 +92,7 @@ export default function UserList() {
       toast.success('User dihapus.');
       fetchUsers();
     } catch (err) {
-      console.error(err);
+      err;
       toast.error('Gagal menghapus user.');
     }
   };

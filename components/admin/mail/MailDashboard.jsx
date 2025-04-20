@@ -38,7 +38,7 @@ export default function MailDashboard() {
       const res = await axios.get('/api/users');
       setUsers(res.data);
     } catch (error) {
-      console.error('Gagal mengambil data users:', error);
+      'Gagal mengambil data users:', error;
       toast.error('Gagal mengambil data users.');
     } finally {
       setLoading(false);

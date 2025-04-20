@@ -69,7 +69,7 @@ export async function POST(req, context) {
 
     return NextResponse.json(newComment, { status: 201 });
   } catch (error) {
-    console.error('❌ Gagal menambahkan komentar:', error);
+    '❌ Gagal menambahkan komentar:', error;
     return NextResponse.json(
       { error: 'Gagal menambahkan komentar.' },
       { status: 500 },
@@ -100,7 +100,7 @@ export async function GET(req, context) {
 
     return NextResponse.json(comments);
   } catch (error) {
-    console.error('❌ Gagal mengambil komentar:', error);
+    '❌ Gagal mengambil komentar:', error;
     return NextResponse.json(
       { error: 'Gagal mengambil komentar.' },
       { status: 500 },

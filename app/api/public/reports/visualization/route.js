@@ -50,7 +50,7 @@ export async function GET() {
 
     return NextResponse.json({ pie, bar });
   } catch (error) {
-    console.error('[API ERROR]', error);
+    '[API ERROR]', error;
     return NextResponse.json(
       { error: 'Failed to fetch visualization data' },
       { status: 500 },

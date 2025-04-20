@@ -23,7 +23,7 @@ export async function GET(req, { params }) {
 
     return NextResponse.json(comments);
   } catch (error) {
-    console.error('[BUG_COMMENTS_GET]', error);
+    // ('[BUG_COMMENTS_GET]', error);
     return NextResponse.json(
       { error: 'Gagal mengambil data komentar' },
       { status: 500 },
@@ -69,7 +69,7 @@ export async function POST(req, { params }) {
 
     return NextResponse.json(newComment, { status: 201 });
   } catch (error) {
-    console.error('[BUG_COMMENTS_POST]', error);
+    // ('[BUG_COMMENTS_POST]', error);
     return NextResponse.json(
       { error: 'Gagal menambahkan komentar' },
       { status: 500 },

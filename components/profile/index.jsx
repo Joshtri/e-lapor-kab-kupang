@@ -42,7 +42,7 @@ const ProfileManagement = () => {
         setOpd(res.data?.opd);
       }
     } catch (error) {
-      console.error('Gagal mengambil profil user:', error);
+      'Gagal mengambil profil user:', error;
       toast.error('Gagal mengambil data profil.');
     } finally {
       setLoading(false);
@@ -96,8 +96,6 @@ const ProfileManagement = () => {
       .substring(0, 2);
   };
 
- 
-
   const handleSaveProfile = async (updatedData) => {
     try {
       const res = await axios.patch('/api/auth/update', updatedData);
@@ -105,7 +103,7 @@ const ProfileManagement = () => {
       toast.success('Profil berhasil diperbarui!');
     } catch (error) {
       toast.error('❌ Gagal memperbarui profil.');
-      console.error(error);
+      error;
     }
   };
 
@@ -226,8 +224,6 @@ const ProfileManagement = () => {
                   <p className="font-medium text-sm sm:text-base text-gray-900 dark:text-white break-words">
                     {user?.nikMasked}
                   </p>{' '}
-
-                  
                 </div>
               </motion.div>
 

@@ -42,7 +42,7 @@ export async function GET() {
 
     return NextResponse.json(opdList);
   } catch (error) {
-    console.error('Gagal ambil data OPD:', error);
+    'Gagal ambil data OPD:', error;
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

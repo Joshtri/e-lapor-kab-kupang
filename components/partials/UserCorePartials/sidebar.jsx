@@ -207,7 +207,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
           });
         }
       } catch (err) {
-        console.error('Failed to fetch unread counts:', err);
+        'Failed to fetch unread counts:', err;
       }
     };
 

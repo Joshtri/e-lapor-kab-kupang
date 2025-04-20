@@ -40,7 +40,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Error fetching admin summary:', error.message, error);
+    'Error fetching admin summary:', error.message, error;
     return NextResponse.json(
       { message: 'Gagal mengambil data statistik umum.', error: error.message },
       { status: 500 },

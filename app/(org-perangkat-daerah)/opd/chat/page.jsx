@@ -39,7 +39,7 @@ export default function ChatOpdPage() {
         setSelectedRoom(res.data[0]); // default buka pertama
       }
     } catch (err) {
-      console.error('Gagal mengambil daftar pelapor:', err);
+      'Gagal mengambil daftar pelapor:', err;
     }
   };
 
@@ -49,7 +49,7 @@ export default function ChatOpdPage() {
       const res = await axios.get(`/api/opd/chat/rooms/${roomId}/messages`);
       setMessages(res.data);
     } catch (err) {
-      console.error('Gagal mengambil pesan:', err);
+      'Gagal mengambil pesan:', err;
     } finally {
       setLoading(false);
     }
@@ -73,7 +73,7 @@ export default function ChatOpdPage() {
         }
       }, 0);
     } catch (err) {
-      console.error('Gagal kirim pesan:', err);
+      'Gagal kirim pesan:', err;
     } finally {
       setSending(false);
     }

@@ -65,7 +65,7 @@ export async function GET(req, { params }) {
       image: base64Image,
     });
   } catch (error) {
-    console.error('❌ Gagal ambil detail laporan:', error);
+    '❌ Gagal ambil detail laporan:', error;
     return NextResponse.json(
       { message: 'Gagal mengambil data laporan.', error: error.message },
       { status: 500 },

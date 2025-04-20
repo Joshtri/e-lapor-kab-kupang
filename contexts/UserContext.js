@@ -20,7 +20,7 @@ export const UserProvider = ({ children }) => {
       const res = await axios.get('/api/auth/me');
       setUser(res.data.user);
     } catch (error) {
-      // console.error('Gagal mengambil user:', error);
+      // ('Gagal mengambil user:', error);
     } finally {
       setLoading(false);
     }

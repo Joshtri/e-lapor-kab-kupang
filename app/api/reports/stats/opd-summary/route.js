@@ -76,7 +76,7 @@ export async function GET() {
 
     return NextResponse.json(grouped);
   } catch (error) {
-    console.error('Error:', error);
+    'Error:', error;
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

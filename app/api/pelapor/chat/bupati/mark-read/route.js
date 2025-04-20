@@ -12,7 +12,7 @@ export async function POST(req) {
     if (!roomId) {
       return NextResponse.json(
         { success: false, error: 'roomId is required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -30,7 +30,10 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('[POST /chat/read-messages]', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    '[POST /chat/read-messages]', error;
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 },
+    );
   }
 }

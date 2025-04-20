@@ -40,7 +40,7 @@ export default function UserTable({
       toast.success('User berhasil dihapus');
       onSuccess?.(); // reload data
     } catch (err) {
-      console.error(err);
+      err;
       toast.error(err.response?.data?.error || 'Gagal menghapus user');
     } finally {
       setLoadingId(null);

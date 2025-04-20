@@ -38,7 +38,7 @@ export default function ReportList() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
- 
+
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedImageReportId, setSelectedImageReportId] = useState(null);
@@ -55,7 +55,7 @@ export default function ReportList() {
       const res = await axios.get('/api/reports');
       setReports(res.data);
     } catch (error) {
-      console.error('Gagal mengambil data laporan:', error);
+      'Gagal mengambil data laporan:', error;
       toast.error('Gagal mengambil data laporan.');
     } finally {
       setLoading(false);

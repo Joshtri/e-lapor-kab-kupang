@@ -43,7 +43,7 @@ export default function DashboardNotificationPanelOpd() {
         const data = await res.json();
         setNotifications(data);
       } catch (err) {
-        console.error('Gagal memuat notifikasi laporan OPD:', err);
+        'Gagal memuat notifikasi laporan OPD:', err;
       } finally {
         setLoading(false);
       }

@@ -21,7 +21,7 @@ export default function BugCommentModal({ open, setOpen, bugReportId }) {
         );
         setComments(res.data);
       } catch (err) {
-        console.error('Gagal mengambil komentar bug:', err);
+        // ('Gagal mengambil komentar bug:', err);
       } finally {
         setLoading(false);
       }
@@ -44,7 +44,7 @@ export default function BugCommentModal({ open, setOpen, bugReportId }) {
       setComments((prev) => [res.data, ...prev]);
       setNewComment('');
     } catch (err) {
-      console.error('Gagal mengirim komentar:', err);
+      // ('Gagal mengirim komentar:', err);
     } finally {
       setSubmitting(false);
     }

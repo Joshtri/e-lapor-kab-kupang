@@ -45,7 +45,7 @@ export default function LogLaporanPage() {
         const res = await axios.get(`/api/reports?userId=${userId}`);
         setReports(res.data);
       } catch (error) {
-        console.error('Gagal mengambil laporan:', error);
+        'Gagal mengambil laporan:', error;
       } finally {
         setLoading(false);
       }

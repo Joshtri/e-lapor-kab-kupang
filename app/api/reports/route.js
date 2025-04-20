@@ -36,7 +36,7 @@ export async function GET(req) {
 
     return NextResponse.json(formatted);
   } catch (error) {
-    console.error('❌ Gagal ambil daftar laporan:', error);
+    '❌ Gagal ambil daftar laporan:', error;
     return NextResponse.json(
       { error: 'Gagal mengambil daftar laporan.' },
       { status: 500 },
@@ -186,7 +186,7 @@ export async function POST(req) {
           `,
         });
       } catch (emailErr) {
-        // console.error(`❌ Gagal kirim email ke ${bupati.email}:`, emailErr);
+        // (`❌ Gagal kirim email ke ${bupati.email}:`, emailErr);
       }
     }
 
@@ -195,7 +195,7 @@ export async function POST(req) {
       { status: 201 },
     );
   } catch (error) {
-    // console.error('❌ Gagal membuat laporan:', error);
+    // ('❌ Gagal membuat laporan:', error);
     return NextResponse.json(
       { error: 'Terjadi kesalahan server.', detail: error.message },
       { status: 500 },

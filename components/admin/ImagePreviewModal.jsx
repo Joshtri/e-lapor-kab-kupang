@@ -31,7 +31,7 @@ export default function ImagePreviewModal({
         const data = await res.json();
         setImageUrl(data.image);
       } catch (err) {
-        console.error('Gagal ambil gambar:', err.message);
+        'Gagal ambil gambar:', err.message;
         setImageUrl(null);
       } finally {
         setLoading(false);

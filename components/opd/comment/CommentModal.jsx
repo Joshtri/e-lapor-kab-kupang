@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Modal, Textarea, Button, Spinner } from "flowbite-react";
-import axios from "axios";
-import { toast } from "sonner";
+import React, { useEffect, useState } from 'react';
+import { Modal, Textarea, Button, Spinner } from 'flowbite-react';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 const CommentModal = ({ open, setOpen, reportId }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newComment, setNewComment] = useState("");
+  const [newComment, setNewComment] = useState('');
   const [user, setUser] = useState(null); // Menyimpan data user (bukan hanya ID)
   const [canComment, setCanComment] = useState(false); // Bupati dan OPD
 
@@ -21,12 +21,12 @@ const CommentModal = ({ open, setOpen, reportId }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("/api/auth/me");
+      const res = await axios.get('/api/auth/me');
       setUser(res.data.user);
-      setCanComment(["BUPATI", "OPD"].includes(res.data.user.role));
+      setCanComment(['BUPATI', 'OPD'].includes(res.data.user.role));
     } catch (error) {
-      console.error("Gagal mengambil user:", error);
-      toast.error("Gagal mengambil informasi user.");
+      // ("Gagal mengambil user:", error);
+      toast.error('Gagal mengambil informasi user.');
     }
   };
 
@@ -36,8 +36,8 @@ const CommentModal = ({ open, setOpen, reportId }) => {
       const res = await axios.get(`/api/reports/${reportId}/comments`);
       setComments(res.data);
     } catch (error) {
-      console.error("Gagal mengambil komentar:", error);
-      toast.error("Gagal mengambil komentar.");
+      // ("Gagal mengambil komentar:", error);
+      toast.error('Gagal mengambil komentar.');
     } finally {
       setLoading(false);
     }
@@ -46,7 +46,7 @@ const CommentModal = ({ open, setOpen, reportId }) => {
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
     if (!user?.id) {
-      toast.error("User tidak ditemukan.");
+      toast.error('User tidak ditemukan.');
       return;
     }
 
@@ -55,12 +55,12 @@ const CommentModal = ({ open, setOpen, reportId }) => {
         userId: user.id,
         comment: newComment,
       });
-      toast.success("Komentar ditambahkan!");
-      setNewComment("");
+      toast.success('Komentar ditambahkan!');
+      setNewComment('');
       fetchComments();
     } catch (error) {
-      console.error("Gagal menambahkan komentar:", error);
-      toast.error("Gagal menambahkan komentar.");
+      // ("Gagal menambahkan komentar:", error);
+      toast.error('Gagal menambahkan komentar.');
     }
   };
 
@@ -84,7 +84,7 @@ const CommentModal = ({ open, setOpen, reportId }) => {
                 className="p-3 bg-gray-100 dark:bg-gray-700 rounded"
               >
                 <p className="text-sm font-medium">
-                  {comment.user.role === "OPD" && comment.user.opd
+                  {comment.user.role === 'OPD' && comment.user.opd
                     ? comment.user.opd.name
                     : comment.user.name}
                 </p>
@@ -116,7 +116,8 @@ const CommentModal = ({ open, setOpen, reportId }) => {
 
         {!canComment && (
           <p className="text-red-500 text-sm mt-4">
-            Hanya pengguna dengan role Bupati atau OPD yang dapat memberikan komentar.
+            Hanya pengguna dengan role Bupati atau OPD yang dapat memberikan
+            komentar.
           </p>
         )}
       </Modal.Body>

@@ -35,7 +35,7 @@ const DashboardNotificationPanel = () => {
         const data = await res.json();
         setNotifications(data);
       } catch (err) {
-        console.error('Gagal memuat notifikasi laporan:', err);
+        'Gagal memuat notifikasi laporan:', err;
       } finally {
         setLoading(false);
       }

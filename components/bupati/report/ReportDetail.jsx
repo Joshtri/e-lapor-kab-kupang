@@ -39,7 +39,7 @@ const ReportView = () => {
       const res = await axios.get(`/api/reports/${id}`);
       setReport(res.data);
     } catch (error) {
-      console.error('Gagal mengambil detail laporan:', error);
+      'Gagal mengambil detail laporan:', error;
     } finally {
       setLoading(false);
     }

@@ -28,7 +28,7 @@ export default function VisualizationSection({ chartRef }) {
         setPieData(data.pie);
         setBarData(data.bar);
       } catch (err) {
-        console.error('Gagal memuat data visualisasi:', err);
+        'Gagal memuat data visualisasi:', err;
       }
     };
     fetchChartData();

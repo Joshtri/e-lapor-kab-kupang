@@ -30,7 +30,7 @@ export async function GET(req) {
 
     return NextResponse.json({ dailyReportStats: dailyReportStatsRaw || [] });
   } catch (error) {
-    console.error('❌ Error fetching daily report chart data:', error.message);
+    '❌ Error fetching daily report chart data:', error.message;
     return NextResponse.json(
       {
         message: 'Gagal mengambil data grafik laporan harian.',

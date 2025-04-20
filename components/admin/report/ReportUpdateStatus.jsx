@@ -36,7 +36,7 @@ export default function UpdateStatusModal({
       onSuccess?.(); // jika ada handler untuk refresh
       setOpen(false);
     } catch (error) {
-      console.error('❌ Gagal update status:', error);
+      '❌ Gagal update status:', error;
       toast.error('Gagal memperbarui status.');
     } finally {
       setLoading(false);

@@ -60,7 +60,7 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true, count: created.count });
   } catch (error) {
-    console.error('[SEND_NOTIFICATION_ERROR]', error);
+    '[SEND_NOTIFICATION_ERROR]', error;
     return NextResponse.json(
       { error: 'Gagal mengirim notifikasi' },
       { status: 500 },

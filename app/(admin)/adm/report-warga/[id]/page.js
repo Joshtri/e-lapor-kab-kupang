@@ -59,7 +59,7 @@ export default function ReportDetailPage() {
         const data = await res.json();
         setReport(data);
       } catch (error) {
-        console.error('Gagal ambil data laporan:', error);
+        // ('Gagal ambil data laporan:', error);
       } finally {
         setLoading(false);
       }

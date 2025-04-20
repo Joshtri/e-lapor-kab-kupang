@@ -37,7 +37,7 @@ export async function POST(req) {
 
     return NextResponse.json(created, { status: 201 });
   } catch (error) {
-    console.error('Gagal membuat profil OPD:', error);
+    'Gagal membuat profil OPD:', error;
     return NextResponse.json(
       { error: 'Terjadi kesalahan saat menyimpan profil OPD.' },
       { status: 500 },

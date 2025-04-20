@@ -24,7 +24,7 @@ export async function GET(req) {
 
     return NextResponse.json({ chartData });
   } catch (error) {
-    console.error('❌ Error fetching monthly chart data:', error.message);
+    '❌ Error fetching monthly chart data:', error.message;
     return NextResponse.json(
       {
         message: 'Gagal mengambil data grafik laporan.',

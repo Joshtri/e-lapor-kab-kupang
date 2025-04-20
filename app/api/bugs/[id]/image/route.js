@@ -23,7 +23,7 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({ image: base64Image });
   } catch (error) {
-    console.error('[GET /api/bugs/:id/image]', error);
+    // ('[GET /api/bugs/:id/image]', error);
     return NextResponse.json(
       { error: 'Gagal memuat lampiran' },
       { status: 500 },

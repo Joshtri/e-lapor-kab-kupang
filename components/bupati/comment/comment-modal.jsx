@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Modal, Textarea, Button, Spinner } from "flowbite-react";
-import axios from "axios";
-import { toast } from "sonner";
+import React, { useEffect, useState } from 'react';
+import { Modal, Textarea, Button, Spinner } from 'flowbite-react';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 const CommentModal = ({ open, setOpen, reportId }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newComment, setNewComment] = useState("");
+  const [newComment, setNewComment] = useState('');
   const [userId, setUserId] = useState(null); // ID user yang login
   const [isBupati, setIsBupati] = useState(false); // Pastikan hanya Bupati yang bisa komentar
 
@@ -21,13 +21,13 @@ const CommentModal = ({ open, setOpen, reportId }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("/api/auth/me");
-      console.log(res);
+      const res = await axios.get('/api/auth/me');
+      res;
       setUserId(res.data.user.id);
-      setIsBupati(res.data.user.role === "BUPATI"); // Pastikan user adalah Bupati
+      setIsBupati(res.data.user.role === 'BUPATI'); // Pastikan user adalah Bupati
     } catch (error) {
-      console.error("Gagal mengambil user:", error);
-      toast.error("Gagal mengambil informasi user.");
+      'Gagal mengambil user:', error;
+      toast.error('Gagal mengambil informasi user.');
     }
   };
 
@@ -37,8 +37,8 @@ const CommentModal = ({ open, setOpen, reportId }) => {
       const res = await axios.get(`/api/reports/${reportId}/comments`);
       setComments(res.data);
     } catch (error) {
-      console.error("Gagal mengambil komentar:", error);
-      toast.error("Gagal mengambil komentar.");
+      'Gagal mengambil komentar:', error;
+      toast.error('Gagal mengambil komentar.');
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ const CommentModal = ({ open, setOpen, reportId }) => {
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
     if (!userId) {
-      toast.error("User tidak ditemukan.");
+      toast.error('User tidak ditemukan.');
       return;
     }
 
@@ -56,12 +56,12 @@ const CommentModal = ({ open, setOpen, reportId }) => {
         userId, // Gunakan userId dari API /auth/me
         comment: newComment,
       });
-      toast.success("Komentar ditambahkan!");
-      setNewComment("");
+      toast.success('Komentar ditambahkan!');
+      setNewComment('');
       fetchComments();
     } catch (error) {
-      console.error("Gagal menambahkan komentar:", error);
-      toast.error("Gagal menambahkan komentar.");
+      'Gagal menambahkan komentar:', error;
+      toast.error('Gagal menambahkan komentar.');
     }
   };
 

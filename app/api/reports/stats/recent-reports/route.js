@@ -27,7 +27,7 @@ export async function GET() {
 
     return NextResponse.json({ recentReports });
   } catch (error) {
-    console.error('Error fetching recent reports:', error.message, error);
+    'Error fetching recent reports:', error.message, error;
     return NextResponse.json(
       { message: 'Gagal mengambil laporan terbaru.', error: error.message },
       { status: 500 },

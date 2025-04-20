@@ -21,13 +21,13 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(req) {
   try {
-    console.log('🚀 Forgot Password API Called');
+    ('🚀 Forgot Password API Called');
 
     const { email } = await req.json();
-    console.log('📩 Email received:', email);
+    '📩 Email received:', email;
 
     if (!email || typeof email !== 'string') {
-      console.error('❌ Invalid email input:', email);
+      '❌ Invalid email input:', email;
       return NextResponse.json({ error: 'Email tidak valid' }, { status: 400 });
     }
 
@@ -37,24 +37,24 @@ export async function POST(req) {
     });
 
     if (!user) {
-      console.error('❌ Email not found in database:', email);
+      '❌ Email not found in database:', email;
       return NextResponse.json(
         { error: 'Email tidak ditemukan' },
         { status: 404 },
       );
     }
 
-    console.log('✅ User found:', user.email);
+    '✅ User found:', user.email;
 
     // 🔑 Generate reset token
     const resetToken = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
-    console.log('🔑 Generated Reset Token:', resetToken);
+    '🔑 Generated Reset Token:', resetToken;
 
     // 🔐 Hash token sebelum disimpan
     const hashedToken = await bcrypt.hash(resetToken, 10);
-    console.log('🔒 Hashed Reset Token:', hashedToken);
+    '🔒 Hashed Reset Token:', hashedToken;
 
     // 🛠 Simpan token di database
     await prisma.user.update({
@@ -65,7 +65,7 @@ export async function POST(req) {
       }, // 1 jam
     });
 
-    console.log('💾 Reset Token saved to DB for user:', email);
+    '💾 Reset Token saved to DB for user:', email;
 
     // 🔗 Buat reset link
     const headersList = await headers();
@@ -74,7 +74,7 @@ export async function POST(req) {
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const resetLink = `${protocol}://${host}/auth/reset-password?token=${resetToken}`;
 
-    console.log('🔗 Generated Reset Link:', resetLink);
+    '🔗 Generated Reset Link:', resetLink;
 
     // 📤 Kirim email reset password
     const mailOptions = {
@@ -94,13 +94,13 @@ export async function POST(req) {
       email: user.email,
       resetLink,
     });
-    console.log('📩 Email sent to:', email);
+    '📩 Email sent to:', email;
 
     return NextResponse.json({
       message: 'Link reset password telah dikirim ke email.',
     });
   } catch (error) {
-    console.error('🔥 Server error in forget-password API:', error);
+    '🔥 Server error in forget-password API:', error;
     return NextResponse.json(
       { error: 'Terjadi kesalahan server, coba lagi nanti.' },
       { status: 500 },

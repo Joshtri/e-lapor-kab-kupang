@@ -36,7 +36,7 @@ export async function GET(req) {
 
     return NextResponse.json(opd, { status: 200 });
   } catch (error) {
-    console.error('Gagal mengambil data OPD:', error);
+    'Gagal mengambil data OPD:', error;
     return NextResponse.json(
       { error: 'Server error saat mengambil data OPD' },
       { status: 500 },

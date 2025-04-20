@@ -18,7 +18,7 @@ export async function GET(req) {
 
     return NextResponse.json({ priorityStats: priorityStatsRaw || [] });
   } catch (error) {
-    console.error(
+    (
       '❌ Error fetching priority chart data:',
       error.message,
       error,

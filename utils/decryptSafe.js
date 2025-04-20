@@ -11,7 +11,7 @@ export function getDecryptedNik(nikEncrypted) {
     const decrypted = decrypt(nikEncrypted);
     return decrypted || null;
   } catch (err) {
-    console.warn('❌ Decrypt failed:', err);
+    // console.warn('❌ Decrypt failed:', err);
     return null;
   }
 }

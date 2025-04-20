@@ -22,7 +22,7 @@ export async function DELETE(req, { params }) {
       { status: 200 },
     );
   } catch (error) {
-    console.error('[DELETE /api/notifications/:id]', error);
+    '[DELETE /api/notifications/:id]', error;
     return NextResponse.json(
       { error: 'Gagal menghapus notifikasi' },
       { status: 500 },

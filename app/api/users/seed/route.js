@@ -7,7 +7,10 @@ import { promises as fs } from 'fs';
 
 export async function POST() {
   try {
-    const filePath = path.join(process.cwd(), 'public/seed/data_opd_users.json');
+    const filePath = path.join(
+      process.cwd(),
+      'public/seed/data_opd_users.json',
+    );
     const fileContent = await fs.readFile(filePath, 'utf-8');
     const users = JSON.parse(fileContent);
 
@@ -25,7 +28,7 @@ export async function POST() {
       });
 
       if (existing) {
-        console.log(`⚠️ User ke-${i + 1} (${email}) sudah ada, dilewati.`);
+        `⚠️ User ke-${i + 1} (${email}) sudah ada, dilewati.`;
         continue;
       }
 
@@ -40,14 +43,14 @@ export async function POST() {
         },
       });
 
-      console.log(`✅ User ke-${i + 1} (${email}) berhasil disimpan.`);
+      `✅ User ke-${i + 1} (${email}) berhasil disimpan.`;
     }
 
     return NextResponse.json({
       message: 'Sukses menyimpan semua user OPD dari JSON.',
     });
   } catch (err) {
-    console.error('Gagal seeding user dari JSON:', err);
+    'Gagal seeding user dari JSON:', err;
     return NextResponse.json({ error: 'Gagal seeding user.' }, { status: 500 });
   }
 }

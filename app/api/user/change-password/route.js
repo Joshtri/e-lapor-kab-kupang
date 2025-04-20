@@ -1,15 +1,18 @@
-import { NextResponse } from "next/server";
-import { verify } from "jsonwebtoken";
-import { cookies } from "next/headers";
-import bcrypt from "bcrypt";
-import prisma from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import { verify } from 'jsonwebtoken';
+import { cookies } from 'next/headers';
+import bcrypt from 'bcrypt';
+import prisma from '@/lib/prisma';
 
 export async function PATCH(req) {
   const authCookies = cookies();
-  const token = authCookies.get("auth_token")?.value;
+  const token = authCookies.get('auth_token')?.value;
 
   if (!token) {
-    return NextResponse.json({ error: "Unauthorized - Token missing" }, { status: 401 });
+    return NextResponse.json(
+      { error: 'Unauthorized - Token missing' },
+      { status: 401 },
+    );
   }
 
   try {
@@ -22,7 +25,10 @@ export async function PATCH(req) {
     });
 
     if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
-      return NextResponse.json({ error: "Password lama salah!" }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Password lama salah!' },
+        { status: 400 },
+      );
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -32,12 +38,12 @@ export async function PATCH(req) {
       data: { password: hashedPassword },
     });
 
-    return NextResponse.json({ message: "Password berhasil diperbarui!" });
+    return NextResponse.json({ message: 'Password berhasil diperbarui!' });
   } catch (error) {
-    console.error("Error updating password:", error);
+    'Error updating password:', error;
     return NextResponse.json(
-      { message: "Gagal mengubah password", error: error.message },
-      { status: 500 }
+      { message: 'Gagal mengubah password', error: error.message },
+      { status: 500 },
     );
   }
 }

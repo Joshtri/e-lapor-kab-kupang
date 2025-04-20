@@ -32,14 +32,13 @@ export async function GET(req) {
 
     return NextResponse.json(notifications, { status: 200 });
   } catch (error) {
-    console.error('Gagal ambil notifikasi:', error);
+    'Gagal ambil notifikasi:', error;
     return NextResponse.json(
       { error: 'Gagal mengambil notifikasi' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-
 
 export async function POST(req) {
   try {

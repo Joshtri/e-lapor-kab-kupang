@@ -41,7 +41,7 @@ export default function ReportTable({ reports }) {
       }
       router.push(`/bupati-portal/laporan-warga/${report.id}`);
     } catch (err) {
-      console.error('Gagal update status terbaca:', err);
+      'Gagal update status terbaca:', err;
     } finally {
       setLoadingId(null);
     }

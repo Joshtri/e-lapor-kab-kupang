@@ -22,7 +22,10 @@ export async function GET(req) {
     });
 
     if (!opd) {
-      return NextResponse.json({ error: 'OPD tidak ditemukan' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'OPD tidak ditemukan' },
+        { status: 404 },
+      );
     }
 
     // Ambil semua report yang ditujukan ke OPD tersebut
@@ -41,7 +44,10 @@ export async function GET(req) {
 
     return NextResponse.json(reports);
   } catch (error) {
-    console.error('Gagal fetch laporan by OPD login:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    'Gagal fetch laporan by OPD login:', error;
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
   }
 }

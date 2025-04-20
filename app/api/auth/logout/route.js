@@ -17,7 +17,7 @@ export async function POST() {
       headers: { 'Set-Cookie': expiredCookie },
     });
   } catch (error) {
-    console.error('Logout Error:', error);
+    'Logout Error:', error;
     return NextResponse.json(
       { error: 'Terjadi kesalahan saat logout.' },
       { status: 500 },

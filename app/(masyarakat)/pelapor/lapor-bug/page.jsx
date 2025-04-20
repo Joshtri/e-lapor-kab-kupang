@@ -63,11 +63,11 @@ export default function LaporBugPage() {
           totalItems: res.data.totalItems,
         });
       } else {
-        console.error('Unexpected API response structure:', res.data);
+        'Unexpected API response structure:', res.data;
         setBugReports([]);
       }
     } catch (error) {
-      console.error('Gagal mengambil laporan bug:', error);
+      'Gagal mengambil laporan bug:', error;
       setBugReports([]);
     } finally {
       setLoading(false);

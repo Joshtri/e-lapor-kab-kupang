@@ -46,7 +46,7 @@ export async function PATCH(req, { params }) {
       report: updatedReport,
     });
   } catch (error) {
-    console.error('[UPDATE_REPORT_OPD_ERROR]', error);
+    '[UPDATE_REPORT_OPD_ERROR]', error;
     return NextResponse.json(
       { error: 'Terjadi kesalahan saat mengupdate laporan.' },
       { status: 500 },

@@ -35,10 +35,10 @@ export default function ReportList() {
     setLoading(true);
     try {
       const res = await axios.get('/api/reports');
-      console.log(res.data);
+      res.data;
       setReports(res.data);
     } catch (error) {
-      console.error('Gagal mengambil data laporan:', error);
+      'Gagal mengambil data laporan:', error;
       toast.error('Gagal mengambil data laporan.');
     } finally {
       setLoading(false);

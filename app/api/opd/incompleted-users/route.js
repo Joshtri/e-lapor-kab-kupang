@@ -19,15 +19,15 @@ export async function GET() {
 
     // Filter user OPD yang belum jadi staff (belum punya profil instansi)
     const incompleteUsers = opdUsers.filter(
-      (user) => !userIdsWithProfile.includes(user.id)
+      (user) => !userIdsWithProfile.includes(user.id),
     );
 
     return NextResponse.json({ incompleteUsers });
   } catch (error) {
-    console.error('Gagal mengambil data OPD yang belum onboarding:', error);
+    'Gagal mengambil data OPD yang belum onboarding:', error;
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -46,7 +46,7 @@ export async function POST(req) {
 
     return NextResponse.json({ message: 'Token valid' });
   } catch (error) {
-    console.error('🔥 Error verifying reset token:', error);
+    ('🔥 Error verifying reset token:', error);
     return NextResponse.json(
       { error: 'Terjadi kesalahan server' },
       { status: 500 },

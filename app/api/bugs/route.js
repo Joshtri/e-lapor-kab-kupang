@@ -1,6 +1,6 @@
 // File: app/api/bugs/route.ts
-import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -26,19 +26,24 @@ export async function GET() {
 
     return NextResponse.json(filtered);
   } catch (error) {
-    console.error('[BUGS_GET]', error);
-    return NextResponse.json({ error: 'Gagal mengambil data bug' }, { status: 500 });
+    '[BUGS_GET]', error;
+    return NextResponse.json(
+      { error: 'Gagal mengambil data bug' },
+      { status: 500 },
+    );
   }
 }
 
-
 export async function POST(req) {
   try {
-    const body = await req.json()
-    const { userId, title, description, priorityProblem } = body
+    const body = await req.json();
+    const { userId, title, description, priorityProblem } = body;
 
     if (!userId || !title || !description) {
-      return NextResponse.json({ error: 'Field tidak lengkap' }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Field tidak lengkap' },
+        { status: 400 },
+      );
     }
 
     const newBug = await prisma.bugReport.create({
@@ -48,11 +53,14 @@ export async function POST(req) {
         description,
         priorityProblem,
       },
-    })
+    });
 
-    return NextResponse.json(newBug, { status: 201 })
+    return NextResponse.json(newBug, { status: 201 });
   } catch (error) {
-    console.error('[BUGS_POST]', error)
-    return NextResponse.json({ error: 'Gagal membuat bug report' }, { status: 500 })
+    '[BUGS_POST]', error;
+    return NextResponse.json(
+      { error: 'Gagal membuat bug report' },
+      { status: 500 },
+    );
   }
 }

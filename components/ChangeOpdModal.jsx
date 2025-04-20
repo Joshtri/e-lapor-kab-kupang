@@ -28,7 +28,7 @@ const ChangeOpdModal = ({
       const data = await res.json();
       setOpds(data);
     } catch (error) {
-      console.error('Gagal memuat daftar OPD:', error);
+      'Gagal memuat daftar OPD:', error;
     }
   };
 
@@ -49,7 +49,7 @@ const ChangeOpdModal = ({
       onSuccess?.();
       onClose();
     } catch (err) {
-      console.error(err);
+      err;
       toast.error('Terjadi kesalahan saat mengupdate OPD.');
     } finally {
       setLoading(false);

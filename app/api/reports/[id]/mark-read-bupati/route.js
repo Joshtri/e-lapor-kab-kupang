@@ -21,7 +21,7 @@ export async function PATCH(req, { params }) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('❌ Gagal update isReadByBupati:', error);
+    '❌ Gagal update isReadByBupati:', error;
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

@@ -37,7 +37,7 @@ export async function GET(req, { params }) {
 
     return NextResponse.json({ image: base64Image });
   } catch (error) {
-    console.error('[BUG_REPORT_IMAGE]', error);
+    '[BUG_REPORT_IMAGE]', error;
     return NextResponse.json(
       { message: 'Gagal mengambil lampiran', error: error.message },
       { status: 500 },

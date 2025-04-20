@@ -21,28 +21,39 @@ export async function GET(req) {
       case 'monthlyTrend':
         return await handleMonthlyTrend();
       default:
-        return NextResponse.json({ message: 'Invalid type parameter' }, { status: 400 });
+        return NextResponse.json(
+          { message: 'Invalid type parameter' },
+          { status: 400 },
+        );
     }
   } catch (error) {
-    console.error('API Error:', error);
-    return NextResponse.json({ message: 'Server error', error: error.message }, { status: 500 });
+    'API Error:', error;
+    return NextResponse.json(
+      { message: 'Server error', error: error.message },
+      { status: 500 },
+    );
   }
 }
 
 async function handleSummary() {
   const totalOpd = await prisma.oPD.count();
   const totalReports = await prisma.report.count();
-  const selesai = await prisma.report.count({ where: { opdStatus: 'SELESAI' } });
-  const ditolak = await prisma.report.count({ where: { opdStatus: 'DITOLAK' } });
+  const selesai = await prisma.report.count({
+    where: { opdStatus: 'SELESAI' },
+  });
+  const ditolak = await prisma.report.count({
+    where: { opdStatus: 'DITOLAK' },
+  });
 
   const reports = await prisma.report.findMany({
     where: { assignedAt: { not: null }, respondedAt: { not: null } },
     select: { assignedAt: true, respondedAt: true },
   });
 
-  const avgMs = reports.reduce((total, r) => {
-    return total + (new Date(r.respondedAt) - new Date(r.assignedAt));
-  }, 0) / (reports.length || 1);
+  const avgMs =
+    reports.reduce((total, r) => {
+      return total + (new Date(r.respondedAt) - new Date(r.assignedAt));
+    }, 0) / (reports.length || 1);
 
   const avgDays = (avgMs / (1000 * 60 * 60 * 24)).toFixed(1);
 
@@ -95,7 +106,9 @@ async function handleList() {
 
     const lastResponse = opd.reports.reduce((latest, r) => {
       if (!r.respondedAt) return latest;
-      return !latest || new Date(r.respondedAt) > new Date(latest) ? r.respondedAt : latest;
+      return !latest || new Date(r.respondedAt) > new Date(latest)
+        ? r.respondedAt
+        : latest;
     }, null);
 
     return {
@@ -122,8 +135,10 @@ async function handleRanking(sortBy) {
 
   const sorted = [...data].sort((a, b) => {
     if (sortBy === 'completionRate') return b.completionRate - a.completionRate;
-    if (sortBy === 'avgResponseTime') return parseFloat(a.avgResponseTime) - parseFloat(b.avgResponseTime);
-    if (sortBy === 'avgCompletionTime') return parseFloat(a.avgCompletionTime) - parseFloat(b.avgCompletionTime);
+    if (sortBy === 'avgResponseTime')
+      return parseFloat(a.avgResponseTime) - parseFloat(b.avgResponseTime);
+    if (sortBy === 'avgCompletionTime')
+      return parseFloat(a.avgCompletionTime) - parseFloat(b.avgCompletionTime);
     return 0;
   });
 
@@ -158,7 +173,12 @@ async function handleOverdue() {
         return diffDays > 7;
       });
       return overdueReports.length > 0
-        ? { opdId: opd.id, name: opd.name, overdueReports: overdueReports.length, details: overdueReports }
+        ? {
+            opdId: opd.id,
+            name: opd.name,
+            overdueReports: overdueReports.length,
+            details: overdueReports,
+          }
         : null;
     })
     .filter(Boolean);
@@ -183,7 +203,9 @@ async function handleCategories() {
       categoryCount[r.category] = (categoryCount[r.category] || 0) + 1;
     });
 
-    const topCategory = Object.entries(categoryCount).sort((a, b) => b[1] - a[1])[0];
+    const topCategory = Object.entries(categoryCount).sort(
+      (a, b) => b[1] - a[1],
+    )[0];
 
     return {
       opdId: opd.id,
@@ -225,13 +247,17 @@ async function handleMonthlyTrend() {
       data[r.opdId] = { opdId: r.opdId, name: r.opd.name, monthlyData: {} };
     }
 
-    data[r.opdId].monthlyData[month] = (data[r.opdId].monthlyData[month] || 0) + 1;
+    data[r.opdId].monthlyData[month] =
+      (data[r.opdId].monthlyData[month] || 0) + 1;
   });
 
   const formatted = Object.values(data).map((d) => ({
     opdId: d.opdId,
     name: d.name,
-    monthlyData: Object.entries(d.monthlyData).map(([month, count]) => ({ month, count })),
+    monthlyData: Object.entries(d.monthlyData).map(([month, count]) => ({
+      month,
+      count,
+    })),
   }));
 
   return NextResponse.json(formatted);

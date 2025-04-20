@@ -5,8 +5,7 @@
   "lang": "id-ID",
   "dir": "ltr",
   "scope": "/",
-  
-  "start_url": "/",
+  "start_url": "/auth/login",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#9333ea",

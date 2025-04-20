@@ -44,7 +44,7 @@ export default function ChatOpdPage() {
       const res = await axios.get('/api/opd');
       setAllOpds(res.data);
     } catch (err) {
-      console.error('Gagal mengambil daftar OPD:', err);
+      'Gagal mengambil daftar OPD:', err;
     }
   };
 
@@ -54,7 +54,7 @@ export default function ChatOpdPage() {
       const opdRooms = res.data.filter((r) => r.opdId); // hanya yang ke OPD
       setRooms(opdRooms);
     } catch (err) {
-      console.error('Gagal mengambil daftar chat:', err);
+      'Gagal mengambil daftar chat:', err;
     }
   };
 
@@ -64,7 +64,7 @@ export default function ChatOpdPage() {
       const res = await axios.get(`/api/pelapor/chat/rooms/${roomId}/messages`);
       setMessages(res.data);
     } catch (err) {
-      console.error('Gagal mengambil pesan:', err);
+      'Gagal mengambil pesan:', err;
     } finally {
       setLoadingMessages(false);
     }
@@ -93,7 +93,7 @@ export default function ChatOpdPage() {
         }
       }, 0);
     } catch (err) {
-      console.error('Gagal kirim pesan:', err);
+      'Gagal kirim pesan:', err;
     } finally {
       setSending(false);
     }
@@ -130,7 +130,7 @@ export default function ChatOpdPage() {
       handleRoomSelect(newRoom);
       setShowNewChatModal(false);
     } catch (err) {
-      console.error('Gagal membuat chat baru:', err);
+      'Gagal membuat chat baru:', err;
     } finally {
       setCreatingChat(false);
     }

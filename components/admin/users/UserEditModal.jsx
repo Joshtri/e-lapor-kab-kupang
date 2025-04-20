@@ -47,7 +47,7 @@ const UserEditModal = ({
       setOpen(false);
       onSuccess?.();
     } catch (err) {
-      console.error(err);
+      err;
       toast.error('Gagal memperbarui user.');
     }
   };

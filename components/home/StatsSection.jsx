@@ -1,106 +1,112 @@
-"use client"
+'use client';
 
-import { useRef, useState, useEffect } from "react"
-import { Progress, Spinner } from "flowbite-react"
-import { motion } from "framer-motion"
+import { useRef, useState, useEffect } from 'react';
+import { Progress, Spinner } from 'flowbite-react';
+import { motion } from 'framer-motion';
 import {
   HiOutlineMail,
   HiMailOpen,
   HiPaperAirplane,
   HiOutlineThumbUp,
   HiOutlineExclamationCircle,
-} from "react-icons/hi"
+} from 'react-icons/hi';
 
 export default function StatsSection() {
-  const statsRef = useRef(null)
+  const statsRef = useRef(null);
   const [targetStats, setTargetStats] = useState({
     reports: 0,
     resolved: 0,
     inProgress: 0,
     satisfaction: 0,
-  })
+  });
 
   const [stats, setStats] = useState({
     reports: 0,
     resolved: 0,
     inProgress: 0,
     satisfaction: 0,
-  })
+  });
 
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [animationStarted, setAnimationStarted] = useState(false)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [animationStarted, setAnimationStarted] = useState(false);
 
   // Fetch real data from API
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        setLoading(true)
-        const res = await fetch("/api/public/stats")
+        setLoading(true);
+        const res = await fetch('/api/public/stats');
 
         if (!res.ok) {
-          throw new Error(`Error: ${res.status}`)
+          throw new Error(`Error: ${res.status}`);
         }
 
-        const data = await res.json()
-        setTargetStats(data)
-        setLoading(false)
+        const data = await res.json();
+        setTargetStats(data);
+        setLoading(false);
       } catch (error) {
-        console.error("Gagal mengambil data statistik:", error)
-        setError("Gagal memuat data statistik. Silakan coba lagi nanti.")
-        setLoading(false)
+        'Gagal mengambil data statistik:', error;
+        setError('Gagal memuat data statistik. Silakan coba lagi nanti.');
+        setLoading(false);
       }
-    }
+    };
 
-    fetchStats()
-  }, [])
+    fetchStats();
+  }, []);
 
   // Stats animation effect
   useEffect(() => {
-    if (loading || error || !targetStats || animationStarted) return
+    if (loading || error || !targetStats || animationStarted) return;
 
     const isInViewport = (element) => {
-      if (!element) return false
-      const rect = element.getBoundingClientRect()
-      return rect.top < window.innerHeight && rect.bottom >= 0
-
-    }
+      if (!element) return false;
+      const rect = element.getBoundingClientRect();
+      return rect.top < window.innerHeight && rect.bottom >= 0;
+    };
 
     const handleScroll = () => {
       if (isInViewport(statsRef.current) && !animationStarted) {
-        setAnimationStarted(true)
+        setAnimationStarted(true);
 
         const interval = setInterval(() => {
           setStats((prevStats) => {
-            const newStats = { ...prevStats }
-            let completed = true
+            const newStats = { ...prevStats };
+            let completed = true;
 
             Object.keys(targetStats).forEach((key) => {
               if (newStats[key] < targetStats[key]) {
-                const increment = Math.ceil(targetStats[key] / 50)
-                newStats[key] = Math.min(newStats[key] + increment, targetStats[key])
-                completed = false
+                const increment = Math.ceil(targetStats[key] / 50);
+                newStats[key] = Math.min(
+                  newStats[key] + increment,
+                  targetStats[key],
+                );
+                completed = false;
               }
-            })
+            });
 
-            if (completed) clearInterval(interval)
-            return newStats
-          })
-        }, 30)
+            if (completed) clearInterval(interval);
+            return newStats;
+          });
+        }, 30);
 
-        return () => clearInterval(interval)
+        return () => clearInterval(interval);
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener('scroll', handleScroll);
     // Check immediately in case the element is already in viewport
-    handleScroll()
+    handleScroll();
 
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [loading, error, targetStats, animationStarted])
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loading, error, targetStats, animationStarted]);
 
   return (
-    <div id="stats-section" ref={statsRef} className="bg-blue-50 py-16 dark:bg-gray-800">
+    <div
+      id="stats-section"
+      ref={statsRef}
+      className="bg-blue-50 py-16 dark:bg-gray-800"
+    >
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -114,17 +120,21 @@ export default function StatsSection() {
               <HiOutlineMail className="text-blue-600 dark:text-blue-400 h-8 w-8" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-200 mb-4">Transparansi Pengaduan</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-200 mb-4">
+            Transparansi Pengaduan
+          </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Kami berkomitmen untuk transparansi dalam menangani setiap pengaduan masyarakat. Berikut adalah statistik
-            pengaduan terkini:
+            Kami berkomitmen untuk transparansi dalam menangani setiap pengaduan
+            masyarakat. Berikut adalah statistik pengaduan terkini:
           </p>
         </motion.div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-12">
             <Spinner size="xl" />
-            <p className="mt-4 text-gray-600 dark:text-gray-300">Memuat data statistik...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-300">
+              Memuat data statistik...
+            </p>
           </div>
         ) : error ? (
           <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border border-red-200 dark:border-red-800/30 text-center">
@@ -145,10 +155,17 @@ export default function StatsSection() {
                   <HiOutlineMail className="h-8 w-8" />
                 </div>
               </div>
-              <h3 className="text-4xl font-bold text-gray-900 dark:text-gray-200 mb-2 text-center">{stats.reports}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-center">Total Laporan</p>
+              <h3 className="text-4xl font-bold text-gray-900 dark:text-gray-200 mb-2 text-center">
+                {stats.reports}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 text-center">
+                Total Laporan
+              </p>
               <div className="mt-4 h-1 w-full bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                <div className="h-1 bg-blue-500 rounded-full" style={{ width: "100%" }}></div>
+                <div
+                  className="h-1 bg-blue-500 rounded-full"
+                  style={{ width: '100%' }}
+                ></div>
               </div>
             </motion.div>
 
@@ -164,12 +181,18 @@ export default function StatsSection() {
                   <HiMailOpen className="h-8 w-8" />
                 </div>
               </div>
-              <h3 className="text-4xl font-bold text-gray-900 dark:text-gray-200 mb-2 text-center">{stats.resolved}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-center">Laporan Terselesaikan</p>
+              <h3 className="text-4xl font-bold text-gray-900 dark:text-gray-200 mb-2 text-center">
+                {stats.resolved}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 text-center">
+                Laporan Terselesaikan
+              </p>
               <div className="mt-4 h-1 w-full bg-green-100 dark:bg-green-900/30 rounded-full">
                 <div
                   className="h-1 bg-green-500 rounded-full"
-                  style={{ width: `${stats.reports > 0 ? (stats.resolved / stats.reports) * 100 : 0}%` }}
+                  style={{
+                    width: `${stats.reports > 0 ? (stats.resolved / stats.reports) * 100 : 0}%`,
+                  }}
                 ></div>
               </div>
             </motion.div>
@@ -189,11 +212,15 @@ export default function StatsSection() {
               <h3 className="text-4xl font-bold text-gray-900 dark:text-gray-200 mb-2 text-center">
                 {stats.inProgress}
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-center">Dalam Proses</p>
+              <p className="text-gray-600 dark:text-gray-300 text-center">
+                Dalam Proses
+              </p>
               <div className="mt-4 h-1 w-full bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
                 <div
                   className="h-1 bg-yellow-500 rounded-full"
-                  style={{ width: `${stats.reports > 0 ? (stats.inProgress / stats.reports) * 100 : 0}%` }}
+                  style={{
+                    width: `${stats.reports > 0 ? (stats.inProgress / stats.reports) * 100 : 0}%`,
+                  }}
                 ></div>
               </div>
             </motion.div>
@@ -211,15 +238,22 @@ export default function StatsSection() {
                 </div>
               </div>
               <div className="flex items-center justify-center mb-2">
-                <h3 className="text-4xl font-bold text-gray-900 dark:text-gray-200">{stats.satisfaction}%</h3>
+                <h3 className="text-4xl font-bold text-gray-900 dark:text-gray-200">
+                  {stats.satisfaction}%
+                </h3>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 text-center">Tingkat Kepuasan</p>
-              <Progress progress={stats.satisfaction} color="purple" className="mt-4" />
+              <p className="text-gray-600 dark:text-gray-300 text-center">
+                Tingkat Kepuasan
+              </p>
+              <Progress
+                progress={stats.satisfaction}
+                color="purple"
+                className="mt-4"
+              />
             </motion.div>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
-

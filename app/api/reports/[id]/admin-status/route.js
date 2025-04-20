@@ -71,7 +71,7 @@ export async function PATCH(req, { params }) {
 
     return NextResponse.json(updatedReport);
   } catch (error) {
-    console.error('❌ Gagal update status oleh admin/OPD/Bupati:', error);
+    '❌ Gagal update status oleh admin/OPD/Bupati:', error;
     return NextResponse.json(
       { error: 'Gagal mengupdate status laporan.' },
       { status: 500 },

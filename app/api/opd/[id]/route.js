@@ -29,7 +29,7 @@ export async function GET(req, { params }) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('❌ Gagal ambil detail OPD:', error);
+    '❌ Gagal ambil detail OPD:', error;
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
     });

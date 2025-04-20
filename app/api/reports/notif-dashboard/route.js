@@ -35,7 +35,7 @@ export async function GET() {
 
     return NextResponse.json(reports);
   } catch (error) {
-    console.error('[GET_REPORTS_NOTIF_DASHBOARD]', error);
+    '[GET_REPORTS_NOTIF_DASHBOARD]', error;
     return NextResponse.json(
       { error: 'Gagal mengambil data notifikasi laporan.' },
       { status: 500 },

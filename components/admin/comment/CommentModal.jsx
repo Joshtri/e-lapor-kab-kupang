@@ -1,25 +1,32 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Modal, Textarea, Button, Spinner, Avatar, Badge } from "flowbite-react";
-import axios from "axios";
-import { toast } from "sonner";
-import { 
-  HiMail, 
-  HiOutlineMail, 
-  HiPaperAirplane, 
-  HiUser, 
-  HiOfficeBuilding, 
+import React, { useEffect, useState } from 'react';
+import {
+  Modal,
+  Textarea,
+  Button,
+  Spinner,
+  Avatar,
+  Badge,
+} from 'flowbite-react';
+import axios from 'axios';
+import { toast } from 'sonner';
+import {
+  HiMail,
+  HiOutlineMail,
+  HiPaperAirplane,
+  HiUser,
+  HiOfficeBuilding,
   HiClock,
   HiOutlineMailOpen,
   HiShieldCheck,
-  HiChatAlt2
-} from "react-icons/hi";
+  HiChatAlt2,
+} from 'react-icons/hi';
 
 const CommentModal = ({ open, setOpen, reportId }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newComment, setNewComment] = useState("");
+  const [newComment, setNewComment] = useState('');
   const [userId, setUserId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isBupati, setIsBupati] = useState(false);
@@ -33,13 +40,13 @@ const CommentModal = ({ open, setOpen, reportId }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("/api/auth/me");
+      const res = await axios.get('/api/auth/me');
       setUserId(res.data.user.id);
       setCurrentUser(res.data.user);
-      setIsBupati(res.data.user.role === "BUPATI");
+      setIsBupati(res.data.user.role === 'BUPATI');
     } catch (error) {
-      console.error("Gagal mengambil user:", error);
-      toast.error("Gagal mengambil informasi user.");
+      'Gagal mengambil user:', error;
+      toast.error('Gagal mengambil informasi user.');
     }
   };
 
@@ -49,8 +56,8 @@ const CommentModal = ({ open, setOpen, reportId }) => {
       const res = await axios.get(`/api/reports/${reportId}/comments`);
       setComments(res.data);
     } catch (error) {
-      console.error("Gagal mengambil komentar:", error);
-      toast.error("Gagal mengambil komentar.");
+      'Gagal mengambil komentar:', error;
+      toast.error('Gagal mengambil komentar.');
     } finally {
       setLoading(false);
     }
@@ -59,7 +66,7 @@ const CommentModal = ({ open, setOpen, reportId }) => {
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
     if (!userId) {
-      toast.error("User tidak ditemukan.");
+      toast.error('User tidak ditemukan.');
       return;
     }
 
@@ -68,23 +75,28 @@ const CommentModal = ({ open, setOpen, reportId }) => {
         userId,
         comment: newComment,
       });
-      toast.success("Komentar ditambahkan!");
-      setNewComment("");
+      toast.success('Komentar ditambahkan!');
+      setNewComment('');
       fetchComments();
     } catch (error) {
-      console.error("Gagal menambahkan komentar:", error);
-      toast.error("Gagal menambahkan komentar.");
+      'Gagal menambahkan komentar:', error;
+      toast.error('Gagal menambahkan komentar.');
     }
   };
 
   // Helper function to get role badge color
   const getRoleBadgeColor = (role) => {
     switch (role) {
-      case "BUPATI": return "success";
-      case "ADMIN": return "purple";
-      case "OPD": return "info";
-      case "PELAPOR": return "gray";
-      default: return "gray";
+      case 'BUPATI':
+        return 'success';
+      case 'ADMIN':
+        return 'purple';
+      case 'OPD':
+        return 'info';
+      case 'PELAPOR':
+        return 'gray';
+      default:
+        return 'gray';
     }
   };
 
@@ -95,12 +107,12 @@ const CommentModal = ({ open, setOpen, reportId }) => {
       date: date.toLocaleDateString('id-ID', {
         day: 'numeric',
         month: 'long',
-        year: 'numeric'
+        year: 'numeric',
       }),
       time: date.toLocaleTimeString('id-ID', {
         hour: '2-digit',
-        minute: '2-digit'
-      })
+        minute: '2-digit',
+      }),
     };
   };
 
@@ -114,7 +126,7 @@ const CommentModal = ({ open, setOpen, reportId }) => {
           <span className="text-xl font-semibold">Komentar Laporan</span>
         </div>
       </Modal.Header>
-      
+
       <Modal.Body className="p-4">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-8">
@@ -137,50 +149,63 @@ const CommentModal = ({ open, setOpen, reportId }) => {
           <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
             {comments.map((comment) => {
               const formattedDate = formatDate(comment.createdAt);
-              const isBupatiComment = comment.user.role === "BUPATI";
-              const isOpdComment = comment.user.role === "OPD";
-              
+              const isBupatiComment = comment.user.role === 'BUPATI';
+              const isOpdComment = comment.user.role === 'OPD';
+
               return (
                 <div
                   key={comment.id}
                   className={`border-l-4 rounded-lg shadow-sm overflow-hidden ${
-                    isBupatiComment 
-                      ? 'border-green-500 bg-green-50' 
-                      : isOpdComment 
-                        ? 'border-blue-500 bg-blue-50' 
+                    isBupatiComment
+                      ? 'border-green-500 bg-green-50'
+                      : isOpdComment
+                        ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-300 bg-gray-50'
                   }`}
                 >
                   <div className="p-4">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex items-center">
-                        <Avatar 
-                          rounded 
+                        <Avatar
+                          rounded
                           size="md"
                           className="mr-3 "
                           style={{
-                            borderColor: isBupatiComment 
-                              ? 'var(--flowbite-success-200)' 
-                              : isOpdComment 
-                                ? 'var(--flowbite-info-200)' 
-                                : 'var(--flowbite-gray-200)'
+                            borderColor: isBupatiComment
+                              ? 'var(--flowbite-success-200)'
+                              : isOpdComment
+                                ? 'var(--flowbite-info-200)'
+                                : 'var(--flowbite-gray-200)',
                           }}
                         />
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold">{comment.user.name}</span>
-                            <Badge color={getRoleBadgeColor(comment.user.role)} size="sm">
+                            <span className="font-semibold">
+                              {comment.user.name}
+                            </span>
+                            <Badge
+                              color={getRoleBadgeColor(comment.user.role)}
+                              size="sm"
+                            >
                               {/* Render role icon and text separately */}
                               <div className="flex items-center">
-                                {comment.user.role === "BUPATI" && <HiShieldCheck className="mr-1 h-3 w-3" />}
-                                {comment.user.role === "ADMIN" && <HiUser className="mr-1 h-3 w-3" />}
-                                {comment.user.role === "OPD" && <HiOfficeBuilding className="mr-1 h-3 w-3" />}
-                                {comment.user.role === "PELAPOR" && <HiChatAlt2 className="mr-1 h-3 w-3" />}
+                                {comment.user.role === 'BUPATI' && (
+                                  <HiShieldCheck className="mr-1 h-3 w-3" />
+                                )}
+                                {comment.user.role === 'ADMIN' && (
+                                  <HiUser className="mr-1 h-3 w-3" />
+                                )}
+                                {comment.user.role === 'OPD' && (
+                                  <HiOfficeBuilding className="mr-1 h-3 w-3" />
+                                )}
+                                {comment.user.role === 'PELAPOR' && (
+                                  <HiChatAlt2 className="mr-1 h-3 w-3" />
+                                )}
                                 {comment.user.role}
                               </div>
                             </Badge>
                           </div>
-                          
+
                           {comment.user.opd && (
                             <div className="flex items-center text-sm text-gray-600 mt-1">
                               <HiOfficeBuilding className="mr-1 h-3 w-3" />
@@ -189,7 +214,7 @@ const CommentModal = ({ open, setOpen, reportId }) => {
                           )}
                         </div>
                       </div>
-                      
+
                       <div className="flex flex-col items-end">
                         <div className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs text-gray-500 flex items-center">
                           <HiClock className="mr-1 h-3 w-3" />
@@ -200,14 +225,16 @@ const CommentModal = ({ open, setOpen, reportId }) => {
                         </span>
                       </div>
                     </div>
-                    
-                    <div className={`p-3 rounded-lg ${
-                      isBupatiComment 
-                        ? 'bg-white border border-green-100' 
-                        : isOpdComment 
-                          ? 'bg-white border border-blue-100' 
-                          : 'bg-white border border-gray-100'
-                    }`}>
+
+                    <div
+                      className={`p-3 rounded-lg ${
+                        isBupatiComment
+                          ? 'bg-white border border-green-100'
+                          : isOpdComment
+                            ? 'bg-white border border-blue-100'
+                            : 'bg-white border border-gray-100'
+                      }`}
+                    >
                       <p className="whitespace-pre-line">{comment.comment}</p>
                     </div>
                   </div>
@@ -225,9 +252,11 @@ const CommentModal = ({ open, setOpen, reportId }) => {
                 <div className="bg-blue-100 p-2 rounded-full mr-2">
                   <HiOutlineMail className="text-blue-600 h-5 w-5" />
                 </div>
-                <h3 className="font-medium text-blue-800">Tambahkan Komentar Bupati</h3>
+                <h3 className="font-medium text-blue-800">
+                  Tambahkan Komentar Bupati
+                </h3>
               </div>
-              
+
               <Textarea
                 placeholder="Tulis komentar resmi sebagai Bupati..."
                 value={newComment}
@@ -235,10 +264,10 @@ const CommentModal = ({ open, setOpen, reportId }) => {
                 rows={4}
                 className="mb-3"
               />
-              
+
               <div className="flex justify-end">
-                <Button 
-                  color="blue" 
+                <Button
+                  color="blue"
                   onClick={handleAddComment}
                   disabled={!newComment.trim()}
                 >
@@ -255,7 +284,8 @@ const CommentModal = ({ open, setOpen, reportId }) => {
                 <HiShieldCheck className="text-gray-500 h-5 w-5" />
               </div>
               <p className="text-gray-600">
-                Hanya Bupati yang dapat memberikan komentar resmi pada laporan ini.
+                Hanya Bupati yang dapat memberikan komentar resmi pada laporan
+                ini.
               </p>
             </div>
           </div>

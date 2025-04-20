@@ -45,7 +45,7 @@ export async function PATCH(req) {
 
     return NextResponse.json({ message: 'Password berhasil diperbarui.' });
   } catch (err) {
-    console.error('Gagal update password:', err);
+    'Gagal update password:', err;
     return NextResponse.json(
       { error: 'Terjadi kesalahan saat mengubah password.' },
       { status: 500 },

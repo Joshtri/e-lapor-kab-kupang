@@ -1,12 +1,15 @@
-import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function POST(req) {
   try {
     const { notificationId } = await req.json();
 
     if (!notificationId) {
-      return NextResponse.json({ error: "ID notifikasi diperlukan" }, { status: 400 });
+      return NextResponse.json(
+        { error: 'ID notifikasi diperlukan' },
+        { status: 400 },
+      );
     }
 
     // ✅ Update status isRead ke true
@@ -15,9 +18,15 @@ export async function POST(req) {
       data: { isRead: true },
     });
 
-    return NextResponse.json({ message: "Notifikasi diperbarui" }, { status: 200 });
+    return NextResponse.json(
+      { message: 'Notifikasi diperbarui' },
+      { status: 200 },
+    );
   } catch (error) {
-    console.error("Gagal memperbarui notifikasi:", error);
-    return NextResponse.json({ error: "Terjadi kesalahan server" }, { status: 500 });
+    'Gagal memperbarui notifikasi:', error;
+    return NextResponse.json(
+      { error: 'Terjadi kesalahan server' },
+      { status: 500 },
+    );
   }
 }

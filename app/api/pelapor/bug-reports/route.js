@@ -83,7 +83,7 @@ export async function GET(req) {
       currentPage: page,
     });
   } catch (error) {
-    console.error('[BUG_REPORT_GET]', error);
+    '[BUG_REPORT_GET]', error;
     return NextResponse.json(
       { error: 'Gagal memuat bug report' },
       { status: 500 },
@@ -146,7 +146,7 @@ export async function POST(req) {
 
     return NextResponse.json(createdBug, { status: 201 });
   } catch (error) {
-    console.error('[BUG_REPORT_CREATE]', error);
+    '[BUG_REPORT_CREATE]', error;
     return NextResponse.json(
       { error: 'Gagal membuat laporan bug.' },
       { status: 500 },

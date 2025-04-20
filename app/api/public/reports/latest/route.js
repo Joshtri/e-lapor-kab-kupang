@@ -44,7 +44,7 @@ export async function GET() {
 
     return NextResponse.json(latestReports);
   } catch (error) {
-    console.error('[API ERROR]', error);
+    '[API ERROR]', error;
     return NextResponse.json(
       { message: 'Failed to fetch reports' },
       { status: 500 },

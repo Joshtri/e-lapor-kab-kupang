@@ -41,7 +41,7 @@ export default function ChatLayout({
         setSelectedRoom(data[0]);
       }
     } catch (error) {
-      console.error('Failed to load rooms:', error);
+      'Failed to load rooms:', error;
     }
   };
 
@@ -51,7 +51,7 @@ export default function ChatLayout({
       const data = await fetchMessages(roomId);
       setMessages(data);
     } catch (error) {
-      console.error('Failed to load messages:', error);
+      'Failed to load messages:', error;
     } finally {
       setLoading(false);
     }
@@ -82,7 +82,7 @@ export default function ChatLayout({
         ),
       );
     } catch (error) {
-      console.error('Failed to send message:', error);
+      'Failed to send message:', error;
     } finally {
       setSending(false);
     }

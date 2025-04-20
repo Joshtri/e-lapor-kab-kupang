@@ -38,10 +38,10 @@ export async function GET(request) {
 
     return NextResponse.json(formatted);
   } catch (error) {
-    console.error('[ERROR] Get Notifications:', error);
+    '[ERROR] Get Notifications:', error;
     return NextResponse.json(
       { message: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

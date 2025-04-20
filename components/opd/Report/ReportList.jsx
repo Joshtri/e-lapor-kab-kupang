@@ -31,7 +31,7 @@ export default function ReportList() {
       const user = res.data.user;
       setOpdId(user.opdId);
     } catch (error) {
-      console.error('Gagal mengambil data user login:', error);
+      // ('Gagal mengambil data user login:', error);
       toast.error('Gagal mengambil data user login.');
     }
   };
@@ -46,7 +46,7 @@ export default function ReportList() {
       const res = await axios.get('/api/reports/opd');
       setReports(res.data);
     } catch (error) {
-      console.error('Gagal ambil laporan:', error);
+      // ('Gagal ambil laporan:', error);
       toast.error('Gagal mengambil data laporan.');
     } finally {
       setLoading(false);

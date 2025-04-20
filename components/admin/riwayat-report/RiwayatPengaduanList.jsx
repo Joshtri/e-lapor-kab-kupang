@@ -33,7 +33,7 @@ export default function RiwayatPengaduanList() {
       const res = await axios.get('/api/reports');
       setRiwayat(res.data);
     } catch (error) {
-      console.error('Gagal mengambil data riwayat:', error);
+      'Gagal mengambil data riwayat:', error;
       toast.error('Gagal mengambil data riwayat.');
     } finally {
       setLoading(false);

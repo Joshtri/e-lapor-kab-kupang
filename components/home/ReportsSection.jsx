@@ -28,7 +28,7 @@ export default function ReportsSection() {
         const data = await res.json();
         setReports(data);
       } catch (error) {
-        console.error('Gagal mengambil laporan terbaru', error);
+        'Gagal mengambil laporan terbaru', error;
       }
     };
 

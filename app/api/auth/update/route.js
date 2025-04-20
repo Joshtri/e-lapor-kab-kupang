@@ -16,18 +16,17 @@ export async function PATCH(req) {
       where: { id: user.id },
       select: { nikNumber: true },
     });
-    
+
     let encryptedNik = undefined;
-    
+
     if (body.nikNumber) {
       // Jika NIK yang dikirim berbeda dari yang sudah terenkripsi, berarti user mengubahnya
       const isNikChanged = body.nikNumber !== existingUser?.nikNumber;
-    
+
       if (isNikChanged) {
         encryptedNik = encrypt(body.nikNumber);
       }
     }
-    
 
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
@@ -41,7 +40,7 @@ export async function PATCH(req) {
 
     return NextResponse.json({ user: updatedUser });
   } catch (error) {
-    console.error('[UPDATE_PROFILE]', error);
+    '[UPDATE_PROFILE]', error;
     return NextResponse.json(
       { error: 'Gagal memperbarui profil.' },
       { status: 500 },

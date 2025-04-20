@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Card, Spinner } from "flowbite-react";
-import { HiOutlineChatAlt2, HiOutlineUser } from "react-icons/hi";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Card, Spinner } from 'flowbite-react';
+import { HiOutlineChatAlt2, HiOutlineUser } from 'react-icons/hi';
 
 const ReportCommentView = ({ reportId }) => {
   const [comments, setComments] = useState([]);
@@ -18,10 +18,12 @@ const ReportCommentView = ({ reportId }) => {
   const fetchComments = async () => {
     try {
       const res = await axios.get(`/api/comments?reportId=${reportId}`);
-      const bupatiComments = res.data.filter(comment => comment.user.role === "BUPATI");
+      const bupatiComments = res.data.filter(
+        (comment) => comment.user.role === 'BUPATI',
+      );
       setComments(bupatiComments);
     } catch (error) {
-      console.error("Gagal mengambil komentar:", error);
+      'Gagal mengambil komentar:', error;
     } finally {
       setLoading(false);
     }
@@ -37,20 +39,33 @@ const ReportCommentView = ({ reportId }) => {
       {loading ? (
         <div className="flex justify-center items-center mt-4">
           <Spinner size="lg" />
-          <span className="ml-2 text-gray-600 dark:text-gray-300">Memuat komentar...</span>
+          <span className="ml-2 text-gray-600 dark:text-gray-300">
+            Memuat komentar...
+          </span>
         </div>
       ) : comments.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400 mt-2">Belum ada komentar dari Bupati.</p>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
+          Belum ada komentar dari Bupati.
+        </p>
       ) : (
         <div className="space-y-4 mt-4">
           {comments.map((comment) => (
-            <div key={comment.id} className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-900">
+            <div
+              key={comment.id}
+              className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-900"
+            >
               <div className="flex items-center gap-2 mb-2">
                 <HiOutlineUser className="w-5 h-5 text-gray-500" />
-                <span className="font-medium text-gray-800 dark:text-gray-200">{comment.user.name}</span>
+                <span className="font-medium text-gray-800 dark:text-gray-200">
+                  {comment.user.name}
+                </span>
               </div>
-              <p className="text-gray-700 dark:text-gray-300">{comment.comment}</p>
-              <p className="text-xs text-gray-500 mt-1">{new Date(comment.createdAt).toLocaleString()}</p>
+              <p className="text-gray-700 dark:text-gray-300">
+                {comment.comment}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                {new Date(comment.createdAt).toLocaleString()}
+              </p>
             </div>
           ))}
         </div>
