@@ -14,14 +14,14 @@ import {
 import axios from 'axios';
 import { toast } from 'sonner';
 import imageCompression from 'browser-image-compression';
-import { useUser } from '@/contexts/UserContext';
+// import { useUser } from '@/contexts/UserContext';
 import {
   getMainCategories,
   getSubcategoriesByText,
 } from '@/utils/reportCategories';
 
 export default function ReportCreateModal({ openModal, setOpenModal }) {
-  const { users } = useUser();
+  const [users, setUsers] = useState([]);
   const [opds, setOpds] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [imageFile, setImageFile] = useState(null); // ✅ untuk simpan file gambar
@@ -34,7 +34,10 @@ export default function ReportCreateModal({ openModal, setOpenModal }) {
   } = useForm();
 
   useEffect(() => {
-    if (openModal) fetchOpds();
+    if (openModal) {
+      fetchOpds();
+      fetchUsers();
+    }
   }, [openModal]);
 
   const fetchOpds = async () => {
@@ -43,6 +46,17 @@ export default function ReportCreateModal({ openModal, setOpenModal }) {
       setOpds(res.data);
     } catch (error) {
       toast.error('Gagal memuat daftar OPD');
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get('/api/users'); // ganti endpoint sesuai kebutuhan
+      const pelaporUsers = res.data.filter((u) => u.role === 'PELAPOR');
+
+      setUsers(pelaporUsers);
+    } catch (error) {
+      toast.error('Gagal memuat data pengguna');
     }
   };
 
@@ -127,7 +141,7 @@ export default function ReportCreateModal({ openModal, setOpenModal }) {
               {getMainCategories().map((cat) => (
                 <option key={cat.value} value={cat.value}>
                   {cat.label}
-              </option>
+                </option>
               ))}
             </Select>
             {errors.category && (
