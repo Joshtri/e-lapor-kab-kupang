@@ -15,6 +15,8 @@ import {
 } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
 import FloatingNavbarButton from '@/components/floating-navbar-button';
+import logoApp from '@/public/fixed-logo-app.png';
+import Image from 'next/image';
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
@@ -61,16 +63,17 @@ export default function Header() {
         initial={{ y: 0 }}
         animate={{ y: showNavbar ? 0 : '-100%' }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="fixed w-full z-50 top-0 bg-white dark:bg-gray-800 shadow-lg"
+        className="fixed w-full z-50 top-0 bg-white dark:bg-gray-800 shadow-lg  mb-20"
       >
         <div className="px-4 py-3 flex items-center justify-between">
           {/* Logo and Brand */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="relative w-10 h-10 flex items-center justify-center">
-              <div className="absolute inset-0 bg-blue-500 rounded-md transform rotate-3"></div>
-              <div className="absolute inset-0 bg-white dark:bg-gray-800 rounded-md flex items-center justify-center">
-                <HiOutlineMail className="text-blue-600 dark:text-blue-400 w-6 h-6" />
-              </div>
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative w-10 h-10">
+              <Image
+                src={logoApp} // simpan gambar di /public/logo-icon.png
+                alt="Logo Lapor KK"
+                className="object-contain rounded-md"
+              />
             </div>
             <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
               Lapor KK BUPATI
