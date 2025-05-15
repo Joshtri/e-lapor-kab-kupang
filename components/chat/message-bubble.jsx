@@ -6,9 +6,16 @@ import clsx from 'clsx';
 
 export default function MessageBubble({ message, isConsecutive = false }) {
   const isFromMe = message.fromMe;
-  const timestamp = new Date(message.createdAt).toLocaleTimeString([], {
+
+  const dateObj = new Date(message.createdAt);
+  const time = dateObj.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
+  });
+  const date = dateObj.toLocaleDateString([], {
+    day: '2-digit',
+    month: 'short', // misal: 15 May
+    year: 'numeric',
   });
 
   return (
@@ -34,17 +41,17 @@ export default function MessageBubble({ message, isConsecutive = false }) {
         {/* Message content */}
         <div className="whitespace-pre-wrap break-words">{message.content}</div>
 
-        {/* Time and status */}
+        {/* Time and date */}
         <div
           className={clsx(
-            'flex items-center text-[10px] mt-1',
+            'flex items-center text-[10px] mt-1 gap-1',
             isFromMe
               ? 'justify-end text-green-100'
               : 'justify-end text-gray-500',
           )}
         >
-          <span>{timestamp}</span>
-
+          <span>{date}</span>
+          <span>{time}</span>
           {isFromMe && (
             <span className="ml-1">
               <HiCheck className="h-3 w-3" />
