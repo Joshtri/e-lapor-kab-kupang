@@ -6,7 +6,6 @@ import Header from '@/components/partials/UserCorePartials/header';
 import Sidebar from '@/components/partials/UserCorePartials/sidebar';
 import { ThemeProvider } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { Toaster } from 'sonner';
 
 export default function BupatiLayout({ children }) {
   const [mounted, setMounted] = useState(false);
@@ -28,7 +27,7 @@ export default function BupatiLayout({ children }) {
         defaultTheme="light"
         enableSystem={false}
       >
-        <Toaster richColors position="top-right" />
+        {/* <Toaster richColors position="top-right" /> */}
         <div className="flex">
           <Sidebar
             role="bupati"

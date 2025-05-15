@@ -1,7 +1,7 @@
-"use client"
-import Link from "next/link"
-import { Button } from "flowbite-react"
-import { motion } from "framer-motion"
+'use client';
+import Link from 'next/link';
+import { Button } from 'flowbite-react';
+import { motion } from 'framer-motion';
 import {
   HiOutlineUserAdd,
   HiOutlinePhone,
@@ -9,19 +9,22 @@ import {
   HiOutlineMail,
   HiMailOpen,
   HiPaperAirplane,
-} from "react-icons/hi"
+} from 'react-icons/hi';
 
 export default function CardsSection({ openWhatsAppModal }) {
   // Card styling
-  const cardClass = "transform transition-all duration-500 hover:scale-105"
-  const innerClass = "flex flex-col h-full rounded-xl border border-gray-200 bg-white p-8 shadow-lg hover:shadow-xl dark:bg-slate-700 "
-  const contentClass = "flex flex-col flex-grow items-center text-center gap-6"
+  const cardClass = 'transform transition-all duration-500 hover:scale-105';
+  const innerClass =
+    'flex flex-col h-full rounded-xl border border-gray-200 bg-white p-8 shadow-lg hover:shadow-xl dark:bg-slate-700 ';
+  const contentClass = 'flex flex-col flex-grow items-center text-center gap-6';
 
   const iconWrapper = (bgColor, textColor, Icon) => (
-    <div className={`flex h-16 w-16 items-center justify-center rounded-full ${bgColor} ${textColor}`}>
+    <div
+      className={`flex h-16 w-16 items-center justify-center rounded-full ${bgColor} ${textColor}`}
+    >
       <Icon className="h-8 w-8" />
     </div>
-  )
+  );
 
   return (
     <div className="py-20 bg-blue-50 dark:bg-gray-800">
@@ -38,10 +41,12 @@ export default function CardsSection({ openWhatsAppModal }) {
               <HiOutlineMail className="text-blue-600 h-8 w-8" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-gray-200">Mulai Gunakan Layanan Kami</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-gray-200">
+            Mulai Gunakan Layanan Kami
+          </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
-            Pilih cara yang paling nyaman bagi Anda untuk menyampaikan pengaduan atau mendapatkan informasi dari
-            Pemerintah Kabupaten Kupang.
+            Pilih cara yang paling nyaman bagi Anda untuk menyampaikan pengaduan
+            atau mendapatkan informasi dari Pemerintah Kabupaten Kupang.
           </p>
         </motion.div>
 
@@ -56,23 +61,36 @@ export default function CardsSection({ openWhatsAppModal }) {
               className={cardClass}
               id="register-card"
             >
-              <div className={`${innerClass} border-t-4 border-purple-500 relative`}>
+              <div
+                className={`${innerClass} border-t-4 border-purple-500 relative`}
+              >
                 {/* Envelope flap */}
                 <div className="absolute top-0 left-0 right-0 h-6 bg-purple-500 transform -translate-y-4 skew-y-1 z-0"></div>
 
                 <div className={contentClass}>
-                  {iconWrapper("bg-purple-100", "text-purple-600", HiOutlineMail)}
+                  {iconWrapper(
+                    'bg-purple-100',
+                    'text-purple-600',
+                    HiOutlineMail,
+                  )}
                   <div>
-                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">Register</h2>
+                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">
+                      Register
+                    </h2>
                     <p className="text-gray-600 dark:text-gray-200">
-                      Buat akun E-Lapor untuk mulai mengirimkan pengaduan, menyampaikan aspirasi, dan mendapatkan
-                      informasi terkini dari Pemerintah Kabupaten Kupang.
+                      Buat akun E-Lapor untuk mulai mengirimkan pengaduan,
+                      menyampaikan aspirasi, dan mendapatkan informasi terkini
+                      dari Pemerintah Kabupaten Kupang.
                     </p>
                   </div>
                 </div>
                 <div className="w-full mt-6">
                   <Link href="/auth/register" className="w-full">
-                    <Button color="purple" size="lg" className="w-full flex items-center justify-center gap-2">
+                    <Button
+                      color="purple"
+                      size="lg"
+                      className="w-full flex items-center justify-center gap-2"
+                    >
                       <HiOutlineUserAdd className="h-5 w-5" />
                       Daftar Sekarang
                     </Button>
@@ -89,16 +107,21 @@ export default function CardsSection({ openWhatsAppModal }) {
               transition={{ duration: 0.5, delay: 0.1 }}
               className={cardClass}
             >
-              <div className={`${innerClass} border-t-4 border-green-500 relative`}>
+              <div
+                className={`${innerClass} border-t-4 border-green-500 relative`}
+              >
                 {/* Envelope flap open */}
                 <div className="absolute top-0 left-0 right-0 h-6 bg-green-500 transform -translate-y-4 skew-y-1 z-0"></div>
 
                 <div className={contentClass}>
-                  {iconWrapper("bg-green-100", "text-green-600", HiMailOpen)}
+                  {iconWrapper('bg-green-100', 'text-green-600', HiMailOpen)}
                   <div>
-                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">WhatsApp</h2>
+                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">
+                      WhatsApp
+                    </h2>
                     <p className="text-gray-600 dark:text-gray-200">
-                      Hubungi kami langsung melalui WhatsApp untuk pengaduan seputar layanan publik secara praktis.
+                      Hubungi kami langsung melalui WhatsApp untuk pengaduan
+                      seputar layanan publik secara praktis.
                     </p>
                   </div>
                 </div>
@@ -107,7 +130,15 @@ export default function CardsSection({ openWhatsAppModal }) {
                     gradientduotone="greenToBlue"
                     size="lg"
                     className="w-full flex items-center justify-center gap-2"
-                    onClick={openWhatsAppModal}
+                    onClick={() => {
+                      const message = encodeURIComponent(
+                        `Halo KK Yos & Sis Arumi,\n\nNIK: \nNAMA: \nAlamat: \n\nSaya ingin melaporkan\n\nDeskripsi Laporan: \n\nTerima kasih. UIS NENO NOKAN KIT.`,
+                      );
+                      window.open(
+                        `https://wa.me/6281237159777?text=${message}`,
+                        '_blank',
+                      );
+                    }}
                   >
                     <HiOutlinePhone className="h-5 w-5" />
                     Hubungi via WhatsApp
@@ -124,23 +155,31 @@ export default function CardsSection({ openWhatsAppModal }) {
               transition={{ duration: 0.5, delay: 0.2 }}
               className={cardClass}
             >
-              <div className={`${innerClass} border-t-4 border-blue-500 relative`}>
+              <div
+                className={`${innerClass} border-t-4 border-blue-500 relative`}
+              >
                 {/* Envelope flap */}
                 <div className="absolute top-0 left-0 right-0 h-6 bg-blue-500 transform -translate-y-4 skew-y-1 z-0"></div>
 
                 <div className={contentClass}>
-                  {iconWrapper("bg-blue-100", "text-blue-600", HiPaperAirplane)}
+                  {iconWrapper('bg-blue-100', 'text-blue-600', HiPaperAirplane)}
                   <div>
-                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">Login</h2>
+                    <h2 className="mb-3 text-2xl font-bold text-gray-800 dark:text-gray-200">
+                      Login
+                    </h2>
                     <p className="text-gray-600 dark:text-gray-200">
-                      Akses akun Anda untuk memantau status pengaduan, mendapatkan pembaruan, dan terhubung dengan
-                      layanan kami.
+                      Akses akun Anda untuk memantau status pengaduan,
+                      mendapatkan pembaruan, dan terhubung dengan layanan kami.
                     </p>
                   </div>
                 </div>
                 <div className="w-full mt-6">
                   <Link href="/auth/login" className="w-full">
-                    <Button color="blue" size="lg" className="w-full flex items-center justify-center gap-2">
+                    <Button
+                      color="blue"
+                      size="lg"
+                      className="w-full flex items-center justify-center gap-2"
+                    >
                       <HiOutlineLogin className="h-5 w-5" />
                       Masuk
                     </Button>
@@ -152,6 +191,5 @@ export default function CardsSection({ openWhatsAppModal }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

@@ -144,7 +144,13 @@ export default function ChatBupatiPage() {
                     >
                       <p className="mb-1">{msg.content}</p>
                       <span className="text-[10px] text-gray-500 block text-right">
-                        {new Date(msg.createdAt).toLocaleTimeString('id-ID')}
+                        {new Date(msg.createdAt).toLocaleString('id-ID', {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </span>
                     </div>
                   ))
