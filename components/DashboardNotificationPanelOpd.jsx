@@ -3,14 +3,16 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, Badge, Tooltip, Spinner } from 'flowbite-react';
+import { Card, Badge, Tooltip, Spinner, Button } from 'flowbite-react';
 import {
   HiOutlineSpeakerphone,
   HiOutlineCheckCircle,
   HiOutlineEyeOff,
   HiOutlineChevronDown,
   HiOutlineChevronUp,
+  HiOutlinePencil,
 } from 'react-icons/hi';
+import ChangeOpdModal from '@/components/ChangeOpdModal'; // sesuaikan path
 
 // Helper function to get status color
 const getStatusColor = (status) => {
@@ -28,6 +30,9 @@ export default function DashboardNotificationPanelOpd() {
   const [openIndex, setOpenIndex] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState(null);
 
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -135,6 +140,20 @@ export default function DashboardNotificationPanelOpd() {
                             <HiOutlineChevronDown className="h-4 w-4" />
                           )}
                         </button>
+
+                        <Button
+                          color="blue"
+                          size="xs"
+                          pill
+                          className="mt-2"
+                          onClick={() => {
+                            setSelectedReportId(item.id);
+                            setShowModal(true);
+                          }}
+                        >
+                          <HiOutlinePencil className="w-4 h-4 mr-1" />
+                          Ubah OPD
+                        </Button>
                       </div>
 
                       <AnimatePresence>
@@ -206,6 +225,20 @@ export default function DashboardNotificationPanelOpd() {
             </ul>
           </div>
         )}
+
+        <ChangeOpdModal
+          show={showModal}
+          reportId={selectedReportId}
+          currentOpdId={
+            notifications.find((r) => r.id === selectedReportId)?.opd?.id ||
+            null
+          }
+          onClose={() => setShowModal(false)}
+          onSuccess={() => {
+            setShowModal(false);
+            // Optional: lakukan fetch ulang data notifikasi agar terlihat perubahan OPD-nya
+          }}
+        />
       </Card>
     </motion.div>
   );
