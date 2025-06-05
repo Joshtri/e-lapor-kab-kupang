@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { motion } from 'framer-motion';
@@ -14,6 +15,7 @@ import {
   HiOutlineFolder,
   HiOutlineCalendar,
 } from 'react-icons/hi';
+import LoadingMail from '@/components/ui/loading/LoadingMail';
 
 const DashboardKinerjaOpd = () => {
   const [summary, setSummary] = useState(null);
@@ -126,15 +128,7 @@ const DashboardKinerjaOpd = () => {
   }, []);
 
   if (loading)
-    return (
-      <div className="flex justify-center items-center p-12">
-        <div className="animate-pulse flex flex-col items-center">
-          <HiOutlineMail className="h-12 w-12 text-blue-300 mb-4" />
-          <div className="h-4 bg-blue-200 rounded w-32 mb-2"></div>
-          <div className="h-3 bg-blue-100 rounded w-24"></div>
-        </div>
-      </div>
-    );
+    return <LoadingMail />
 
   return (
     <motion.div
@@ -500,7 +494,6 @@ const DashboardKinerjaOpd = () => {
     </motion.div>
   );
 };
-
 function Card({ title, value, icon, color }) {
   return (
     <motion.div
@@ -544,5 +537,12 @@ function Card({ title, value, icon, color }) {
     </motion.div>
   );
 }
+
+Card.propTypes = {
+  title: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  icon: PropTypes.node.isRequired,
+  color: PropTypes.string.isRequired
+};
 
 export default DashboardKinerjaOpd;
