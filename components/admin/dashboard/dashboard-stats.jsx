@@ -12,13 +12,12 @@ import {
   HiOutlineUsers,
 } from "react-icons/hi"
 import { motion } from "framer-motion"
+import LoadingMail from "@/components/ui/loading/LoadingMail"
 
 const DashboardStats = ({ stats, loading }) => {
   if (loading) {
     return (
-      <div className="col-span-4 flex justify-center py-10">
-        <Spinner size="lg" />
-      </div>
+      <LoadingMail/>
     )
   }
 
