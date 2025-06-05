@@ -1,6 +1,5 @@
 import ProfileManagement from '@/components/profile';
 import PageHeader from '@/components/ui/PageHeader';
-import React from 'react';
 
 export default function ProfileManagementPage() {
   return (
