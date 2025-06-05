@@ -22,6 +22,7 @@
     "cookies-next": "^5.1.0",
     "date-fns": "^4.1.0",
     "driver.js": "^1.3.5",
+    "eslint-plugin-react-refresh": "^0.4.20",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "flowbite": "^3.1.2",
