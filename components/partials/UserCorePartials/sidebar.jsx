@@ -17,6 +17,7 @@ import {
 } from 'react-icons/hi';
 import { FaBug } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
+import clsx from 'clsx';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
   const pathname = usePathname();
@@ -26,6 +27,29 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
   });
   const [isNotifOpen, setIsNotifOpen] = useState(false);
 
+  const colorMap = {
+    blue: {
+      bg: 'bg-blue-100',
+      text: 'text-blue-700',
+      darkBg: 'dark:bg-blue-900/30',
+      darkText: 'dark:text-blue-300',
+      border: 'border-blue-600',
+    },
+    purple: {
+      bg: 'bg-purple-100',
+      text: 'text-purple-700',
+      darkBg: 'dark:bg-purple-900/30',
+      darkText: 'dark:text-purple-300',
+      border: 'border-purple-600',
+    },
+    green: {
+      bg: 'bg-green-100',
+      text: 'text-green-700',
+      darkBg: 'dark:bg-green-900/30',
+      darkText: 'dark:text-green-300',
+      border: 'border-green-600',
+    },
+  };
   // Role configurations
   const roleConfig = {
     admin: {
@@ -162,15 +186,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
             transition: { duration: 0.5 },
           },
         },
-        // {
-        //   path: '/bupati-portal/logs',
-        //   name: 'Compose Mail',
-        //   icon: HiOutlinePencilAlt,
-        //   motion: {
-        //     whileHover: { y: [0, -3, 0], x: [0, 3, 0] },
-        //     transition: { duration: 0.5 },
-        //   },
-        // },
       ],
     },
   };
@@ -180,11 +195,15 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
 
   const navLinkClass = (href) => {
     const isActive = pathname === href;
-    return `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+    const colorClass = colorMap[color] || colorMap.blue;
+
+    return clsx(
+      'relative flex items-center gap-3 pl-3 pr-4 py-3 rounded-lg transition-all border-l-4',
+      !isSidebarOpen && 'justify-center px-0',
       isActive
-        ? `bg-${color}-100 text-${color}-700 font-semibold dark:bg-${color}-900/30 dark:text-${color}-300`
-        : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
-    } ${!isSidebarOpen ? 'justify-center' : ''}`;
+        ? `${colorClass.border} ${colorClass.bg} ${colorClass.text} font-semibold ${colorClass.darkBg} ${colorClass.darkText}`
+        : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
+    );
   };
 
   useEffect(() => {
@@ -236,7 +255,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
             onClick={() => setIsNotifOpen(!isNotifOpen)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm transition-all ${
               pathname?.startsWith('/adm/notifications')
-                ? `bg-${color}-100 text-${color}-700 dark:bg-${color}-900/30 dark:text-${color}-300`
+                ? `${colorMap[color].bg} ${colorMap[color].text} ${colorMap[color].darkBg} ${colorMap[color].darkText}`
                 : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
             } ${!isSidebarOpen ? 'justify-center' : ''}`}
           >
@@ -277,11 +296,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
         <Link href={route.path} className={navLinkClass(route.path)}>
           <motion.div {...(route.motion || {})} className="relative">
             <route.icon className="h-6 w-6" />
-            {pathname === route.path && (
-              <span
-                className={`absolute -top-1 -right-1 h-2 w-2 bg-${color}-600 rounded-full`}
-              ></span>
-            )}
             {route.badge && renderBadge(route.badge)}
           </motion.div>
           {isSidebarOpen && (
@@ -310,10 +324,10 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
         {isSidebarOpen && (
           <div className="flex items-center">
             <div
-              className={`bg-${color}-100 dark:bg-${color}-900/30 p-2 rounded-full mr-2`}
+              className={`${colorMap[color].bg} ${colorMap[color].darkBg} p-2 rounded-full mr-2`}
             >
               <HiOutlineMail
-                className={`h-5 w-5 text-${color}-600 dark:text-${color}-400`}
+                className={`h-5 w-5 ${colorMap[color].text} ${colorMap[color].darkText}`}
               />
             </div>
             <span className="text-lg font-bold text-gray-800 dark:text-gray-200">
