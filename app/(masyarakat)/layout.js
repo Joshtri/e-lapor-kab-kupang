@@ -1,12 +1,10 @@
-import { cookies } from 'next/headers';
-import { verify } from 'jsonwebtoken';
-import { redirect } from 'next/navigation';
-import { ThemeProvider } from 'next-themes';
-import HeaderPelapor from '@/components/pelapor/partials/header';
-import FooterPelapor from '@/components/pelapor/partials/footer';
-import { Toaster } from 'sonner';
 import AuthProtectGuard from '@/components/AuthProtectedGuard';
+import FooterPelapor from '@/components/pelapor/partials/footer';
+import HeaderPelapor from '@/components/pelapor/partials/header';
 import ClientThemeProvider from '@/providers/client-theme-provider';
+import { verify } from 'jsonwebtoken';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export default function PelaporLayout({ children }) {
   const token = cookies().get('auth_token')?.value;
