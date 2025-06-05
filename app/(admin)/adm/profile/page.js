@@ -1,5 +1,4 @@
 import ProfileManagement from '@/components/profile';
-import Breadcrumbs from '@/components/ui/breadcrumbs';
 import PageHeader from '@/components/ui/PageHeader';
 
 export const metadata = {
