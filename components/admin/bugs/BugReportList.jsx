@@ -163,6 +163,15 @@ export default function BugReportList() {
       className="p-4 space-y-6"
     >
       <ListGrid
+        breadcrumbsProps={{
+          home: { label: 'Beranda', href: '/adm/dashboard' },
+          customRoutes: {
+            adm: {
+              label: 'Dashboard Admin',
+              href: '/adm/dashboard',
+            },
+          },
+        }}
         data={paginatedBugs}
         loading={loading}
         title="Laporan Bug"
