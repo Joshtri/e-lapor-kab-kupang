@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { Table, Spinner, Button } from 'flowbite-react';
-import { motion } from 'framer-motion';
-import EmptyState from '@/components/ui/empty-state';
-import PageHeader from '@/components/ui/PageHeader';
 import FilterBar from '@/components/ui/data-view/FilterBar';
+import EmptyState from '@/components/ui/empty-state';
+import LoadingMail from '@/components/ui/loading/LoadingMail';
+import PageHeader from '@/components/ui/PageHeader';
+import { Button, Table } from 'flowbite-react';
+import { motion } from 'framer-motion';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 const Pagination = ({
   totalItems,
@@ -49,6 +51,14 @@ const Pagination = ({
       </Button>
     </div>
   );
+};
+
+Pagination.propTypes = {
+  totalItems: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  pageSize: PropTypes.number,
+  onPageChange: PropTypes.func.isRequired,
+  className: PropTypes.string,
 };
 
 const ListGrid = ({
@@ -95,11 +105,7 @@ const ListGrid = ({
 
   const renderContent = () => {
     if (loading) {
-      return (
-        <div className="flex items-center justify-center p-8">
-          <Spinner size="lg" />
-        </div>
-      );
+      return <LoadingMail />;
     }
 
     if (!data.length) {
@@ -236,6 +242,42 @@ const ListGrid = ({
       )}
     </div>
   );
+};
+
+ListGrid.propTypes = {
+  data: PropTypes.array,
+  columns: PropTypes.array,
+  loading: PropTypes.bool,
+  emptyMessage: PropTypes.string,
+  emptyAction: PropTypes.node,
+  actionButtons: PropTypes.array,
+  onRowClick: PropTypes.func,
+  rowClassName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  viewMode: PropTypes.string,
+  setViewMode: PropTypes.func,
+  gridComponent: PropTypes.node,
+  pagination: PropTypes.node,
+  paginationProps: PropTypes.shape({
+    totalItems: PropTypes.number,
+    currentPage: PropTypes.number,
+    pageSize: PropTypes.number,
+    onPageChange: PropTypes.func,
+  }),
+  filtersComponent: PropTypes.node,
+  searchBar: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  title: PropTypes.string,
+  backHref: PropTypes.string,
+  showBackButton: PropTypes.bool,
+  showRefreshButton: PropTypes.bool,
+  onRefreshClick: PropTypes.func,
+  onExportExcel: PropTypes.func,
+  onExportPDF: PropTypes.func,
+  breadcrumbsProps: PropTypes.object,
+  onCreate: PropTypes.func,
+  createButtonLabel: PropTypes.string,
+  showCreateButton: PropTypes.bool,
 };
 
 export default ListGrid;
