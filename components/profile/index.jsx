@@ -1,25 +1,27 @@
 'use client';
 
+import EditProfileModal from '@/components/profile/EditProfileModal';
+import { getInitials } from '@/utils/common';
+import { getRoleColor } from '@/utils/roleColor';
 import axios from 'axios';
-import { Button, Card, Spinner, Badge, Avatar } from 'flowbite-react';
-import { useEffect, useState } from 'react';
+import { Avatar, Badge, Button, Card } from 'flowbite-react';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import {
-  HiOutlineKey,
   HiOfficeBuilding,
-  HiOutlineMail,
-  HiOutlinePhone,
-  HiOutlineIdentification,
   HiOutlineCalendar,
   HiOutlineGlobe,
+  HiOutlineIdentification,
+  HiOutlineKey,
   HiOutlineLocationMarker,
+  HiOutlineMail,
   HiOfficeBuilding as HiOutlineOfficeBuilding,
   HiOutlinePencilAlt,
+  HiOutlinePhone,
 } from 'react-icons/hi';
 import { toast } from 'sonner';
+import LoadingMail from '../ui/loading/LoadingMail';
 import ChangePasswordModal from './ChangePasswordProfile';
-import EditProfileModal from '@/components/profile/EditProfileModal';
-import { getRoleColor } from '@/utils/roleColor';
 
 const ProfileManagement = () => {
   const [user, setUser] = useState(null);
@@ -69,32 +71,8 @@ const ProfileManagement = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg"
-        >
-          <Spinner size="xl" className="mb-4" />
-          <span className="text-gray-600 dark:text-gray-300 font-medium">
-            Memuat data profil...
-          </span>
-        </motion.div>
-      </div>
-    );
+    return <LoadingMail />;
   }
-
-  const getInitials = (name) => {
-    if (!name) return 'U';
-    return name
-      .split(' ')
-      .map((part) => part[0])
-      .join('')
-      .toUpperCase()
-      .substring(0, 2);
-  };
 
   const handleSaveProfile = async (updatedData) => {
     try {
