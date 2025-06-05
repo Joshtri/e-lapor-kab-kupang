@@ -6,6 +6,7 @@ import Header from '@/components/partials/UserCorePartials/header';
 import Sidebar from '@/components/partials/UserCorePartials/sidebar';
 import RouteLoadingIndicator from '@/components/ui/RouteLoadingIndicator';
 import ClientThemeProvider from '@/providers/client-theme-provider';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 export default function AdminLayout({ children }) {
@@ -37,9 +38,13 @@ export default function AdminLayout({ children }) {
 
             <main className="flex-1 mt-20 p-6">{children}</main>
             <Footer role="admin" />
-            </div>
+          </div>
         </div>
       </ClientThemeProvider>
     </AuthProtectGuard>
   );
 }
+
+AdminLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
