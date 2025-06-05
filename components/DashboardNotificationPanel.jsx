@@ -1,18 +1,19 @@
 'use client';
 
-import {
-  HiOutlineSpeakerphone,
-  HiOutlinePencil,
-  HiOutlineCheckCircle,
-  HiOutlineEyeOff,
-  HiChevronDown,
-  HiChevronUp,
-} from 'react-icons/hi';
-import { Card, Badge, Button, Tooltip, Spinner } from 'flowbite-react';
+import ChangeOpdModal from '@/components/ChangeOpdModal'; // path sesuai strukturmu
 import { getStatusColor } from '@/utils/statusColor';
 import { format } from 'date-fns';
-import { useState, useEffect } from 'react';
-import ChangeOpdModal from '@/components/ChangeOpdModal'; // path sesuai strukturmu
+import { Badge, Button, Card, Tooltip } from 'flowbite-react';
+import { useEffect, useState } from 'react';
+import {
+  HiChevronDown,
+  HiChevronUp,
+  HiOutlineCheckCircle,
+  HiOutlineEyeOff,
+  HiOutlinePencil,
+  HiOutlineSpeakerphone,
+} from 'react-icons/hi';
+import LoadingMail from './ui/loading/LoadingMail';
 
 const DashboardNotificationPanel = () => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -54,9 +55,7 @@ const DashboardNotificationPanel = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-6">
-          <Spinner size="lg" />
-        </div>
+          <LoadingMail />
       ) : (
         <div className="max-h-[400px] overflow-y-auto pr-1">
           {/* 👆 Bisa atur max-h sesuai tinggi yang diinginkan */}
