@@ -1,3 +1,5 @@
+
+
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import FloatingHelper from '@/components/floating-helpers';
@@ -5,6 +7,8 @@ import ClientThemeProvider from '@/providers/client-theme-provider';
 import { Toaster } from 'sonner';
 import ScrollToTopButton from '@/components/ui/scroll-to-top-button';
 import RouteLoadingIndicator from '@/components/ui/RouteLoadingIndicator';
+import PropTypes from 'prop-types';
+import DynamicMetadata from '@/components/seo/DynamicMetadata'; // ✅ import di sini
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,8 +37,11 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
+      >
         <ClientThemeProvider>
+          <DynamicMetadata /> {/* ✅ panggil di sini */}
           <Toaster position="top-right" />
           <RouteLoadingIndicator />
           <ScrollToTopButton />
@@ -45,3 +52,7 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+RootLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
