@@ -1,24 +1,24 @@
 // components/common/Header.jsx
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Navbar, Button, Dropdown, Avatar } from 'flowbite-react';
-import {
-  HiOutlineMenu,
-  HiOutlineMail,
-  HiOutlineUserCircle,
-  HiMailOpen,
-  HiOutlineLogout,
-} from 'react-icons/hi';
-import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
+import axios from 'axios';
+import { Avatar, Dropdown, Navbar } from 'flowbite-react';
+import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
+import {
+  HiMailOpen,
+  HiOutlineLogout,
+  HiOutlineMail,
+  HiOutlineMenu,
+  HiOutlineUserCircle,
+} from 'react-icons/hi';
 import { toast } from 'sonner';
-import { motion } from 'framer-motion';
 
-import NotificationDropdown from '@/components/ui/NotificationDropdown';
 import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
+import NotificationDropdown from '@/components/ui/NotificationDropdown';
 
 const ROLE_CONFIG = {
   admin: {
@@ -87,14 +87,26 @@ export default function Header({
     };
     const fetchNotifs = async () => {
       try {
-        const { data, status } = await axios.get('/api/notifications');
-        if (status === 200) setNotifications(data);
+        const { data } = await axios.get('/api/notifications');
+
+        // Hapus duplikat berdasarkan ID
+        const uniqueNotifs = Array.from(
+          new Map(
+            data.map((notif) => [
+              `${notif.message}-${notif.link ?? ''}`,
+              notif,
+            ]),
+          ).values(),
+        );
+
+        setNotifications(uniqueNotifs);
       } catch (e) {
-        // ('fetch notifications error', e);
+        console.error('Error fetching notifications', e);
       } finally {
         setLoadingNotifications(false);
       }
     };
+
     fetchMe();
     fetchNotifs();
   }, []);
@@ -126,7 +138,7 @@ export default function Header({
       setTimeout(() => router.push('/auth/login'), 1500);
     } catch (e) {
       // (e);
-      toast.error('Gagal logout. Silakan coba lagi.');
+      toast.error('Gagal logout. Silakan coba lagi. ');
     } finally {
       setIsLoggingOut(false);
     }
