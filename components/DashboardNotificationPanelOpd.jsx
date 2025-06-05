@@ -1,30 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Card, Badge, Tooltip, Spinner, Button } from 'flowbite-react';
+import ChangeOpdModal from '@/components/ChangeOpdModal'; // sesuaikan path
+import LoadingMail from '@/components/ui/loading/LoadingMail';
+import { formatDate, getStatusColor } from '@/utils/common';
+import { Badge, Button, Card, Tooltip } from 'flowbite-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import {
-  HiOutlineSpeakerphone,
   HiOutlineCheckCircle,
-  HiOutlineEyeOff,
   HiOutlineChevronDown,
   HiOutlineChevronUp,
+  HiOutlineEyeOff,
   HiOutlinePencil,
+  HiOutlineSpeakerphone,
 } from 'react-icons/hi';
-import ChangeOpdModal from '@/components/ChangeOpdModal'; // sesuaikan path
-
-// Helper function to get status color
-const getStatusColor = (status) => {
-  const statusMap = {
-    PENDING: 'yellow',
-    PROCESSING: 'blue',
-    COMPLETED: 'green',
-    REJECTED: 'red',
-    FORWARDED: 'purple',
-  };
-  return statusMap[status] || 'gray';
-};
 
 export default function DashboardNotificationPanelOpd() {
   const [openIndex, setOpenIndex] = useState(null);
@@ -37,9 +26,6 @@ export default function DashboardNotificationPanelOpd() {
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
-
-  const formatDate = (dateStr) =>
-    format(new Date(dateStr), 'dd MMM yyyy, HH:mm');
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -72,9 +58,7 @@ export default function DashboardNotificationPanelOpd() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-6">
-            <Spinner size="lg" />
-          </div>
+          <LoadingMail />
         ) : notifications.length === 0 ? (
           <div className="p-6 text-center text-gray-500 dark:text-gray-400">
             Tidak ada notifikasi baru
