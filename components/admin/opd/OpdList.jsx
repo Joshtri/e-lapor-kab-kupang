@@ -64,10 +64,7 @@ export default function OPDList() {
     {
       header: 'Nama OPD',
       accessor: 'name',
-      cell: (opd) => (
-        <TruncatedWithTooltip text={opd.name} length={25} />
-      ),
-
+      cell: (opd) => <TruncatedWithTooltip text={opd.name} length={25} />,
     },
     {
       header: 'Staff PJ',
@@ -102,17 +99,30 @@ export default function OPDList() {
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <Spinner size="lg" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="p-4 space-y-6">
       <ListGrid
+        breadcrumbsProps={{
+          home: { label: 'Beranda', href: '/adm/dashboard' },
+          customRoutes: {
+            'adm': {
+              label: 'Dashboard Admin',
+              href: '/adm/dashboard',
+            },
+            'org-perangkat-daerah': {
+              label: 'Organisasi Perangkat Daerah',
+              href: '/adm/org-perangkat-daerah',
+            }
+          },
+        }}
         title="Daftar OPD"
         showBackButton={false}
         searchBar
