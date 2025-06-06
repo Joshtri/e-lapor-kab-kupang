@@ -1,33 +1,31 @@
-import AuthProtectGuard from '@/components/AuthProtectedGuard';
-import FooterPelapor from '@/components/pelapor/partials/footer';
-import HeaderPelapor from '@/components/pelapor/partials/header';
-import ClientThemeProvider from '@/providers/client-theme-provider';
-import { verify } from 'jsonwebtoken';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
+import { verify } from "jsonwebtoken"
+import AuthProtectGuard from "@/components/AuthProtectedGuard"
+import ClientThemeProvider from "@/providers/client-theme-provider"
+import NextAuthSessionProvider from "@/providers/session-provider"
+import ResponsiveLayout from "@/components/pelapor/ResponsiveLayout"
 
 export default function PelaporLayout({ children }) {
-  const token = cookies().get('auth_token')?.value;
+  const token = cookies().get("auth_token")?.value
 
   if (!token) {
-    redirect('/auth/login');
+    redirect("/auth/login")
   }
 
   try {
-    verify(token, process.env.JWT_SECRET);
+    verify(token, process.env.JWT_SECRET)
   } catch (error) {
-    redirect('/auth/login');
+    redirect("/auth/login")
   }
 
   return (
-    <AuthProtectGuard allowRole={['PELAPOR']}>
+    <AuthProtectGuard allowRole={["PELAPOR"]}>
       <ClientThemeProvider>
-        <div className="flex flex-col min-h-screen bg-blue-50  dark:bg-gray-900">
-          <HeaderPelapor />
-          <main className="flex-grow pt-14">{children}</main>
-          <FooterPelapor />
-        </div>
+        <NextAuthSessionProvider>
+          <ResponsiveLayout>{children}</ResponsiveLayout>
+        </NextAuthSessionProvider>
       </ClientThemeProvider>
     </AuthProtectGuard>
-  );
+  )
 }
