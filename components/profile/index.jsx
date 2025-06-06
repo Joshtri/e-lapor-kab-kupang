@@ -129,7 +129,6 @@ const ProfileManagement = () => {
                   size="md"
                   rounded
                   placeholderInitials={getInitials(user?.name)}
-                  className="ring-4 ring-white dark:ring-gray-700 bg-blue-100 dark:bg-blue-900"
                 />
               </div>
               <div className="sm:ml-4 sm:mb-2">
