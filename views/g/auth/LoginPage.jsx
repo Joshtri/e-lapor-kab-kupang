@@ -208,8 +208,6 @@ export default function LoginPage() {
                   </div>
                 </div>
 
- 
-
                 {/* Submit Button */}
                 <Button
                   type="submit"
