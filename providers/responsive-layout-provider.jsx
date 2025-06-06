@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
-import { createContext, useContext } from "react";
-import { useIsMobile } from "@/hooks/use-media-query";
+import { createContext, useContext } from 'react';
+import { useIsMobile } from '@/hooks/use-media-query';
+import PropTypes from 'prop-types';
 
 // Membuat context
 const ResponsiveLayoutContext = createContext(undefined);
@@ -10,11 +11,12 @@ const ResponsiveLayoutContext = createContext(undefined);
 export function useResponsiveLayout() {
   const context = useContext(ResponsiveLayoutContext);
   if (context === undefined) {
-    throw new Error("useResponsiveLayout must be used within a ResponsiveLayoutProvider");
+    throw new Error(
+      'useResponsiveLayout must be used within a ResponsiveLayoutProvider',
+    );
   }
   return context;
 }
-
 // Provider component
 export function ResponsiveLayoutProvider({ children }) {
   const isMobile = useIsMobile();
@@ -25,3 +27,7 @@ export function ResponsiveLayoutProvider({ children }) {
     </ResponsiveLayoutContext.Provider>
   );
 }
+
+ResponsiveLayoutProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
