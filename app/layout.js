@@ -1,14 +1,12 @@
 
 
-import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import FloatingHelper from '@/components/floating-helpers';
-import ClientThemeProvider from '@/providers/client-theme-provider';
-import { Toaster } from 'sonner';
-import ScrollToTopButton from '@/components/ui/scroll-to-top-button';
-import RouteLoadingIndicator from '@/components/ui/RouteLoadingIndicator';
-import PropTypes from 'prop-types';
 import DynamicMetadata from '@/components/seo/DynamicMetadata'; // ✅ import di sini
+import RouteLoadingIndicator from '@/components/ui/RouteLoadingIndicator';
+import ClientThemeProvider from '@/providers/client-theme-provider';
+import { Geist, Geist_Mono } from 'next/font/google';
+import PropTypes from 'prop-types';
+import { Toaster } from 'sonner';
+import './globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -44,8 +42,8 @@ export default function RootLayout({ children }) {
           <DynamicMetadata /> {/* ✅ panggil di sini */}
           <Toaster position="top-right" />
           <RouteLoadingIndicator />
-          <ScrollToTopButton />
-          <FloatingHelper />
+          {/* <ScrollToTopButton /> */}
+          {/* <FloatingHelper /> */}
           {children}
         </ClientThemeProvider>
       </body>
