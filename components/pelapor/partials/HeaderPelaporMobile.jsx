@@ -1,0 +1,347 @@
+'use client';
+
+import { useState, useEffect, use } from 'react';
+import { Avatar, Button, HR, Navbar } from 'flowbite-react';
+import {
+  HiMenu,
+  HiX,
+  HiOutlineLogout,
+  HiCog,
+  HiOutlineMail,
+  HiOutlineHome,
+  HiOutlineDocumentReport,
+  HiPaperAirplane,
+  HiOutlineUserCircle,
+  HiOutlineInformationCircle,
+} from 'react-icons/hi';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from 'next-themes';
+import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
+import axios from 'axios';
+import { getInitials } from '@/utils/common';
+import NotificationDropdown from '@/components/ui/NotificationDropdown';
+import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
+import { toast } from 'sonner';
+import AboutModal from '../AboutModal';
+
+const HeaderMobile = ({ user: propUser }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openLogoutModal, setOpenLogoutModal] = useState(false);
+  const [openAboutModal, setOpenAboutModal] = useState(false);
+
+  const [notifications, setNotifications] = useState([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  const [user, setUser] = useState(null);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    const fetchUserInformation = async () => {
+      try {
+        const res = await axios.get('/api/auth/me');
+        setUser(res.data.user);
+      } catch (error) {
+        console.error('Gagal mengambil informasi pengguna:', error);
+      }
+    };
+    fetchUserInformation();
+  }, []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const notifRes = await axios.get('/api/notifications');
+        setNotifications(
+          notifRes.data.filter(
+            (n) => typeof n.link === 'string' && n.link.startsWith('/pelapor/'),
+          ),
+        );
+      } catch (err) {
+        console.error('Gagal mengambil notifikasi:', err);
+      } finally {
+        setLoadingNotifications(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout', null, {
+        withCredentials: true,
+      });
+      await signOut({ redirect: false });
+      toast.success('Berhasil logout! Mengarahkan ke halaman login...');
+
+      setTimeout(() => {
+        router.push('/auth/login');
+      }, 1000);
+    } catch (error) {
+      console.error('Logout Error:', error);
+      toast.error('Gagal logout. Silakan coba lagi.');
+    }
+  };
+
+  const handleCreateReport = () => {
+    if (pathname === '/pelapor/dashboard') {
+      router.push('/pelapor/dashboard?openModal=true');
+    } else {
+      router.push('/pelapor/dashboard?openModal=true');
+    }
+    setIsMenuOpen(false);
+  };
+
+  const handleNotificationClick = async (notif) => {
+    try {
+      await axios.post('/api/notifications/read', { notificationId: notif.id });
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n)),
+      );
+      router.push(notif.link);
+    } catch (err) {
+      console.error('Gagal memperbarui notifikasi:', err);
+    }
+  };
+
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  const menuVariants = {
+    hidden: { opacity: 0, x: '100%' },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { type: 'spring', stiffness: 300, damping: 30 },
+    },
+    exit: { opacity: 0, x: '100%', transition: { duration: 0.2 } },
+  };
+
+  if (!mounted) return null;
+
+  return (
+    <>
+      <Navbar
+        fluid
+        className="fixed w-full z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"
+      >
+        <div className="flex items-center justify-between w-full px-4">
+          {/* Logo */}
+          <Link href="/pelapor/dashboard" className="flex items-center">
+            <motion.div
+              className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full mr-2"
+              animate={{ rotate: [0, 5, 0, -5, 0] }}
+              transition={{
+                repeat: Number.POSITIVE_INFINITY,
+                duration: 5,
+                ease: 'easeInOut',
+              }}
+            >
+              <HiOutlineMail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </motion.div>
+            <div>
+              <h1 className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                Lapor Mail
+              </h1>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Layanan Pengaduan Online
+              </p>
+            </div>
+          </Link>
+
+          <div className="flex items-center gap-2">
+            {/* Notifications */}
+            <div className="relative">
+              <NotificationDropdown
+                notifications={notifications}
+                unreadCount={unreadCount}
+                handleNotificationClick={handleNotificationClick}
+                loadingNotifications={loadingNotifications}
+              />
+            </div>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+              aria-label="Toggle Dark Mode"
+            >
+              {theme === 'light' ? (
+                <BsMoonStarsFill className="text-gray-700 dark:text-gray-300 text-lg" />
+              ) : (
+                <BsSunFill className="text-yellow-400 text-lg" />
+              )}
+            </button>
+
+            {/* Menu Button */}
+            <Button
+              color="gray"
+              size="sm"
+              className="p-2"
+              onClick={() => setIsMenuOpen(true)}
+            >
+              <HiMenu className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </Navbar>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black z-50"
+              onClick={() => setIsMenuOpen(false)}
+            />
+
+            <motion.div
+              variants={menuVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="fixed right-0 top-0 bottom-0 w-80 bg-white dark:bg-gray-800 z-50 shadow-xl"
+            >
+              <div className="p-4 flex flex-col h-full">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Menu
+                  </h2>
+                  <Button
+                    color="gray"
+                    size="sm"
+                    className="p-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <HiX className="h-5 w-5" />
+                  </Button>
+                </div>
+
+                {/* User Info */}
+                <div className="flex items-center space-x-3 mb-6 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="relative">
+                    <Avatar
+                      alt="User Avatar"
+                      size="md"
+                      rounded
+                      placeholderInitials={getInitials(user?.name)}
+                      className=""
+                    />
+                    {/* {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )} */}
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {user?.name || 'User'}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {user?.email || 'user@example.com'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Navigation Menu */}
+                <div className="space-y-2 flex-grow">
+                  <Link
+                    href="/pelapor/dashboard"
+                    className="flex items-center p-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <HiOutlineHome className="mr-3 h-5 w-5" />
+                    Beranda
+                  </Link>
+
+                  <Link
+                    href="/pelapor/log-laporan"
+                    className="flex items-center p-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <HiOutlineDocumentReport className="mr-3 h-5 w-5" />
+                    Log Laporan
+                  </Link>
+
+                  <button
+                    onClick={handleCreateReport}
+                    className="flex items-center p-3 w-full text-left text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                  >
+                    <HiPaperAirplane className="mr-3 h-5 w-5" />
+                    Buat Laporan
+                  </button>
+
+                  <div className="border-t border-gray-200 dark:border-gray-600 my-4"></div>
+
+                  <Link
+                    href="/pelapor/profile"
+                    className="flex items-center p-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <HiOutlineUserCircle className="mr-3 h-5 w-5" />
+                    Profil
+                  </Link>
+
+                  <HR />
+
+                  {/* About App */}
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setOpenAboutModal(true);
+                    }}
+                    className="flex items-center p-3 w-full text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                  >
+                    <HiOutlineInformationCircle className="mr-3 h-5 w-5" />
+                    Tentang Aplikasi
+                  </button>
+
+                  {/* Logout Button */}
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setOpenLogoutModal(true);
+                    }}
+                    className="flex items-center p-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg mt-auto transition-colors"
+                  >
+                    <HiOutlineLogout className="mr-3 h-5 w-5" />
+                    Keluar
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal
+        open={openLogoutModal}
+        onClose={() => setOpenLogoutModal(false)}
+        onConfirm={handleLogout}
+      />
+
+      {/* About Modal */}
+      <AboutModal
+        isOpen={openAboutModal}
+        onClose={() => setOpenAboutModal(false)}
+      />
+    </>
+  );
+};
+
+export default HeaderMobile;
