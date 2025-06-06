@@ -1,33 +1,31 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
+import NotificationDropdown from '@/components/ui/NotificationDropdown';
+import { getInitials } from '@/utils/common';
+import axios from 'axios';
 import { Avatar, Button, HR, Navbar } from 'flowbite-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
 import {
   HiMenu,
-  HiX,
-  HiOutlineLogout,
-  HiCog,
-  HiOutlineMail,
-  HiOutlineHome,
   HiOutlineDocumentReport,
-  HiPaperAirplane,
-  HiOutlineUserCircle,
+  HiOutlineHome,
   HiOutlineInformationCircle,
+  HiOutlineLogout,
+  HiOutlineMail,
+  HiOutlineUserCircle,
+  HiPaperAirplane,
+  HiX,
 } from 'react-icons/hi';
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { signOut, useSession } from 'next-auth/react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from 'next-themes';
-import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
-import axios from 'axios';
-import { getInitials } from '@/utils/common';
-import NotificationDropdown from '@/components/ui/NotificationDropdown';
-import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
 import { toast } from 'sonner';
 import AboutModal from '../AboutModal';
 
-const HeaderMobile = ({ user: propUser }) => {
+const HeaderPelaporMobile = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const [openAboutModal, setOpenAboutModal] = useState(false);
@@ -82,12 +80,10 @@ const HeaderMobile = ({ user: propUser }) => {
       await axios.post('/api/auth/logout', null, {
         withCredentials: true,
       });
-      await signOut({ redirect: false });
+      // await signOut({ redirect: false });
       toast.success('Berhasil logout! Mengarahkan ke halaman login...');
 
-      setTimeout(() => {
-        router.push('/auth/login');
-      }, 1000);
+      router.push('/auth/login');
     } catch (error) {
       console.error('Logout Error:', error);
       toast.error('Gagal logout. Silakan coba lagi.');
@@ -341,4 +337,4 @@ const HeaderMobile = ({ user: propUser }) => {
   );
 };
 
-export default HeaderMobile;
+export default HeaderPelaporMobile;

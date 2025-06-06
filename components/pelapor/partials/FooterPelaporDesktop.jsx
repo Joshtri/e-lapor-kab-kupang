@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
 import { Footer } from "flowbite-react";
 
-const FooterPelapor = () => {
+const FooterPelaporDesktop = () => {
   return (
     <Footer container className="bg-green-600 text-white py-6">
       <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center">
@@ -17,4 +16,4 @@ const FooterPelapor = () => {
   );
 };
 
-export default FooterPelapor;
+export default FooterPelaporDesktop;

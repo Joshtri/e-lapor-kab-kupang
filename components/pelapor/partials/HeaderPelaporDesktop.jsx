@@ -23,7 +23,7 @@ import {
 } from 'react-icons/hi';
 import { toast } from 'sonner';
 
-const HeaderPelapor = () => {
+const HeaderPelaporDesktop = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -197,11 +197,7 @@ const HeaderPelapor = () => {
                       placeholderInitials={getInitials(user?.name)}
                       className="  dark:border-blue-800 hover:scale-110 transition-all duration-300"
                     />
-                    {/* {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">
-                        {unreadCount}
-                      </span>
-                    )} */}
+
                   </div>
                 }
               >
@@ -299,4 +295,4 @@ const HeaderPelapor = () => {
   );
 };
 
-export default HeaderPelapor;
+export default HeaderPelaporDesktop;
