@@ -159,7 +159,7 @@ export default function Header({
           >
             <HiOutlineMenu className="h-6 w-6" />
           </button>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <motion.div
               className={`${cfg.accentBg} p-2 rounded-full mr-3`}
               animate={{ rotate: [0, 5, 0, -5, 0] }}
@@ -175,7 +175,7 @@ export default function Header({
                 {cfg.subtitle}
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Right */}

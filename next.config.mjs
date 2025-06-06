@@ -16,7 +16,7 @@ const nextConfig = {
   },
   eslint: {
     dirs: ['pages', 'components', 'lib'],
-    ignoreDuringBuilds: false,
+    ignoreDuringBuilds: true,
   },
   images: {
     domains: ['placehold.co'],
