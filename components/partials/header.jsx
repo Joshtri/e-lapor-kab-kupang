@@ -1,22 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Button } from 'flowbite-react';
-import Link from 'next/link';
-import { useTheme } from 'next-themes';
-import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
-import {
-  HiOutlineMail,
-  HiOutlineLogin,
-  HiOutlineUserAdd,
-  HiOutlineHome,
-  HiOutlineMenu,
-  HiX,
-} from 'react-icons/hi';
-import { motion, AnimatePresence } from 'framer-motion';
 import FloatingNavbarButton from '@/components/floating-navbar-button';
 import logoApp from '@/public/fixed-logo-app.png';
+import { Button } from 'flowbite-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
+import {
+  HiOutlineHome,
+  HiOutlineLogin,
+  HiOutlineMenu,
+  HiOutlineUserAdd,
+  HiX
+} from 'react-icons/hi';
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
