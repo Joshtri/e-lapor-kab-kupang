@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Spinner } from 'flowbite-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import LoadingMail from './ui/loading/LoadingMail';
 
 export default function AuthProtectGuard({ children, allowRole = [] }) {
@@ -42,6 +42,11 @@ export default function AuthProtectGuard({ children, allowRole = [] }) {
   }
 
   if (!authorized) return null;
-
   return children;
 }
+
+AuthProtectGuard.propTypes = {
+  children: PropTypes.node.isRequired,
+  allowRole: PropTypes.array
+};
+
