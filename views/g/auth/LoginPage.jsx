@@ -171,42 +171,44 @@ export default function LoginPage() {
                     <HiOutlineLockClosed className="h-4 w-4 text-blue-600" />
                     <span>Password</span>
                   </Label>
-                  <TextInput
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    {...register('password')}
-                    color={errors.password ? 'failure' : 'gray'}
-                    className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
-                  />
-                  {/* Eye Icon Button */}
-                  <button
-                    type="button"
-                    className="absolute right-3 top-9 text-gray-600"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <HiEyeOff size={18} />
-                    ) : (
-                      <HiEye size={18} />
-                    )}
-                  </button>
+                  <div className="relative">
+                    <TextInput
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      {...register('password')}
+                      color={errors.password ? 'failure' : 'gray'}
+                      className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500 pr-12" // Tambah padding-right lebih besar untuk ruang ikon
+                    />
+                    {/* Eye Icon Button */}
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <HiEyeOff size={18} />
+                      ) : (
+                        <HiEye size={18} />
+                      )}
+                    </button>
+                  </div>
                   {errors.password && (
                     <span className="text-red-500 text-sm mt-1 block">
                       {errors.password.message}
                     </span>
                   )}
+                  <div className="text-right mt-2">
+                    <Link
+                      href="/auth/forgot-password"
+                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    >
+                      Lupa Password?
+                    </Link>
+                  </div>
                 </div>
 
-                {/* Forget Password Link */}
-                <div className="text-right">
-                  <Link
-                    href="/auth/forgot-password"
-                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                  >
-                    Lupa Password?
-                  </Link>
-                </div>
+ 
 
                 {/* Submit Button */}
                 <Button
