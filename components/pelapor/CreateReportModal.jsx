@@ -28,6 +28,8 @@ import {
   getMainCategories,
   getSubcategoriesByText,
 } from '@/utils/reportCategories';
+import { getPriorityColor } from '@/utils/common';
+import StepIndicator from '../ui/StepIndicator';
 
 const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -82,19 +84,6 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
     // Clear error when user selects files
     if (errors.files) {
       setErrors((prev) => ({ ...prev, files: '' }));
-    }
-  };
-
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'HIGH':
-        return 'red';
-      case 'MEDIUM':
-        return 'yellow';
-      case 'LOW':
-        return 'blue';
-      default:
-        return 'blue';
     }
   };
 
@@ -226,32 +215,32 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
     }
   };
 
-  const renderStepIndicator = () => {
-    return (
-      <div className="flex items-center justify-center mb-6">
-        <div className="flex items-center w-full max-w-xs">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-1 flex items-center">
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  step >= i
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                }`}
-              >
-                {i}
-              </div>
-              {i < 3 && (
-                <div
-                  className={`h-1 flex-1 ${step > i ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
-                ></div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
+  // const renderStepIndicator = () => {
+  //   return (
+  //     <div className="flex items-center justify-center mb-6">
+  //       <div className="flex items-center w-full max-w-xs">
+  //         {[1, 2, 3].map((i) => (
+  //           <div key={i} className="flex-1 flex items-center">
+  //             <div
+  //               className={`w-8 h-8 rounded-full flex items-center justify-center ${
+  //                 step >= i
+  //                   ? 'bg-blue-600 text-white'
+  //                   : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+  //               }`}
+  //             >
+  //               {i}
+  //             </div>
+  //             {i < 3 && (
+  //               <div
+  //                 className={`h-1 flex-1 ${step > i ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
+  //               ></div>
+  //             )}
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   return (
     <Modal
@@ -275,7 +264,7 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
       </Modal.Header>
 
       <Modal.Body className="bg-blue-50 dark:bg-gray-800">
-        {renderStepIndicator()}
+        <StepIndicator step={step} totalSteps={3} />
 
         {/* Info Banner */}
         <div className="bg-blue-50 p-4 rounded-lg mb-4 border border-blue-100 dark:bg-blue-900/20 dark:border-blue-800/30">
