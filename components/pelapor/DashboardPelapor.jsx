@@ -22,7 +22,7 @@ const DashboardPelapor = ({ user }) => {
       setOpenModal(true)
 
       // Clean up the URL without refreshing the page
-      const url = new URL(window.location.href)
+      const url = new URL(window.location.href) 
       url.searchParams.delete("openModal")
       window.history.replaceState({}, "", url)
     }
@@ -100,18 +100,6 @@ const DashboardPelapor = ({ user }) => {
 
         {/* Report Modal */}
         <ReportModal openModal={openModal} setOpenModal={setOpenModal} user={user} onSuccess={handleRefetch} />
-
-        {/* Floating Action Button - Mobile Only */}
-        {/* <div className="fixed bottom-6 right-6 md:hidden z-10">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="bg-blue-600 text-white rounded-full p-4 shadow-lg flex items-center justify-center"
-            onClick={() => setOpenModal(true)}
-          >
-            <HiPaperAirplane className="h-6 w-6" />
-          </motion.button>
-        </div> */}
       </div>
     </div>
   )
