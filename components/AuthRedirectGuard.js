@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Spinner } from 'flowbite-react';
-import LoadingOverlay from './ui/LoadingOverlay';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import LoadingMail from './ui/loading/LoadingMail';
 
 export default function AuthRedirectGuard({ children }) {
   const router = useRouter();
@@ -42,10 +41,9 @@ export default function AuthRedirectGuard({ children }) {
 
   if (checkingAuth) {
     return (
-      <LoadingOverlay/>
-      // <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
-      //   <Spinner size="lg" />
-      // </div>
+      <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
+        <LoadingMail />
+      </div>
     );
   }
 

@@ -1,25 +1,19 @@
 'use client';
 
+import { formatDateIndo } from '@/utils/common';
+import { Avatar, Badge, Tooltip } from 'flowbite-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
-import { Button, Badge, Tooltip, Avatar } from 'flowbite-react';
 import {
   HiMailOpen,
   HiOutlineCalendar,
-  HiOutlineTag,
   HiOutlineCheckCircle,
-  HiOutlineHeart,
-  HiHeart,
-  HiOutlineReply,
-  HiOutlineShare,
+  HiOutlineTag,
 } from 'react-icons/hi';
 
 export default function ReportsSection() {
   const [reports, setReports] = useState([]);
   const [expandedReports, setExpandedReports] = useState({});
-  const [likedReports, setLikedReports] = useState({});
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -42,14 +36,7 @@ export default function ReportsSection() {
     }));
   };
 
-  const toggleLike = (id) => {
-    setLikedReports((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
-  const currentMonthLabel = format(new Date(), 'MMMM yyyy', { locale: id });
+  const currentMonthLabel = formatDateIndo(new Date(), 'MMMM yyyy');
 
   return (
     <div className="py-12 bg-white dark:bg-gray-800">
@@ -112,9 +99,8 @@ export default function ReportsSection() {
                       <div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                           <HiOutlineCalendar className="h-3 w-3" />
-                          {format(new Date(report.createdAt), 'dd MMM yyyy', {
-                            locale: id,
-                          })}
+                          {formatDateIndo(report.createdAt)}
+
                           <span className="ml-2">
                             • Ditujukan ke: {report.opd?.name || 'OPD'}
                           </span>

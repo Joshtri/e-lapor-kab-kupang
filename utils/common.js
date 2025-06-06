@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
-
+import { id } from 'date-fns/locale';
+ 
 export const truncateText = (text, limit = 50) => {
   if (!text) return '-';
   return text.length > limit ? `${text.substring(0, limit)}...` : text;
@@ -29,3 +30,10 @@ export const getInitials = (name) => {
     .toUpperCase()
     .substring(0, 2);
 };
+
+
+
+
+export function formatDateIndo(date, formatStr = 'dd MMM yyyy') {
+  return format(new Date(date), formatStr, { locale: id });
+}
