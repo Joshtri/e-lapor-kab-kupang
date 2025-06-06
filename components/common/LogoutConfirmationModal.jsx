@@ -6,6 +6,7 @@ import {
   HiOutlineMail,
   HiPaperAirplane,
 } from 'react-icons/hi';
+import PropTypes from 'prop-types';
 
 const LogoutConfirmationModal = ({
   open,
@@ -14,7 +15,13 @@ const LogoutConfirmationModal = ({
   isLoggingOut,
 }) => {
   return (
-    <Modal show={open} onClose={onClose} size="md">
+    <Modal
+      show={open}
+      onClose={onClose}
+      size="md"
+      position="center"
+      className="min-h-screen flex items-center justify-center"
+    >
       <Modal.Header className="border-b-2 border-purple-100 dark:border-purple-900">
         <div className="flex items-center">
           <HiOutlineMail className="mr-2 h-5 w-5 text-purple-600 dark:text-purple-400" />
@@ -36,7 +43,7 @@ const LogoutConfirmationModal = ({
           color="failure"
           onClick={onConfirm}
           className="flex items-center gap-2"
-          disabled={isLoggingOut} // ⛔ mencegah spam klik
+          disabled={isLoggingOut}
         >
           <HiOutlineLogout className="h-4 w-4" />
           Ya, Logout
@@ -47,6 +54,12 @@ const LogoutConfirmationModal = ({
       </Modal.Footer>
     </Modal>
   );
+};
+LogoutConfirmationModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  isLoggingOut: PropTypes.bool,
 };
 
 export default LogoutConfirmationModal;
