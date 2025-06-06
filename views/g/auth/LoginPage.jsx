@@ -87,6 +87,7 @@ export default function LoginPage() {
 
   return (
     <AuthRedirectGuard>
+      <PWAInstallPrompt/>
       {isMobile() && <PWAInstallPrompt />}
 
       <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-gray-800 py-12 px-4 mt-10">
