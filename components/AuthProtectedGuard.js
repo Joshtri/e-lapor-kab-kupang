@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Spinner } from 'flowbite-react';
+import LoadingMail from './ui/loading/LoadingMail';
 
 export default function AuthProtectGuard({ children, allowRole = [] }) {
   const router = useRouter();
@@ -34,9 +35,9 @@ export default function AuthProtectGuard({ children, allowRole = [] }) {
   if (checkingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
-        <Spinner size="lg" />
-        <span className="ml-2">Memeriksa autentikasi...</span>
-      </div>
+        {/* <Spinner size="lg" /> */}
+        <LoadingMail label={'Memeriksa autentikasi...'}/>
+       </div>
     );
   }
 
