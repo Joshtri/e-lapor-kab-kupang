@@ -1,7 +1,5 @@
-import LoadingOverlay from "@/components/ui/LoadingOverlay";
+import LoadingMail from '@/components/ui/loading/LoadingMail';
 
 export default function Loading() {
-  return (
-    <LoadingOverlay/>
-  );
+  return <LoadingMail />;
 }
