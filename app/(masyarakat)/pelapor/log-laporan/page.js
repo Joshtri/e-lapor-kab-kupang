@@ -26,6 +26,7 @@ import {
 } from 'react-icons/hi';
 import ImagePreviewModal from '@/components/admin/ImagePreviewModal';
 import LoadingOverlay from '@/components/ui/LoadingOverlay';
+import LoadingMail from '@/components/ui/loading/LoadingMail';
 
 export default function LogLaporanPage() {
   const [reports, setReports] = useState([]);
@@ -124,7 +125,11 @@ export default function LogLaporanPage() {
   const groupedReports = groupReportsByMonth(filteredReports);
 
   if (loading) {
-    return <LoadingOverlay message="Memuat riwayat laporan..." />;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
+        <LoadingMail label="Memuat riwayat laporan..." />
+      </div>
+    );
   }
 
   return (
