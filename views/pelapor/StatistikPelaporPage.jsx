@@ -109,7 +109,7 @@ const StatistikPelaporPage = () => {
     trend,
   }) => (
     <motion.div variants={item}>
-      <Card className="hover:shadow-lg transition-all duration-200">
+      <Card className="w-full min-w-0 hover:shadow-lg transition-all duration-200">
         <div className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -157,7 +157,7 @@ const StatistikPelaporPage = () => {
   const OverviewTab = () => (
     <div className="space-y-6">
       <motion.div
-        className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-5'} gap-4`}
+        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4`}
         variants={container}
         initial="hidden"
         animate="show"
@@ -368,7 +368,7 @@ const StatistikPelaporPage = () => {
               <Button color="gray" size="sm">
                 <HiDownload className="h-4 w-4 mr-2" />
                 Export
-              </Button> 
+              </Button>
             </div>
           </div>
         </motion.div>
