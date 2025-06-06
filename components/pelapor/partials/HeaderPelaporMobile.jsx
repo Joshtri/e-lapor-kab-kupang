@@ -151,11 +151,8 @@ const HeaderMobile = ({ user: propUser }) => {
             </motion.div>
             <div>
               <h1 className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                Lapor Mail
+                Lapor KK Bupati
               </h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Layanan Pengaduan Online
-              </p>
             </div>
           </Link>
 
