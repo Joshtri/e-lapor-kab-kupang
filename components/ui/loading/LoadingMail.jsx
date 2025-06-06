@@ -1,6 +1,7 @@
 'use client';
 
 import { HiOutlineMail } from 'react-icons/hi';
+import PropTypes from 'prop-types';
 
 export default function LoadingMail({ label }) {
   return (
@@ -16,3 +17,7 @@ export default function LoadingMail({ label }) {
     </div>
   );
 }
+
+LoadingMail.propTypes = {
+  label: PropTypes.string,
+};
