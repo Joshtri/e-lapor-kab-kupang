@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
- 
+
 export const truncateText = (text, limit = 50) => {
   if (!text) return '-';
   return text.length > limit ? `${text.substring(0, limit)}...` : text;
@@ -31,8 +31,18 @@ export const getInitials = (name) => {
     .substring(0, 2);
 };
 
-
-
+export const getPriorityColor = (priority) => {
+  switch (priority) {
+    case 'HIGH':
+      return 'red';
+    case 'MEDIUM':
+      return 'yellow';
+    case 'LOW':
+      return 'blue';
+    default:
+      return 'blue';
+  }
+};
 
 export function formatDateIndo(date, formatStr = 'dd MMM yyyy') {
   return format(new Date(date), formatStr, { locale: id });
