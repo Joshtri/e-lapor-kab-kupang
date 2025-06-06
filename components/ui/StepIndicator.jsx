@@ -1,4 +1,5 @@
 'use client';
+import PropTypes from 'prop-types';
 
 const StepIndicator = ({ step = 1, totalSteps = 3 }) => {
   return (
@@ -31,5 +32,10 @@ const StepIndicator = ({ step = 1, totalSteps = 3 }) => {
     </div>
   );
 };
+StepIndicator.propTypes = {
+  step: PropTypes.number,
+  totalSteps: PropTypes.number
+};
 
 export default StepIndicator;
+
