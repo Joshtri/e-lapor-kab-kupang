@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 
 import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
 import NotificationDropdown from '@/components/ui/NotificationDropdown';
+import { getInitials } from '@/utils/common';
 
 const ROLE_CONFIG = {
   admin: {
@@ -159,23 +160,6 @@ export default function Header({
           >
             <HiOutlineMenu className="h-6 w-6" />
           </button>
-          {/* <div className="flex items-center">
-            <motion.div
-              className={`${cfg.accentBg} p-2 rounded-full mr-3`}
-              animate={{ rotate: [0, 5, 0, -5, 0] }}
-              transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-            >
-              <HiOutlineMail className={`h-6 w-6 ${cfg.accentText}`} />
-            </motion.div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-                {cfg.title}
-              </h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {cfg.subtitle}
-              </p>
-            </div>
-          </div> */}
         </div>
 
         {/* Right */}
@@ -227,12 +211,17 @@ export default function Header({
               inline
               label={
                 <div className="relative">
-                  <Avatar
+                  {/* <Avatar
                     alt="User Avatar"
                     img={`https://ui-avatars.com/api/?name=${user?.name || role}&background=random`}
                     rounded
                     size="sm"
                     className="hover:scale-110 transition-all"
+                  /> */}
+                  <Avatar
+                    size="md"
+                    rounded
+                    placeholderInitials={getInitials(user?.name)}
                   />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">
