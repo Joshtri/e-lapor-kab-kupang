@@ -28,6 +28,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import { formatDate } from '@/utils/formatDate';
 import { getRoleStyles } from '@/utils/roleStyles';
+import LoadingMail from '@/components/ui/loading/LoadingMail';
 
 export default function NotificationList() {
   const [notifications, setNotifications] = useState([]);
@@ -113,7 +114,7 @@ export default function NotificationList() {
   if (!mounted || (loading && notifications.length === 0)) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Spinner size="xl" />
+        <LoadingMail />
       </div>
     );
   }
@@ -252,17 +253,6 @@ export default function NotificationList() {
                     >
                       <div>
                         <p>{notification.message}</p>
-                        {/* {notification.link && (
-                          <Link
-                            href={notification.link.replace(
-                              '[id]',
-                              notification.id,
-                            )}
-                            className="text-blue-600 dark:text-blue-400 text-sm hover:underline mt-1 inline-block"
-                          >
-                            Lihat Detail
-                          </Link>
-                        )} */}
                       </div>
                     </Table.Cell>
                     <Table.Cell>
