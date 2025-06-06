@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Spinner } from 'flowbite-react';
-import {
-  HiOutlineCheckCircle,
-  HiOutlineMail,
-  HiMailOpen,
-  HiClock,
-  HiX,
-} from 'react-icons/hi';
+import { Card } from 'flowbite-react';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import {
+  HiClock,
+  HiMailOpen,
+  HiOutlineCheckCircle,
+  HiX
+} from 'react-icons/hi';
+import SkeletonCardLoading from '../ui/loading/SkeletonCardLoading';
 
 const Statistics = ({ user, triggerRefetch }) => {
   const [stats, setStats] = useState({
@@ -49,19 +49,10 @@ const Statistics = ({ user, triggerRefetch }) => {
     },
   };
 
-  const item = {
-    hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1 },
-  };
-
   if (loading) {
     return (
-      <div className="flex justify-center items-center mt-8 p-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <Spinner size="lg" />
-        <span className="ml-2 text-gray-600 dark:text-gray-300">
-          Memuat statistik...
-        </span>
-      </div>
+
+      <SkeletonCardLoading />
     );
   }
 
