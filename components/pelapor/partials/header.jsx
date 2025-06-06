@@ -2,6 +2,7 @@
 
 import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
 import NotificationDropdown from '@/components/ui/NotificationDropdown';
+import { getInitials } from '@/utils/common';
 import axios from 'axios';
 import { Avatar, Button, Dropdown } from 'flowbite-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -43,7 +44,9 @@ const HeaderPelapor = () => {
 
         const notifRes = await axios.get('/api/notifications');
         setNotifications(
-          notifRes.data.filter((n) => n.link.startsWith('/pelapor/')),
+          notifRes.data.filter(
+            (n) => typeof n.link === 'string' && n.link.startsWith('/pelapor/'),
+          ),
         );
       } catch (err) {
         // ('Gagal mengambil data:', err);
@@ -189,16 +192,16 @@ const HeaderPelapor = () => {
                   <div className="relative">
                     <Avatar
                       alt="User Avatar"
-                      img={`https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random`}
-                      rounded
                       size="sm"
+                      rounded
+                      placeholderInitials={getInitials(user?.name)}
                       className="  dark:border-blue-800 hover:scale-110 transition-all duration-300"
                     />
-                    {unreadCount > 0 && (
+                    {/* {unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">
                         {unreadCount}
                       </span>
-                    )}
+                    )} */}
                   </div>
                 }
               >
