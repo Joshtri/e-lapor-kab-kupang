@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import LoadingOverlay from '@/components/ui/LoadingOverlay';
+import LoadingMail from '@/components/ui/loading/LoadingMail';
+import DashboardPelaporGrid from '@/views/dashboard/DashboardPelaporPage';
 
 export default function DashboardPelaporPage() {
   const router = useRouter();
@@ -30,7 +32,11 @@ export default function DashboardPelaporPage() {
   }, [router]);
 
   if (loading) {
-    return  <LoadingOverlay message='Memuat dashboard...' />; 
+    return  (
+      <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
+        <LoadingMail />
+      </div>
+    );
   }
 
   if (!user) {
@@ -41,5 +47,5 @@ export default function DashboardPelaporPage() {
     );
   }
 
-  return <DashboardPelapor user={user} />;
+  return <DashboardPelaporGrid user={user} />;
 }
