@@ -20,7 +20,6 @@ import WhatsAppModal from '@/components/home/WhatsAppModal';
 import AppDownloadSection from '../AppDownloadSection';
 import ProductIntroSection from '../ProductIntroSection';
 import LeadershipSectionAlternative from './LeadershipSectionAlternative';
-import PushTestPanel from '@/components/PushTestPanel';
 
 export default function Home() {
   // Animation references
@@ -128,8 +127,6 @@ export default function Home() {
         ref={containerRef}
         className="min-h-screen overflow-x-hidden relative z-10"
       >
-              <PushTestPanel />
-
         {/* Hero Section with Parallax */}
         <HeroSection scrollYProgress={scrollYProgress} startTour={startTour} />
 
