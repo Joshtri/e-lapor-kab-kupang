@@ -2,22 +2,8 @@ import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
 import { headers } from 'next/headers';
 import { sendResetPasswordEmail } from '@/lib/email/sendResetPasswordEmail';
-
-// Konfigurasi Nodemailer dengan debug logging
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST, // SMTP Host
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  logger: true, // ✅ Log SMTP activity
-  debug: true, // ✅ Debug SMTP connection
-});
 
 export async function POST(req) {
   try {
@@ -75,19 +61,6 @@ export async function POST(req) {
     const resetLink = `${protocol}://${host}/auth/reset-password?token=${resetToken}`;
 
     '🔗 Generated Reset Link:', resetLink;
-
-    // 📤 Kirim email reset password
-    const mailOptions = {
-      from: `"Lapor KK Bupati" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: 'Reset Password',
-      html: `
-                <p>Halo ${user.name},</p>
-                <p>Klik link berikut untuk mereset password Anda:</p>
-                <a href="${resetLink}" target="_blank">${resetLink}</a>
-                <p>Link ini hanya berlaku selama 1 jam.</p>
-            `,
-    };
 
     await sendResetPasswordEmail({
       name: user.name,

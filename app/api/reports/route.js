@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { transporter } from '@/lib/email/transporter'; // atau path sesuai lokasi transporter kamu
-// import { render } from '@react-email/render';
+import { convertFileToBuffer, validateImageFile } from '@/utils/common';
+import { render } from '@react-email/render';
+import NotificationEmail from '@/components/common/NotificationEmail'; // pastikan path sesuai
 
 export async function GET(req) {
   try {
@@ -61,6 +63,7 @@ export async function POST(req) {
     const description = form.get('description');
     const opdId = parseInt(form.get('opdId'));
     const file = form.get('image');
+    const imageBuffer = await convertFileToBuffer(file);
 
     if (!userId || !title || !category || !priority || !description || !opdId) {
       return NextResponse.json(
@@ -74,31 +77,16 @@ export async function POST(req) {
       include: { staff: { select: { id: true, role: true } } },
     });
 
-    if (!opd || opd.staff.role !== 'OPD') {
+    if (!opd || opd.staff?.role !== 'OPD') {
       return NextResponse.json(
         { error: 'OPD tidak valid atau tidak ditemukan.' },
         { status: 400 },
       );
     }
 
-    let imageBuffer = null;
-    if (file && typeof file.arrayBuffer === 'function') {
-      const arrayBuffer = await file.arrayBuffer();
-      imageBuffer = Buffer.from(arrayBuffer);
-    }
-
-    if (file && !file.type.startsWith('image/')) {
-      return NextResponse.json(
-        { error: 'File bukan gambar.' },
-        { status: 400 },
-      );
-    }
-
-    if (file && file.size > 5_000_000) {
-      return NextResponse.json(
-        { error: 'Ukuran gambar terlalu besar.' },
-        { status: 400 },
-      );
+    const { valid, error } = validateImageFile(file);
+    if (!valid) {
+      return NextResponse.json({ error }, { status: 400 });
     }
 
     const newReport = await prisma.report.create({
@@ -134,7 +122,7 @@ export async function POST(req) {
     }));
 
     const notifOPD = {
-      opdId: opd.staff.id,
+      userId: opd.staff.id, // Changed from opdId to userId to match schema
       message: `Anda menerima laporan baru: "${newReport.title}"`,
       link: `/opd/laporan-warga/${newReport.id}`,
       createdAt: new Date(),
@@ -153,40 +141,42 @@ export async function POST(req) {
       },
     });
 
-    // ✅ Kirim email ke semua BUPATI
+    // Send emails to BUPATI
     const bupatiEmails = adminBupati.filter(
       (u) => u.role === 'BUPATI' && u.email,
     );
 
+    const host = req.headers.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const reportLink = `${protocol}://${host}/bupati-portal/laporan-warga/${newReport.id}`;
+
     for (const bupati of bupatiEmails) {
       try {
-        // Get host from request headers to build dynamic URL
-        const host = req.headers.get('host');
-        const protocol = host.includes('localhost') ? 'http' : 'https';
-        const reportLink = `${protocol}://${host}/bupati-portal/laporan-warga/${newReport.id}`;
+        // Ensure render is awaited to resolve the Promise
+        const emailHtml = await render(
+          NotificationEmail({
+            previewText: `Laporan Baru: ${newReport.title}`,
+            greeting: `Yth. ${bupati.name || 'Bupati'},`,
+            intro: 'Sebuah laporan baru telah dikirim oleh warga.',
+            details: [
+              { label: 'Judul', value: newReport.title },
+              { label: 'Kategori', value: newReport.category },
+              { label: 'Prioritas', value: newReport.priority },
+            ],
+            ctaLabel: 'Lihat Laporan',
+            ctaLink: reportLink,
+            closing: 'Hormat kami,\nSistem Lapor Warga',
+          }),
+        );
 
         await transporter.sendMail({
           from: `"LAPOR KK BUPATI" <${process.env.EMAIL_USER}>`,
           to: bupati.email,
           subject: '📬 Laporan Baru Telah Dikirim',
-          html: `
-        <p>Yth. ${bupati.name || 'Bupati'},</p>
-        <p>Sebuah laporan baru telah dikirim oleh warga.</p>
-        <p><strong>Judul:</strong> ${newReport.title}</p>
-        <p><strong>Kategori:</strong> ${newReport.category}</p>
-        <p><strong>Prioritas:</strong> ${newReport.priority}</p>
-        <p>
-          Silakan tinjau laporan ini melalui portal Bupati:<br/>
-          <a href="${reportLink}">
-            Lihat Laporan
-          </a>
-        </p>
-        <br/>
-        <p>Hormat kami,<br/>Sistem Lapor Warga</p>
-          `,
+          html: emailHtml, // Now a string
         });
       } catch (emailErr) {
-        // (`❌ Gagal kirim email ke ${bupati.email}:`, emailErr);
+        console.error(`Failed to send email to ${bupati.email}:`, emailErr);
       }
     }
 
@@ -195,7 +185,7 @@ export async function POST(req) {
       { status: 201 },
     );
   } catch (error) {
-    // ('❌ Gagal membuat laporan:', error);
+    console.error('Failed to create report:', error);
     return NextResponse.json(
       { error: 'Terjadi kesalahan server.', detail: error.message },
       { status: 500 },

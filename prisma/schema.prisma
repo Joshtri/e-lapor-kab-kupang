@@ -17,6 +17,7 @@ model User {
   role          Role     @default(PELAPOR)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  avatarUrl    String?  @db.VarChar(255) // URL ke avatar pengguna, opsional
 
   // Relasi
   comments      Comment[]
@@ -35,7 +36,6 @@ model User {
   BugComment       BugComment[]
   ChatRoom         ChatRoom[]
   ChatMessage      ChatMessage[]
-  PushSubscription PushSubscription?
 }
 
 model OPD {
@@ -189,16 +189,7 @@ model ChatMessage {
   sender User     @relation(fields: [senderId], references: [id])
 }
 
-model PushSubscription {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique                     // 1 user hanya boleh punya 1 subscription aktif
-  endpoint  String   @unique                     // endpoint unik dari browser (Web Push)
-  p256dh    String                                // public key (p256dh)
-  auth      String                                // auth secret
-  createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
-}
 enum Role {
   BUPATI
   ADMIN

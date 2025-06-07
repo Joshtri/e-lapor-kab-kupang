@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
-
+ 
 export const truncateText = (text, limit = 50) => {
   if (!text) return '-';
   return text.length > limit ? `${text.substring(0, limit)}...` : text;
@@ -46,4 +46,25 @@ export const getPriorityColor = (priority) => {
 
 export function formatDateIndo(date, formatStr = 'dd MMM yyyy') {
   return format(new Date(date), formatStr, { locale: id });
+}
+
+
+export async function convertFileToBuffer(file) {
+  if (!file || typeof file.arrayBuffer !== 'function') return null;
+  const arrayBuffer = await file.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+}
+
+export function validateImageFile(file) {
+  if (!file) return { valid: true };
+
+  if (!file.type.startsWith('image/')) {
+    return { valid: false, error: 'File bukan gambar.' };
+  }
+
+  if (file.size > 5_000_000) {
+    return { valid: false, error: 'Ukuran gambar terlalu besar.' };
+  }
+
+  return { valid: true };
 }
