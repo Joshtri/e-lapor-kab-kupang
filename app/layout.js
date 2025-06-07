@@ -1,5 +1,3 @@
-
-
 import DynamicMetadata from '@/components/seo/DynamicMetadata'; // ✅ import di sini
 import RouteLoadingIndicator from '@/components/ui/RouteLoadingIndicator';
 import ClientThemeProvider from '@/providers/client-theme-provider';
@@ -7,6 +5,9 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import PropTypes from 'prop-types';
 import { Toaster } from 'sonner';
 import './globals.css';
+import NotificationPermissionPrompt from '@/components/ui/NotificationPermissionPrompt';
+import NotificationInit from '@/components/NotificationInit'; // ✅ import komponen init
+import { getAuthenticatedUser } from '@/lib/auth';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,7 +33,10 @@ export const viewport = {
   themeColor: '#ef4444',
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const user = await getAuthenticatedUser(); // ✅ dari cookies
+  const userId = user?.id;
+
   return (
     <html lang="id" suppressHydrationWarning>
       <body
@@ -42,6 +46,8 @@ export default function RootLayout({ children }) {
           <DynamicMetadata /> {/* ✅ panggil di sini */}
           <Toaster position="top-right" />
           <RouteLoadingIndicator />
+          <NotificationPermissionPrompt /> {/* ✅ Tambah di sini */}
+          <NotificationInit userId={userId} /> {/* ✅ Pass userId ke sini */}
           {/* <ScrollToTopButton /> */}
           {/* <FloatingHelper /> */}
           {children}

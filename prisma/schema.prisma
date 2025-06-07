@@ -29,12 +29,13 @@ model User {
   resetPasswordExpires DateTime?
 
   // ❌ HAPUS: fields dan references
-  opd            OPD?          @relation("UserToOPD")
-  sentEmails     Email[]       @relation("SentEmails")
-  receivedEmails Email[]       @relation("ReceivedEmails")
-  BugComment     BugComment[]
-  ChatRoom       ChatRoom[]
-  ChatMessage    ChatMessage[]
+  opd              OPD?              @relation("UserToOPD")
+  sentEmails       Email[]           @relation("SentEmails")
+  receivedEmails   Email[]           @relation("ReceivedEmails")
+  BugComment       BugComment[]
+  ChatRoom         ChatRoom[]
+  ChatMessage      ChatMessage[]
+  PushSubscription PushSubscription?
 }
 
 model OPD {
@@ -59,9 +60,9 @@ model Report {
   userId Int
   opdId  Int? // mengacu ke userId OPD
 
-  title       String  @db.VarChar(255)
+  title       String @db.VarChar(255)
   description String
-  location    String  @default("empty")
+  location    String @default("empty")
   category    String
   subcategory String
 
@@ -69,13 +70,13 @@ model Report {
   bupatiStatus Status   @default(PENDING)
   opdStatus    Status?  @default(PENDING)
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  assignedAt  DateTime? // waktu laporan ditugaskan ke OPD
-  respondedAt DateTime? // waktu OPD mulai merespon laporan
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  assignedAt     DateTime? // waktu laporan ditugaskan ke OPD
+  respondedAt    DateTime? // waktu OPD mulai merespon laporan
   isReadByBupati Boolean   @default(false)
   isReadByOpd    Boolean   @default(false) // ✅ Tambahan ini
-  
+
   // Relasi
   comments Comment[]
   logs     Log[]
@@ -116,7 +117,7 @@ model BugReport {
   description     String
   priorityProblem BugPriority @default(LOW)
   statusProblem   BugStatus   @default(OPEN)
-  attachment      Bytes?      // Added attachment field for images and other files
+  attachment      Bytes? // Added attachment field for images and other files
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
@@ -188,6 +189,16 @@ model ChatMessage {
   sender User     @relation(fields: [senderId], references: [id])
 }
 
+model PushSubscription {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique                     // 1 user hanya boleh punya 1 subscription aktif
+  endpoint  String   @unique                     // endpoint unik dari browser (Web Push)
+  p256dh    String                                // public key (p256dh)
+  auth      String                                // auth secret
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
 enum Role {
   BUPATI
   ADMIN

@@ -56,7 +56,8 @@ export default function MaskedNikInput({
         <span>
           {type === 'NIP'
             ? 'Nomor Induk Pegawai (NIP)'
-            : 'Nomor Induk Kependudukan (NIK)'}
+            : 'Nomor Induk Kependudukan (NIK)'}{' '}
+          <span className="text-red-500">*</span>
         </span>
       </Label>
 
@@ -72,6 +73,7 @@ export default function MaskedNikInput({
           helperText={error || helperText}
         />
 
+        
         {isMasked && (
           <button
             type="button"

@@ -127,11 +127,12 @@ export default function RegistrationPage() {
               <div>
                 <Label
                   htmlFor="fullName"
-                  value="NAMA LENGKAP"
                   className="flex items-center gap-2 mb-2"
                 >
                   <HiOutlineUser className="h-4 w-4 text-blue-600" />
-                  <span>Nama Lengkap</span>
+                  <span>
+                    Nama Lengkap <span className="text-red-500">*</span>
+                  </span>
                 </Label>
                 <TextInput
                   id="fullName"
@@ -147,16 +148,6 @@ export default function RegistrationPage() {
                   </span>
                 )}
               </div>
-
-              {/* NIK */}
-
-              {/* <Label
-                  htmlFor="nikNumber"
-                  className="mb-2 flex gap-2 items-center"
-                >
-                  <HiOutlineIdentification className="h-4 w-4 text-blue-600" />
-                  <span>Nomor Identitas (NIK)</span>
-                </Label> */}
 
               <MaskedNikInput
                 value={formValues.nikNumber}
@@ -177,12 +168,14 @@ export default function RegistrationPage() {
               <div>
                 <Label
                   htmlFor="contactNumber"
-                  value="NOMOR KONTAK"
                   className="flex items-center gap-2 mb-2"
                 >
                   <HiOutlinePhone className="h-4 w-4 text-blue-600" />
-                  <span>Nomor Kontak</span>
+                  <span>
+                    Nomor Kontak <span className="text-red-500">*</span>
+                  </span>
                 </Label>
+
                 <TextInput
                   id="contactNumber"
                   type="text"
@@ -214,7 +207,9 @@ export default function RegistrationPage() {
               <div>
                 <Label htmlFor="email" className="mb-2 flex gap-2 items-center">
                   <HiOutlineMail className="h-4 w-4 text-blue-600" />
-                  <span>Email</span>
+                  <span>
+                    Email <span className="text-red-500">*</span>
+                  </span>
                 </Label>
                 <TextInput
                   id="email"
@@ -235,12 +230,14 @@ export default function RegistrationPage() {
               <div className="relative">
                 <Label
                   htmlFor="password"
-                  value="PASSWORD"
                   className="flex items-center gap-2 mb-2"
                 >
                   <HiOutlineLockClosed className="h-4 w-4 text-blue-600" />
-                  <span>Password</span>
+                  <span>
+                    Password <span className="text-red-500">*</span>
+                  </span>
                 </Label>
+
                 <TextInput
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -268,7 +265,9 @@ export default function RegistrationPage() {
                   className="mb-2 flex gap-2 items-center"
                 >
                   <HiOutlineLockClosed className="h-4 w-4 text-blue-600" />
-                  <span>Konfirmasi Password</span>
+                  <span>
+                    Konfirmasi Password <span className="text-red-500">*</span>
+                  </span>
                 </Label>
                 <TextInput
                   id="confirmPassword"

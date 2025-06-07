@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { transporter } from '@/lib/email/transporter'; // atau path sesuai lokasi transporter kamu
 // import { render } from '@react-email/render'; // jika kamu gunakan templating, opsional
+import webpush from 'web-push';
 
 export async function GET(req) {
   try {
@@ -118,10 +119,65 @@ export async function POST(req) {
       },
     });
 
+    
     const adminBupati = await prisma.user.findMany({
       where: { role: { in: ['ADMIN', 'BUPATI'] } },
       select: { id: true, role: true, email: true, name: true },
     });
+
+
+    // 🔔 Kirim Web Push ke OPD (jika ada)
+    const opdSub = await prisma.pushSubscription.findUnique({
+      where: { userId: opd.staff.id },
+    });
+    if (opdSub) {
+      await webpush.sendNotification(
+        opdSub,
+        JSON.stringify({
+          title: 'Laporan Baru Masuk',
+          body: `Laporan: ${newReport.title}`,
+          url: `https://${req.headers.get('host')}/opd/laporan-warga/${newReport.id}`,
+          icon: '/icon.png',
+        }),
+      );
+    }
+
+    // 🔔 Kirim Web Push ke ADMIN + BUPATI
+    for (const admin of adminBupati) {
+      const sub = await prisma.pushSubscription.findUnique({
+        where: { userId: admin.id },
+      });
+      if (sub) {
+        await webpush.sendNotification(
+          sub,
+          JSON.stringify({
+            title: 'Laporan Baru',
+            body: `Laporan "${newReport.title}" telah dikirim.`,
+            url:
+              admin.role === 'ADMIN'
+                ? `https://${req.headers.get('host')}/adm/report-warga/${newReport.id}`
+                : `https://${req.headers.get('host')}/bupati-portal/laporan-warga/${newReport.id}`,
+            icon: '/icon.png',
+          }),
+        );
+      }
+    }
+
+    // 🔔 Kirim Web Push ke PELAPOR
+    const pelaporSub = await prisma.pushSubscription.findUnique({
+      where: { userId },
+    });
+    if (pelaporSub) {
+      await webpush.sendNotification(
+        pelaporSub,
+        JSON.stringify({
+          title: 'Laporan Anda Terkirim!',
+          body: `Laporan "${newReport.title}" berhasil dikirim.`,
+          url: `https://${req.headers.get('host')}/pelapor/log-laporan`,
+          icon: '/icon.png',
+        }),
+      );
+    }
 
     const notifAdminBupati = adminBupati.map((u) => ({
       userId: u.id,

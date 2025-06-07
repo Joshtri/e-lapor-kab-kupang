@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "private": true,
   "scripts": {
-    "dev": "prisma generate && next dev --turbopack",
+    "dev": "prisma generate &&  next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
     "postinstall": "prisma generate",
@@ -46,6 +46,7 @@
     "sonner": "^2.0.1",
     "swr": "^2.3.3",
     "tsparticles": "^3.8.1",
+    "web-push": "^3.6.7",
     "zod": "^3.24.2"
   },
   "devDependencies": {

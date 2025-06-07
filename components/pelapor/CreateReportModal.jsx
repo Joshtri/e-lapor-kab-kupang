@@ -50,6 +50,36 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [subcategory, setSubcategory] = useState('');
 
+  useEffect(() => {
+    const askNotificationPermission = async () => {
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          const reg = await navigator.serviceWorker.ready;
+          const subscription = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+          });
+
+          await fetch('/api/web-push/subscription', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: user.id,
+              subscription,
+            }),
+          });
+        }
+      } catch (error) {
+        console.error('❌ Gagal mengaktifkan notifikasi:', error);
+      }
+    };
+
+    if (user?.id && 'Notification' in window && 'serviceWorker' in navigator) {
+      askNotificationPermission();
+    }
+  }, [user?.id]);
+
   // Fetch OPDs when component mounts
   useEffect(() => {
     fetchOpds();

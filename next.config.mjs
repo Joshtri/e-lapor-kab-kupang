@@ -5,7 +5,7 @@ const withPWA = nextPWA({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
+  // disable: process.env.NODE_ENV === 'development',
 })
 
 /** @type {import('next').NextConfig} */
@@ -19,9 +19,17 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['placehold.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+    // domains: ['placehold.co'],
   },
   trailingSlash: true,
 }
 
-export default withPWA(nextConfig)
+  export default withPWA(nextConfig)

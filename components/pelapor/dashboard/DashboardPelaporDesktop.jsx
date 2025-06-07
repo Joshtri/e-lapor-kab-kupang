@@ -57,7 +57,7 @@ const DashboardPelaporDesktop = ({ user }) => {
                 </div>
                 <div>
                   <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                    Selamat Datang, <span className="font-bold text-blue-600 dark:text-blue-400">{user?.name}</span>
+                    Selamat Datang,<span className="font-bold text-blue-600 dark:text-blue-400">{user?.name}</span>
                   </h1>
                   <p className="text-gray-600 dark:text-gray-300 mt-1 flex items-center">
                     <HiOutlineHome className="mr-2 h-4 w-4" />
