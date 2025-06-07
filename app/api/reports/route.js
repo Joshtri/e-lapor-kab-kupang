@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { transporter } from '@/lib/email/transporter'; // atau path sesuai lokasi transporter kamu
-// import { render } from '@react-email/render'; // jika kamu gunakan templating, opsional
+// import { render } from '@react-email/render';
 
 export async function GET(req) {
   try {
