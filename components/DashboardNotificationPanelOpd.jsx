@@ -139,6 +139,11 @@ export default function DashboardNotificationPanelOpd() {
                           Ubah OPD
                         </Button>
                       </div>
+                        <div className="mt-4 p-3 border-l-4 border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 text-sm text-yellow-800 dark:text-yellow-200 rounded-md">
+                          ⚠️ Jika laporan tidak sesuai dengan OPD tujuan,
+                          silakan pindahkan ke OPD yang benar dengan menekan
+                          tombol <strong>Ubah OPD</strong>.
+                        </div>
 
                       <AnimatePresence>
                         {isOpen && (

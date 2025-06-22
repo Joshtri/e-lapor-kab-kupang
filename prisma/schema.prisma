@@ -17,6 +17,8 @@ model User {
   role          Role     @default(PELAPOR)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  
+  testsaja String? @db.Text // ❌ HAPUS: hanya untuk testing
   avatarUrl    String?  @db.VarChar(255) // URL ke avatar pengguna, opsional
 
   // Relasi
@@ -36,6 +38,10 @@ model User {
   BugComment       BugComment[]
   ChatRoom         ChatRoom[]
   ChatMessage      ChatMessage[]
+}
+
+model Buku{
+  id Int @id @default(autoincrement())
 }
 
 model OPD {
