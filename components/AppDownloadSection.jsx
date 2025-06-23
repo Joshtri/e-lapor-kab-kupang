@@ -70,7 +70,7 @@ export default function AppDownloadSection() {
             </div>
           </div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            LAPOR KK BUPATI: Suara Anda, Prioritas Kami
+            Lapor Kaka Bupati: Suara Anda, Prioritas Kami
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Aplikasi resmi Pemerintah Kabupaten Kupang untuk menerima laporan,
@@ -101,7 +101,7 @@ export default function AppDownloadSection() {
             </h2>
 
             <p className="text-lg text-gray-600 dark:text-gray-300">
-              Unduh aplikasi LAPOR KK BUPATI untuk pengalaman yang lebih baik.
+              Unduh aplikasi Lapor Kaka Bupati untuk pengalaman yang lebih baik.
               Sampaikan laporan, pantau status pengaduan, dan dapatkan
               notifikasi penting langsung dari ponsel Android Anda.
             </p>
@@ -203,7 +203,7 @@ export default function AppDownloadSection() {
                         <HiOutlineMail className="text-blue-600 h-5 w-5" />
                       </div>
                       <div className="text-white font-bold">
-                        LAPOR KK BUPATI
+                        Lapor Kaka Bupati
                       </div>
                     </div>
 
