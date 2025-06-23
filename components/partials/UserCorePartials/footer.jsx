@@ -9,14 +9,14 @@ const ROLE_CONFIG = {
     bg: 'bg-gray-100 dark:bg-gray-900 border-t border-gray-300 dark:border-gray-700',
     text: 'text-gray-600 dark:text-gray-300',
     hover: 'hover:text-green-600 dark:hover:text-green-400 hover:underline',
-    brand: 'Lapor KK Bupati Admin',
+    brand: 'Lapor Kaka Bupati Admin',
     copyPhrase: 'All Rights Reserved.',
   },
   bupati: {
     bg: 'bg-blue-600',
     text: 'text-gray-200',
     hover: 'hover:underline',
-    brand: 'Lapor KK Bupati',
+    brand: 'Lapor Kaka Bupati',
     copyPhrase: 'Hak Cipta Dilindungi.',
   },
   opd: {
@@ -37,11 +37,11 @@ export default function Footer({ role = 'admin' }) {
   const cfg = ROLE_CONFIG[role] || ROLE_CONFIG.admin;
   const year = new Date().getFullYear();
 
-//   const links = [
-//     { href: '/tentang', label: 'Tentang' },
-//     { href: '/privasi', label: 'Kebijakan Privasi' },
-//     { href: '/kontak', label: 'Kontak' },
-//   ];
+  //   const links = [
+  //     { href: '/tentang', label: 'Tentang' },
+  //     { href: '/privasi', label: 'Kebijakan Privasi' },
+  //     { href: '/kontak', label: 'Kontak' },
+  //   ];
 
   return (
     <footer className={`${cfg.bg} py-6 mt-auto`}>
