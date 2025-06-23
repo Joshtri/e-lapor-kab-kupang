@@ -4,7 +4,6 @@ import AuthProtectGuard from '@/components/AuthProtectedGuard';
 import Footer from '@/components/partials/UserCorePartials/footer';
 import Header from '@/components/partials/UserCorePartials/header';
 import Sidebar from '@/components/partials/UserCorePartials/sidebar';
-import RouteLoadingIndicator from '@/components/ui/RouteLoadingIndicator';
 import ClientThemeProvider from '@/providers/client-theme-provider';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
@@ -17,8 +16,6 @@ export default function AdminLayout({ children }) {
     <AuthProtectGuard allowRole={['ADMIN']}>
       <ClientThemeProvider>
         <div className="flex min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
-          <RouteLoadingIndicator />
-
           <Sidebar
             role="admin"
             isSidebarOpen={isSidebarOpen}
