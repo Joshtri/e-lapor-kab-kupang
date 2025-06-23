@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">LAPOR KK BUPATI</h3>
+            <h3 className="text-xl font-bold mb-4">Lapor Kaka Bupati</h3>
             <p className="text-gray-400 mb-4">
               Layanan Aspirasi dan Pengaduan Online Rakyat Kabupaten Kupang
             </p>
