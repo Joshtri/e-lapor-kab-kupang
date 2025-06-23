@@ -26,6 +26,7 @@ export async function GET(req) {
         contactNumber: true,
         createdAt: true,
         updatedAt: true,
+
         opd: {
           select: {
             id: true,
