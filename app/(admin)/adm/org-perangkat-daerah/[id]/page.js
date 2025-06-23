@@ -26,6 +26,7 @@ import {
   HiOutlineMailOpen,
   HiCalendar,
   HiLocationMarker,
+  HiPencil,
 } from 'react-icons/hi';
 
 export default function OrgPerangkatDaerahDetailPage() {
@@ -108,7 +109,9 @@ export default function OrgPerangkatDaerahDetailPage() {
               <HiOfficeBuilding className="text-blue-600 h-8 w-8" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">{opd.name}</h1>
+              <h1 className="text-2xl font-bold text-gray-800">
+                {opd.name || 'Nama OPD tidak tersedia'}
+              </h1>
               <Badge color="blue" className="mt-1">
                 OPD
               </Badge>
@@ -132,10 +135,27 @@ export default function OrgPerangkatDaerahDetailPage() {
                 <p className="font-medium">
                   {opd.staff?.name || 'Tidak tersedia'}
                 </p>
-                <p className="text-sm text-gray-500">Staff OPD</p>
+                <p className="text-sm text-gray-500">
+                  {opd.staff?.email || 'Email tidak tersedia'}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {opd.staff?.contactNumber || 'Kontak tidak tersedia'}
+                </p>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Add Edit Button */}
+        <div className="flex justify-end mt-4">
+          <Button
+            color="blue"
+            size="sm"
+            onClick={() => router.push(`/adm/org-perangkat-daerah/${id}/edit`)}
+          >
+            <HiPencil className="mr-2 h-4 w-4" />
+            Edit OPD
+          </Button>
         </div>
 
         {/* Contact Information Section */}
@@ -152,7 +172,18 @@ export default function OrgPerangkatDaerahDetailPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Email:</p>
-                <p className="text-gray-800">{opd.email || '-'}</p>
+                <p className="text-gray-800">
+                  {opd.email ? (
+                    <a
+                      href={`mailto:${opd.email}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {opd.email}
+                    </a>
+                  ) : (
+                    <span className="text-gray-500 italic">Belum tersedia</span>
+                  )}
+                </p>
               </div>
             </div>
 
@@ -162,7 +193,18 @@ export default function OrgPerangkatDaerahDetailPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Telepon:</p>
-                <p className="text-gray-800">{opd.telp || '-'}</p>
+                <p className="text-gray-800">
+                  {opd.telp && opd.telp !== '-' ? (
+                    <a
+                      href={`tel:${opd.telp}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {opd.telp}
+                    </a>
+                  ) : (
+                    <span className="text-gray-500 italic">Belum tersedia</span>
+                  )}
+                </p>
               </div>
             </div>
 
@@ -172,7 +214,13 @@ export default function OrgPerangkatDaerahDetailPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Alamat:</p>
-                <p className="text-gray-800">{opd.alamat || '-'}</p>
+                <p className="text-gray-800">
+                  {opd.alamat ? (
+                    opd.alamat
+                  ) : (
+                    <span className="text-gray-500 italic">Belum tersedia</span>
+                  )}
+                </p>
               </div>
             </div>
 
@@ -184,18 +232,39 @@ export default function OrgPerangkatDaerahDetailPage() {
                 <p className="text-sm font-medium text-gray-500">Website:</p>
                 {opd.website ? (
                   <a
-                    href={opd.website}
+                    href={
+                      opd.website.startsWith('http')
+                        ? opd.website
+                        : `https://${opd.website}`
+                    }
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
                   >
                     {opd.website}
                   </a>
                 ) : (
-                  <p className="text-gray-800">-</p>
+                  <span className="text-gray-500 italic">Belum tersedia</span>
                 )}
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Additional Information Section */}
+        <div className="mt-4">
+          <h2 className="text-sm font-medium text-gray-500 mb-1">
+            Dibuat pada:
+          </h2>
+          <p className="text-gray-800">
+            {opd.createdAt
+              ? new Date(opd.createdAt).toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })
+              : 'Tanggal tidak tersedia'}
+          </p>
         </div>
       </Card>
 
