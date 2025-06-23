@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Dashboard Pelapor | Lapor KK Bupati',
+  title: 'Dashboard Pelapor | Lapor Kaka Bupati',
   description: 'Dashboard Pelapor',
 };
 
