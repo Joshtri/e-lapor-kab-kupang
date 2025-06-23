@@ -1,5 +1,4 @@
 import DynamicMetadata from '@/components/seo/DynamicMetadata'; // ✅ import di sini
-import RouteLoadingIndicator from '@/components/ui/RouteLoadingIndicator';
 import ClientThemeProvider from '@/providers/client-theme-provider';
 import { Geist, Geist_Mono } from 'next/font/google';
 import PropTypes from 'prop-types';
@@ -17,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'Lapor KK Bupati',
-  description: 'Sampaikan laporan Anda melalui Lapor KK Bupati',
+  title: 'Lapor Kaka Bupati',
+  description: 'Sampaikan laporan Anda melalui Lapor Kaka Bupati',
   manifest: '/manifest.json',
   icons: {
     icon: '/icons/icon-192.png',
@@ -31,7 +30,6 @@ export const viewport = {
 };
 
 export default async function RootLayout({ children }) {
-
   return (
     <html lang="id" suppressHydrationWarning>
       <body
@@ -40,8 +38,8 @@ export default async function RootLayout({ children }) {
         <ClientThemeProvider>
           <DynamicMetadata /> {/* ✅ panggil di sini */}
           <Toaster position="top-right" />
-          <RouteLoadingIndicator />
-            {/* <ScrollToTopButton /> */}
+          {/* <RouteLoadingIndicator /> */}
+          {/* <ScrollToTopButton /> */}
           {/* <FloatingHelper /> */}
           {children}
         </ClientThemeProvider>
