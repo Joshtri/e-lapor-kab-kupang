@@ -14,7 +14,7 @@ import {
   HiOutlineLogin,
   HiOutlineMenu,
   HiOutlineUserAdd,
-  HiX
+  HiX,
 } from 'react-icons/hi';
 
 export default function Header() {
@@ -75,7 +75,7 @@ export default function Header() {
               />
             </div>
             <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
-              Lapor KK BUPATI
+              Lapor Kaka Bupati
             </span>
           </Link>
 
