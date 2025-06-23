@@ -64,7 +64,7 @@ export default function ProductIntroSection() {
             </div>
           </div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Tentang LAPOR KK BUPATI
+            Tentang Lapor Kaka Bupati
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Platform pengaduan online resmi yang menghubungkan masyarakat
