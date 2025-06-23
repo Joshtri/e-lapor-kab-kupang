@@ -2,7 +2,7 @@
 import StatistikPelaporPage from '@/views/pelapor/StatistikPelaporPage';
 
 export const metadata = {
-  title: 'Statistik Pelapor | Lapor KK Bupati',
+  title: 'Statistik Pelapor | Lapor Kaka Bupati',
   description: 'Halaman statistik untuk pelapor',
 };
 
