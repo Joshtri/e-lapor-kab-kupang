@@ -87,7 +87,8 @@ export default function ReportsSection() {
               >
                 <div className="flex items-start gap-3">
                   <Avatar
-                    img={`https://ui-avatars.com/api/?name=${encodeURIComponent(report.user?.name || 'Pelapor')}&background=random&color=fff&size=128&bold=true&font-size=0.5`}
+                    placeholderInitials={report.user?.name?.charAt(0) || 'P'}
+                    // img={`https://ui-avatars.com/api/?name=${encodeURIComponent(report.user?.name || 'Pelapor')}&background=random&color=fff&size=128&bold=true&font-size=0.5`}
                     alt={report.user?.name || 'Pelapor'}
                     size="sm"
                     rounded
