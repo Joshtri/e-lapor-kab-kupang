@@ -1,8 +1,8 @@
 import HomePublic from '@/components/home/homePublic';
 export const metadata = {
-  title: 'Lapor KK Bupati | Kabupaten Kupang',
+  title: 'Lapor Kaka Bupati | Kabupaten Kupang',
   description:
-    'Sampaikan aspirasi, keluhan, dan laporan Anda langsung kepada Bupati Kabupaten Kupang melalui layanan Lapor KK Bupati. Cepat, mudah, dan transparan.',
+    'Sampaikan aspirasi, keluhan, dan laporan Anda langsung kepada Bupati Kabupaten Kupang melalui layanan Lapor Kaka Bupati. Cepat, mudah, dan transparan.',
   keywords: [
     'lapor bupati',
     'kabupaten kupang',
@@ -16,11 +16,11 @@ export const metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Lapor KK Bupati | Kabupaten Kupang',
+    title: 'Lapor Kaka Bupati | Kabupaten Kupang',
     description:
       'Layanan resmi untuk warga Kabupaten Kupang menyampaikan laporan, aspirasi, dan keluhan langsung kepada Bupati. Kami dengarkan, kami tanggapi.',
     url: 'https://yourdomain.com',
-    siteName: 'Lapor KK Bupati',
+    siteName: 'Lapor Kaka Bupati',
     type: 'website',
     locale: 'id_ID',
     images: [
@@ -28,13 +28,13 @@ export const metadata = {
         url: 'https://yourdomain.com/images/og-lapor-kk.jpg',
         width: 1200,
         height: 630,
-        alt: 'Lapor KK Bupati - Kabupaten Kupang',
+        alt: 'Lapor Kaka Bupati - Kabupaten Kupang',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Lapor KK Bupati | Kabupaten Kupang',
+    title: 'Lapor Kaka Bupati | Kabupaten Kupang',
     description:
       'Sampaikan laporan Anda secara langsung dan mudah kepada Bupati Kabupaten Kupang. Layanan publik berbasis transparansi dan partisipasi warga.',
     site: '@pemkabbkupang',
