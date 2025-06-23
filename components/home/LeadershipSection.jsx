@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import Image from "next/image"
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export default function LeadershipSection() {
   return (
@@ -21,10 +21,12 @@ export default function LeadershipSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Pimpinan Kabupaten Kupang</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Pimpinan Kabupaten Kupang
+          </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Berkomitmen untuk mendengarkan aspirasi masyarakat dan memberikan pelayanan terbaik untuk kemajuan Kabupaten
-            Kupang.
+            Berkomitmen untuk mendengarkan aspirasi masyarakat dan memberikan
+            pelayanan terbaik untuk kemajuan Kabupaten Kupang.
           </p>
         </motion.div>
 
@@ -47,11 +49,15 @@ export default function LeadershipSection() {
               />
             </div>
             <div className="p-6 bg-gradient-to-r from-blue-50 to-white">
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">Nama Bupati</h3>
-              <p className="text-blue-600 font-medium mb-4">Bupati Kabupaten Kupang</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                Nama Bupati
+              </h3>
+              <p className="text-blue-600 font-medium mb-4">
+                Bupati Kabupaten Kupang
+              </p>
               <p className="text-gray-600 italic">
-                "Kami berkomitmen untuk mewujudkan pemerintahan yang transparan dan responsif terhadap aspirasi
-                masyarakat Kabupaten Kupang."
+                "Kami berkomitmen untuk mewujudkan pemerintahan yang transparan
+                dan responsif terhadap aspirasi masyarakat Kabupaten Kupang."
               </p>
             </div>
           </motion.div>
@@ -74,17 +80,21 @@ export default function LeadershipSection() {
               />
             </div>
             <div className="p-6 bg-gradient-to-r from-blue-50 to-white">
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">Nama Wakil Bupati</h3>
-              <p className="text-blue-600 font-medium mb-4">Wakil Bupati Kabupaten Kupang</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                Nama Wakil Bupati
+              </h3>
+              <p className="text-blue-600 font-medium mb-4">
+                Wakil Bupati Kabupaten Kupang
+              </p>
               <p className="text-gray-600 italic">
-                "Melalui platform LAPOR KK BUPATI, kami hadir untuk mendengar dan menindaklanjuti setiap aspirasi
-                masyarakat demi Kabupaten Kupang yang lebih baik."
+                "Melalui platform Lapor Kaka Bupati, kami hadir untuk mendengar
+                dan menindaklanjuti setiap aspirasi masyarakat demi Kabupaten
+                Kupang yang lebih baik."
               </p>
             </div>
           </motion.div>
         </div>
       </div>
     </section>
-    
-  )
+  );
 }
