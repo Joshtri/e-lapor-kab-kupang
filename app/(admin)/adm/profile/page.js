@@ -2,14 +2,14 @@ import ProfileManagement from '@/components/profile';
 import PageHeader from '@/components/ui/PageHeader';
 
 export const metadata = {
-  title: 'Profile Management | Lapor KK Bupati',
+  title: 'Profile Management | Lapor Kaka Bupati',
   description:
-    'Manage your profile settings and information on Lapor KK Bupati.',
-  keywords: 'profile, management, settings, Lapor KK Bupati',
+    'Manage your profile settings and information on Lapor Kaka Bupati.',
+  keywords: 'profile, management, settings, Lapor Kaka Bupati',
   openGraph: {
-    title: 'Profile Management | Lapor KK Bupati',
+    title: 'Profile Management | Lapor Kaka Bupati',
     description:
-      'Manage your profile settings and information on Lapor KK Bupati.',
+      'Manage your profile settings and information on Lapor Kaka Bupati.',
     url: '/adm/dashboard/profile',
     type: 'website',
     images: [
@@ -17,15 +17,15 @@ export const metadata = {
         url: '/images/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Profile Management | Lapor KK Bupati',
+        alt: 'Profile Management | Lapor Kaka Bupati',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Profile Management | Lapor KK Bupati',
+    title: 'Profile Management | Lapor Kaka Bupati',
     description:
-      'Manage your profile settings and information on Lapor KK Bupati.',
+      'Manage your profile settings and information on Lapor Kaka Bupati.',
     site: '@pemkabbkupang',
     images: ['/images/og-image.png'],
   },
@@ -43,13 +43,11 @@ export default function ProfileManagementPage() {
           backHref="/adm/dashboard"
           breadcrumbsProps={{
             customRoutes: {
-              
-            'adm': {
-              label: 'Dashboard Admin',
-              href: '/adm/dashboard',
+              adm: {
+                label: 'Dashboard Admin',
+                href: '/adm/dashboard',
+              },
             },
- 
-          },
           }}
         />
       </div>
