@@ -93,7 +93,7 @@ export default function LeadershipSectionAlternative() {
                 Wakil Bupati Kabupaten Kupang
               </p>
               <p className="text-blue-100 italic">
-                "Melalui platform LAPOR KK BUPATI, kami hadir untuk mendengar
+                "Melalui platform Lapor Kaka Bupati, kami hadir untuk mendengar
                 dan menindaklanjuti setiap aspirasi masyarakat demi Kabupaten
                 Kupang yang lebih baik."
               </p>
