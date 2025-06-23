@@ -22,7 +22,8 @@ export default function ReportGrid({ reports }) {
     <>
       <div className="flex items-center gap-3">
         <Avatar
-          img={`https://ui-avatars.com/api/?name=${report.user?.name}&background=random`}
+          placeholderInitials={report?.user.name?.charAt(0) || 'A'}
+          // img={`https://ui-avatars.com/api/?name=${report.user?.name}&background=random`}
           rounded
           size="sm"
         />
