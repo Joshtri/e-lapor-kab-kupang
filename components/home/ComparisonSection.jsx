@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import { useEffect, useRef } from "react"
-import { motion } from "framer-motion"
-import { driver } from "driver.js"
-import "driver.js/dist/driver.css"
+import { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 import {
   HiOutlineGlobe,
   HiOutlineDocumentReport,
@@ -15,203 +15,207 @@ import {
   HiOutlineMail,
   HiMailOpen,
   HiPaperAirplane,
-} from "react-icons/hi"
+} from 'react-icons/hi';
 
 export default function ComparisonSection() {
-  const driverObj = useRef(null)
+  const driverObj = useRef(null);
 
   useEffect(() => {
     driverObj.current = driver({
       showProgress: true,
-      nextBtnText: "Selanjutnya",
-      prevBtnText: "Sebelumnya",
-      doneBtnText: "Selesai",
+      nextBtnText: 'Selanjutnya',
+      prevBtnText: 'Sebelumnya',
+      doneBtnText: 'Selesai',
       steps: [
         {
-          element: "#online-process",
+          element: '#online-process',
           popover: {
-            title: "Pengaduan Online",
-            description: "Pengaduan secara digital lebih cepat & efisien.",
-            side: "top",
-            align: "center",
+            title: 'Pengaduan Online',
+            description: 'Pengaduan secara digital lebih cepat & efisien.',
+            side: 'top',
+            align: 'center',
           },
         },
         {
-          element: "#offline-process",
+          element: '#offline-process',
           popover: {
-            title: "Pengaduan Offline",
-            description: "Pengaduan langsung ke kantor pemerintah.",
-            side: "top",
-            align: "center",
+            title: 'Pengaduan Offline',
+            description: 'Pengaduan langsung ke kantor pemerintah.',
+            side: 'top',
+            align: 'center',
           },
         },
         {
-          element: "#start-online",
+          element: '#start-online',
           popover: {
-            title: "Daftar Akun",
-            description: "Buat akun terlebih dahulu untuk memulai laporan online.",
-            side: "right",
-            align: "start",
+            title: 'Daftar Akun',
+            description:
+              'Buat akun terlebih dahulu untuk memulai laporan online.',
+            side: 'right',
+            align: 'start',
           },
         },
         {
-          element: "#start-offline",
+          element: '#start-offline',
           popover: {
-            title: "Datang ke Kantor",
-            description: "Kunjungi kantor terdekat dan isi formulir laporan.",
-            side: "left",
-            align: "start",
-          },
-        },
-
-        {
-          element: "#login-buat-laporan",
-          popover: {
-            title: "Login & Buat Laporan",
-            description: "Masuk dan buat laporan dengan detail yang jelas.",
-            side: "left",
-            align: "start",
+            title: 'Datang ke Kantor',
+            description: 'Kunjungi kantor terdekat dan isi formulir laporan.',
+            side: 'left',
+            align: 'start',
           },
         },
 
         {
-          element: "#isi-formulir",
+          element: '#login-buat-laporan',
           popover: {
-            title: "Isi Formulir",
-            description: "Isi formulir pengaduan yang disediakan.",
-            side: "left",
-            align: "start",
+            title: 'Login & Buat Laporan',
+            description: 'Masuk dan buat laporan dengan detail yang jelas.',
+            side: 'left',
+            align: 'start',
+          },
+        },
+
+        {
+          element: '#isi-formulir',
+          popover: {
+            title: 'Isi Formulir',
+            description: 'Isi formulir pengaduan yang disediakan.',
+            side: 'left',
+            align: 'start',
           },
         },
         {
-          element: "#verifikasi-otomatis",
+          element: '#verifikasi-otomatis',
           popover: {
-            title: "Verifikasi dua Pihak",
-            description: "Verifikasi laporan dilakukan oleh OPD yang anda tunjuk dan bupati",
-            side: "right",
-            align: "start",
+            title: 'Verifikasi dua Pihak',
+            description:
+              'Verifikasi laporan dilakukan oleh OPD yang anda tunjuk dan bupati',
+            side: 'right',
+            align: 'start',
           },
         },
         {
-          element: "#verifikas-petugas",
+          element: '#verifikas-petugas',
           popover: {
-            title: "Verifikasi Petugas",
-            description: "Petugas akan memverifikasi identitas & laporan Anda.",
-            side: "left",
-            align: "start",
+            title: 'Verifikasi Petugas',
+            description: 'Petugas akan memverifikasi identitas & laporan Anda.',
+            side: 'left',
+            align: 'start',
           },
         },
         {
-          element: "#tindak-lanjut",
+          element: '#tindak-lanjut',
           popover: {
-            title: "Tindak Lanjut",
-            description: "Laporan akan diperiksa dan respon oleh OPD terkait dan Bupati.",
-            side: "right",
-            align: "start",
+            title: 'Tindak Lanjut',
+            description:
+              'Laporan akan diperiksa dan respon oleh OPD terkait dan Bupati.',
+            side: 'right',
+            align: 'start',
           },
         },
         {
-          element: "#penyaluran-laporan",
+          element: '#penyaluran-laporan',
           popover: {
-            title: "Penyaluran Laporan",
-            description: "Laporan diteruskan ke OPD terkait.",
-            side: "left",
-            align: "start",
+            title: 'Penyaluran Laporan',
+            description: 'Laporan diteruskan ke OPD terkait.',
+            side: 'left',
+            align: 'start',
           },
         },
         {
-          element: "#pantau-terus",
+          element: '#pantau-terus',
           popover: {
-            title: "Pantau Status",
-            description: "Pantau status laporan Anda di dashboard.",
-            side: "right",
-            align: "start",
+            title: 'Pantau Status',
+            description: 'Pantau status laporan Anda di dashboard.',
+            side: 'right',
+            align: 'start',
           },
         },
         {
-          element: "#konfirmasi-telepon",
+          element: '#konfirmasi-telepon',
           popover: {
-            title: "Konfirmasi Telepon",
-            description: "Anda akan mendapat konfirmasi melalui telepon/WA atau SMS.",
-            side: "left",
-            align: "start",
+            title: 'Konfirmasi Telepon',
+            description:
+              'Anda akan mendapat konfirmasi melalui telepon/WA atau SMS.',
+            side: 'left',
+            align: 'start',
           },
         },
       ],
-    })
-  }, [])
+    });
+  }, []);
 
   const startTour = () => {
     if (driverObj.current) {
-      driverObj.current.drive()
+      driverObj.current.drive();
     }
-  }
+  };
 
   const onlineSteps = [
     {
-      id: "start-online",
-      title: "Daftar Akun",
-      description: "Buat akun di platform LAPOR KK BUPATI.",
+      id: 'start-online',
+      title: 'Daftar Akun',
+      description: 'Buat akun di platform Lapor Kaka Bupati.',
       icon: HiOutlineMail,
     },
     {
-      id: "login-buat-laporan",
-      title: "Login & Buat Laporan",
-      description: "Masuk dan buat laporan dengan detail yang jelas.",
+      id: 'login-buat-laporan',
+      title: 'Login & Buat Laporan',
+      description: 'Masuk dan buat laporan dengan detail yang jelas.',
       icon: HiOutlineDocumentReport,
     },
     {
-      id: "verifikasi-otomatis",
-      title: "Verifikasi Otomatis",
-      description: "Sistem akan memverifikasi laporan Anda.",
+      id: 'verifikasi-otomatis',
+      title: 'Verifikasi Otomatis',
+      description: 'Sistem akan memverifikasi laporan Anda.',
       icon: HiMailOpen,
     },
     {
-      id: "tindak-lanjut",
-      title: "Tindak Lanjut",
-      description: "Laporan diteruskan ke OPD terkait.",
+      id: 'tindak-lanjut',
+      title: 'Tindak Lanjut',
+      description: 'Laporan diteruskan ke OPD terkait.',
       icon: HiPaperAirplane,
     },
     {
-      id: "pantau-terus",
-      title: "Pantau Status",
-      description: "Pantau status laporan Anda di dashboard.",
+      id: 'pantau-terus',
+      title: 'Pantau Status',
+      description: 'Pantau status laporan Anda di dashboard.',
       icon: HiOutlineCheckCircle,
     },
-  ]
+  ];
 
   const offlineSteps = [
     {
-      id: "start-offline",
-      title: "Kunjungi Kantor",
-      description: "Datang ke kantor atau OPD terdekat.",
+      id: 'start-offline',
+      title: 'Kunjungi Kantor',
+      description: 'Datang ke kantor atau OPD terdekat.',
       icon: HiOutlineGlobe,
     },
     {
-      id: "isi-formulir",
-      title: "Isi Formulir",
-      description: "Isi formulir pengaduan yang disediakan.",
+      id: 'isi-formulir',
+      title: 'Isi Formulir',
+      description: 'Isi formulir pengaduan yang disediakan.',
       icon: HiOutlineDocumentReport,
     },
     {
-      id: "verifikas-petugas",
-      title: "Verifikasi Petugas",
-      description: "Petugas akan memverifikasi identitas Anda.",
+      id: 'verifikas-petugas',
+      title: 'Verifikasi Petugas',
+      description: 'Petugas akan memverifikasi identitas Anda.',
       icon: HiOutlineCheckCircle,
     },
     {
-      id: "penyaluran-laporan",
-      title: "Penyaluran Laporan",
-      description: "Laporan diteruskan ke OPD terkait.",
+      id: 'penyaluran-laporan',
+      title: 'Penyaluran Laporan',
+      description: 'Laporan diteruskan ke OPD terkait.',
       icon: HiOutlineClock,
     },
     {
-      id: "konfirmasi-telepon",
-      title: "Konfirmasi Telepon",
-      description: "Anda akan mendapat konfirmasi melalui telepon/SMS.",
+      id: 'konfirmasi-telepon',
+      title: 'Konfirmasi Telepon',
+      description: 'Anda akan mendapat konfirmasi melalui telepon/SMS.',
       icon: HiOutlinePhone,
     },
-  ]
+  ];
 
   return (
     <div className="py-20 bg-white dark:bg-gray-800">
@@ -228,10 +232,12 @@ export default function ComparisonSection() {
               <HiOutlineMail className="text-blue-600 h-8 w-8" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-gray-200">Alur Pengaduan Online vs Offline</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-gray-200">
+            Alur Pengaduan Online vs Offline
+          </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4 dark:text-gray-200">
-            Pilih jalur pengaduan yang paling cocok buat kamu! Mau online yang cepat & praktis, atau lebih nyaman dengan
-            offline? Yuk, cek alurnya!
+            Pilih jalur pengaduan yang paling cocok buat kamu! Mau online yang
+            cepat & praktis, atau lebih nyaman dengan offline? Yuk, cek alurnya!
           </p>
           <div className="text-center my-10">
             <motion.button
@@ -266,13 +272,17 @@ export default function ComparisonSection() {
                 transition={{
                   repeat: Number.POSITIVE_INFINITY,
                   duration: 1.5,
-                  ease: "easeInOut",
+                  ease: 'easeInOut',
                 }}
               >
                 <HiOutlineMail className="h-12 w-12" />
               </motion.div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-200">Pengaduan Online</h3>
-              <p className="text-sm text-gray-600 mt-2 dark:text-gray-200">Cepat, Mudah, dan Efisien</p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-200">
+                Pengaduan Online
+              </h3>
+              <p className="text-sm text-gray-600 mt-2 dark:text-gray-200">
+                Cepat, Mudah, dan Efisien
+              </p>
             </div>
 
             {onlineSteps.map((step, index) => (
@@ -284,7 +294,7 @@ export default function ComparisonSection() {
                     transition={{
                       repeat: Number.POSITIVE_INFINITY,
                       duration: 1.5,
-                      ease: "easeInOut",
+                      ease: 'easeInOut',
                       delay: index * 0.2,
                     }}
                   >
@@ -294,9 +304,13 @@ export default function ComparisonSection() {
                 <div className="bg-white dark:bg-gray-700 rounded-lg p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
                   <div className="flex items-center mb-3">
                     <step.icon className="h-6 w-6 text-blue-500 mr-2" />
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-200">{step.title}</h4>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-200">
+                      {step.title}
+                    </h4>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-200">{step.description}</p>
+                  <p className="text-gray-600 dark:text-gray-200">
+                    {step.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -321,13 +335,17 @@ export default function ComparisonSection() {
                 transition={{
                   repeat: Number.POSITIVE_INFINITY,
                   duration: 1.5,
-                  ease: "easeInOut",
+                  ease: 'easeInOut',
                 }}
               >
                 <HiOfficeBuilding className="h-12 w-12" />
               </motion.div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-200">Pengaduan Offline</h3>
-              <p className="text-sm text-gray-600 mt-2 dark:text-gray-200">Tatap Muka Langsung</p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-200">
+                Pengaduan Offline
+              </h3>
+              <p className="text-sm text-gray-600 mt-2 dark:text-gray-200">
+                Tatap Muka Langsung
+              </p>
             </div>
 
             {offlineSteps.map((step, index) => (
@@ -339,7 +357,7 @@ export default function ComparisonSection() {
                     transition={{
                       repeat: Number.POSITIVE_INFINITY,
                       duration: 1.5,
-                      ease: "easeInOut",
+                      ease: 'easeInOut',
                       delay: index * 0.2,
                     }}
                   >
@@ -349,9 +367,13 @@ export default function ComparisonSection() {
                 <div className="bg-white dark:bg-gray-700 rounded-lg p-5 shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
                   <div className="flex items-center mb-3">
                     <step.icon className="h-6 w-6 text-yellow-500 mr-2" />
-                    <h4 className="text-lg font-semibold text-gray-900  dark:text-gray-200">{step.title}</h4>
+                    <h4 className="text-lg font-semibold text-gray-900  dark:text-gray-200">
+                      {step.title}
+                    </h4>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-200">{step.description}</p>
+                  <p className="text-gray-600 dark:text-gray-200">
+                    {step.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -359,6 +381,5 @@ export default function ComparisonSection() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
