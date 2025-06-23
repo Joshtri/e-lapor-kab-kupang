@@ -1,15 +1,20 @@
 'use client';
 
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Label, TextInput, Button } from 'flowbite-react';
+import { Label, TextInput, Button, Modal, Select } from 'flowbite-react';
 import MaskedNikInput from '../ui/MaskedNikInput';
-import { Select } from 'flowbite-react';
 
 export default function EditProfileModal({ open, setOpen, user, onSave }) {
   const [tipeIdentitas, setTipeIdentitas] = useState('NIK');
-  const { register, handleSubmit, setValue, watch, reset } = useForm({
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+  } = useForm({
     defaultValues: {
       name: '',
       email: '',
@@ -38,76 +43,59 @@ export default function EditProfileModal({ open, setOpen, user, onSave }) {
   };
 
   return (
-    <Transition appear show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={() => setOpen(false)}>
-        <Transition.Child as={Fragment}>
-          <div className="fixed inset-0 bg-black bg-opacity-30" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <Transition.Child as={Fragment}>
-              <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white dark:bg-gray-800 p-6 text-left shadow-xl transition-all">
-                <Dialog.Title className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                  Edit Profil
-                </Dialog.Title>
-
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  <div>
-                    <Label value="Nama Lengkap" />
-                    <TextInput {...register('name')} required />
-                  </div>
-                  <div>
-                    <Label value="Email" />
-                    <TextInput {...register('email')} type="email" required />
-                  </div>
-                  <div>
-                    <Label value="Nomor Kontak" />
-                    <TextInput {...register('contactNumber')} />
-                  </div>
-
-                  {/* Select Tipe Identitas */}
-                  <div>
-                    <Label value="Tipe Identitas" />
-                    <Select
-                      value={tipeIdentitas}
-                      onChange={(e) => setTipeIdentitas(e.target.value)}
-                    >
-                      <option value="NIK">NIK (16 digit)</option>
-                      <option value="NIP">NIP (18 digit)</option>
-                    </Select>
-                  </div>
-
-                  <MaskedNikInput
-                    type={tipeIdentitas}
-                    value={nikDisplay}
-                    onChange={(val) => {
-                      setNikDisplay(val);
-                      setValue('nikNumber', val);
-                    }}
-                    helperText={`Masukkan ${
-                      tipeIdentitas === 'NIP' ? '18' : '16'
-                    } digit ${tipeIdentitas}`}
-                  />
-
-                  <div className="mt-6 flex justify-end gap-2">
-                    <Button
-                      color="gray"
-                      type="button"
-                      onClick={() => setOpen(false)}
-                    >
-                      Batal
-                    </Button>
-                    <Button type="submit" gradientDuoTone="cyanToBlue">
-                      Simpan
-                    </Button>
-                  </div>
-                </form>
-              </Dialog.Panel>
-            </Transition.Child>
+    <Modal show={open} onClose={() => setOpen(false)}>
+      <Modal.Header>Edit Profil</Modal.Header>
+      <Modal.Body>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <Label htmlFor="name" value="Nama Lengkap" />
+            <TextInput id="name" {...register('name')} required />
           </div>
-        </div>
-      </Dialog>
-    </Transition>
+
+          <div>
+            <Label htmlFor="email" value="Email" />
+            <TextInput id="email" {...register('email')} type="email" required />
+          </div>
+
+          <div>
+            <Label htmlFor="contactNumber" value="Nomor Kontak" />
+            <TextInput id="contactNumber" {...register('contactNumber')} />
+          </div>
+
+          <div>
+            <Label htmlFor="tipeIdentitas" value="Tipe Identitas" />
+            <Select
+              id="tipeIdentitas"
+              value={tipeIdentitas}
+              onChange={(e) => setTipeIdentitas(e.target.value)}
+            >
+              <option value="NIK">NIK (16 digit)</option>
+              <option value="NIP">NIP (18 digit)</option>
+            </Select>
+          </div>
+
+          <MaskedNikInput
+            type={tipeIdentitas}
+            value={nikDisplay}
+            onChange={(val) => {
+              setNikDisplay(val);
+              setValue('nikNumber', val);
+            }}
+            helperText={`Masukkan ${
+              tipeIdentitas === 'NIP' ? '18' : '16'
+            } digit ${tipeIdentitas}`}
+          />
+        </form>
+      </Modal.Body>
+
+      <Modal.Footer className="justify-end">
+        <Button color="gray" onClick={() => setOpen(false)}>
+          Batal
+        </Button>
+        <Button type="submit" onClick={handleSubmit(onSubmit)} gradientDuoTone="cyanToBlue">
+          Simpan
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 }
