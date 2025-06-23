@@ -24,6 +24,7 @@ import {
 } from 'react-icons/hi';
 import { toast } from 'sonner';
 import AboutModal from '../AboutModal';
+import Image from 'next/image';
 
 const HeaderPelaporMobile = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,6 +34,7 @@ const HeaderPelaporMobile = () => {
   const [notifications, setNotifications] = useState([]);
   const [loadingNotifications, setLoadingNotifications] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [hasAvatarImage, setHasAvatarImage] = useState(true);
 
   const [user, setUser] = useState(null);
 
@@ -147,7 +149,7 @@ const HeaderPelaporMobile = () => {
             </motion.div>
             <div>
               <h1 className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                Lapor KK Bupati
+                Lapor Kaka Bupati
               </h1>
             </div>
           </Link>
@@ -226,20 +228,27 @@ const HeaderPelaporMobile = () => {
 
                 {/* User Info */}
                 <div className="flex items-center space-x-3 mb-6 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="relative">
-                    <Avatar
-                      alt="User Avatar"
-                      size="md"
-                      rounded
-                      placeholderInitials={getInitials(user?.name)}
-                      className=""
-                    />
-                    {/* {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">
-                        {unreadCount > 9 ? '9+' : unreadCount}
-                      </span>
-                    )} */}
+                  <div className="w-12 h-12 rounded-full overflow-hidden relative bg-white dark:bg-gray-700">
+                    {hasAvatarImage && user?.id ? (
+                      <Image
+                        src={`/api/avatar/${user?.id}`}
+                        alt="Foto Profil"
+                        width={64}
+                        height={64}
+                        unoptimized // 🧠 disables next/image optimization for this src
+                        className="rounded-full object-cover w-full h-full"
+                        onError={() => setHasAvatarImage(false)}
+                      />
+                    ) : (
+                      <Avatar
+                        size="md"
+                        rounded
+                        placeholderInitials={getInitials(user?.name)}
+                        className="w-full h-full text-sm"
+                      />
+                    )}
                   </div>
+
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">
                       {user?.name || 'User'}

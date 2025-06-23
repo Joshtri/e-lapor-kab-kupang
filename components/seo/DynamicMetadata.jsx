@@ -7,8 +7,8 @@ import pageMetadata from '@/lib/seo/pageMetadata'; // import dari file yang kamu
 export default function DynamicMetadata() {
   const pathname = usePathname();
   const meta = pageMetadata[pathname] || {
-    title: 'Lapor KK Bupati',
-    description: 'Sampaikan laporan Anda melalui Lapor KK Bupati.',
+    title: 'Lapor Kaka Bupati',
+    description: 'Sampaikan laporan Anda melalui Lapor Kaka Bupati.',
   };
 
   return (

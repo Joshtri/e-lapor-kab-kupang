@@ -1,8 +1,8 @@
 {
-  "name": "Lapor KK Bupati Kupang",
-  "short_name": "Lapor KK Bupati Kupang",
+  "name": "Lapor Kaka Bupati Kupang",
+  "short_name": "Lapor Kaka Bupati Kupang",
   "version": "1.0.0",
-  "description": "Aplikasi Lapor KK Bupati Kupang",
+  "description": "Aplikasi Lapor Kaka Bupati Kupang",
   "lang": "id-ID",
   "dir": "ltr",
   "scope": "/",
@@ -23,5 +23,4 @@
       "type": "image/png"
     }
   ]
-
 }

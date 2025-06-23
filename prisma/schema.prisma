@@ -17,9 +17,8 @@ model User {
   role          Role     @default(PELAPOR)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  
-  testsaja String? @db.Text // ❌ HAPUS: hanya untuk testing
-  avatarUrl    String?  @db.VarChar(255) // URL ke avatar pengguna, opsional
+
+  avatarImage Bytes? // URL ke avatar pengguna, opsional
 
   // Relasi
   comments      Comment[]
@@ -32,16 +31,12 @@ model User {
   resetPasswordExpires DateTime?
 
   // ❌ HAPUS: fields dan references
-  opd              OPD?              @relation("UserToOPD")
-  sentEmails       Email[]           @relation("SentEmails")
-  receivedEmails   Email[]           @relation("ReceivedEmails")
-  BugComment       BugComment[]
-  ChatRoom         ChatRoom[]
-  ChatMessage      ChatMessage[]
-}
-
-model Buku{
-  id Int @id @default(autoincrement())
+  opd            OPD?          @relation("UserToOPD")
+  sentEmails     Email[]       @relation("SentEmails")
+  receivedEmails Email[]       @relation("ReceivedEmails")
+  BugComment     BugComment[]
+  ChatRoom       ChatRoom[]
+  ChatMessage    ChatMessage[]
 }
 
 model OPD {
@@ -75,6 +70,8 @@ model Report {
   priority     Priority
   bupatiStatus Status   @default(PENDING)
   opdStatus    Status?  @default(PENDING)
+  bupatiReason String? // Alasan Bupati menolak/memproses laporan
+  opdReason    String? // Alasan OPD menolak/memproses laporan
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -106,10 +103,12 @@ model Comment {
 }
 
 model Log {
-  id        Int      @id @default(autoincrement())
-  reportId  Int
-  userId    Int
-  action    Action
+  id       Int     @id @default(autoincrement())
+  reportId Int
+  userId   Int
+  action   Action
+  details  String? // Add this field to store specific details about the action
+
   timestamp DateTime @default(now())
 
   report Report @relation(fields: [reportId], references: [id])
@@ -194,7 +193,6 @@ model ChatMessage {
   room   ChatRoom @relation(fields: [roomId], references: [id])
   sender User     @relation(fields: [senderId], references: [id])
 }
-
 
 enum Role {
   BUPATI

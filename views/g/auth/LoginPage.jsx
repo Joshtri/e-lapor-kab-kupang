@@ -87,7 +87,7 @@ export default function LoginPage() {
 
   return (
     <AuthRedirectGuard>
-      <PWAInstallPrompt/>
+      <PWAInstallPrompt />
       {isMobile() && <PWAInstallPrompt />}
 
       <div className="min-h-screen flex items-center justify-center bg-blue-50 dark:bg-gray-800 py-12 px-4 mt-10">
@@ -129,7 +129,7 @@ export default function LoginPage() {
             <Card className="border-t-4 border-blue-500 shadow-lg bg-white/90 dark:bg-slate-800 backdrop-blur-sm">
               <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
-                  Selamat Datang di Lapor KK Bupati
+                  Selamat Datang di Lapor Kaka Bupati
                 </h2>
                 <p className="text-gray-500 mb-0 dark:text-gray-300">
                   Silakan masuk untuk mengakses akun Anda.

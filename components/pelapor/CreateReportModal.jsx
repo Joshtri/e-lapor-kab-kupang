@@ -30,6 +30,7 @@ import {
 } from '@/utils/reportCategories';
 import { getPriorityColor } from '@/utils/common';
 import StepIndicator from '../ui/StepIndicator';
+import ReactSelect from 'react-select';
 
 const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -245,33 +246,6 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
     }
   };
 
-  // const renderStepIndicator = () => {
-  //   return (
-  //     <div className="flex items-center justify-center mb-6">
-  //       <div className="flex items-center w-full max-w-xs">
-  //         {[1, 2, 3].map((i) => (
-  //           <div key={i} className="flex-1 flex items-center">
-  //             <div
-  //               className={`w-8 h-8 rounded-full flex items-center justify-center ${
-  //                 step >= i
-  //                   ? 'bg-blue-600 text-white'
-  //                   : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-  //               }`}
-  //             >
-  //               {i}
-  //             </div>
-  //             {i < 3 && (
-  //               <div
-  //                 className={`h-1 flex-1 ${step > i ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
-  //               ></div>
-  //             )}
-  //           </div>
-  //         ))}
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
   return (
     <Modal
       show={openModal}
@@ -352,7 +326,6 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       </p>
                     )}
                   </div>
-
                   {/* Kategori */}
                   <div className="space-y-2">
                     <Label
@@ -363,24 +336,31 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       Kategori Laporan{' '}
                       <span className="text-red-500 ml-1">*</span>
                     </Label>
-                    <Select
-                      id="category"
-                      name="category"
-                      value={formData.category}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setSelectedCategory(e.target.value);
-                        setSubcategory(''); // reset subcategory saat category berubah
+
+                    <ReactSelect
+                      inputId="category"
+                      options={getMainCategories()}
+                      value={getMainCategories().find(
+                        (cat) => cat.value === formData.category,
+                      )}
+                      onChange={(selected) => {
+                        handleChange({
+                          target: {
+                            name: 'category',
+                            value: selected?.value || '',
+                          },
+                        });
+                        setSelectedCategory(selected?.value || '');
+                        setSubcategory('');
                       }}
-                      required
-                    >
-                      <option value="">Pilih Kategori</option>
-                      {getMainCategories().map((cat) => (
-                        <option key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </option>
-                      ))}
-                    </Select>
+                      placeholder="Pilih Kategori"
+                      isClearable
+                      className="text-sm"
+                      menuPortalTarget={document.body}
+                      styles={{
+                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                      }}
+                    />
 
                     {errors.category && (
                       <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
@@ -390,48 +370,44 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                     )}
                   </div>
 
-                  <div className="space-y-2">
-                    {selectedCategory && (
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="subcategory"
-                          className="text-gray-700 dark:text-gray-300"
-                        >
-                          Subkategori{' '}
-                          <span className="text-red-500 ml-1">*</span>
-                        </Label>
-                        <Select
-                          id="subcategory"
-                          name="subcategory"
-                          value={subcategory}
-                          onChange={(e) => {
-                            setSubcategory(e.target.value);
-                            if (errors.subcategory) {
-                              setErrors((prev) => ({
-                                ...prev,
-                                subcategory: '',
-                              }));
-                            }
-                          }}
-                          required
-                        >
-                          <option value="">Pilih Subkategori</option>
-                          {getSubcategoriesByText(selectedCategory).map(
-                            (sub) => (
-                              <option key={sub.value} value={sub.value}>
-                                {sub.label}
-                              </option>
-                            ),
-                          )}
-                        </Select>
-                        {errors.subcategory && (
-                          <div className="text-sm text-red-600 dark:text-red-400 mt-1">
-                            {errors.subcategory}
-                          </div>
+                  {/* Subkategori */}
+                  {selectedCategory && (
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="subcategory"
+                        className="text-gray-700 dark:text-gray-300"
+                      >
+                        Subkategori <span className="text-red-500 ml-1">*</span>
+                      </Label>
+
+                      <ReactSelect
+                        inputId="subcategory"
+                        options={getSubcategoriesByText(selectedCategory)}
+                        value={getSubcategoriesByText(selectedCategory).find(
+                          (sub) => sub.value === subcategory,
                         )}
-                      </div>
-                    )}
-                  </div>
+                        onChange={(selected) => {
+                          setSubcategory(selected?.value || '');
+                          if (errors.subcategory) {
+                            setErrors((prev) => ({ ...prev, subcategory: '' }));
+                          }
+                        }}
+                        placeholder="Pilih Subkategori"
+                        isClearable
+                        className="text-sm"
+                        menuPortalTarget={document.body}
+                        styles={{
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                        }}
+                      />
+
+                      {errors.subcategory && (
+                        <div className="text-sm text-red-600 dark:text-red-400 mt-1">
+                          {errors.subcategory}
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Prioritas */}
                   <div className="space-y-2">
@@ -483,7 +459,8 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                   </div>
 
                   {/* OPD Tujuan */}
-                  <div className="space-y-2">
+                  {/* OPD Tujuan */}
+                  <div className="space-y-1">
                     <Label
                       htmlFor="opdId"
                       className="flex items-center text-gray-700 dark:text-gray-300"
@@ -491,34 +468,52 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                       <HiOfficeBuilding className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                       OPD Tujuan <span className="text-red-500 ml-1">*</span>
                     </Label>
-                    <Select
-                      id="opdId"
-                      name="opdId"
-                      value={formData.opdId}
-                      onChange={handleChange}
-                      required
-                      disabled={loadingOpds}
-                      className={`border-gray-300 dark:border-gray-600 ${
-                        errors.opdId ? 'border-red-500 dark:border-red-500' : ''
-                      }`}
-                    >
-                      <option value="">Pilih OPD</option>
-                      {opds.map((opd) => (
-                        <option key={opd.id} value={opd.id}>
-                          {opd.name}
-                        </option>
-                      ))}
-                    </Select>
-                    {errors.opdId ? (
-                      <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
-                        <HiOutlineExclamationCircle className="mr-1 h-4 w-4" />
-                        {errors.opdId}
+
+                    <div className="flex flex-col">
+                      <div className="w-full">
+                        <ReactSelect
+                          id="opdId"
+                          name="opdId"
+                          className="text-sm"
+                          placeholder="Pilih OPD"
+                          isDisabled={loadingOpds}
+                          options={opds.map((opd) => ({
+                            label: opd.name,
+                            value: opd.id.toString(),
+                          }))}
+                          value={opds
+                            .map((opd) => ({
+                              label: opd.name,
+                              value: opd.id.toString(),
+                            }))
+                            .find((o) => o.value === formData.opdId)}
+                          onChange={(selected) =>
+                            handleChange({
+                              target: {
+                                name: 'opdId',
+                                value: selected?.value || '',
+                              },
+                            })
+                          }
+                          isClearable
+                          menuPortalTarget={document.body}
+                          styles={{
+                            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                          }}
+                        />
                       </div>
-                    ) : (
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Pilih instansi yang sesuai dengan laporan Anda
-                      </p>
-                    )}
+
+                      {errors.opdId ? (
+                        <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
+                          <HiOutlineExclamationCircle className="mr-1 h-4 w-4" />
+                          {errors.opdId}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Pilih instansi yang sesuai dengan laporan Anda
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </form>
               </div>

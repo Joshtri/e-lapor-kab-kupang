@@ -102,7 +102,7 @@ export default function RegistrationPage() {
           <Card className="border-t-4 border-blue-500 shadow-lg bg-white/90 backdrop-blur-sm">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Buat Akun Lapor KK Bupati
+                Buat Akun Lapor Kaka Bupati
               </h2>
               <p className="text-gray-500 dark:text-gray-300">
                 Silakan isi formulir untuk membuat akun Anda.

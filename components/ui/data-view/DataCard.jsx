@@ -24,7 +24,8 @@ export default function DataCard({
       <div className="flex items-center gap-3">
         {avatar && (
           <Avatar
-            img={`https://ui-avatars.com/api/?name=${avatar}&background=random`}
+            placeholderInitials={avatar.charAt(0) || 'A'}
+            // img={`https://ui-avatars.com/api/?name=${avatar}&background=random`}
             rounded
             size="sm"
           />

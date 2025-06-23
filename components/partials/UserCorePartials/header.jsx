@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
 import NotificationDropdown from '@/components/ui/NotificationDropdown';
 import { getInitials } from '@/utils/common';
+import Image from 'next/image';
 
 const ROLE_CONFIG = {
   admin: {
@@ -70,6 +71,7 @@ export default function Header({
   const [openLogout, setOpenLogout] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [hasAvatarImage, setHasAvatarImage] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -210,24 +212,30 @@ export default function Header({
               arrowIcon={false}
               inline
               label={
-                <div className="relative">
-                  {/* <Avatar
-                    alt="User Avatar"
-                    img={`https://ui-avatars.com/api/?name=${user?.name || role}&background=random`}
-                    rounded
-                    size="sm"
-                    className="hover:scale-110 transition-all"
-                  /> */}
-                  <Avatar
-                    size="md"
-                    rounded
-                    placeholderInitials={getInitials(user?.name)}
-                  />
-                  {unreadCount > 0 && (
+                <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white dark:bg-gray-700">
+                  {hasAvatarImage && user?.id ? (
+                    <Image
+                      src={`/api/avatar/${user?.id}`}
+                      alt="Foto Profil"
+                      width={64}
+                      height={64}
+                      unoptimized // 🧠 disables next/image optimization for this src
+                      className="rounded-full object-cover w-full h-full"
+                      onError={() => setHasAvatarImage(false)}
+                    />
+                  ) : (
+                    <Avatar
+                      size="xl"
+                      rounded
+                      placeholderInitials={getInitials(user?.name)}
+                      className="w-full h-full text-sm hover:scale-110 transition-all"
+                    />
+                  )}
+                  {/* {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">
                       {unreadCount}
                     </span>
-                  )}
+                  )} */}
                 </div>
               }
             >

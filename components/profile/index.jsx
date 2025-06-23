@@ -22,6 +22,8 @@ import {
 import { toast } from 'sonner';
 import LoadingMail from '../ui/loading/LoadingMail';
 import ChangePasswordModal from './ChangePasswordProfile';
+import ChangeProfileModal from './ChangeProfileModal'; // atau path sesuai
+import Image from 'next/image';
 
 const ProfileManagement = () => {
   const [user, setUser] = useState(null);
@@ -29,6 +31,9 @@ const ProfileManagement = () => {
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openUploadModal, setOpenUploadModal] = useState(false);
+
+  const [hasAvatarImage, setHasAvatarImage] = useState(true);
 
   useEffect(() => {
     fetchUserProfile();
@@ -124,13 +129,37 @@ const ProfileManagement = () => {
 
           <div className="relative px-4 sm:px-6 pb-6">
             <div className="absolute -top-12 sm:-top-16 left-4 sm:left-6 flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-0">
-              <div className="bg-white dark:bg-gray-700 p-1 rounded-full shadow-lg">
-                <Avatar
-                  size="md"
-                  rounded
-                  placeholderInitials={getInitials(user?.name)}
-                />
+              <div className="relative">
+                <div className="bg-white dark:bg-gray-700 p-1 rounded-full shadow-lg w-16 h-16">
+                  {hasAvatarImage ? (
+                    <Image
+                      src={`/api/avatar/${user?.id}`}
+                      alt="Foto Profil"
+                      width={64}
+                      height={64}
+                      unoptimized // 🧠 disables next/image optimization for this src
+                      className="rounded-full object-cover w-full h-full"
+                      onError={() => setHasAvatarImage(false)}
+                    />
+                  ) : (
+                    <Avatar
+                      size="md"
+                      rounded
+                      placeholderInitials={getInitials(user?.name)}
+                      className="w-full h-full text-xl ring-4 ring-white dark:ring-gray-700 bg-blue-100 dark:bg-blue-900"
+                    />
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setOpenUploadModal(true)}
+                  className="absolute -bottom-3 -right-1 bg-blue-600 hover:bg-blue-700 text-white text-[10px] sm:text-xs px-2 py-1 rounded-full shadow-md"
+                  title="Ubah Foto Profil"
+                >
+                  Ubah
+                </button>
               </div>
+
               <div className="sm:ml-4 sm:mb-2">
                 <h3 className="text-base sm:text-xl font-bold text-gray-900 dark:text-white break-words">
                   {user?.name}
@@ -393,6 +422,13 @@ const ProfileManagement = () => {
         setOpen={setOpenEditModal}
         user={user}
         onSave={handleSaveProfile}
+      />
+
+      <ChangeProfileModal
+        open={openUploadModal}
+        setOpen={setOpenUploadModal}
+        userId={user?.id}
+        onUploaded={() => fetchUserProfile()} // reload profil setelah upload
       />
     </motion.div>
   );

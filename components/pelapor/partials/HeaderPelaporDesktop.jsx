@@ -35,6 +35,7 @@ const HeaderPelaporDesktop = () => {
   const [notifications, setNotifications] = useState([]);
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingNotifications, setLoadingNotifications] = useState(true);
+  const [hasAvatarImage, setHasAvatarImage] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -189,15 +190,22 @@ const HeaderPelaporDesktop = () => {
                 arrowIcon={false}
                 inline
                 label={
-                  <div className="relative">
-                    <Avatar
-                      alt="User Avatar"
-                      size="sm"
-                      rounded
-                      placeholderInitials={getInitials(user?.name)}
-                      className="  dark:border-blue-800 hover:scale-110 transition-all duration-300"
-                    />
-
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-white dark:bg-gray-700">
+                    {hasAvatarImage && user?.id ? (
+                      <img
+                        src={`/api/avatar/${user.id}`}
+                        alt="User Avatar"
+                        className="object-cover w-full h-full hover:scale-110 transition-all duration-300 rounded-full"
+                        onError={() => setHasAvatarImage(false)}
+                      />
+                    ) : (
+                      <Avatar
+                        size="sm"
+                        rounded
+                        placeholderInitials={getInitials(user?.name)}
+                        className="w-full h-full text-sm"
+                      />
+                    )}
                   </div>
                 }
               >
