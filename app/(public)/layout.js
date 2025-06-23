@@ -2,8 +2,8 @@ import Header from '@/components/partials/header';
 import '../globals.css';
 
 export const metadata = {
-  title: 'LAPOR KK BUPATI',
-  description: 'Sampaikan laporan Anda melalui LAPOR KK BUPATI',
+  title: 'Lapor Kaka Bupati',
+  description: 'Sampaikan laporan Anda melalui Lapor Kaka Bupati',
 };
 
 export default function PublicLayout({ children }) {
