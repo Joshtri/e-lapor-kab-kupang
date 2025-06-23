@@ -14,13 +14,13 @@ import logoApp from '@/public/fixed-logo-app.png';
 import Proptypes from 'prop-types';
 
 export default function NotificationEmail({
-  previewText = 'Anda menerima notifikasi baru dari Sistem Lapor KK Bupati',
+  previewText = 'Anda menerima notifikasi baru dari Sistem Lapor Kaka Bupati',
   greeting = 'Yth. Warga yang Terhormat,',
   intro = '',
   details = [],
   ctaLabel = '',
   ctaLink = '',
-  closing = 'Hormat kami,\nTim Sistem Lapor KK Bupati\nPemerintah Daerah',
+  closing = 'Hormat kami,\nTim Sistem Lapor Kaka Bupati\nPemerintah Daerah',
 }) {
   return (
     <Html>
@@ -33,7 +33,7 @@ export default function NotificationEmail({
             <div style={logoContainer}>
               <div style={logoPlaceholder}>🏛️</div>
               <div>
-                <Text style={brandTitle}>Lapor KK Bupati</Text>
+                <Text style={brandTitle}>Lapor Kaka Bupati</Text>
                 <Text style={brandSubtitle}>Pemerintah Daerah</Text>
               </div>
             </div>
@@ -110,7 +110,7 @@ export default function NotificationEmail({
         {/* Bottom Footer */}
         <Section style={bottomFooter}>
           <Text style={copyrightText}>
-            © 2024 Sistem Lapor KK Bupati. Semua hak dilindungi.
+            © 2024 Sistem Lapor Kaka Bupati. Semua hak dilindungi.
           </Text>
         </Section>
       </Body>
