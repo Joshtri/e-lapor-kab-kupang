@@ -170,7 +170,7 @@ export async function POST(req) {
         );
 
         await transporter.sendMail({
-          from: `"LAPOR KK BUPATI" <${process.env.EMAIL_USER}>`,
+          from: `"Lapor Kaka Bupati" <${process.env.EMAIL_USER}>`,
           to: bupati.email,
           subject: '📬 Laporan Baru Telah Dikirim',
           html: emailHtml, // Now a string
