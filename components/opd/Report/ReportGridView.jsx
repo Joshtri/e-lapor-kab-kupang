@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Card, Badge, Button, Avatar } from "flowbite-react";
-import { HiOutlineEye } from "react-icons/hi";
-import { useRouter } from "next/navigation";
+import { Card, Badge, Button, Avatar } from 'flowbite-react';
+import { HiOutlineEye } from 'react-icons/hi';
+import { useRouter } from 'next/navigation';
 
 export default function ReportGrid({ reports }) {
   const router = useRouter();
@@ -19,16 +19,16 @@ export default function ReportGrid({ reports }) {
           {/* 🆔 Header: Avatar & Nama Pelapor */}
           <div className="flex items-center gap-3">
             <Avatar
-              img={`https://ui-avatars.com/api/?name=${report.user?.name}&background=random`}
+              placeholderInitials={report?.user.name?.charAt(0) || 'A'}
               rounded
               size="sm"
             />
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {report.user?.name || "Anonim"}
+                {report.user?.name || 'Anonim'}
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                {new Date(report.createdAt).toLocaleDateString("id-ID")}
+                {new Date(report.createdAt).toLocaleDateString('id-ID')}
               </p>
             </div>
           </div>
@@ -39,19 +39,21 @@ export default function ReportGrid({ reports }) {
           </h3>
 
           {/* 📌 Kategori */}
-          <p className="text-sm text-gray-600 dark:text-gray-400">{report.category}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {report.category}
+          </p>
 
           {/* 🏷️ Status & Prioritas */}
           <div className="flex gap-2 mt-3">
             <Badge
               color={
-                report.status === "SELESAI"
-                  ? "green"
-                  : report.status === "PROSES"
-                  ? "yellow"
-                  : report.status === "DITOLAK"
-                  ? "red"
-                  : "gray"
+                report.status === 'SELESAI'
+                  ? 'green'
+                  : report.status === 'PROSES'
+                    ? 'yellow'
+                    : report.status === 'DITOLAK'
+                      ? 'red'
+                      : 'gray'
               }
               className="text-xs font-semibold px-3 py-1"
             >
