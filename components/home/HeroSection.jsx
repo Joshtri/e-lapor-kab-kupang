@@ -90,7 +90,7 @@ export default function HeroSection({ scrollYProgress, startTour }) {
           <h1 className="mb-6 text-5xl md:text-6xl font-bold text-white drop-shadow-lg">
             Selamat Datang di{' '}
             <span className="relative">
-              LAPOR KK BUPATI
+              Lapor Kaka Bupati
               <motion.div
                 className="absolute -bottom-2 left-0 h-2 bg-yellow-400 w-full rounded-full"
                 initial={{ width: 0 }}
