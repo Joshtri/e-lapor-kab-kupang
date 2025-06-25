@@ -24,6 +24,7 @@ import LoadingMail from '../ui/loading/LoadingMail';
 import ChangePasswordModal from './ChangePasswordProfile';
 import ChangeProfileModal from './ChangeProfileModal'; // atau path sesuai
 import Image from 'next/image';
+import EditOpdProfileModal from './EditOpdProfileModal';
 
 const ProfileManagement = () => {
   const [user, setUser] = useState(null);
@@ -32,6 +33,7 @@ const ProfileManagement = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openUploadModal, setOpenUploadModal] = useState(false);
+  const [openEditOpdModal, setOpenEditOpdModal] = useState(false); // New state for OPD edit modal
 
   const [hasAvatarImage, setHasAvatarImage] = useState(true);
 
@@ -301,13 +303,22 @@ const ProfileManagement = () => {
                   <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-1 break-words">
                     {opd?.name}
                   </h3>
+
                   <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex items-center flex-wrap">
                     <HiOutlineOfficeBuilding className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-purple-500 dark:text-purple-400" />
                     Organisasi Perangkat Daerah
                   </p>
+                  <Button
+                    size="xs"
+                    color="light"
+                    onClick={() => setOpenEditOpdModal(true)}
+                    className="ml-auto"
+                  >
+                    <HiOutlinePencilAlt className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                    <span className="hidden sm:inline">Edit OPD</span>
+                  </Button>
                 </div>
               </div>
-
               <div className="mt-14 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <motion.div
                   whileHover={{ y: -3 }}
@@ -422,6 +433,13 @@ const ProfileManagement = () => {
         setOpen={setOpenEditModal}
         user={user}
         onSave={handleSaveProfile}
+      />
+
+      <EditOpdProfileModal
+        open={openEditOpdModal}
+        setOpen={setOpenEditOpdModal}
+        opd={opd}
+        // onSave={handleSaveOpdProfile}
       />
 
       <ChangeProfileModal

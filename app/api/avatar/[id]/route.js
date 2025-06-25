@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
 
 export async function GET(req, { params }) {
-    const userId = await parseInt(params.id);
+    const userId = parseInt(params.id); // ✅ Jangan pakai 'await' di sini
 
     if (isNaN(userId)) {
         return new Response('Invalid ID', { status: 400 });

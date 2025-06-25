@@ -22,29 +22,6 @@ import {
 } from 'react-icons/fi';
 
 // Define the Report type
-const Report = {
-  id: '',
-  title: '',
-  description: '',
-  createdAt: '',
-  opdStatus: '',
-  opdResponse: '',
-  opdUpdatedAt: '',
-  bupatiStatus: '',
-  bupatiResponse: '',
-  bupatiUpdatedAt: '',
-  image: '',
-  user: {
-    name: '',
-  },
-  opd: {
-    name: '',
-    email: '',
-    telp: '',
-    alamat: '',
-  },
-};
-
 export default function ReportDetailPage() {
   const router = useRouter();
 
@@ -332,13 +309,13 @@ export default function ReportDetailPage() {
           Detail Laporan
         </h1>
 
-        {report.opdStatus?.toLowerCase() !== 'ditolak' &&
-          report.bupatiStatus?.toLowerCase() !== 'ditolak' && (
+        {/* {report.opdStatus?.toLowerCase() !== 'ditolak' &&
+          report.bupatiStatus?.toLowerCase() !== 'ditolak' && ( */}
             <Button onClick={handlePrintReport}>
               <FiPrinter className="mr-2 h-4 w-4" />
               Cetak Laporan
             </Button>
-          )}
+          {/* )} */}
       </div>
 
       <div className="space-y-6">
