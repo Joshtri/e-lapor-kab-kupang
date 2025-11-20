@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Label, Select, Spinner } from 'flowbite-react';
-import ReactSelect from 'react-select';
 import {
   HiTag,
   HiFlag,
@@ -11,6 +10,7 @@ import {
 } from 'react-icons/hi';
 import { motion } from 'framer-motion';
 import { TextInput as FlowbiteTextInput } from 'flowbite-react';
+import SearchableSelect from '@/components/ui/inputs/SearchableSelect';
 import {
   getMainCategories,
   getSubcategoriesByText,
@@ -23,15 +23,14 @@ const Step1 = ({ formData, onFormChange, errors }) => {
   const [subcategory, setSubcategory] = useState('');
   const { data: opds = [], isLoading: loadingOpds } = useOpdList();
 
-  const handleCategoryChange = (selected) => {
-    const value = selected?.value || '';
+  const handleCategoryChange = (value) => {
     onFormChange('category', value);
     setSelectedCategory(value);
     setSubcategory('');
   };
 
-  const handleSubcategoryChange = (selected) => {
-    setSubcategory(selected?.value || '');
+  const handleSubcategoryChange = (value) => {
+    setSubcategory(value);
   };
 
   const handleInputChange = (e) => {
@@ -43,8 +42,8 @@ const Step1 = ({ formData, onFormChange, errors }) => {
     onFormChange('priority', e.target.value);
   };
 
-  const handleOpdChange = (selected) => {
-    onFormChange('opdId', selected?.value || '');
+  const handleOpdChange = (value) => {
+    onFormChange('opdId', value);
   };
 
   return (
@@ -86,71 +85,36 @@ const Step1 = ({ formData, onFormChange, errors }) => {
         </div>
 
         {/* Kategori */}
-        <div className="space-y-2">
-          <Label
-            htmlFor="category"
-            className="flex items-center text-gray-700 dark:text-gray-300"
-          >
-            <HiTag className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
-            Kategori Pengaduan <span className="text-red-500 ml-1">*</span>
-          </Label>
-
-          <ReactSelect
-            inputId="category"
-            options={getMainCategories()}
-            value={getMainCategories().find(
-              (cat) => cat.value === formData.category,
-            )}
-            onChange={handleCategoryChange}
-            placeholder="Pilih Kategori"
-            isClearable
-            className="text-sm"
-            menuPortalTarget={document.body}
-            styles={{
-              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-            }}
-          />
-
-          {errors.category && (
-            <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
-              <HiOutlineExclamationCircle className="mr-1 h-4 w-4" />
-              {errors.category}
-            </div>
-          )}
-        </div>
+        <SearchableSelect
+          id="category"
+          label={
+            <Label className="flex items-center text-gray-700 dark:text-gray-300">
+              <HiTag className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+              Kategori Pengaduan <span className="text-red-500 ml-1">*</span>
+            </Label>
+          }
+          options={getMainCategories()}
+          value={formData.category}
+          onChange={handleCategoryChange}
+          placeholder="Cari kategori..."
+          error={errors.category}
+          required
+          clearable
+        />
 
         {/* Subkategori */}
         {selectedCategory && (
-          <div className="space-y-2">
-            <Label
-              htmlFor="subcategory"
-              className="text-gray-700 dark:text-gray-300"
-            >
-              Subkategori <span className="text-red-500 ml-1">*</span>
-            </Label>
-
-            <ReactSelect
-              inputId="subcategory"
-              options={getSubcategoriesByText(selectedCategory)}
-              value={getSubcategoriesByText(selectedCategory).find(
-                (sub) => sub.value === subcategory,
-              )}
-              onChange={handleSubcategoryChange}
-              placeholder="Pilih Subkategori"
-              isClearable
-              className="text-sm"
-              menuPortalTarget={document.body}
-              styles={{
-                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-              }}
-            />
-
-            {errors.subcategory && (
-              <div className="text-sm text-red-600 dark:text-red-400 mt-1">
-                {errors.subcategory}
-              </div>
-            )}
-          </div>
+          <SearchableSelect
+            id="subcategory"
+            label="Subkategori"
+            options={getSubcategoriesByText(selectedCategory)}
+            value={subcategory}
+            onChange={handleSubcategoryChange}
+            placeholder="Cari subkategori..."
+            error={errors.subcategory}
+            required
+            clearable
+          />
         )}
 
         {/* Prioritas */}
@@ -201,61 +165,27 @@ const Step1 = ({ formData, onFormChange, errors }) => {
         </div>
 
         {/* OPD Tujuan */}
-        <div className="space-y-1">
-          <Label
-            htmlFor="opdId"
-            className="flex items-center text-gray-700 dark:text-gray-300"
-          >
-            <HiOfficeBuilding className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
-            OPD Tujuan <span className="text-red-500 ml-1">*</span>
-          </Label>
-
-          {loadingOpds ? (
-            <div className="flex items-center justify-center py-8">
-              <Spinner size="sm" className="mr-2" />
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                Memuat daftar OPD...
-              </span>
-            </div>
-          ) : (
-            <>
-              <ReactSelect
-                id="opdId"
-                name="opdId"
-                className="text-sm"
-                placeholder="Pilih OPD"
-                isDisabled={loadingOpds}
-                options={opds.map((opd) => ({
-                  label: opd.name,
-                  value: opd.id.toString(),
-                }))}
-                value={opds
-                  .map((opd) => ({
-                    label: opd.name,
-                    value: opd.id.toString(),
-                  }))
-                  .find((o) => o.value === formData.opdId)}
-                onChange={handleOpdChange}
-                isClearable
-                menuPortalTarget={document.body}
-                styles={{
-                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                }}
-              />
-
-              {errors.opdId ? (
-                <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
-                  <HiOutlineExclamationCircle className="mr-1 h-4 w-4" />
-                  {errors.opdId}
-                </div>
-              ) : (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Pilih instansi yang sesuai dengan pengaduan Anda
-                </p>
-              )}
-            </>
-          )}
-        </div>
+        <SearchableSelect
+          id="opdId"
+          label={
+            <Label className="flex items-center text-gray-700 dark:text-gray-300">
+              <HiOfficeBuilding className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+              OPD Tujuan <span className="text-red-500 ml-1">*</span>
+            </Label>
+          }
+          options={opds.map((opd) => ({
+            label: opd.name,
+            value: opd.id.toString(),
+          }))}
+          value={formData.opdId}
+          onChange={handleOpdChange}
+          placeholder="Cari OPD..."
+          error={errors.opdId}
+          required
+          disabled={loadingOpds}
+          isLoading={loadingOpds}
+          clearable
+        />
       </div>
     </motion.div>
   );

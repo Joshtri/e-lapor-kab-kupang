@@ -57,7 +57,7 @@ const QuickActionsButton = ({ setOpenModal }) => {
         <motion.div variants={item}>
           <Card
             className="border-l-4 border-blue-500 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden"
-            onClick={() => setOpenModal(true)}
+            onClick={() => router.push('/pelapor/buat-pengaduan')}
           >
             <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500"></div>
             <div className="flex items-start">
@@ -76,7 +76,7 @@ const QuickActionsButton = ({ setOpenModal }) => {
                 </p>
                 <button
                   className="mt-3 text-blue-600 dark:text-blue-400 font-medium flex items-center hover:underline"
-                  onClick={() => setOpenModal(true)}
+                  onClick={() => router.push('/pelapor/buat-pengaduan')}
                 >
                   <HiPaperAirplane className="mr-1 h-4 w-4" />
                   Buat Pengaduan Baru

@@ -15,6 +15,7 @@ import Step2 from './Step2';
 import Step3 from './Step3';
 import { useCreateReport, useRegisterPushNotification } from './hooks';
 import StepIndicator from '@/components/ui/StepIndicator';
+import LoadingScreen from '@/components/ui/loading/LoadingScreen';
 // import StepIndicator from '@/components/pelapor/ui/StepIndicator';
 
 const stepTitles = {
@@ -212,6 +213,7 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+      <LoadingScreen isLoading={createReportMutation.isPending} />
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
