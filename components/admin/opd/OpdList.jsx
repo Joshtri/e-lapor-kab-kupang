@@ -12,8 +12,8 @@ import {
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import ListGrid from '@/components/ui/datatable/ListGrid';
-import GridDataList from '@/components/ui/datatable/GridDataList';
-import DataCard from '@/components/ui/datatable/_DataCard';
+// import GridDataList from '@/components/ui/datatable/GridDataList';
+// import DataCard from '@/components/ui/datatable/_DataCard';
 import TruncatedWithTooltip from '@/components/ui/TruncatedWithTooltip';
 import ActionsButton from '@/components/ui/ActionsButton';
 import ConfirmationDialog from '@/components/common/ConfirmationDialog';

@@ -14,8 +14,8 @@ import {
 import { Badge } from 'flowbite-react'; // ⬅️ tambahkan ini di atas
 
 import ListGrid from '@/components/ui/datatable/ListGrid';
-import GridDataList from '@/components/ui/datatable/GridDataList';
-import DataCard from '@/components/ui/datatable/_DataCard';
+// import GridDataList from '@/components/ui/datatable/GridDataList';
+// import DataCard from '@/components/ui/datatable/_DataCard';
 import { getStatusColor } from '@/utils/statusColor';
 import { truncateText } from '@/utils/common';
 import BugStatusEditModal from './BugStatusEditModal';
