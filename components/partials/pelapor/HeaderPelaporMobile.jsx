@@ -92,11 +92,7 @@ const HeaderPelaporMobile = () => {
   };
 
   const handleCreateReport = () => {
-    if (pathname === '/pelapor/dashboard') {
-      router.push('/pelapor/dashboard?openModal=true');
-    } else {
-      router.push('/pelapor/dashboard?openModal=true');
-    }
+    router.push('/pelapor/buat-pengaduan');
     setIsMenuOpen(false);
   };
 

@@ -98,14 +98,7 @@ const HeaderPelaporDesktop = () => {
   };
 
   const handleCreateReport = () => {
-    // If already on dashboard, we'll rely on URL params to trigger the modal
-    if (pathname === '/pelapor/dashboard') {
-      // Use URL with search params to trigger modal
-      router.push('/pelapor/dashboard?openModal=true');
-    } else {
-      // Navigate to dashboard with param to open modal
-      router.push('/pelapor/dashboard?openModal=true');
-    }
+    router.push('/pelapor/buat-pengaduan');
   };
 
   return (
@@ -159,10 +152,10 @@ const HeaderPelaporDesktop = () => {
             </Link>
             <Button
               onClick={handleCreateReport}
+              startIcon={<HiPaperAirplane className="h-4 w-4" />}
               className="flex items-center gap-1 px-3 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
             >
-              <HiPaperAirplane className="h-4 w-4" />
-              <span>Buat Pengaduan</span>
+              Buat Pengaduan
             </Button>
           </nav>
 

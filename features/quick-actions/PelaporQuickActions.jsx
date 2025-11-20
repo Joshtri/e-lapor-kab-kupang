@@ -48,35 +48,34 @@ const PelaporQuickActions = ({ user, setOpenModal }) => {
         initial="hidden"
         animate="show"
       >
-        {/* Buat Laporan */}
+        {/* Buat Pengaduan */}
         <motion.div variants={item}>
-          <Card
-            className="border-l-4 border-blue-500 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden"
-            onClick={() => setOpenModal && setOpenModal(true)}
-          >
-            <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500"></div>
-            <div className="flex items-start">
-              <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mr-4 relative">
-                <HiPlus className="text-blue-600 dark:text-blue-400 h-6 w-6" />
-                <CornerDot color="blue" animate />
+          <Link href="/pelapor/buat-pengaduan" passHref>
+            <Card className="border-l-4 border-blue-500 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500"></div>
+              <div className="flex items-start">
+                <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mr-4 relative">
+                  <HiPlus className="text-blue-600 dark:text-blue-400 h-6 w-6" />
+                  <CornerDot color="blue" animate />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    Buat Pengaduan
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mt-1">
+                    Laporkan masalah yang Anda alami.
+                  </p>
+                  <Link
+                    href="/pelapor/buat-pengaduan"
+                    className="mt-3 text-blue-600 dark:text-blue-400 font-medium flex items-center hover:underline"
+                  >
+                    <HiPlus className="mr-1 h-4 w-4" />
+                    Buat Pengaduan Baru
+                  </Link>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                  Buat Pengaduan
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mt-1">
-                  Laporkan masalah yang Anda alami.
-                </p>
-                <button
-                  className="mt-3 text-blue-600 dark:text-blue-400 font-medium flex items-center hover:underline"
-                  onClick={() => setOpenModal && setOpenModal(true)}
-                >
-                  <HiPlus className="mr-1 h-4 w-4" />
-                  Buat Pengaduan Baru
-                </button>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          </Link>
         </motion.div>
 
         {/* Log Laporan */}
