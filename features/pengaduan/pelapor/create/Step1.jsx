@@ -72,12 +72,7 @@ const Step1 = ({ formData, onFormChange, errors }) => {
             onChange={handleInputChange}
             error={errors.title}
           />
-          {errors.title ? (
-            <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
-              <HiOutlineExclamationCircle className="mr-1 h-4 w-4" />
-              {errors.title}
-            </div>
-          ) : (
+          {!errors.title && (
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Berikan judul yang singkat dan jelas tentang pengaduan Anda
             </p>
