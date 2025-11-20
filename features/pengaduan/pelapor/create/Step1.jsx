@@ -10,13 +10,13 @@ import {
   HiOutlineExclamationCircle,
 } from 'react-icons/hi';
 import { motion } from 'framer-motion';
+import { TextInput as FlowbiteTextInput } from 'flowbite-react';
 import {
   getMainCategories,
   getSubcategoriesByText,
 } from '@/utils/reportCategories';
 import { getPriorityColor } from '@/utils/common';
 import { useOpdList } from './hooks';
-import TextInput from '@/components/ui/inputs/TextInput';
 
 const Step1 = ({ formData, onFormChange, errors }) => {
   const [selectedCategory, setSelectedCategory] = useState(formData.category);
@@ -64,14 +64,20 @@ const Step1 = ({ formData, onFormChange, errors }) => {
             <HiTag className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
             Judul Pengaduan <span className="text-red-500 ml-1">*</span>
           </Label>
-          <TextInput
+          <FlowbiteTextInput
             id="title"
             name="title"
             placeholder="Masukkan judul pengaduan..."
             value={formData.title}
             onChange={handleInputChange}
-            error={errors.title}
+            color={errors.title ? 'failure' : 'gray'}
           />
+          {errors.title && (
+            <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
+              <HiOutlineExclamationCircle className="mr-1 h-4 w-4" />
+              {errors.title}
+            </div>
+          )}
           {!errors.title && (
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Berikan judul yang singkat dan jelas tentang pengaduan Anda

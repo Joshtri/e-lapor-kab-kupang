@@ -1,13 +1,12 @@
 'use client';
 
-import { Label, FileInput, Badge } from 'flowbite-react';
+import { Label, FileInput, Badge, TextInput as FlowbiteTextInput } from 'flowbite-react';
 import {
   HiOutlineMail,
   HiOutlinePhotograph,
   HiOutlineExclamationCircle,
 } from 'react-icons/hi';
 import { motion } from 'framer-motion';
-import TextInput from '@/components/ui/inputs/TextInput';
 
 const Step2 = ({
   formData,
@@ -83,13 +82,13 @@ const Step2 = ({
             <HiOutlinePhotograph className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
             Lokasi <span className="text-red-500 ml-1">*</span>
           </Label>
-          <TextInput
+          <FlowbiteTextInput
             id="location"
             name="location"
             placeholder="Contoh: Jalan Ahmad Yani, Kelurahan Oesapa, Kecamatan Kelapa Lima"
             value={formData.location}
             onChange={handleInputChange}
-            error={errors.location}
+            color={errors.location ? 'failure' : 'gray'}
           />
           {errors.location && (
             <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
