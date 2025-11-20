@@ -14,7 +14,8 @@ import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 import { useCreateReport, useRegisterPushNotification } from './hooks';
-import StepIndicator from '@/components/pelapor/ui/StepIndicator';
+import StepIndicator from '@/components/ui/StepIndicator';
+// import StepIndicator from '@/components/pelapor/ui/StepIndicator';
 
 const stepTitles = {
   1: 'Buat Pengaduan - Informasi Dasar',
@@ -63,7 +64,11 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
   useEffect(() => {
     const requestNotificationPermission = async () => {
       try {
-        if (!user?.id || !('Notification' in window) || !('serviceWorker' in navigator)) {
+        if (
+          !user?.id ||
+          !('Notification' in window) ||
+          !('serviceWorker' in navigator)
+        ) {
           return;
         }
 
@@ -86,14 +91,17 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
   }, [user?.id, registerPushNotification]);
 
   // Form change handler
-  const handleFormChange = useCallback((field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleFormChange = useCallback(
+    (field, value) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
 
-    // Clear error when user changes value
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
-    }
-  }, [errors]);
+      // Clear error when user changes value
+      if (errors[field]) {
+        setErrors((prev) => ({ ...prev, [field]: '' }));
+      }
+    },
+    [errors],
+  );
 
   // Files change handler
   const handleFilesChange = useCallback((newFiles) => {
@@ -209,7 +217,11 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
         <div className="flex items-center justify-between mb-6">
           <div>
             <Link href="/pelapor/dashboard">
-              <Button color="light" size="sm" className="flex items-center gap-2">
+              <Button
+                color="light"
+                size="sm"
+                className="flex items-center gap-2"
+              >
                 <HiChevronLeft className="h-4 w-4" />
                 Kembali
               </Button>
@@ -302,7 +314,9 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
                 className="flex items-center gap-2"
               >
                 <HiPaperAirplane className="h-5 w-5" />
-                {createReportMutation.isPending ? 'Mengirim...' : 'Kirim Pengaduan'}
+                {createReportMutation.isPending
+                  ? 'Mengirim...'
+                  : 'Kirim Pengaduan'}
               </Button>
             )}
           </div>
