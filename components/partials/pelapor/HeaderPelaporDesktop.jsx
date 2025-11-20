@@ -5,7 +5,7 @@ import ConfirmationDialog from '@/components/common/ConfirmationDialog';
 import NotificationDropdown from '@/components/ui/NotificationDropdown';
 import { getInitials } from '@/utils/common';
 import axios from 'axios';
-import { Avatar, Button, Dropdown } from 'flowbite-react';
+import { Avatar, Dropdown } from 'flowbite-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
@@ -22,6 +22,7 @@ import {
   HiPaperAirplane,
 } from 'react-icons/hi';
 import { toast } from 'sonner';
+import Button from '@/components/ui/Button';
 
 const HeaderPelaporDesktop = () => {
   const { theme, setTheme } = useTheme();
