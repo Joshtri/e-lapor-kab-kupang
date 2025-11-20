@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { HiArrowLeft, HiRefresh, HiSearch, HiX } from 'react-icons/hi';
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
-import Breadcrumbs from '@/components/ui/breadcrumbs';
+import Breadcrumbs from '@/components/ui/BreadCrumbs';
 import { Button, Tooltip } from 'flowbite-react';
+import PropTypes from 'prop-types';
 
 export default function PageHeader({
   title,
@@ -18,10 +19,11 @@ export default function PageHeader({
   onRefreshClick = () => {},
   onExportExcel = null,
   onExportPDF = null,
-  breadcrumbsProps = {},
+  role = 'adm', // Auto-detect user role for breadcrumbs
+  breadcrumbsProps = {}, // Optional: for custom overrides
 }) {
   const [showSearchBar, setShowSearchBar] = useState(
-    showSearch && searchQuery !== ''
+    showSearch && searchQuery !== '',
   );
   const inputRef = useRef(null);
 
@@ -30,7 +32,7 @@ export default function PageHeader({
       setShowSearchBar(true);
     }
   }, [showSearch, searchQuery]);
-  
+
   useEffect(() => {
     if (showSearchBar) {
       inputRef.current?.focus();
@@ -134,7 +136,7 @@ export default function PageHeader({
         </div>
       </div>
 
-      <Breadcrumbs {...breadcrumbsProps} />
+      <Breadcrumbs {...breadcrumbsProps} role={role} />
       <hr className="mt-4" />
 
       <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-4">
@@ -143,3 +145,18 @@ export default function PageHeader({
     </section>
   );
 }
+
+PageHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+  backHref: PropTypes.string,
+  showSearch: PropTypes.bool,
+  showBackButton: PropTypes.bool,
+  showRefreshButton: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  onSearchChange: PropTypes.func,
+  onRefreshClick: PropTypes.func,
+  onExportExcel: PropTypes.func,
+  onExportPDF: PropTypes.func,
+  role: PropTypes.oneOf(['adm', 'bupati', 'opd', 'pelapor']),
+  breadcrumbsProps: PropTypes.object,
+};

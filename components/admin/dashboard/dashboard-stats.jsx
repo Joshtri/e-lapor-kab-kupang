@@ -1,6 +1,6 @@
-"use client"
-import { Spinner } from "flowbite-react"
-import StatCard from "@/components/ui/stat-card"
+'use client';
+import { Spinner } from 'flowbite-react';
+import StatCard from '@/components/ui/StatCard';
 import {
   HiOutlineMail,
   HiMailOpen,
@@ -10,15 +10,13 @@ import {
   HiOutlineShieldCheck,
   HiOutlineUserCircle,
   HiOutlineUsers,
-} from "react-icons/hi"
-import { motion } from "framer-motion"
-import LoadingMail from "@/components/ui/loading/LoadingMail"
+} from 'react-icons/hi';
+import { motion } from 'framer-motion';
+import LoadingMail from '@/components/ui/loading/LoadingMail';
 
 const DashboardStats = ({ stats, loading }) => {
   if (loading) {
-    return (
-      <LoadingMail/>
-    )
+    return <LoadingMail />;
   }
 
   // Animation variants for staggered animation
@@ -30,12 +28,12 @@ const DashboardStats = ({ stats, loading }) => {
         staggerChildren: 0.1,
       },
     },
-  }
+  };
 
   const item = {
     hidden: { y: 20, opacity: 0 },
     show: { y: 0, opacity: 1 },
-  }
+  };
 
   return (
     <div className="space-y-8">
@@ -133,8 +131,7 @@ const DashboardStats = ({ stats, loading }) => {
         </motion.div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardStats
-
+export default DashboardStats;

@@ -1,4 +1,4 @@
-import ForgetPassword from '@/components/forget-password';
+import ForgetPassword from '@/features/auth/ForgetPassword';
 
 export const metadata = {
   title: 'Lupa Password | Lapor Kaka Bupati',

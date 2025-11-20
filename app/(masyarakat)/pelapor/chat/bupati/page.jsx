@@ -6,7 +6,7 @@ import { Card, Textarea, Button, Spinner } from 'flowbite-react';
 import { HiOutlinePaperAirplane } from 'react-icons/hi';
 import { AnimatePresence } from 'framer-motion';
 import useSWR from 'swr';
-import MessageBubble from '@/components/chat/message-bubble';
+import MessageBubble from '@/features/chat/MessageBubble';
 
 const fetcher = (url) => axios.get(url).then((res) => res.data);
 

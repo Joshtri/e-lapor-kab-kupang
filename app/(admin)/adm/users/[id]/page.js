@@ -1,51 +1,43 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
-import Link from 'next/link';
-import { Spinner, Badge, Card, Table, Tooltip } from 'flowbite-react';
-import {
-  HiOfficeBuilding,
-  HiArrowLeft,
-  HiClock,
-  HiCheckCircle,
-  HiInformationCircle,
-} from 'react-icons/hi';
+import Heading from '@/components/ui/Heading';
+import Text from '@/components/ui/Text';
+import CustomBadge from '@/components/ui/CustomBadge';
+import LoadingScreen from '@/components/ui/loading/LoadingScreen';
+import { fetchUserDetail } from '@/services/userService';
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
-import CustomBadge from '@/components/ui/custom-badge';
+import { Card, Table } from 'flowbite-react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import {
+  HiArrowLeft,
+  HiClock,
+  HiInformationCircle,
+  HiOfficeBuilding,
+} from 'react-icons/hi';
 
 dayjs.locale('id');
 
 export default function UserDetailPage() {
   const { id } = useParams();
-  const [user, setUser] = useState(null);
-  const [reports, setReports] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (id) fetchUser();
-  }, [id]);
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['user', id],
+    queryFn: () => fetchUserDetail(id),
+    enabled: !!id,
+  });
 
-  const fetchUser = async () => {
-    try {
-      const res = await axios.get(`/api/users/${id}`);
-      const { user, reports } = res.data;
-      setUser(user);
-      setReports(reports || []);
-    } catch (error) {
-      // ('Gagal ambil detail user:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const user = data?.user;
+  const reports = data?.reports || [];
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size="lg" />
-      </div>
+      // <div className="flex justify-center items-center h-screen">
+      //   <lOA size="lg" />
+      // </div>
+      <LoadingScreen isLoading={loading} />
     );
   }
 
@@ -60,30 +52,32 @@ export default function UserDetailPage() {
 
       {/* Informasi User */}
       <Card className="w-full">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+        <Heading className="text-2xl font-bold text-gray-800 dark:text-white">
           {user.name}
-        </h1>
+        </Heading>
         <p className="text-gray-600 dark:text-gray-300">{user.email}</p>
 
         {/* ⬇️ TAMBAHKAN INI */}
         {user.nikMasked && (
-          <p className="text-sm text-gray-500">
+          <Text className="text-sm text-gray-500">
             NIK: <span className="font-mono">{user.nikMasked}</span>
-          </p>
+          </Text>
         )}
 
         {user.contactNumber && (
-          <p className="text-gray-500 text-sm">Kontak: {user.contactNumber}</p>
+          <Text className="text-sm text-gray-500">
+            Kontak: {user.contactNumber}
+          </Text>
         )}
 
-        <p className="text-xs text-gray-400 mt-2">
+        <Text className="text-xs text-gray-400 mt-2">
           Dibuat: {dayjs(user.createdAt).format('DD MMM YYYY HH:mm')}
-        </p>
-        <p className="text-xs text-gray-400">
+        </Text>
+        <Text className="text-xs text-gray-400">
           Update terakhir: {dayjs(user.updatedAt).format('DD MMM YYYY HH:mm')}
-        </p>
+        </Text>
 
-        <p className="text-sm">
+        <Text className="text-sm">
           Role:{' '}
           <CustomBadge
             color={
@@ -99,20 +93,22 @@ export default function UserDetailPage() {
           >
             {user.role}
           </CustomBadge>
-        </p>
+        </Text>
 
         {user.role === 'OPD' && user.opd?.name && (
-          <p className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+          <Text className="flex items-center gap-1 text-sm text-gray-500 mt-1">
             <HiOfficeBuilding className="h-4 w-4" />
             {user.opd.name}
-          </p>
+          </Text>
         )}
       </Card>
 
       {/* Tabel Laporan */}
       {reports.length > 0 ? (
         <div>
-          <h2 className="text-lg font-semibold mb-2">Daftar Laporan</h2>
+          <Heading className="text-lg font-semibold mb-2">
+            Daftar Laporan
+          </Heading>
           <div className="overflow-x-auto">
             <Table hoverable striped>
               <Table.Head>
@@ -147,7 +143,7 @@ export default function UserDetailPage() {
       ) : (
         <div className="flex items-center gap-2 text-gray-500 text-sm">
           <HiInformationCircle className="w-5 h-5" />
-          <span>Belum ada laporan yang dikirim oleh user ini.</span>
+          <Text>Belum ada laporan yang dikirim oleh user ini.</Text>
         </div>
       )}
     </div>

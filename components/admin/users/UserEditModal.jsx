@@ -5,7 +5,7 @@ import { Button, Label, Modal, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import MaskedNikInput from '@/components/ui/MaskedNikInput';
+import MaskedNikInput from '@/components/ui/inputs/MaskedNikInput';
 import ResetButton from '@/components/ui/ResetButton';
 
 const UserEditModal = ({

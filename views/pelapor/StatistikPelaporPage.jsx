@@ -14,7 +14,7 @@ import {
   HiDownload,
 } from 'react-icons/hi';
 import { motion } from 'framer-motion';
-import { useIsMobile } from '@/hooks/use-media-query';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 import axios from 'axios';
 import SkeletonCardLoading from '@/components/ui/loading/SkeletonCardLoading';
 import {

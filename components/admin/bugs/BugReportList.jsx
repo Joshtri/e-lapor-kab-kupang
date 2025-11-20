@@ -13,9 +13,9 @@ import {
 } from 'react-icons/hi';
 import { Badge } from 'flowbite-react'; // ⬅️ tambahkan ini di atas
 
-import ListGrid from '@/components/ui/data-view/ListGrid';
-import GridDataList from '@/components/ui/data-view/GridDataList';
-import DataCard from '@/components/ui/data-view/DataCard';
+import ListGrid from '@/components/ui/datatable/ListGrid';
+import GridDataList from '@/components/ui/datatable/GridDataList';
+import DataCard from '@/components/ui/datatable/_DataCard';
 import { getStatusColor } from '@/utils/statusColor';
 import { truncateText } from '@/utils/common';
 import BugStatusEditModal from './BugStatusEditModal';
@@ -165,12 +165,7 @@ export default function BugReportList() {
       <ListGrid
         breadcrumbsProps={{
           home: { label: 'Beranda', href: '/adm/dashboard' },
-          customRoutes: {
-            adm: {
-              label: 'Dashboard Admin',
-              href: '/adm/dashboard',
-            },
-          },
+          customRoutes: {},
         }}
         data={paginatedBugs}
         loading={loading}
@@ -187,25 +182,6 @@ export default function BugReportList() {
         setViewMode={setViewMode}
         columns={columns}
         actionButtons={actionButtons}
-        gridComponent={
-          <GridDataList
-            data={paginatedBugs}
-            renderItem={(bug) => (
-              <DataCard
-                avatar={bug.user?.name}
-                title={truncateText(bug.title, 50)}
-                subtitle={bug.priorityProblem}
-                meta={new Date(bug.createdAt).toLocaleDateString('id-ID')}
-                badges={[
-                  {
-                    label: bug.statusProblem,
-                    color: getStatusColor(bug.statusProblem),
-                  },
-                ]}
-              />
-            )}
-          />
-        }
         rowClassName={(bug) =>
           !bug.isReadByAdmin
             ? 'bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400'

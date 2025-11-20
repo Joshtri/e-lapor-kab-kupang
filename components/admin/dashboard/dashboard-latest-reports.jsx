@@ -1,6 +1,6 @@
 "use client"
 import { Spinner } from "flowbite-react"
-import StatusBadge from "@/components/ui/status-badge"
+import StatusBadge from "@/components/ui/StatusBadge"
 import Link from "next/link"
 import { HiOutlineMail, HiOutlineEye } from "react-icons/hi"
 import { motion } from "framer-motion"

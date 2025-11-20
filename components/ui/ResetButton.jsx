@@ -2,6 +2,7 @@
 
 import { Button } from 'flowbite-react';
 import { HiOutlineRefresh } from 'react-icons/hi';
+import PropTypes from 'prop-types';
 
 /**
  * Komponen ResetButton
@@ -27,3 +28,9 @@ const ResetButton = ({ onReset, disabled = false, className = '' }) => {
 };
 
 export default ResetButton;
+
+ResetButton.propTypes = {
+  onReset: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
+};

@@ -71,19 +71,15 @@ const ReportView = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <PageHeader
-        backHref="/bupati-portal/laporan-warga"
+        backHref="/bupati-portal/kelola-pengaduan"
         title={`Detail Laporan: Warga ${report.pelapor}`}
         showBackButton={true}
         breadcrumbsProps={{
           home: { label: 'Beranda', href: '/bupati-portal/dashboard' },
           customRoutes: {
-            'bupati-portal': {
-              label: 'Dashboard Bupati',
-              href: '/bupati-portal/dashboard',
-            },
             laporan: {
-              label: 'Laporan Warga',
-              href: '/bupati-portal/laporan-warga',
+              label: 'Kelola Pengaduan',
+              href: '/bupati-portal/kelola-pengaduan',
             },
           },
         }}

@@ -1,45 +1,35 @@
 'use client';
 
-import DashboardPelapor from '@/components/pelapor/DashboardPelapor';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import LoadingOverlay from '@/components/ui/LoadingOverlay';
-import LoadingMail from '@/components/ui/loading/LoadingMail';
-import DashboardPelaporGrid from '@/views/dashboard/DashboardPelaporPage';
+import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import LoadingScreen from '@/components/ui/loading/LoadingScreen';
+import { fetchCurrentUser } from '@/services/authService';
+import DashboardPelaporGrid from '@/features/dashboard/masyarakat';
 
 export default function DashboardPelaporPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await axios.get('/api/auth/me');
-        setUser(res.data.user);
-        if (!res.data.user) {
-          router.push('/auth/login');
-        }
-      } catch (error) {
-        router.push('/auth/login');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch current user using TanStack Query
+  const {
+    data: user = null,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: fetchCurrentUser,
+    onError: () => {
+      toast.error('Gagal mengambil data user. Silakan login ulang.');
+      router.push('/auth/login');
+    },
+    retry: false,
+  });
 
-    checkAuth();
-  }, [router]);
-
-  if (loading) {
-    return  (
-      <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
-        <LoadingMail />
-      </div>
-    );
+  if (isLoading) {
+    return <LoadingScreen isLoading={true} />;
   }
 
-  if (!user) {
+  if (isError || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
         Tidak ada data user, silakan login ulang.

@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import ResetPasswordForm from '@/components/reset-password';
+import ResetPasswordForm from '@/features/auth/ResetPassword';
 
 export const metadata = {
   title: 'Reset Password | Lapor Kaka Bupati',

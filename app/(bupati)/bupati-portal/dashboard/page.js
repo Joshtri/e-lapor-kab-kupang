@@ -1,10 +1,10 @@
-'use client';
+import { AdminDashboard as BupatiDashboard } from '@/features/dashboard/admin';
 
-import React from 'react';
-// import StatistikOverview from "@/components/bupati/statistic-overview";
-import BupatiDashboard from '@/components/bupati/DashboardBupati';
-import AdminDashboard from '@/components/admin/DashboardAdmin';
+export const metadata = {
+  title: 'Dashboard Bupati',
+  description: 'Halaman dashboard utama untuk Bupati.',
+};
 
 export default function DashboardBupatiPage() {
-  return <AdminDashboard titleHeader={'Dashboard Bupati'} />;
+  return <BupatiDashboard titleHeader="Dashboard Bupati" />;
 }

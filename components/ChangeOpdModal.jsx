@@ -4,6 +4,7 @@ import { Button, Label, Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import ReactSelect from 'react-select';
 import { toast } from 'sonner';
+import propTypes from 'prop-types';
 
 const ChangeOpdModal = ({
   show,
@@ -131,3 +132,11 @@ const ChangeOpdModal = ({
 };
 
 export default ChangeOpdModal;
+
+ChangeOpdModal.propTypes = {
+  show: propTypes.bool.isRequired,
+  onClose: propTypes.func.isRequired,
+  reportId: propTypes.number.isRequired,
+  currentOpdId: propTypes.number,
+  onSuccess: propTypes.func,
+};

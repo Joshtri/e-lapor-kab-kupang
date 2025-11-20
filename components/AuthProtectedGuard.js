@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import LoadingMail from './ui/loading/LoadingMail';
+import LoadingScreen from './ui/loading/LoadingScreen';
 
 export default function AuthProtectGuard({ children, allowRole = [] }) {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function AuthProtectGuard({ children, allowRole = [] }) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-gray-200">
         {/* <Spinner size="lg" /> */}
-        <LoadingMail label={'Memeriksa autentikasi...'}/>
+        <LoadingScreen  isLoading={checkingAuth} message={'Memeriksa autentikasi...'}/>
        </div>
     );
   }

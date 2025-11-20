@@ -12,7 +12,7 @@ import {
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { toast } from 'sonner';
-import TabsComponent from '@/components/ui/tabs-group'; // pastikan path-nya sesuai
+import TabsComponent from '@/components/ui/TabsGroup'; // pastikan path-nya sesuai
 
 import ComposeMailList from '@/components/admin/mail/ComposeMailList';
 import SentMailList from '@/components/admin/mail/SentMailList';

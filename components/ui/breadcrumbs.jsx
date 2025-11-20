@@ -4,27 +4,23 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { HiChevronRight } from 'react-icons/hi';
 import PropTypes from 'prop-types';
+import { getSegmentLabel, getRoleHomePath } from '@/config/breadcrumbConfig';
 
 const Breadcrumbs = ({
-  customRoutes = {},
-  home = null, // Allow null to use role-based default
+  customRoutes = {}, // Optional: for overriding specific segment labels
+  home = null, // Optional: custom home config
   role = 'adm', // Default role
 }) => {
   const pathname = usePathname();
 
-  // Define role-specific root paths and home labels
-  const roleConfig = {
-    adm: { path: '/adm/dashboard', label: 'Beranda' },
-    bupati: { path: '/bupati-portal/dashboard', label: 'Beranda' },
-    opd: { path: '/opd/dashboard', label: 'Beranda' },
-  };
+  // Get role-specific home path with fallback
+  const defaultHome = { label: 'Beranda', href: '/adm/dashboard' };
+  const homeConfig = home || getRoleHomePath(role) || defaultHome;
 
-  // Get the root path and label based on the role
-  const { path: roleRootPath, label: roleHomeLabel } =
-    roleConfig[role] || roleConfig.adm;
-
-  // Use provided home prop or fall back to role-based home
-  const homeConfig = home || { label: roleHomeLabel, href: roleRootPath };
+  // Ensure homeConfig has valid properties
+  if (!homeConfig.href || !homeConfig.label) {
+    return null; // Fail gracefully
+  }
 
   // Split pathname and filter out empty segments
   const pathSegments = pathname
@@ -34,48 +30,43 @@ const Breadcrumbs = ({
   // Initialize breadcrumb items with the home link
   const breadcrumbItems = [{ label: homeConfig.label, href: homeConfig.href }];
 
-  // Check if the pathname starts with the role's root path
-  const isRolePath = pathname.startsWith(roleRootPath);
-  let remainingSegments = pathSegments;
+  // Get role root segments to skip (e.g., 'adm' for admin, 'bupati-portal' for bupati)
+  const roleRootSegments = homeConfig.href
+    .split('/')
+    .filter((segment) => segment.length > 0 && segment !== 'dashboard');
 
-  // If the path includes the role's root, skip those segments
-  if (isRolePath) {
-    const roleRootSegments = roleRootPath
-      .split('/')
-      .filter((s) => s.length > 0);
-    remainingSegments = pathSegments.slice(roleRootSegments.length);
-  }
+  // Build breadcrumb items from path segments, skipping role root segments
+  let cumulativePath = '';
+  pathSegments.forEach((segment) => {
+    // Build the cumulative path
+    cumulativePath += `/${segment}`;
 
-  // Process remaining segments
-  remainingSegments.forEach((segment, index) => {
-    // Skip segments that match the home label (case-insensitive) to avoid duplication
-    if (segment.toLowerCase() === homeConfig.label.toLowerCase()) {
+    // Skip if segment is part of role root path (implicit in home)
+    if (roleRootSegments.includes(segment)) {
       return;
     }
 
-    // Generate href for the current segment
-    const href = isRolePath
-      ? `${roleRootPath}/${remainingSegments.slice(0, index + 1).join('/')}`
-      : `/${pathSegments.slice(0, pathSegments.length - remainingSegments.length + index + 1).join('/')}`;
+    // Skip if path matches home path (avoid duplication)
+    if (cumulativePath === homeConfig.href) {
+      return;
+    }
 
-    // Check if the segment is an ID (numbers or UUID-like strings)
-    const isId = /^[0-9]+$/.test(segment) || segment.includes('-');
+    // Get label: first check customRoutes, then use config, then auto-generate
+    let label;
+    if (customRoutes[segment]?.label) {
+      label = customRoutes[segment].label;
+    } else {
+      label = getSegmentLabel(segment);
+    }
 
-    // Use custom route if provided, otherwise generate a label
-    const customRoute = customRoutes[segment] || {};
-    const label =
-      customRoute.label ||
-      (isId
-        ? 'Detail'
-        : decodeURIComponent(segment)
-            .replace(/-/g, ' ')
-            .replace(/\b\w/g, (c) => c.toUpperCase()));
+    // Get href: first check customRoutes, then use cumulative path
+    const itemHref = customRoutes[segment]?.href || cumulativePath;
 
-    // Avoid adding duplicate home label
-    if (label.toLowerCase() !== homeConfig.label.toLowerCase()) {
+    // Only add if href is valid (not undefined or empty)
+    if (itemHref && typeof itemHref === 'string') {
       breadcrumbItems.push({
-        label,
-        href: customRoute.href || href,
+        label: label || 'Halaman',
+        href: itemHref,
       });
     }
   });
@@ -86,7 +77,7 @@ const Breadcrumbs = ({
         {breadcrumbItems.map((item, index) => {
           const isLast = index === breadcrumbItems.length - 1;
           return (
-            <li key={item.href} className="flex items-center space-x-1">
+            <li key={`breadcrumb-${index}-${item.href}`} className="flex items-center space-x-1">
               {index > 0 && <HiChevronRight className="w-4 h-4" />}
               {isLast ? (
                 <span className="capitalize text-gray-500 dark:text-gray-400">
@@ -116,7 +107,7 @@ Breadcrumbs.propTypes = {
     label: PropTypes.string.isRequired,
     href: PropTypes.string.isRequired,
   }),
-  role: PropTypes.oneOf(['adm', 'bupati', 'opd']),
+  role: PropTypes.oneOf(['adm', 'bupati', 'opd', 'pelapor']),
 };
 
 export default Breadcrumbs;

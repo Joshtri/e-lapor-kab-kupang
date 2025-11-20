@@ -1,5 +1,5 @@
 import AuthProtectGuard from '@/components/AuthProtectedGuard';
-import ResponsiveLayout from '@/components/pelapor/ResponsiveLayout';
+import ResponsiveLayout from '@/components/layouts/ResponsiveLayout';
 import ClientThemeProvider from '@/providers/client-theme-provider';
 import { verify } from 'jsonwebtoken';
 import { cookies } from 'next/headers';

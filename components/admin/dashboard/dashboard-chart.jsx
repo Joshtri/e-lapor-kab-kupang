@@ -1,64 +1,46 @@
 'use client';
 
-import TabsComponent from '@/components/ui/tabs-group';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import TabsComponent from '@/components/ui/TabsGroup';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { HiOutlineMail } from 'react-icons/hi';
+import { motion } from 'framer-motion';
 import StatsReportByDailyCategory from './stats/stats-report-by-daily-category';
 import StatsReportByDay from './stats/stats-report-by-day';
 import StatsReportByMonth from './stats/stats-report-by-month';
 import StatsReportByPriority from './stats/stats-report-by-priority';
 import StatsReportTableByCategory from './stats/stats-report-table-by-category';
-import { HiOutlineMail } from 'react-icons/hi';
-import { motion } from 'framer-motion';
+import {
+  fetchPriorityStats,
+  fetchDailyReportStats,
+} from '@/services/dashboardService';
 
 const DashboardChart = ({ categoryStats, chartData, loading }) => {
-  const [priorityStats, setPriorityStats] = useState([]);
-  const [loadingPriority, setLoadingPriority] = useState(true);
-
-  const [dailyReportStats, setDailyReportStats] = useState([]);
-  const [loadingDaily, setLoadingDaily] = useState(true);
-
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().slice(0, 7),
-  ); // Default: bulan ini
+  );
 
-  useEffect(() => {
-    fetchPriorityStats();
-  }, []);
+  // Fetch priority stats using TanStack Query
+  const { data: priorityStats = [], isLoading: loadingPriority } = useQuery({
+    queryKey: ['priorityStats'],
+    queryFn: fetchPriorityStats,
+    onError: () => {
+      toast.error('Gagal mengambil data prioritas laporan.');
+    },
+  });
 
-  const fetchPriorityStats = async () => {
-    try {
-      setLoadingPriority(true);
-      const response = await axios.get('/api/reports/stats/chart/priority');
-      setPriorityStats(response.data.priorityStats);
-    } catch (error) {
-      'Gagal mengambil data prioritas laporan:', error;
-    } finally {
-      setLoadingPriority(false);
-    }
-  };
+  // Fetch daily report stats using TanStack Query with month dependency
+  const { data: dailyReportStats = [], isLoading: loadingDaily } = useQuery({
+    queryKey: ['dailyReportStats', selectedMonth],
+    queryFn: () => fetchDailyReportStats(selectedMonth),
+    onError: () => {
+      toast.error('Gagal mengambil data laporan harian.');
+    },
+  });
 
-  // 🔽 Fungsi untuk mengubah bulan berdasarkan pilihan dropdown
   const handleMonthChange = (e) => {
     setSelectedMonth(e.target.value);
-  };
-
-  useEffect(() => {
-    fetchDailyReportStats(selectedMonth);
-  }, [selectedMonth]);
-
-  const fetchDailyReportStats = async (month) => {
-    try {
-      setLoadingDaily(true);
-      const response = await axios.get(
-        `/api/reports/stats/chart/daily?month=${month}`,
-      );
-      setDailyReportStats(response.data.dailyReportStats);
-    } catch (error) {
-      'Gagal mengambil data laporan harian:', error;
-    } finally {
-      setLoadingDaily(false);
-    }
   };
 
   return (

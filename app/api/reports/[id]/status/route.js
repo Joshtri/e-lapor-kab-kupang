@@ -21,8 +21,8 @@ export async function PATCH(req, { params }) {
     await prisma.notification.create({
       data: {
         userId: updatedReport.user.id,
-        message: `Status laporan "${updatedReport.title}" Anda telah diperbarui menjadi "${bupatiStatus}".`,
-        link: '/pelapor/log-laporan',
+        message: `Status pengaduan "${updatedReport.title}" Anda telah diperbarui menjadi "${bupatiStatus}".`,
+        link: '/pelapor/riwayat-pengaduan',
         createdAt: new Date(),
       },
     });
@@ -39,7 +39,7 @@ export async function PATCH(req, { params }) {
   } catch (error) {
     '❌ Error updating report status:', error;
     return NextResponse.json(
-      { error: 'Gagal mengupdate status laporan.' },
+      { error: 'Gagal mengupdate status pengaduan.' },
       { status: 500 },
     );
   }

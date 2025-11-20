@@ -39,7 +39,7 @@ export default function ReportTable({ reports }) {
           method: 'PATCH',
         });
       }
-      router.push(`/bupati-portal/laporan-warga/${report.id}`);
+      router.push(`/bupati-portal/kelola-pengaduan/${report.id}`);
     } catch (err) {
       'Gagal update status terbaca:', err;
     } finally {

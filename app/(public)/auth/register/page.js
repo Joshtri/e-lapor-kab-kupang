@@ -4,4 +4,4 @@ export const metadata = {
     'Buat akun untuk mulai mengirim laporan kepada Bupati Kabupaten Kupang.',
 };
 
-export { default } from '@/views/g/auth/RegisterPage';
+export { default } from '@/features/auth/Register';

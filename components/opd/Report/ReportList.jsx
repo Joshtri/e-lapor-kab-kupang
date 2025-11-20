@@ -9,7 +9,7 @@ import ReportGrid from '@/components/opd/Report/ReportGridView';
 import ReportTable from '@/components/opd/Report/ReportTableView';
 import PageHeader from '@/components/ui/PageHeader';
 import { HiOutlinePlus } from 'react-icons/hi';
-import EmptyState from '@/components/ui/empty-state';
+import EmptyState from '@/components/ui/EmptyState';
 
 export default function ReportList() {
   const [reports, setReports] = useState([]);
@@ -102,9 +102,7 @@ export default function ReportList() {
         onRefreshClick={() => fetchReports(opdId)}
         breadcrumbsProps={{
           home: { label: 'Beranda', href: '/opd/dashboard' },
-          customRoutes: {
-            opd: { label: 'Dashboard OPD', href: '/opd/dashboard' },
-          },
+          customRoutes: {},
         }}
       />
 

@@ -12,13 +12,14 @@ import {
   HiMailOpen,
   HiOutlineLogout,
   HiOutlineMail,
-  HiOutlineMenu,
   HiOutlineUserCircle,
 } from 'react-icons/hi';
+import { MdMenu } from 'react-icons/md';
 import { toast } from 'sonner';
 
-import LogoutConfirmationModal from '@/components/common/LogoutConfirmationModal';
+import ConfirmationDialog from '@/components/common/ConfirmationDialog';
 import NotificationDropdown from '@/components/ui/NotificationDropdown';
+import HeaderDateTimeWidget from '@/components/HeaderDateTimeWidget';
 import { getInitials } from '@/utils/common';
 import Image from 'next/image';
 
@@ -154,14 +155,24 @@ export default function Header({
       className="py-2 px-6 bg-white dark:bg-gray-800 shadow-md fixed w-full z-40 top-0 left-0 transition-all duration-300 border-b border-gray-200 dark:border-gray-700"
     >
       <div className="flex justify-between items-center w-full">
-        {/* Left */}
-        <div className="flex items-center space-x-4">
-          <button
+        {/* Left - Menu Toggle & DateTime Widget */}
+        <div className={`flex items-center gap-4 transition-all duration-300 ${
+          isSidebarOpen ? 'ml-64' : 'ml-20'
+        }`}>
+          <motion.button
             onClick={toggleSidebar}
-            className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-full"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition-all duration-200"
+            aria-label="Toggle Sidebar"
           >
-            <HiOutlineMenu className="h-6 w-6" />
-          </button>
+            <MdMenu className="h-6 w-6" />
+          </motion.button>
+
+          {/* DateTime Widget */}
+          <div className="hidden md:block">
+            <HeaderDateTimeWidget />
+          </div>
         </div>
 
         {/* Right */}
@@ -254,12 +265,12 @@ export default function Header({
               >
                 Profile
               </Dropdown.Item>
-              <Dropdown.Item
+              {/* <Dropdown.Item
                 icon={HiMailOpen}
                 onClick={() => router.push(cfg.inboxRoute)}
               >
                 Inbox
-              </Dropdown.Item>
+              </Dropdown.Item> */}
               <Dropdown.Divider />
               <Dropdown.Item
                 icon={HiOutlineLogout}
@@ -273,11 +284,16 @@ export default function Header({
         </div>
       </div>
 
-      <LogoutConfirmationModal
-        open={openLogout}
-        onClose={() => setOpenLogout(false)}
+      <ConfirmationDialog
+        isOpen={openLogout}
+        title="Konfirmasi Logout"
+        message="Apakah Anda yakin ingin logout dari akun ini?"
+        confirmText="Ya, Logout"
+        cancelText="Batal"
+        confirmColor="failure"
+        isLoading={isLoggingOut}
         onConfirm={handleLogout}
-        isLoggingOut={isLoggingOut}
+        onCancel={() => setOpenLogout(false)}
       />
     </Navbar>
   );

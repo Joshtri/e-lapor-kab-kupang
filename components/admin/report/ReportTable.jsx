@@ -81,7 +81,7 @@ export default function ReportTable({ reports, fetchReports }) {
   };
 
   const markAsRead = async (report) => {
-    router.push(`/adm/report-warga/${report.id}`);
+    router.push(`/adm/kelola-pengaduan/${report.id}`);
   };
 
   const openImageModal = (reportId) => {

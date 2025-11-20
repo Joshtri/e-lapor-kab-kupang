@@ -1,36 +1,41 @@
 'use client';
 
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from 'flowbite-react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import {
-  HiCheckCircle,
-  HiOutlineChatAlt2,
-  HiOutlineClock,
-  HiOutlineEye,
-  HiOutlinePencilAlt,
-} from 'react-icons/hi';
+// Icons no longer needed here - handled by ActionButtonsPresets in ListGrid
 import { toast } from 'sonner';
 
 import ImagePreviewModal from '@/components/admin/ImagePreviewModal';
 import PriorityBadge from '@/components/common/PriorityBadge';
 import ReportStatusModal from '@/components/common/ReportStatusModal';
 import StatusBadge from '@/components/common/StatusBadge';
-import ActionsButton from '@/components/ui/ActionsButton';
-import DataCard from '@/components/ui/data-view/DataCard';
-import GridDataList from '@/components/ui/data-view/GridDataList';
-import ListGrid from '@/components/ui/data-view/ListGrid';
+import ListGrid, {
+  ActionButtonsPresets,
+} from '@/components/ui/datatable/ListGrid';
+import { fetchReports } from '@/services/reportService';
 import { truncateText } from '@/utils/common';
 import { exportToExcel } from '@/utils/export/exportToExcel';
-import { getStatusColor } from '@/utils/statusColor';
 import CommentModal from '../comment/CommentModal';
 import InlineOPDSelector from './InlineOPDSelector';
 import ReportCreateModal from './ReportCreateModal';
 
 export default function ReportList() {
-  const [reports, setReports] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // TanStack Query hook for fetching reports
+  const {
+    data: reports = [],
+    isLoading: loading,
+    refetch: refetchReports,
+  } = useQuery({
+    queryKey: ['reports'],
+    queryFn: fetchReports,
+    onError: () => {
+      toast.error('Gagal mengambil data laporan.');
+    },
+  });
+
+  // Local state for UI
   const [viewMode, setViewMode] = useState('table');
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,25 +49,6 @@ export default function ReportList() {
   const [selectedImageReportId, setSelectedImageReportId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6;
-
-  useEffect(() => {
-    fetchReports();
-  }, []);
-
-  const fetchReports = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get('/api/reports');
-      setReports(res.data);
-    } catch (error) {
-      'Gagal mengambil data laporan:', error;
-      toast.error('Gagal mengambil data laporan.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const refreshReports = fetchReports;
 
   const filteredReports = reports.filter((report) => {
     const bupatiMatch =
@@ -138,103 +124,59 @@ export default function ReportList() {
 
   const columns = [
     {
-      header: 'Nama Pelapor',
-      accessor: 'user.name',
-      cell: (r) => r.user?.name || 'Anonim',
-    },
-    {
       header: 'Subjek',
       accessor: 'title',
-      cell: (r) => (
-        <div className="flex items-center gap-2">
-          <span className="truncate max-w-[180px]">
-            {truncateText(r.title, 40)}
-          </span>
-          {!r.isReadByAdmin ? (
-            <HiOutlineClock className="text-yellow-500 w-4 h-4" />
-          ) : (
-            <HiCheckCircle className="text-green-500 w-4 h-4" />
-          )}
-        </div>
-      ),
+      gridSection: 'header',
+      gridHighlight: true,
+      cell: (r) => truncateText(r.title, 45),
+      gridBadge: {
+        show: (r) => !r.isReadByAdmin,
+        text: 'Baru',
+        colorClass:
+          'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+      },
+    },
+    {
+      header: 'Pelapor',
+      accessor: 'user.name',
+      gridSection: 'header',
+      cell: (r) => r.user?.name || 'Anonim',
     },
     {
       header: 'Kategori',
       accessor: 'category',
+      gridSection: 'header',
       cell: (r) => truncateText(r.category, 20),
     },
     {
-      header: 'Status',
-      accessor: 'status',
-      cell: (r) => <StatusBadge bupati={r.bupatiStatus} opd={r.opdStatus} />,
-    },
-    {
-      header: 'OPD Terkait',
-      accessor: 'opd',
-      cell: (r) => <InlineOPDSelector report={r} onUpdated={fetchReports} />,
+      header: 'OPD',
+      accessor: 'opd.name',
+      gridSection: 'header',
+      cell: (r) => <InlineOPDSelector report={r} onUpdated={refetchReports} />,
     },
     {
       header: 'Prioritas',
       accessor: 'priority',
+      gridSection: 'header',
       cell: (r) => <PriorityBadge priority={r.priority} />,
+    },
+    {
+      header: 'Status',
+      accessor: 'bupatiStatus',
+      gridSection: 'header',
+      cell: (r) => <StatusBadge bupati={r.bupatiStatus} opd={r.opdStatus} />,
     },
     {
       header: 'Tanggal',
       accessor: 'createdAt',
-      cell: (r) => new Date(r.createdAt).toLocaleDateString('id-ID'),
+      gridSection: 'footer',
+      cell: (r) =>
+        new Date(r.createdAt).toLocaleDateString('id-ID', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        }),
     },
-    {
-      header: 'Lampiran',
-      accessor: 'attachment',
-      width: 'w-[100px]',
-      cell: (r) => (
-        <Button
-          size="xs"
-          color="gray"
-          className="p-2"
-          onClick={(e) => {
-            e.stopPropagation();
-            setSelectedImageReportId(r.id);
-            setIsImageModalOpen(true);
-          }}
-        >
-          🖼️
-        </Button>
-      ),
-    },
-  ];
-
-  const actionButtons = [
-    (r) => (
-      <ActionsButton
-        icon={HiOutlineEye}
-        tooltip="Lihat Detail"
-        color="gray"
-        onClick={() => (window.location.href = `/adm/report-warga/${r.id}`)}
-      />
-    ),
-    (r) => (
-      <ActionsButton
-        icon={HiOutlineChatAlt2}
-        tooltip="Komentar"
-        color="purple"
-        onClick={() => {
-          setSelectedReport(r);
-          setIsCommentModalOpen(true);
-        }}
-      />
-    ),
-    (r) => (
-      <ActionsButton
-        icon={HiOutlinePencilAlt}
-        tooltip="Ubah Status"
-        color="blue"
-        onClick={() => {
-          setSelectedReport(r);
-          setIsStatusModalOpen(true);
-        }}
-      />
-    ),
   ];
 
   return (
@@ -246,6 +188,7 @@ export default function ReportList() {
       <ListGrid
         // Page header props
         title="Manajemen Pengaduan"
+        role="adm"
         showBackButton={false}
         searchBar={true}
         showSearch={searchQuery !== ''}
@@ -253,79 +196,51 @@ export default function ReportList() {
         onSearchChange={(val) => setSearchQuery(val)}
         onExportExcel={handleExportExcel}
         showRefreshButton={true}
-        onRefreshClick={fetchReports}
-        breadcrumbsProps={{
-          home: { label: 'Beranda', href: '/adm/dashboard' },
-          customRoutes: {
-            adm: { label: 'Dashboard Admin', href: '/adm/dashboard' },
-          },
-        }}
+        onRefreshClick={refetchReports}
+        // }}
         // Filter bar props
         viewMode={viewMode}
         setViewMode={setViewMode}
         showCreateButton={true}
         createButtonLabel="Tambah Pengaduan"
         onCreate={() => setOpenModal(true)}
-        filtersComponent={
-          <div className="p-4 space-y-3">
-            <div>
-              <label className="block text-sm font-medium mb-1">Status</label>
-              <select
-                className="w-full p-2 border rounded"
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-              >
-                <option value="ALL">Semua Status</option>
-                <option value="PENDING">Pending</option>
-                <option value="PROCESS">Process</option>
-                <option value="DONE">Done</option>
-                <option value="REJECTED">Rejected</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Prioritas
-              </label>
-              <select
-                className="w-full p-2 border rounded"
-                value={filterPriority}
-                onChange={(e) => setFilterPriority(e.target.value)}
-              >
-                <option value="ALL">Semua Prioritas</option>
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
-              </select>
-            </div>
-            <Button color="blue" className="w-full" onClick={handleResetFilter}>
-              Reset Filter
-            </Button>
-          </div>
-        }
+        // New: Use filters array instead of filtersComponent
+        filters={[
+          {
+            type: 'select',
+            label: 'Status',
+            value: filterStatus,
+            onChange: setFilterStatus,
+            options: [
+              { label: 'Semua Status', value: 'ALL' },
+              { label: 'Pending', value: 'PENDING' },
+              { label: 'Process', value: 'PROCESS' },
+              { label: 'Done', value: 'DONE' },
+              { label: 'Rejected', value: 'REJECTED' },
+            ],
+          },
+          {
+            type: 'select',
+            label: 'Prioritas',
+            value: filterPriority,
+            onChange: setFilterPriority,
+            options: [
+              { label: 'Semua Prioritas', value: 'ALL' },
+              { label: 'Low', value: 'LOW' },
+              { label: 'Medium', value: 'MEDIUM' },
+              { label: 'High', value: 'HIGH' },
+            ],
+          },
+        ]}
+        onResetFilters={handleResetFilter}
         // Main data props
         data={paginatedReports}
         columns={columns}
-        actionButtons={actionButtons}
-        gridComponent={
-          <GridDataList
-            data={paginatedReports}
-            renderItem={(report) => (
-              <DataCard
-                avatar={report.user?.name || 'Anonim'}
-                title={report.title}
-                subtitle={report.category}
-                meta={new Date(report.createdAt).toLocaleDateString('id-ID')}
-                badges={[
-                  {
-                    label: report.bupatiStatus,
-                    color: getStatusColor(report.bupatiStatus),
-                  },
-                  { label: report.priority, color: 'blue' },
-                ]}
-              />
-            )}
-          />
-        }
+        actionButtons={[
+          ActionButtonsPresets.VIEW,
+          ActionButtonsPresets.COMMENT,
+          ActionButtonsPresets.EDIT, // Edit button untuk ubah status
+        ]}
         loading={loading}
         emptyMessage="Tidak ada laporan yang ditemukan"
         emptyAction={
@@ -335,8 +250,8 @@ export default function ReportList() {
         }
         rowClassName={(r) =>
           !r.isReadByAdmin
-            ? 'bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400'
-            : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
+            ? 'bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-400 hover:bg-amber-100/50 dark:hover:bg-amber-900/20'
+            : 'hover:bg-blue-50/50 dark:hover:bg-blue-900/10'
         }
         // Pagination props
         paginationProps={{
@@ -344,6 +259,18 @@ export default function ReportList() {
           currentPage: currentPage,
           pageSize: pageSize,
           onPageChange: (page) => setCurrentPage(page),
+        }}
+        // Action button callbacks
+        onViewClick={(report) =>
+          (window.location.href = `/adm/kelola-pengaduan/${report.id}`)
+        }
+        onCommentClick={(report) => {
+          setSelectedReport(report);
+          setIsCommentModalOpen(true);
+        }}
+        onEditClick={(report) => {
+          setSelectedReport(report);
+          setIsStatusModalOpen(true);
         }}
       />
 
@@ -354,7 +281,7 @@ export default function ReportList() {
           setOpen={setIsStatusModalOpen}
           report={selectedReport}
           role="ADMIN"
-          onSuccess={refreshReports}
+          onSuccess={refetchReports}
         />
       )}
       {selectedReport && (

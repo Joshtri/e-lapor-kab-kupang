@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import PropTypes from 'prop-types';
 import { Toaster } from 'sonner';
 import './globals.css';
+import TanstackQueryProvider from '@/providers/tanstack-query-provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -36,12 +37,14 @@ export default async function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
         <ClientThemeProvider>
-          <DynamicMetadata /> {/* ✅ panggil di sini */}
-          <Toaster position="top-right" />
-          {/* <RouteLoadingIndicator /> */}
-          {/* <ScrollToTopButton /> */}
-          {/* <FloatingHelper /> */}
-          {children}
+          <TanstackQueryProvider>
+            <DynamicMetadata /> {/* ✅ panggil di sini */}
+            <Toaster position="top-right" />
+            {/* <RouteLoadingIndicator /> */}
+            {/* <ScrollToTopButton /> */}
+            {/* <FloatingHelper /> */}
+            {children}
+          </TanstackQueryProvider>
         </ClientThemeProvider>
       </body>
     </html>

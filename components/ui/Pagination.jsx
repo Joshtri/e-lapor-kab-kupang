@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from 'flowbite-react';
+import PropTypes from 'prop-types';
 
 export default function Pagination({
   totalItems,
@@ -29,7 +30,8 @@ export default function Pagination({
       </Button>
 
       <div className="text-sm text-gray-700 dark:text-gray-200 px-4">
-        Halaman <strong>{currentPage}</strong> dari <strong>{totalPages}</strong>
+        Halaman <strong>{currentPage}</strong> dari{' '}
+        <strong>{totalPages}</strong>
       </div>
 
       <Button
@@ -43,3 +45,10 @@ export default function Pagination({
     </div>
   );
 }
+
+Pagination.propTypes = {
+  totalItems: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  pageSize: PropTypes.number,
+  onPageChange: PropTypes.func.isRequired,
+};

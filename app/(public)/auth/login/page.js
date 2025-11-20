@@ -4,4 +4,4 @@ export const metadata = {
     'Login untuk mengakses layanan pelaporan warga Kabupaten Kupang.',
 };
 
-export { default } from '@/views/g/auth/LoginPage';
+export { default } from '@/features/auth/Login';

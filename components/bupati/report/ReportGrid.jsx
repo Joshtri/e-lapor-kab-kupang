@@ -69,7 +69,7 @@ export default function ReportGrid({ reports }) {
           color="gray"
           size="sm"
           onClick={() =>
-            router.push(`/bupati-portal/laporan-warga/${report.id}`)
+            router.push(`/bupati-portal/kelola-pengaduan/${report.id}`)
           }
         >
           <HiOutlineEye className="w-4 h-4 mr-1" />

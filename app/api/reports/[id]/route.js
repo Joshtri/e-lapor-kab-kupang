@@ -5,7 +5,7 @@ import { getAuthenticatedUser } from '@/lib/auth';
 export async function GET(req, { params }) {
   try {
     const user = await getAuthenticatedUser(req);
-    if (!user || !['ADMIN', 'BUPATI', 'OPD'].includes(user.role)) {
+    if (!user || !['ADMIN', 'BUPATI', 'OPD', 'PELAPOR'].includes(user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

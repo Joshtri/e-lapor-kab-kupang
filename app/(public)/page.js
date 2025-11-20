@@ -1,4 +1,6 @@
-import HomePublic from '@/components/home/homePublic';
+// import HomePublic from "@/features/home/homePublic";
+import HomePublic from "@/features/home/homePublic";
+// import HomePublic from '@/components/home/homePublic';
 export const metadata = {
   title: 'Lapor Kaka Bupati | Kabupaten Kupang',
   description:

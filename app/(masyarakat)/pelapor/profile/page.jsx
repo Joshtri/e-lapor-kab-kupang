@@ -1,4 +1,4 @@
-import ProfileManagement from '@/components/profile';
+import ProfileManagement from '@/features/profile';
 import PageHeader from '@/components/ui/PageHeader';
 
 export default function ProfileManagementPage() {

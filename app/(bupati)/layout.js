@@ -45,7 +45,7 @@ export default function BupatiLayout({ children }) {
               isSidebarOpen={isSidebarOpen}
             />{' '}
             <main className="mt-20 p-6">{children}</main>
-            <Footer role="bupati" />
+            {/* <Footer role="bupati" /> */}
           </div>
         </div>
       </ThemeProvider>

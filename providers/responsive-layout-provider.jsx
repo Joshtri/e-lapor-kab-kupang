@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext } from 'react';
-import { useIsMobile } from '@/hooks/use-media-query';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 import PropTypes from 'prop-types';
 
 // Membuat context

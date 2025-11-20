@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import OPDOnboardingDialog from '@/components/opd/Onboard/OnboardingDialog';
 import OpdIkhtisarTab from '@/components/opd/Dashboard/OpdIkhtisarTab';
 import OpdStatistikTab from '@/components/opd/Dashboard/OpdStatistikTab';
-import TabsComponent from '@/components/ui/tabs-group';
+import TabsComponent from '@/components/ui/TabsGroup';
 import DashboardNotificationPanelOpd from '@/components/DashboardNotificationPanelOpd';
 
 const DashboardMain = () => {

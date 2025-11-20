@@ -1,8 +1,8 @@
 'use client';
 
-import FloatingNavbarButton from '@/components/floating-navbar-button';
+import FloatingNavbarButton from '@/components/FloatingNavbarButton';
+import Button from '@/components/ui/Button';
 import logoApp from '@/public/fixed-logo-app.png';
-import { Button } from 'flowbite-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
@@ -87,29 +87,33 @@ export default function Header() {
             >
               Beranda
             </Link>
-            <Link href="/auth/login">
-              <Button
-                color="light"
-                className="font-medium rounded-lg flex items-center gap-2 border border-gray-200 hover:bg-blue-50 transition-colors"
-              >
-                <HiOutlineLogin className="h-4 w-4" />
-                Login
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button
-                outline
-                gradientduotone="greenToBlue"
-                className="font-medium rounded-lg flex items-center gap-2"
-              >
-                <HiOutlineUserAdd className="h-4 w-4" />
-                Registrasi
-              </Button>
-            </Link>
+            <Button
+              as="link"
+              href="/auth/login"
+              variant="outline"
+              color="primary"
+              size="md"
+              startIcon={<HiOutlineLogin className="h-4 w-4" />}
+            >
+              Login
+            </Button>
+            <Button
+              as="link"
+              href="/auth/register"
+              variant="solid"
+              color="success"
+              size="md"
+              startIcon={<HiOutlineUserAdd className="h-4 w-4" />}
+            >
+              Registrasi
+            </Button>
             {mounted && (
-              <button
+              <Button
+                isIconOnly
+                variant="outline"
+                size="md"
+                rounded="full"
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
                 aria-label="Toggle Dark Mode"
               >
                 {theme === 'light' ? (
@@ -117,16 +121,19 @@ export default function Header() {
                 ) : (
                   <BsSunFill className="text-lg text-yellow-400" />
                 )}
-              </button>
+              </Button>
             )}
           </div>
 
           {/* Mobile Menu Toggle */}
           <div className="flex items-center gap-2 md:hidden">
             {mounted && (
-              <button
+              <Button
+                isIconOnly
+                variant="light"
+                size="md"
+                rounded="full"
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
                 aria-label="Toggle Dark Mode"
               >
                 {theme === 'light' ? (
@@ -134,18 +141,21 @@ export default function Header() {
                 ) : (
                   <BsSunFill className="text-lg text-yellow-400" />
                 )}
-              </button>
+              </Button>
             )}
-            <button
+            <Button
+              isIconOnly
+              variant="light"
+              size="md"
+              rounded="md"
               onClick={toggleMobileMenu}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               {mobileMenuOpen ? (
-                <HiX className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+                <HiX className="w-6 h-6" />
               ) : (
-                <HiOutlineMenu className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+                <HiOutlineMenu className="w-6 h-6" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -160,32 +170,43 @@ export default function Header() {
               className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700"
             >
               <div className="px-4 py-3 space-y-3">
-                <Link
+                <Button
+                  as="link"
                   href="/"
-                  className="flex items-center gap-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                  variant="light"
+                  size="md"
+                  startIcon={<HiOutlineHome className="w-5 h-5" />}
                   onClick={() => setMobileMenuOpen(false)}
+                  className="w-full justify-start"
                 >
-                  <HiOutlineHome className="w-5 h-5" />
-                  <span>Beranda</span>
-                </Link>
+                  Beranda
+                </Button>
 
-                <Link
+                <Button
+                  as="link"
                   href="/auth/login"
-                  className="flex items-center justify-center gap-2 p-3 rounded-lg bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors"
+                  variant="outline"
+                  color="primary"
+                  size="md"
+                  startIcon={<HiOutlineLogin className="w-5 h-5" />}
                   onClick={() => setMobileMenuOpen(false)}
+                  className="w-full justify-center"
                 >
-                  <HiOutlineLogin className="w-5 h-5" />
-                  <span>Login</span>
-                </Link>
+                  Login
+                </Button>
 
-                <Link
+                <Button
+                  as="link"
                   href="/auth/register"
-                  className="flex items-center justify-center gap-2 p-3 rounded-lg bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600 transition-colors"
+                  variant="solid"
+                  color="success"
+                  size="md"
+                  startIcon={<HiOutlineUserAdd className="w-5 h-5" />}
                   onClick={() => setMobileMenuOpen(false)}
+                  className="w-full justify-center"
                 >
-                  <HiOutlineUserAdd className="w-5 h-5" />
-                  <span>Registrasi</span>
-                </Link>
+                  Registrasi
+                </Button>
               </div>
             </motion.div>
           )}

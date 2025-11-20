@@ -6,7 +6,7 @@ import { Card, Textarea, Button, Spinner } from 'flowbite-react';
 import { HiOutlinePaperAirplane, HiArrowLeft, HiSearch } from 'react-icons/hi';
 import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
-import MessageBubble from '@/components/chat/message-bubble';
+import MessageBubble from '@/features/chat/MessageBubble';
 
 export default function ChatOpdPage() {
   const [rooms, setRooms] = useState([]);

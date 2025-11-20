@@ -1,27 +1,47 @@
 'use client';
 
+import { navigationItemConfig } from '@/config/navigationItemConfig'; // Adjust the import path as necessary
+import clsx from 'clsx';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
-import {
-  HiOutlineMail,
-  HiMailOpen,
-  HiOutlineDocumentReport,
-  HiOutlineUserGroup,
-  HiOutlineOfficeBuilding,
-  HiOutlineChevronLeft,
-  HiOutlineChevronRight,
-  HiOutlinePencilAlt,
-  HiOutlineBell,
-  HiChat,
-} from 'react-icons/hi';
-import { FaBug } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import clsx from 'clsx';
-import { roleConfig } from '@/config/roleConfig'; // Adjust the import path as necessary
+import {
+  HiOutlineChevronRight
+} from 'react-icons/hi';
+
+// Custom Tooltip Component for collapsed sidebar
+const Tooltip = ({ text, children, position = 'right', disabled = false }) => {
+  if (disabled) return children;
+
+  return (
+    <div className="relative group/tooltip">
+      {children}
+      <motion.div
+        initial={{ opacity: 0, x: position === 'right' ? 10 : -10, scale: 0.95 }}
+        whileHover={{ opacity: 1, x: 0, scale: 1 }}
+        transition={{ duration: 0.15, ease: 'easeOut' }}
+        className={`absolute top-1/2 -translate-y-1/2 ${
+          position === 'right' ? 'left-full ml-4' : 'right-full mr-4'
+        } bg-gray-900 dark:bg-gray-950 text-white text-xs font-medium px-3 py-2 rounded-md whitespace-nowrap pointer-events-none z-[9999] shadow-xl opacity-0 group-hover/tooltip:opacity-100 group-hover/tooltip:pointer-events-auto invisible group-hover/tooltip:visible transition-all duration-150`}
+      >
+        {text}
+        <div
+          className={`absolute top-1/2 -translate-y-1/2 w-0 h-0 border-4 ${
+            position === 'right'
+              ? '-right-2 border-r-gray-900 dark:border-r-gray-950 border-t-transparent border-b-transparent border-l-transparent'
+              : '-left-2 border-l-gray-900 dark:border-l-gray-950 border-t-transparent border-b-transparent border-r-transparent'
+          }`}
+        />
+      </motion.div>
+    </div>
+  );
+};
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
   const pathname = usePathname();
+  const [isMobile, setIsMobile] = useState(false);
   const [unreadCounts, setUnreadCounts] = useState({
     chat: 0,
     reports: 0,
@@ -53,22 +73,43 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
   };
   // Role configurations
 
-
-  const currentConfig = roleConfig[role] || roleConfig.admin;
+  const currentConfig = navigationItemConfig[role] || navigationItemConfig.admin;
   const color = currentConfig.color;
 
   const navLinkClass = (href) => {
-    const isActive = pathname === href;
+    // Normalize paths by removing trailing slashes for comparison
+    const normalizedPathname = pathname?.replace(/\/$/, '') || '';
+    const normalizedHref = href.replace(/\/$/, '');
+    const isActive = normalizedPathname === normalizedHref;
     const colorClass = colorMap[color] || colorMap.blue;
 
     return clsx(
-      'relative flex items-center gap-3 pl-3 pr-4 py-3 rounded-lg transition-all border-l-4',
-      !isSidebarOpen && 'justify-center px-0',
+      'relative flex items-center gap-3 py-3 rounded-lg transition-all border-l-4 group',
+      isSidebarOpen ? 'pl-3 pr-4' : 'p-2 justify-center',
       isActive
-        ? `${colorClass.border} ${colorClass.bg} ${colorClass.text} font-semibold ${colorClass.darkBg} ${colorClass.darkText}`
+        ? `${colorClass.border} ${colorClass.bg} ${colorClass.text} font-semibold ${colorClass.darkBg} ${colorClass.darkText} ring-2 ring-offset-1 ring-offset-white dark:ring-offset-gray-900 ${colorClass.border.replace('border-', 'ring-')}`
         : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
     );
   };
+
+  // Detect mobile screen and auto-close sidebar
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768; // md breakpoint
+      setIsMobile(mobile);
+
+      // Auto-close sidebar when switching to mobile
+      if (mobile && isSidebarOpen) {
+        toggleSidebar();
+      }
+    };
+
+    // Set initial value
+    setIsMobile(window.innerWidth < 768);
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isSidebarOpen, toggleSidebar]);
 
   useEffect(() => {
     const fetchUnreadCounts = async () => {
@@ -112,29 +153,33 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
 
   const renderRoute = (route, index) => {
     if (route.type === 'expandable') {
+      const normalizedPathname = pathname?.replace(/\/$/, '') || '';
+      const isActive = normalizedPathname.startsWith('/adm/notifications');
       return (
         <div key={index} className="space-y-1">
-          <button
-            type="button"
-            onClick={() => setIsNotifOpen(!isNotifOpen)}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm transition-all ${
-              pathname?.startsWith('/adm/notifications')
-                ? `${colorMap[color].bg} ${colorMap[color].text} ${colorMap[color].darkBg} ${colorMap[color].darkText}`
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-            } ${!isSidebarOpen ? 'justify-center' : ''}`}
-          >
-            <route.icon className="h-6 w-6" />
-            {isSidebarOpen && (
-              <span className="flex-1 text-left">{route.name}</span>
-            )}
-            {isSidebarOpen && (
-              <HiOutlineChevronRight
-                className={`h-4 w-4 transition-transform duration-300 ${
-                  isNotifOpen ? 'rotate-90' : ''
-                }`}
-              />
-            )}
-          </button>
+          <Tooltip text={route.name} position="right" disabled={isSidebarOpen}>
+            <button
+              type="button"
+              onClick={() => setIsNotifOpen(!isNotifOpen)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm transition-all group ${
+                isActive
+                  ? `${colorMap[color].bg} ${colorMap[color].text} ${colorMap[color].darkBg} ${colorMap[color].darkText} ring-2 ring-offset-1 ring-offset-white dark:ring-offset-gray-900 ${colorMap[color].border.replace('border-', 'ring-')}`
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+              } ${!isSidebarOpen ? 'justify-center px-3' : ''}`}
+            >
+              <route.icon className="h-6 w-6 flex-shrink-0" />
+              {isSidebarOpen && (
+                <span className="flex-1 text-left">{route.name}</span>
+              )}
+              {isSidebarOpen && (
+                <HiOutlineChevronRight
+                  className={`h-4 w-4 transition-transform duration-300 ${
+                    isNotifOpen ? 'rotate-90' : ''
+                  }`}
+                />
+              )}
+            </button>
+          </Tooltip>
 
           {isSidebarOpen && isNotifOpen && (
             <ul className="ml-6 space-y-1 mt-1">
@@ -157,22 +202,24 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
 
     return (
       <li key={index}>
-        <Link href={route.path} className={navLinkClass(route.path)}>
-          <motion.div {...(route.motion || {})} className="relative">
-            <route.icon className="h-6 w-6" />
-            {route.badge && renderBadge(route.badge)}
-          </motion.div>
-          {isSidebarOpen && (
-            <div className="flex items-center gap-2 relative">
-              <span>{route.name}</span>
-              {route.badge && unreadCounts[route.badge] > 0 && (
-                <span className="bg-red-600 text-white text-xs font-semibold rounded-full px-2 py-0.5">
-                  {unreadCounts[route.badge]}
-                </span>
-              )}
-            </div>
-          )}
-        </Link>
+        <Tooltip text={route.name} position="right" disabled={isSidebarOpen}>
+          <Link href={route.path} className={navLinkClass(route.path)}>
+            <motion.div {...(route.motion || {})} className="relative flex-shrink-0">
+              <route.icon className="h-6 w-6" />
+              {route.badge && renderBadge(route.badge)}
+            </motion.div>
+            {isSidebarOpen && (
+              <div className="flex items-center gap-2 relative">
+                <span>{route.name}</span>
+                {route.badge && unreadCounts[route.badge] > 0 && (
+                  <span className="bg-red-600 text-white text-xs font-semibold rounded-full px-2 py-0.5">
+                    {unreadCounts[route.badge]}
+                  </span>
+                )}
+              </div>
+            )}
+          </Link>
+        </Tooltip>
       </li>
     );
   };
@@ -183,41 +230,48 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
         isSidebarOpen ? 'w-64' : 'w-20'
       } flex flex-col duration-300`}
     >
-      {/* Header Sidebar */}
-      <div className="p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
+      {/* Header Sidebar - Logo only */}
+      <div className="p-4 flex items-center justify-center border-b border-gray-200 dark:border-gray-800">
         {isSidebarOpen && (
-          <div className="flex items-center">
-            <div
-              className={`${colorMap[color].bg} ${colorMap[color].darkBg} p-2 rounded-full mr-2`}
-            >
-              <HiOutlineMail
-                className={`h-5 w-5 ${colorMap[color].text} ${colorMap[color].darkText}`}
+          <div className="flex items-center gap-2 w-full">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <Image
+                src="/fixed-logo-app.png"
+                alt="Logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
               />
             </div>
-            <span className="text-lg font-bold text-gray-800 dark:text-gray-200">
+            <span className="text-lg font-bold text-gray-800 dark:text-gray-200 truncate">
               {currentConfig.title}
             </span>
           </div>
         )}
-        <button
-          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 p-2 rounded-full"
-          onClick={toggleSidebar}
-        >
-          {isSidebarOpen ? (
-            <HiOutlineChevronLeft size={20} />
-          ) : (
-            <HiOutlineChevronRight size={20} />
-          )}
-        </button>
+        {/* Logo icon-only when collapsed */}
+        {!isSidebarOpen && (
+          <div className="flex justify-center w-full">
+            <Image
+              src="/fixed-logo-app.png"
+              alt="Logo"
+              width={36}
+              height={36}
+              className="rounded-lg"
+            />
+          </div>
+        )}
       </div>
 
       {/* Navigation Menu */}
       <nav className="mt-4 flex-1 overflow-y-auto px-3">
         <div className="mb-4">
           {isSidebarOpen && (
-            <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Main Menu
-            </h3>
+            // <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            //   Main Menu
+            // </h3>
+            <>
+            </>
           )}
           <ul className="space-y-1 mt-2">
             {currentConfig.routes.map((route, index) =>

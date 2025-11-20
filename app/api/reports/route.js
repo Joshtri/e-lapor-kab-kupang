@@ -116,8 +116,8 @@ export async function POST(req) {
       message: `Laporan baru: "${newReport.title}" telah dibuat.`,
       link:
         u.role === 'ADMIN'
-          ? `/adm/report-warga/${newReport.id}`
-          : `/bupati-portal/laporan-warga/${newReport.id}`,
+          ? `/adm/kelola-pengaduan/${newReport.id}`
+          : `/bupati-portal/kelola-pengaduan/${newReport.id}`,
       createdAt: new Date(),
     }));
 
@@ -136,7 +136,7 @@ export async function POST(req) {
       data: {
         userId,
         message: `Laporan Anda dengan judul "${newReport.title}" telah berhasil dikirim.`,
-        link: '/pelapor/log-laporan',
+        link: '/pelapor/riwayat-pengaduan',
         createdAt: new Date(),
       },
     });
@@ -148,7 +148,7 @@ export async function POST(req) {
 
     const host = req.headers.get('host');
     const protocol = host?.includes('localhost') ? 'http' : 'https';
-    const reportLink = `${protocol}://${host}/bupati-portal/laporan-warga/${newReport.id}`;
+    const reportLink = `${protocol}://${host}/bupati-portal/kelola-pengaduan/${newReport.id}`;
 
     for (const bupati of bupatiEmails) {
       try {

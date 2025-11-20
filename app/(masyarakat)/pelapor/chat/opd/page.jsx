@@ -11,7 +11,7 @@ import {
   HiPlus,
 } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
-import MessageBubble from '@/components/chat/message-bubble';
+import MessageBubble from '@/features/chat/MessageBubble';
 
 export default function ChatOpdPage() {
   const [rooms, setRooms] = useState([]);

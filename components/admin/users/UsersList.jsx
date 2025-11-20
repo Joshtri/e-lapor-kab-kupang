@@ -1,32 +1,72 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import { toast } from 'sonner';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from 'flowbite-react';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 import {
-  HiOutlinePlus,
+  HiExclamationCircle,
+  HiOfficeBuilding,
   HiOutlineEye,
   HiPencilAlt,
   HiTrash,
-  HiOfficeBuilding,
-  HiExclamationCircle,
+  HiExclamation,
 } from 'react-icons/hi';
+import { toast } from 'sonner';
 
-import ListGrid from '@/components/ui/data-view/ListGrid';
-import DataCard from '@/components/ui/data-view/DataCard';
-import GridDataList from '@/components/ui/data-view/GridDataList';
-import ActionsButton from '@/components/ui/ActionsButton';
-import UserCreateModal from '@/components/admin/users/users-create-modal';
 import UserEditModal from '@/components/admin/users/UserEditModal';
+import UserCreateModal from '@/components/admin/users/users-create-modal';
+import ActionsButton from '@/components/ui/ActionsButton';
+import DataCard from '@/components/ui/datatable/_DataCard';
+import GridDataList from '@/components/ui/datatable/GridDataList';
+import ListGrid from '@/components/ui/datatable/ListGrid';
+import ConfirmationDialog from '@/components/common/ConfirmationDialog';
 import { exportToExcel } from '@/utils/export/exportToExcel';
+import {
+  fetchUsers,
+  fetchIncompleteProfiles,
+  deleteUser,
+} from '@/services/userService';
 
 export default function UserList() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [incompleteProfiles, setIncompleteProfiles] = useState([]); // ⚠️
+  const queryClient = useQueryClient();
 
+  // TanStack Query hooks for fetching data
+  const {
+    data: users = [],
+    isLoading: loading,
+    refetch: refetchUsers,
+  } = useQuery({
+    queryKey: ['users'],
+    queryFn: fetchUsers,
+    onError: () => {
+      toast.error('Gagal mengambil data user.');
+    },
+  });
+
+  const { data: incompleteProfiles = [] } = useQuery({
+    queryKey: ['incompleteProfiles'],
+    queryFn: fetchIncompleteProfiles,
+    onError: () => {
+      toast.error('Gagal memuat profil tidak lengkap.');
+    },
+  });
+
+  // Mutation for deleting users
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      toast.success('User dihapus.');
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      setDeleteModalOpen(false);
+      setUserToDelete(null);
+    },
+    onError: () => {
+      toast.error('Gagal menghapus user.');
+    },
+  });
+
+  // Local state for UI
   const [viewMode, setViewMode] = useState('table');
   const [filterRole, setFilterRole] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,34 +77,8 @@ export default function UserList() {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-
-  useEffect(() => {
-    fetchUsers();
-    fetchIncompleteProfiles();
-  }, []);
-
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.get('/api/users');
-      setUsers(data);
-    } catch (err) {
-      err;
-      toast.error('Gagal mengambil data user.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchIncompleteProfiles = async () => {
-    try {
-      const { data } = await axios.get('/api/opd/incompleted-users');
-      // misal data.incompleteUsers memberikan array user.id
-      setIncompleteProfiles(data.incompleteUsers.map((u) => u.id));
-    } catch {
-      ('Gagal load incompleteProfiles');
-    }
-  };
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   const handleExport = () => {
     const rows = filtered.slice().map((u) => ({
@@ -85,16 +99,14 @@ export default function UserList() {
     });
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Hapus user ini?')) return;
-    try {
-      await axios.delete(`/api/users/${id}`);
-      toast.success('User dihapus.');
-      fetchUsers();
-    } catch (err) {
-      err;
-      toast.error('Gagal menghapus user.');
-    }
+  const handleDeleteClick = (user) => {
+    setUserToDelete(user);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!userToDelete) return;
+    deleteUserMutation.mutate(userToDelete.id);
   };
 
   // filters & search
@@ -171,7 +183,7 @@ export default function UserList() {
         icon={HiTrash}
         tooltip="Hapus"
         color="red"
-        onClick={() => handleDelete(u.id)}
+        onClick={() => handleDeleteClick(u)}
       />
     ),
   ];
@@ -195,14 +207,7 @@ export default function UserList() {
         }}
         onExportExcel={handleExport}
         showRefreshButton
-        onRefreshClick={fetchUsers}
-        breadcrumbsProps={{
-          home: { label: 'Beranda', href: '/adm/dashboard' },
-          customRoutes: {
-            adm: { label: 'Dashboard Admin', href: '/adm/dashboard' },
-          },
-        }}
-        // filter & view controls
+        onRefreshClick={refetchUsers}
         viewMode={viewMode}
         setViewMode={setViewMode}
         filtersComponent={
@@ -243,20 +248,6 @@ export default function UserList() {
         data={paginated}
         columns={columns}
         actionButtons={actionButtons}
-        gridComponent={
-          <GridDataList
-            data={paginated}
-            renderItem={(u) => (
-              <DataCard
-                avatar={u.name}
-                title={u.name}
-                subtitle={u.role}
-                meta={u.email}
-                badges={u.opd ? [{ label: u.opd.name, color: 'blue' }] : []}
-              />
-            )}
-          />
-        }
         loading={loading}
         emptyMessage="Tidak ada user ditemukan."
         emptyAction={
@@ -285,7 +276,7 @@ export default function UserList() {
         setOpen={setOpenCreate}
         onSuccess={() => {
           setOpenCreate(false);
-          fetchUsers();
+          refetchUsers();
         }}
       />
 
@@ -296,10 +287,29 @@ export default function UserList() {
           user={selectedUser}
           onSuccess={() => {
             setOpenEdit(false);
-            fetchUsers();
+            refetchUsers();
           }}
         />
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={deleteModalOpen}
+        title="Hapus User?"
+        message={
+          <>
+            Apakah Anda yakin ingin menghapus user{' '}
+            <span className="font-bold">{userToDelete?.name}</span>?
+          </>
+        }
+        confirmText="Ya, Hapus User"
+        cancelText="Batal"
+        confirmColor="red"
+        isLoading={deleteUserMutation.isPending}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteModalOpen(false)}
+        icon={HiExclamation}
+      />
     </motion.div>
   );
 }

@@ -35,7 +35,7 @@ export async function PATCH(req, { params }) {
       data: {
         userId: updatedReport.user.id,
         message: `Laporan "${updatedReport.title}" Anda telah ditindaklanjuti oleh OPD. Status diperbarui menjadi "${opdStatus}".`,
-        link: '/pelapor/log-laporan',
+        link: '/pelapor/riwayat-pengaduan',
         createdAt: new Date(),
       },
     });

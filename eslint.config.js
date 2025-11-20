@@ -33,6 +33,23 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+
+      'no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      // '@javascript-eslint/no-unused-vars': [
+      //   'warn',
+      //   {
+      //     argsIgnorePattern: '^_',
+      //     varsIgnorePattern: '^_',
+      //     caughtErrorsIgnorePattern: '^_',
+      //   },
+      // ],
     },
   },
 ];

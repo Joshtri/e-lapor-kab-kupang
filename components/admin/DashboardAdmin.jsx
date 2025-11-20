@@ -1,54 +1,61 @@
 'use client';
 
-import DashboardChart from '@/components/admin/dashboard/dashboard-chart'; // ✅ Grafik
-import DashboardReports from '@/components/admin/dashboard/dashboard-latest-reports'; // ✅ Laporan
-import DashboardStats from '@/components/admin/dashboard/dashboard-stats'; // ✅ Statistik
-import NotificationPanel from '@/components/DashboardNotificationPanel'; // ✅
-import TabsComponent from '@/components/ui/tabs-group'; // ✅ Import Tabs
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { HiOutlineMail } from 'react-icons/hi';
+import DashboardChart from '@/components/admin/dashboard/dashboard-chart';
+import DashboardReports from '@/components/admin/dashboard/dashboard-latest-reports';
+import DashboardStats from '@/components/admin/dashboard/dashboard-stats';
+import NotificationPanel from '@/components/DashboardNotificationPanel';
+import TabsComponent from '@/components/ui/TabsGroup';
 import DashboardKinerjaOpd from './dashboard/DashboardKinerjaOpd';
+import { useQuery } from '@tanstack/react-query';
+3;
+import { motion } from 'framer-motion';
+import { HiOutlineMail } from 'react-icons/hi';
+import { toast } from 'sonner';
+import {
+  fetchDashboardStats,
+  fetchChartData,
+  fetchCategoryStats,
+  fetchRecentReports,
+} from '@/services/dashboardService';
+import LoadingScreen from '@/components/ui/loading/LoadingScreen';
 
 const AdminDashboard = ({ titleHeader }) => {
-  const [stats, setStats] = useState(null);
-  const [chartData, setChartData] = useState([]);
-  const [recentReports, setRecentReports] = useState([]);
-  const [categoryStats, setCategoryStats] = useState([]);
-  const [loadingStats, setLoadingStats] = useState(true);
-  const [loadingChart, setLoadingChart] = useState(true);
-  const [loadingReports, setLoadingReports] = useState(true);
+  // Fetch dashboard stats
+  const { data: stats, isLoading: loadingStats } = useQuery({
+    queryKey: ['dashboardStats'],
+    queryFn: fetchDashboardStats,
+    onError: () => {
+      toast.error('Gagal mengambil data statistik dashboard.');
+    },
+  });
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  // Fetch chart data
+  const { data: chartData = [], isLoading: loadingChart } = useQuery({
+    queryKey: ['chartData'],
+    queryFn: fetchChartData,
+    onError: () => {
+      toast.error('Gagal mengambil data grafik.');
+    },
+  });
 
-  const fetchDashboardData = async () => {
-    try {
-      setLoadingStats(true);
-      setLoadingChart(true);
-      setLoadingReports(true);
+  // Fetch category stats
+  const { data: categoryStats = [], isLoading: _loadingCategoryStats } =
+    useQuery({
+      queryKey: ['categoryStats'],
+      queryFn: fetchCategoryStats,
+      onError: () => {
+        toast.error('Gagal mengambil data kategori.');
+      },
+    });
 
-      const [statsRes, chartRes, categoryRes, reportsRes] = await Promise.all([
-        axios.get('/api/reports/stats/admin-summary'),
-        axios.get('/api/reports/stats/chart'),
-        axios.get('/api/reports/stats/category'),
-        axios.get('/api/reports/stats/recent-reports'),
-      ]);
-
-      setStats(statsRes.data.stats);
-      setChartData(chartRes.data.chartData);
-      setCategoryStats(categoryRes.data.categoryStats);
-      setRecentReports(reportsRes.data.recentReports);
-    } catch (error) {
-      'Gagal mengambil data dashboard:', error;
-    } finally {
-      setLoadingStats(false);
-      setLoadingChart(false);
-      setLoadingReports(false);
-    }
-  };
+  // Fetch recent reports
+  const { data: recentReports = [], isLoading: loadingReports } = useQuery({
+    queryKey: ['recentReports'],
+    queryFn: fetchRecentReports,
+    onError: () => {
+      toast.error('Gagal mengambil data laporan terbaru.');
+    },
+  });
 
   return (
     <div className="p-6">
@@ -76,6 +83,7 @@ const AdminDashboard = ({ titleHeader }) => {
         </div>
       </div>{' '}
       <NotificationPanel />
+      <LoadingScreen isLoading={loadingChart || loadingReports} />
       <TabsComponent
         tabs={[
           {
@@ -109,3 +117,5 @@ const AdminDashboard = ({ titleHeader }) => {
 };
 
 export default AdminDashboard;
+
+

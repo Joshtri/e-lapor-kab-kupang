@@ -50,7 +50,7 @@ export async function PATCH(req, { params }) {
 
     const notifData = {
       userId: updatedReport.user.id,
-      link: '/pelapor/log-laporan',
+      link: '/pelapor/riwayat-pengaduan',
       createdAt: new Date(),
     };
 
