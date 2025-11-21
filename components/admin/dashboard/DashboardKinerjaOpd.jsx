@@ -25,6 +25,8 @@ const DashboardKinerjaOpd = () => {
   const [categories, setCategories] = useState([]);
   const [monthlyTrend, setMonthlyTrend] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchCategories, setSearchCategories] = useState('');
+  const [searchKinerja, setSearchKinerja] = useState('');
 
   // Modal states
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -436,8 +438,45 @@ const DashboardKinerjaOpd = () => {
           <HiOutlineFolder className="mr-2 h-5 w-5 text-purple-500" />
           Kategori Terbanyak per OPD
         </h2>
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Cari nama OPD atau kategori..."
+            value={searchCategories}
+            onChange={(e) => setSearchCategories(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+          />
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Menampilkan{' '}
+            <span className="font-semibold">
+              {categories.filter(
+                (item) =>
+                  item.name
+                    .toLowerCase()
+                    .includes(searchCategories.toLowerCase()) ||
+                  item.topCategory
+                    .toLowerCase()
+                    .includes(searchCategories.toLowerCase()),
+              ).length}
+            </span>{' '}
+            dari <span className="font-semibold">{categories.length}</span> item
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map((item) => (
+          {categories
+            .filter(
+              (item) =>
+                item.name
+                  .toLowerCase()
+                  .includes(searchCategories.toLowerCase()) ||
+                item.topCategory
+                  .toLowerCase()
+                  .includes(searchCategories.toLowerCase()),
+            )
+            .map((item) => (
             <div
               key={item.opdId}
               onClick={() => handleViewCategoryPengaduan(item)}
@@ -477,6 +516,27 @@ const DashboardKinerjaOpd = () => {
           <HiOutlineOfficeBuilding className="mr-2 h-5 w-5 text-blue-500" />
           Detail Kinerja Tiap OPD
         </h2>
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Cari nama OPD..."
+            value={searchKinerja}
+            onChange={(e) => setSearchKinerja(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+          />
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Menampilkan{' '}
+            <span className="font-semibold">
+              {list.filter((item) =>
+                item.name.toLowerCase().includes(searchKinerja.toLowerCase()),
+              ).length}
+            </span>{' '}
+            dari <span className="font-semibold">{list.length}</span> OPD
+          </p>
+        </div>
+
         <div className="overflow-auto border rounded-lg">
           <table className="min-w-full text-sm">
             <thead className="bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
@@ -493,11 +553,15 @@ const DashboardKinerjaOpd = () => {
               </tr>
             </thead>
             <tbody>
-              {list.map((item, index) => (
-                <tr
-                  key={item.opdId}
-                  className={`border-t hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors ${index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-800/50' : ''}`}
-                >
+              {list
+                .filter((item) =>
+                  item.name.toLowerCase().includes(searchKinerja.toLowerCase()),
+                )
+                .map((item, index) => (
+                  <tr
+                    key={item.opdId}
+                    className={`border-t hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors ${index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-800/50' : ''}`}
+                  >
                   <td className="p-3 font-medium">{item.name}</td>
                   <td className="p-3 text-center">{item.totalReports}</td>
                   <td className="p-3 text-center text-green-600 dark:text-green-400 font-medium">
