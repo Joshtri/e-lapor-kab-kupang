@@ -30,7 +30,7 @@ import {
 } from '@/utils/reportCategories';
 import { getPriorityColor } from '@/utils/common';
 import StepIndicator from '../ui/StepIndicator';
-import ReactSelect from 'react-select';
+import SearchableSelect from '@/components/ui/inputs/SearchableSelect';
 
 const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -328,84 +328,55 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                   </div>
                   {/* Kategori */}
                   <div className="space-y-2">
-                    <Label
-                      htmlFor="category"
-                      className="flex items-center text-gray-700 dark:text-gray-300"
-                    >
-                      <HiTag className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      Kategori Laporan{' '}
-                      <span className="text-red-500 ml-1">*</span>
-                    </Label>
-
-                    <ReactSelect
-                      inputId="category"
+                    <SearchableSelect
+                      id="category"
+                      label={
+                        <Label className="flex items-center text-gray-700 dark:text-gray-300">
+                          <HiTag className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          Kategori Laporan{' '}
+                          <span className="text-red-500 ml-1">*</span>
+                        </Label>
+                      }
                       options={getMainCategories()}
-                      value={getMainCategories().find(
-                        (cat) => cat.value === formData.category,
-                      )}
-                      onChange={(selected) => {
+                      value={formData.category}
+                      onChange={(value) => {
                         handleChange({
                           target: {
                             name: 'category',
-                            value: selected?.value || '',
+                            value: value || '',
                           },
                         });
-                        setSelectedCategory(selected?.value || '');
+                        setSelectedCategory(value || '');
                         setSubcategory('');
                       }}
                       placeholder="Pilih Kategori"
-                      isClearable
-                      className="text-sm"
-                      menuPortalTarget={document.body}
-                      styles={{
-                        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                      }}
+                      error={errors.category}
+                      clearable
                     />
-
-                    {errors.category && (
-                      <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
-                        <HiOutlineExclamationCircle className="mr-1 h-4 w-4" />
-                        {errors.category}
-                      </div>
-                    )}
                   </div>
 
                   {/* Subkategori */}
                   {selectedCategory && (
                     <div className="space-y-2">
-                      <Label
-                        htmlFor="subcategory"
-                        className="text-gray-700 dark:text-gray-300"
-                      >
-                        Subkategori <span className="text-red-500 ml-1">*</span>
-                      </Label>
-
-                      <ReactSelect
-                        inputId="subcategory"
+                      <SearchableSelect
+                        id="subcategory"
+                        label={
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Subkategori <span className="text-red-500 ml-1">*</span>
+                          </Label>
+                        }
                         options={getSubcategoriesByText(selectedCategory)}
-                        value={getSubcategoriesByText(selectedCategory).find(
-                          (sub) => sub.value === subcategory,
-                        )}
-                        onChange={(selected) => {
-                          setSubcategory(selected?.value || '');
+                        value={subcategory}
+                        onChange={(value) => {
+                          setSubcategory(value || '');
                           if (errors.subcategory) {
                             setErrors((prev) => ({ ...prev, subcategory: '' }));
                           }
                         }}
                         placeholder="Pilih Subkategori"
-                        isClearable
-                        className="text-sm"
-                        menuPortalTarget={document.body}
-                        styles={{
-                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                        }}
+                        error={errors.subcategory}
+                        clearable
                       />
-
-                      {errors.subcategory && (
-                        <div className="text-sm text-red-600 dark:text-red-400 mt-1">
-                          {errors.subcategory}
-                        </div>
-                      )}
                     </div>
                   )}
 
@@ -459,62 +430,38 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                   </div>
 
                   {/* OPD Tujuan */}
-                  {/* OPD Tujuan */}
-                  <div className="space-y-1">
-                    <Label
-                      htmlFor="opdId"
-                      className="flex items-center text-gray-700 dark:text-gray-300"
-                    >
-                      <HiOfficeBuilding className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      OPD Tujuan <span className="text-red-500 ml-1">*</span>
-                    </Label>
-
-                    <div className="flex flex-col">
-                      <div className="w-full">
-                        <ReactSelect
-                          id="opdId"
-                          name="opdId"
-                          className="text-sm"
-                          placeholder="Pilih OPD"
-                          isDisabled={loadingOpds}
-                          options={opds.map((opd) => ({
-                            label: opd.name,
-                            value: opd.id.toString(),
-                          }))}
-                          value={opds
-                            .map((opd) => ({
-                              label: opd.name,
-                              value: opd.id.toString(),
-                            }))
-                            .find((o) => o.value === formData.opdId)}
-                          onChange={(selected) =>
-                            handleChange({
-                              target: {
-                                name: 'opdId',
-                                value: selected?.value || '',
-                              },
-                            })
-                          }
-                          isClearable
-                          menuPortalTarget={document.body}
-                          styles={{
-                            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                          }}
-                        />
-                      </div>
-
-                      {errors.opdId ? (
-                        <div className="flex items-center mt-1 text-sm text-red-600 dark:text-red-400">
-                          <HiOutlineExclamationCircle className="mr-1 h-4 w-4" />
-                          {errors.opdId}
-                        </div>
-                      ) : (
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Pilih instansi yang sesuai dengan laporan Anda
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                  <SearchableSelect
+                    id="opdId"
+                    label={
+                      <Label className="flex items-center text-gray-700 dark:text-gray-300">
+                        <HiOfficeBuilding className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+                        OPD Tujuan <span className="text-red-500 ml-1">*</span>
+                      </Label>
+                    }
+                    options={opds.map((opd) => ({
+                      label: opd.name,
+                      value: opd.id.toString(),
+                    }))}
+                    value={formData.opdId}
+                    onChange={(value) =>
+                      handleChange({
+                        target: {
+                          name: 'opdId',
+                          value: value || '',
+                        },
+                      })
+                    }
+                    placeholder="Pilih OPD"
+                    error={errors.opdId}
+                    disabled={loadingOpds}
+                    isLoading={loadingOpds}
+                    clearable
+                  />
+                  {!errors.opdId && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Pilih instansi yang sesuai dengan laporan Anda
+                    </p>
+                  )}
                 </form>
               </div>
             </motion.div>
