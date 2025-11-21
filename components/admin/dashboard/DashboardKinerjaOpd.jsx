@@ -27,6 +27,7 @@ const DashboardKinerjaOpd = () => {
   const [loading, setLoading] = useState(true);
   const [searchCategories, setSearchCategories] = useState('');
   const [searchKinerja, setSearchKinerja] = useState('');
+  const [searchOverdue, setSearchOverdue] = useState('');
 
   // Modal states
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -387,8 +388,33 @@ const DashboardKinerjaOpd = () => {
 
         <h2 className="text-lg font-semibold mb-4 flex items-center">
           <HiOutlineExclamation className="mr-2 h-5 w-5 text-orange-500" />
-          Laporan Belum Ditangani &gt; 7 Hari
+          Pengaduan Belum Ditangani &gt; 7 Hari
         </h2>
+
+        {/* Search Bar */}
+        {overdue.length > 0 && (
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Cari nama OPD..."
+              value={searchOverdue}
+              onChange={(e) => setSearchOverdue(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Menampilkan{' '}
+              <span className="font-semibold">
+                {overdue.filter((item) =>
+                  item.name
+                    .toLowerCase()
+                    .includes(searchOverdue.toLowerCase()),
+                ).length}
+              </span>{' '}
+              dari <span className="font-semibold">{overdue.length}</span> OPD
+            </p>
+          </div>
+        )}
+
         {overdue.length === 0 ? (
           <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-800/30 text-center">
             <HiOutlineCheckCircle className="h-10 w-10 mx-auto mb-2 text-green-500" />
@@ -398,7 +424,13 @@ const DashboardKinerjaOpd = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {overdue.map((opd) => (
+            {overdue
+              .filter((item) =>
+                item.name
+                  .toLowerCase()
+                  .includes(searchOverdue.toLowerCase()),
+              )
+              .map((opd) => (
               <div
                 key={opd.opdId}
                 onClick={() => handleViewOverduePengaduan(opd)}
@@ -420,6 +452,15 @@ const DashboardKinerjaOpd = () => {
                 </div>
               </div>
             ))}
+            {overdue.filter((item) =>
+              item.name.toLowerCase().includes(searchOverdue.toLowerCase()),
+            ).length === 0 && (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-500 dark:text-gray-400">
+                  Tidak ada pengaduan yang sesuai dengan pencarian
+                </p>
+              </div>
+            )}
           </div>
         )}
       </motion.section>
