@@ -1,8 +1,8 @@
-import ReportList from '@/components/opd/Report/ReportList'
+import PengaduanListOPD from '@/features/pengaduan/opd/list'
 import React from 'react'
 
 export default function page() {
   return (
-    <ReportList />
+    <PengaduanListOPD />
   )
 }
