@@ -79,6 +79,32 @@ const DashboardKinerjaOpd = () => {
     }
   };
 
+  // Helper function untuk hitung detail selisih waktu
+  const getDetailedOverdueTime = (createdDate) => {
+    const now = new Date();
+    const created = new Date(createdDate);
+    let diff = now - created;
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= days * (1000 * 60 * 60 * 24);
+
+    const months = Math.floor(days / 30);
+    const remainingDays = days % 30;
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+
+    const minutes = Math.floor(diff / (1000 * 60));
+
+    const parts = [];
+    if (months > 0) parts.push(`${months} bulan`);
+    if (remainingDays > 0) parts.push(`${remainingDays} hari`);
+    if (hours > 0) parts.push(`${hours} jam`);
+    if (minutes > 0) parts.push(`${minutes} menit`);
+
+    return parts.join(', ') || '0 menit';
+  };
+
   const handleExportPDF = () => {
     const doc = new jsPDF();
 
@@ -656,7 +682,7 @@ const DashboardKinerjaOpd = () => {
                             {new Date(report.createdAt).toLocaleString('id-ID')}
                           </p>
                           <p className="text-xs text-orange-600 dark:text-orange-400 font-semibold mt-1">
-                            ⚠️ Terlambat lebih dari 7 hari
+                            ⚠️ Terlambat: {getDetailedOverdueTime(report.createdAt)}
                           </p>
                         </div>
                         <span className="text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded ml-2">
