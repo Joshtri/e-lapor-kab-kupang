@@ -2,9 +2,9 @@
 
 import { Button, Label, Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import ReactSelect from 'react-select';
 import { toast } from 'sonner';
 import propTypes from 'prop-types';
+import SearchableSelect from '@/components/ui/inputs/SearchableSelect';
 
 const ChangeOpdModal = ({
   show,
@@ -94,23 +94,17 @@ const ChangeOpdModal = ({
           )}
 
           <div>
-            <Label htmlFor="opd">Pilih OPD Baru</Label>
-            <ReactSelect
-              inputId="opd"
-              className="text-sm"
-              value={opds.find((opd) => opd.id === Number(selectedOpdId))}
-              onChange={(selected) =>
-                setSelectedOpdId(selected?.id?.toString() || '')
-              }
-              options={opds}
-              getOptionLabel={(opd) => opd.name}
-              getOptionValue={(opd) => opd.id.toString()}
+            <SearchableSelect
+              id="opd"
+              label={<Label htmlFor="opd">Pilih OPD Baru</Label>}
+              options={opds.map((opd) => ({
+                label: opd.name,
+                value: opd.id.toString(),
+              }))}
+              value={selectedOpdId}
+              onChange={(value) => setSelectedOpdId(value)}
               placeholder="-- Pilih OPD --"
-              isClearable
-              menuPortalTarget={document.body} // ⬅️ penting
-              styles={{
-                menuPortal: (base) => ({ ...base, zIndex: 9999 }), // ⬅️ penting
-              }}
+              clearable
             />
           </div>
 
