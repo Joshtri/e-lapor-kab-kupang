@@ -1,8 +1,5 @@
-import OPDCreateForm from '@/components/admin/opd/OpdCreate'
-import React from 'react'
+import OPDCreateForm from '@/features/kelola-organisasi-perangkat-daerah/create';
 
 export default function OpdCreatePage() {
-  return (
-     <OPDCreateForm/>
-  )
+  return <OPDCreateForm />;
 }
