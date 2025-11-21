@@ -1,6 +1,6 @@
 'use client';
 
-import ReportModal from '@/components/pelapor/CreateReportModal';
+// import ReportModal from '@/components/pelapor/CreateReportModal';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -82,12 +82,12 @@ const DashboardPelaporMobile = ({ user }) => {
       </div>
 
       {/* Report Modal */}
-      <ReportModal
+      {/* <ReportModal
         openModal={openModal}
         setOpenModal={setOpenModal}
         user={user}
         onSuccess={handleRefetch}
-      />
+      /> */}
     </div>
   );
 };
