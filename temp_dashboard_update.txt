@@ -1,0 +1,26 @@
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {overdue.map((opd) => (
+              <div
+                key={opd.opdId}
+                onClick={() => handleViewOverduePengaduan(opd)}
+                className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-100 dark:border-orange-800/30 flex items-center cursor-pointer hover:shadow-md hover:border-orange-300 dark:hover:border-orange-600 transition-all"
+              >
+                <div className="w-10 h-10 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                  <HiOutlineClock className="h-5 w-5 text-orange-500" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-800 dark:text-gray-200">
+                    {opd.name}
+                  </div>
+                  <div className="text-orange-600 dark:text-orange-400 font-bold">
+                    {opd.overdueReports} pengaduan terlambat
+                  </div>
+                </div>
+                <div className="text-xs bg-orange-200 dark:bg-orange-800 px-2 py-1 rounded text-orange-800 dark:text-orange-200 font-semibold">
+                  Lihat
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
