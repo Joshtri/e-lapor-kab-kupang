@@ -4,13 +4,13 @@ import { Button } from 'flowbite-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
-import Select from 'react-select';
+import SearchableSelect from '@/components/ui/inputs/SearchableSelect';
 
 export default function InlineOPDSelector({ report, onUpdated }) {
   const [editing, setEditing] = useState(false);
   const [opds, setOpds] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(
-    report.opd ? { value: report.opd.id, label: report.opd.name } : null,
+  const [selectedOpdId, setSelectedOpdId] = useState(
+    report.opd ? report.opd.id.toString() : '',
   );
   const [saving, setSaving] = useState(false);
 
@@ -28,13 +28,13 @@ export default function InlineOPDSelector({ report, onUpdated }) {
   };
 
   const save = async () => {
-    if (!selectedOption) return toast.error('Pilih OPD terlebih dahulu');
+    if (!selectedOpdId) return toast.error('Pilih OPD terlebih dahulu');
     setSaving(true);
 
     try {
       await axios.patch('/api/reports/admin/update-opd', {
         reportId: report.id,
-        opdId: selectedOption.value,
+        opdId: Number(selectedOpdId),
       });
       toast.success('OPD berhasil diperbarui');
       onUpdated();
@@ -47,56 +47,22 @@ export default function InlineOPDSelector({ report, onUpdated }) {
     }
   };
 
-  const customStyles = {
-    control: (base) => ({
-      ...base,
-      minHeight: '32px',
-      height: '32px',
-      minWidth: '200px',
-      fontSize: '0.875rem',
-    }),
-    valueContainer: (base) => ({
-      ...base,
-      padding: '0 6px',
-    }),
-    input: (base) => ({
-      ...base,
-      margin: '0',
-      padding: '0',
-    }),
-    indicatorsContainer: (base) => ({
-      ...base,
-      height: '32px',
-    }),
-    dropdownIndicator: (base) => ({
-      ...base,
-      padding: '4px',
-    }),
-    clearIndicator: (base) => ({
-      ...base,
-      padding: '4px',
-    }),
-    option: (base) => ({
-      ...base,
-      fontSize: '0.875rem',
-      padding: '8px 12px',
-    }),
-  };
-
   return editing ? (
     <div className="flex items-center space-x-2">
-      <Select
-        value={selectedOption}
-        onChange={setSelectedOption}
-        options={opds.map((opd) => ({ value: opd.id, label: opd.name }))}
-        isDisabled={saving}
-        isSearchable={true}
-        placeholder="Pilih OPD..."
-        noOptionsMessage={() => 'Tidak ada OPD yang sesuai'}
-        styles={customStyles}
-        className="text-sm"
-        classNamePrefix="react-select"
-      />
+      <div className="min-w-[200px]">
+        <SearchableSelect
+          id="opd-selector"
+          options={opds.map((opd) => ({
+            label: opd.name,
+            value: opd.id.toString(),
+          }))}
+          value={selectedOpdId}
+          onChange={setSelectedOpdId}
+          placeholder="Pilih OPD..."
+          disabled={saving}
+          clearable
+        />
+      </div>
       <Button size="xs" color="success" onClick={save} disabled={saving}>
         ✓
       </Button>
