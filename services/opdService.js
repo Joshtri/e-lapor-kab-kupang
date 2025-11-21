@@ -58,3 +58,22 @@ export const fetchOpdStats = async () => {
   const { data } = await axios.get('/api/opd/stats');
   return data;
 };
+
+/**
+ * Fetch available users for OPD (users with role OPD that don't have an OPD yet)
+ */
+export const fetchAvailableOpdUsers = async () => {
+  const { data } = await axios.get('/api/opd/available-staff');
+  return data;
+};
+
+/**
+ * Create new OPD with staff assignment
+ */
+export const createOpdWithStaff = async (opdData) => {
+  const { data } = await axios.post('/api/opd/create', {
+    ...opdData,
+    staffUserId: parseInt(opdData.staffUserId),
+  });
+  return data;
+};
