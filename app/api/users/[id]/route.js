@@ -22,33 +22,41 @@ export async function GET(req, { params }) {
     });
 
     if (!user) {
-      return new Response(JSON.stringify({ error: 'User not found' }), {
-        status: 404,
-      });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Ambil laporan jika pelapor
+    // Ambil laporan jika pelapor (exclude image blob untuk performa)
     let reports = [];
     if (user.role === 'PELAPOR') {
       reports = await prisma.report.findMany({
         where: { userId: user.id },
-        include: { opd: true },
+        select: {
+          id: true,
+          title: true,
+          category: true,
+          priority: true,
+          bupatiStatus: true,
+          opdStatus: true,
+          createdAt: true,
+          opd: { select: { id: true, name: true } },
+        },
         orderBy: { createdAt: 'desc' },
       });
     }
 
-    // ⬅️ Tambahkan masking langsung ke dalam user
+    // Tambahkan masking ke dalam user
     const userWithMaskedNik = {
       ...user,
       nikMasked: getMaskedNik(user.nikNumber),
     };
 
-    return NextResponse.json({ user: userWithMaskedNik, reports });
+    return NextResponse.json({ user: userWithMaskedNik, reports }, { status: 200 });
   } catch (error) {
-    '❌ Error fetching user detail:', error;
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-      status: 500,
-    });
+    console.error('❌ Error fetching user detail:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    );
   }
 }
 
