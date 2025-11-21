@@ -415,19 +415,23 @@ const DashboardKinerjaOpd = () => {
           {categories.map((item) => (
             <div
               key={item.opdId}
-              className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-100 dark:border-purple-800/30 flex items-center"
+              onClick={() => handleViewCategoryPengaduan(item)}
+              className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-100 dark:border-purple-800/30 flex items-center cursor-pointer hover:shadow-md hover:border-purple-300 dark:hover:border-purple-600 transition-all"
             >
               <div className="w-10 h-10 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center mr-3 shadow-sm">
                 <HiOutlineFolder className="h-5 w-5 text-purple-500" />
               </div>
-              <div>
+              <div className="flex-1">
                 <div className="font-medium text-gray-800 dark:text-gray-200">
                   {item.name}
                 </div>
                 <div className="text-purple-600 dark:text-purple-400">
                   <span className="font-bold">{item.topCategory}</span> (
-                  {item.count} laporan)
+                  {item.count} pengaduan)
                 </div>
+              </div>
+              <div className="text-xs bg-purple-200 dark:bg-purple-800 px-2 py-1 rounded text-purple-800 dark:text-purple-200 font-semibold">
+                Lihat
               </div>
             </div>
           ))}
@@ -548,6 +552,127 @@ const DashboardKinerjaOpd = () => {
           ))}
         </div>
       </motion.section>
+
+      {/* Modal Kategori Pengaduan */}
+      {showCategoryModal && selectedOpdForCategory && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-96 overflow-hidden flex flex-col">
+            <div className="bg-purple-500 px-6 py-4 flex justify-between items-center">
+              <h3 className="text-white font-semibold">
+                Pengaduan "{selectedOpdForCategory.topCategory}" -{' '}
+                {selectedOpdForCategory.name}
+              </h3>
+              <button
+                onClick={() => setShowCategoryModal(false)}
+                className="text-white hover:bg-purple-600 p-1 rounded"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="overflow-y-auto flex-1 px-6 py-4">
+              {loadingReports ? (
+                <div className="text-center py-8">
+                  <div className="inline-block animate-spin">⌛</div>
+                  <p className="text-gray-600 dark:text-gray-400 mt-2">
+                    Memuat...
+                  </p>
+                </div>
+              ) : categoryReports.length > 0 ? (
+                <div className="space-y-3">
+                  {categoryReports.map((report) => (
+                    <div
+                      key={report.id}
+                      className="p-3 bg-gray-50 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-800 dark:text-gray-200">
+                            {report.title}
+                          </h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            Pelapor: {report.user?.name || 'N/A'}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                            {new Date(report.createdAt).toLocaleDateString(
+                              'id-ID',
+                            )}
+                          </p>
+                        </div>
+                        <span className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-2 py-1 rounded ml-2">
+                          {report.bupatiStatus}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-gray-500 dark:text-gray-400 py-8">
+                  Tidak ada pengaduan
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Overdue Pengaduan */}
+      {showOverdueModal && selectedOpdForOverdue && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-96 overflow-hidden flex flex-col">
+            <div className="bg-orange-500 px-6 py-4 flex justify-between items-center">
+              <h3 className="text-white font-semibold">
+                Pengaduan Terlambat - {selectedOpdForOverdue.name}
+              </h3>
+              <button
+                onClick={() => setShowOverdueModal(false)}
+                className="text-white hover:bg-orange-600 p-1 rounded"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="overflow-y-auto flex-1 px-6 py-4">
+              {loadingReports ? (
+                <div className="text-center py-8">
+                  <div className="inline-block animate-spin">⌛</div>
+                  <p className="text-gray-600 dark:text-gray-400 mt-2">
+                    Memuat...
+                  </p>
+                </div>
+              ) : overdueReports.length > 0 ? (
+                <div className="space-y-3">
+                  {overdueReports.map((report) => (
+                    <div
+                      key={report.id}
+                      className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded border border-orange-200 dark:border-orange-800"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-800 dark:text-gray-200">
+                            {report.title}
+                          </h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            Pelapor: {report.user?.name || 'N/A'}
+                          </p>
+                          <p className="text-xs text-orange-600 dark:text-orange-400 font-semibold mt-1">
+                            ⚠️ Terlambat lebih dari 7 hari
+                          </p>
+                        </div>
+                        <span className="text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded ml-2">
+                          {report.bupatiStatus}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-gray-500 dark:text-gray-400 py-8">
+                  Tidak ada pengaduan terlambat
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 };
