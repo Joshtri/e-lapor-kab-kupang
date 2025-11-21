@@ -1,6 +1,6 @@
-import ReportView from '@/components/bupati/report/ReportDetail';
+import PengaduanDetailAdmin from '@/features/pengaduan/admin/detail';
 import React from 'react';
 
 export default function KelolaPengaduanDetailView() {
-  return <ReportView />;
+  return <PengaduanDetailAdmin />;
 }
