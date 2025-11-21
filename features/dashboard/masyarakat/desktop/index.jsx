@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Statistics from '../Statistics';
+import Statistics from '../StatisticsPelapor';
 import { Button, Card } from 'flowbite-react';
 import { HiOutlineMail, HiPaperAirplane, HiOutlineHome } from 'react-icons/hi';
 import { FaWhatsapp } from 'react-icons/fa';
