@@ -2,11 +2,25 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
 /**
- * Fetch all reports
+ * Fetch all reports (with pagination support)
+ * @param {number} page - Page number (default: 1)
+ * @param {number} limit - Items per page (default: 10)
  */
-export const fetchReports = async () => {
-  const { data } = await axios.get('/api/reports');
-  return data;
+export const fetchReports = async (page = 1, limit = 10) => {
+  const response = await axios.get('/api/reports', {
+    params: { page, limit },
+  });
+
+  // API returns { data: [...], pagination: {} }
+  // Extract just the reports array
+  const reportsArray = response.data?.data || [];
+
+  if (!Array.isArray(reportsArray)) {
+    console.warn('⚠️ fetchReports returned non-array:', reportsArray);
+    return [];
+  }
+
+  return reportsArray;
 };
 
 /**
@@ -18,10 +32,14 @@ export const fetchReportDetail = async (id) => {
 };
 
 /**
- * Create a new report
+ * Create a new report (with FormData support for file upload)
  */
 export const createReport = async (reportData) => {
-  const { data } = await axios.post('/api/reports', reportData);
+  const { data } = await axios.post('/api/reports', reportData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return data;
 };
 
@@ -57,17 +75,39 @@ export const fetchJournalReports = async (startDate, endDate) => {
  * Fetch OPD list for filtering
  */
 export const fetchOpdList = async () => {
-  const { data } = await axios.get('/api/opd');
+  const { data } = await axios.get('/api/opd/list');
   return data;
 };
 
 /**
- * Fetch user reports for log laporan page
- * @param {string} userId - The user ID
+ * Fetch all PELAPOR users for selection
  */
-export const fetchUserReports = async (userId) => {
-  const { data } = await axios.get(`/api/reports?userId=${userId}`);
-  return data;
+export const fetchPelaporUsers = async () => {
+  const { data } = await axios.get('/api/users');
+  return data.filter((u) => u.role === 'PELAPOR');
+};
+
+/**
+ * Fetch user reports for log laporan page (with pagination support)
+ * @param {string} userId - The user ID
+ * @param {number} page - Page number (default: 1)
+ * @param {number} limit - Items per page (default: 10)
+ */
+export const fetchUserReports = async (userId, page = 1, limit = 10) => {
+  const response = await axios.get(`/api/reports`, {
+    params: { userId, page, limit },
+  });
+
+  // API returns { data: [...], pagination: {} }
+  // Extract just the reports array
+  const reportsArray = response.data?.data || [];
+
+  if (!Array.isArray(reportsArray)) {
+    console.warn('⚠️ fetchUserReports returned non-array:', reportsArray);
+    return [];
+  }
+
+  return reportsArray;
 };
 
 /**
