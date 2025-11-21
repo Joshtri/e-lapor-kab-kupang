@@ -1,11 +1,7 @@
 'use client';
 
-import ReportList from '@/components/bupati/report/ReportList';
+import PengaduanBupatiList from '@/features/pengaduan/bupati/list';
 
 export default function LaporanBupatiPage() {
-  return (
-    // <div className="max-w-full mx-auto p-6">
-      <ReportList />
-    // </div>
-  );
+  return <PengaduanBupatiList />;
 }
