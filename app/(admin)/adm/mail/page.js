@@ -3,5 +3,5 @@
 import MailDashboard from '@/components/admin/mail/MailDashboard';
 
 export default function MailPage() {
-  return (<MailDashboard />);
+  return <MailDashboard />;
 }
