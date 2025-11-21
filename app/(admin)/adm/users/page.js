@@ -1,5 +1,5 @@
-import UserList from '@/components/admin/users/UsersList';
+import KelolaPenggunaList from '@/features/kelola-pengguna/list';
 
 export default function UsersPage() {
-  return <UserList />;
+  return <KelolaPenggunaList />;
 }
