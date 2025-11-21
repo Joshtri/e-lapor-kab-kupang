@@ -1,7 +1,7 @@
 'use client';
 
-import ReportList from '@/components/bupati/report/ReportList';
+import PengaduanBupatiList from '@/features/pengaduan/bupati/list';
 
 export default function KelolaPengaduanPage() {
-  return <ReportList />;
+  return <PengaduanBupatiList />;
 }
