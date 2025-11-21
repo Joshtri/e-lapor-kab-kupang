@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-// import QuickActions from '@/features/dashboard/masyarakat/desktop/QuickActionsButton';
-// import Statistics from '../../../../components/pelapor/Statistics';
-// import ReportModal from '@/components/pelapor/CreateReportModal';
+=
 import { Button, Card } from 'flowbite-react';
 import { HiOutlineMail, HiPaperAirplane, HiOutlineHome } from 'react-icons/hi';
 import { FaWhatsapp } from 'react-icons/fa';
