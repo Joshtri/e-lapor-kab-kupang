@@ -4,13 +4,8 @@ import axios from 'axios';
 import { Card } from 'flowbite-react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import {
-  HiClock,
-  HiMailOpen,
-  HiOutlineCheckCircle,
-  HiX
-} from 'react-icons/hi';
-import SkeletonCardLoading from '../ui/loading/SkeletonCardLoading';
+import { HiClock, HiMailOpen, HiOutlineCheckCircle, HiX } from 'react-icons/hi';
+import SkeletonCardLoading from '../../../components/ui/loading/SkeletonCardLoading';
 
 const Statistics = ({ user, triggerRefetch }) => {
   const [stats, setStats] = useState({
@@ -50,10 +45,7 @@ const Statistics = ({ user, triggerRefetch }) => {
   };
 
   if (loading) {
-    return (
-
-      <SkeletonCardLoading />
-    );
+    return <SkeletonCardLoading />;
   }
 
   const statItems = [

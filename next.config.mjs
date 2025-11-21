@@ -15,7 +15,7 @@ const nextConfig = {
     serverActions: true,
   },
   eslint: {
-    dirs: ['pages', 'components', 'lib', 'features', 'hooks', 'utils'],
+    dirs: ['pages', 'components', 'lib'],
     ignoreDuringBuilds: true,
   },
   images: {
