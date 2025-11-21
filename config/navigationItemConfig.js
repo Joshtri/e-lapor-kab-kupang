@@ -127,7 +127,7 @@ export const navigationItemConfig = {
         },
       },
       {
-        path: '/bupati-portal/laporan-warga',
+        path: '/bupati-portal/kelola-pengaduan',
         name: 'Kelola Pengaduan',
         icon: HiMailOpen,
         badge: 'reports',
@@ -155,6 +155,16 @@ export const navigationItemConfig = {
           transition: { duration: 0.5 },
         },
       },
+      {
+        path: '/bupati-portal/kinerja-opd',
+        name: 'Kinerja OPD',
+        icon: HiOutlineOfficeBuilding,
+        // badge: 'chat',
+        motion: {
+          whileHover: { rotate: [0, -10, 0] },
+          transition: { duration: 0.5 },
+        },
+      },  
     ],
   },
 };
