@@ -26,6 +26,59 @@ const DashboardKinerjaOpd = () => {
   const [monthlyTrend, setMonthlyTrend] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Modal states
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showOverdueModal, setShowOverdueModal] = useState(false);
+  const [selectedOpdForCategory, setSelectedOpdForCategory] = useState(null);
+  const [selectedOpdForOverdue, setSelectedOpdForOverdue] = useState(null);
+  const [categoryReports, setCategoryReports] = useState([]);
+  const [overdueReports, setOverdueReports] = useState([]);
+  const [loadingReports, setLoadingReports] = useState(false);
+
+  const handleViewCategoryPengaduan = async (opdItem) => {
+    setSelectedOpdForCategory(opdItem);
+    setShowCategoryModal(true);
+    setLoadingReports(true);
+    try {
+      const url = `/api/reports/opd/${opdItem.opdId}?category=${encodeURIComponent(opdItem.topCategory)}`;
+      const res = await fetch(url);
+      if (!res.ok) {
+        console.error('API error:', res.status, res.statusText);
+        setCategoryReports([]);
+        return;
+      }
+      const data = await res.json();
+      setCategoryReports(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching category reports:', error);
+      setCategoryReports([]);
+    } finally {
+      setLoadingReports(false);
+    }
+  };
+
+  const handleViewOverduePengaduan = async (opdItem) => {
+    setSelectedOpdForOverdue(opdItem);
+    setShowOverdueModal(true);
+    setLoadingReports(true);
+    try {
+      const url = `/api/reports/opd/${opdItem.opdId}?overdue=true`;
+      const res = await fetch(url);
+      if (!res.ok) {
+        console.error('API error:', res.status, res.statusText);
+        setOverdueReports([]);
+        return;
+      }
+      const data = await res.json();
+      setOverdueReports(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching overdue reports:', error);
+      setOverdueReports([]);
+    } finally {
+      setLoadingReports(false);
+    }
+  };
+
   const handleExportPDF = () => {
     const doc = new jsPDF();
 
@@ -321,18 +374,22 @@ const DashboardKinerjaOpd = () => {
             {overdue.map((opd) => (
               <div
                 key={opd.opdId}
-                className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-100 dark:border-orange-800/30 flex items-center"
+                onClick={() => handleViewOverduePengaduan(opd)}
+                className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-100 dark:border-orange-800/30 flex items-center cursor-pointer hover:shadow-md hover:border-orange-300 dark:hover:border-orange-600 transition-all"
               >
                 <div className="w-10 h-10 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center mr-3 shadow-sm">
                   <HiOutlineClock className="h-5 w-5 text-orange-500" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <div className="font-medium text-gray-800 dark:text-gray-200">
                     {opd.name}
                   </div>
                   <div className="text-orange-600 dark:text-orange-400 font-bold">
-                    {opd.overdueReports} laporan terlambat
+                    {opd.overdueReports} pengaduan terlambat
                   </div>
+                </div>
+                <div className="text-xs bg-orange-200 dark:bg-orange-800 px-2 py-1 rounded text-orange-800 dark:text-orange-200 font-semibold">
+                  Lihat
                 </div>
               </div>
             ))}
