@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 // import QuickActions from '@/features/dashboard/masyarakat/desktop/QuickActionsButton';
-import Statistics from '../../../../components/pelapor/Statistics';
+// import Statistics from '../../../../components/pelapor/Statistics';
 // import ReportModal from '@/components/pelapor/CreateReportModal';
 import { Button, Card } from 'flowbite-react';
 import { HiOutlineMail, HiPaperAirplane, HiOutlineHome } from 'react-icons/hi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import QuickActionsButton from './QuickActionsButton';
+import Statistics from '@/components/pelapor/Statistics';
 
 const DashboardPelaporDesktop = ({ user }) => {
   const searchParams = useSearchParams();
