@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 
 import ImagePreviewModal from '@/components/admin/ImagePreviewModal';
 import PriorityBadge from '@/components/common/PriorityBadge';
-import ReportStatusModal from '@/components/common/ReportStatusModal';
+import ReportStatusModal from '@/features/pengaduan/UpdatePengaduanStatusModal';
 import StatusBadge from '@/components/common/StatusBadge';
 import ListGrid, {
   ActionButtonsPresets,
@@ -17,7 +17,7 @@ import ListGrid, {
 import { fetchReports } from '@/services/reportService';
 import { truncateText } from '@/utils/common';
 import { exportToExcel } from '@/utils/export/exportToExcel';
-import CommentModal from '../comment/CommentModal';
+import CommentByBupatiModal from '../../../features/comments/create/CommentByBupatiModal';
 import InlineOPDSelector from './InlineOPDSelector';
 import ReportCreateModal from './ReportCreateModal';
 
@@ -285,7 +285,7 @@ export default function ReportList() {
         />
       )}
       {selectedReport && (
-        <CommentModal
+        <CommentByBupatiModal
           open={isCommentModalOpen}
           setOpen={setIsCommentModalOpen}
           reportId={selectedReport.id}
