@@ -15,30 +15,53 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId');
+    const page = Math.max(1, parseInt(searchParams.get('page')) || 1);
+    const limit = Math.min(50, parseInt(searchParams.get('limit')) || 10); // Default 10, max 50
+    const skip = (page - 1) * limit;
 
+    // ✅ Optimize: Exclude image blob, paginate, minimal includes
     const reports = await prisma.report.findMany({
       where: userId ? { userId: Number(userId) } : {},
-      include: {
+      select: {
+        id: true,
+        userId: true,
+        title: true,
+        category: true,
+        subcategory: true,
+        priority: true,
+        location: true,
+        description: true,
+        bupatiStatus: true,
+        opdStatus: true,
+        isReadByBupati: true,
+        isReadByOpd: true,
+        createdAt: true,
+        updatedAt: true,
+        opdId: true,
         user: { select: { id: true, name: true, email: true } },
         opd: { select: { id: true, name: true } },
-        comments: {
-          include: {
-            user: { select: { id: true, name: true, email: true, role: true } },
-          },
-          orderBy: { createdAt: 'desc' },
-        },
       },
       orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
     });
 
-    const formatted = reports.map((r) => {
-      const { image, ...rest } = r;
-      return { ...rest, image: null };
+    // ✅ Get total count for pagination
+    const total = await prisma.report.count({
+      where: userId ? { userId: Number(userId) } : {},
     });
 
-    return NextResponse.json(formatted);
+    return NextResponse.json({
+      data: reports,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
-    '❌ Gagal ambil daftar laporan:', error;
+    console.error('❌ Gagal ambil daftar laporan:', error);
     return NextResponse.json(
       { error: 'Gagal mengambil daftar laporan.' },
       { status: 500 },
@@ -141,43 +164,49 @@ export async function POST(req) {
       },
     });
 
-    // Send emails to BUPATI
+    // ✅ Send emails to BUPATI (optimized)
     const bupatiEmails = adminBupati.filter(
       (u) => u.role === 'BUPATI' && u.email,
     );
 
-    const host = req.headers.get('host');
-    const protocol = host?.includes('localhost') ? 'http' : 'https';
-    const reportLink = `${protocol}://${host}/bupati-portal/kelola-pengaduan/${newReport.id}`;
+    if (bupatiEmails.length > 0) {
+      const host = req.headers.get('host');
+      const protocol = host?.includes('localhost') ? 'http' : 'https';
+      const reportLink = `${protocol}://${host}/bupati-portal/kelola-pengaduan/${newReport.id}`;
 
-    for (const bupati of bupatiEmails) {
-      try {
-        // Ensure render is awaited to resolve the Promise
-        const emailHtml = await render(
-          NotificationEmail({
-            previewText: `Laporan Baru: ${newReport.title}`,
-            greeting: `Yth. ${bupati.name || 'Bupati'},`,
-            intro: 'Sebuah laporan baru telah dikirim oleh warga.',
-            details: [
-              { label: 'Judul', value: newReport.title },
-              { label: 'Kategori', value: newReport.category },
-              { label: 'Prioritas', value: newReport.priority },
-            ],
-            ctaLabel: 'Lihat Laporan',
-            ctaLink: reportLink,
-            closing: 'Hormat kami,\nSistem Lapor Warga',
-          }),
-        );
+      // ✅ Render email HTML ONCE, not for each bupati
+      const emailHtml = await render(
+        NotificationEmail({
+          previewText: `Laporan Baru: ${newReport.title}`,
+          greeting: 'Yth. Bupati,',
+          intro: 'Sebuah laporan baru telah dikirim oleh warga.',
+          details: [
+            { label: 'Judul', value: newReport.title },
+            { label: 'Kategori', value: newReport.category },
+            { label: 'Prioritas', value: newReport.priority },
+          ],
+          ctaLabel: 'Lihat Laporan',
+          ctaLink: reportLink,
+          closing: 'Hormat kami,\nSistem Lapor Warga',
+        }),
+      );
 
-        await transporter.sendMail({
+      // ✅ Send emails in parallel (not sequential)
+      const emailPromises = bupatiEmails.map((bupati) =>
+        transporter.sendMail({
           from: `"Lapor Kaka Bupati" <${process.env.EMAIL_USER}>`,
           to: bupati.email,
           subject: '📬 Laporan Baru Telah Dikirim',
-          html: emailHtml, // Now a string
-        });
-      } catch (emailErr) {
-        console.error(`Failed to send email to ${bupati.email}:`, emailErr);
-      }
+          html: emailHtml,
+        }).catch((err) => {
+          console.error(`Failed to send email to ${bupati.email}:`, err);
+        }),
+      );
+
+      // Non-blocking: send emails in background
+      Promise.all(emailPromises).catch((err) =>
+        console.error('Email sending error:', err),
+      );
     }
 
     return NextResponse.json(
