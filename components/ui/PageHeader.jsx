@@ -4,9 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { HiArrowLeft, HiRefresh, HiSearch, HiX } from 'react-icons/hi';
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
-import Breadcrumbs from '@/components/ui/BreadCrumbs';
+// import Breadcrumbs from '@/components/ui/';
 import { Button, Tooltip } from 'flowbite-react';
 import PropTypes from 'prop-types';
+import Breadcrumbs from './BreadCrumbs';
 
 export default function PageHeader({
   title,

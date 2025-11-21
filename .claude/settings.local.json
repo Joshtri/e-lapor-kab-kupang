@@ -11,7 +11,8 @@
       "Bash(npm run build:*)",
       "Bash(git checkout:*)",
       "Bash(grep:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(npm install)"
     ],
     "deny": [],
     "ask": []

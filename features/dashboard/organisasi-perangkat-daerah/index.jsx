@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import OPDOnboardingDialog from '@/components/opd/Onboard/OnboardingDialog';
+// import OPDOnboardingDialog from '@/components/opd/Onboard/OnboardingDialog';
 import OpdIkhtisarTab from '@/features/dashboard/organisasi-perangkat-daerah/OpdIkhtisarTab';
 import OpdStatistikTab from '@/features/dashboard/organisasi-perangkat-daerah/OpdStatistikTab';
 import TabsComponent from '@/components/ui/TabsGroup';
 import DashboardNotificationPanelOpd from '@/components/DashboardNotificationPanelOpd';
+import OPDOnboardingDialog from '@/features/onboarding/form/OnboardingDialog';
 
 const DashboardMain = () => {
   const [data, setData] = useState(null);
