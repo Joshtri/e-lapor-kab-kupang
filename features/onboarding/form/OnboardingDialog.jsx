@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Modal } from 'flowbite-react';
-import OnboardingOPDForm from '@/components/opd/Onboard/FormOpd';
+import OnboardingOPDForm from './FormOpd';
 import { motion } from 'framer-motion';
 import { HiOutlineMail, HiMailOpen, HiPaperAirplane } from 'react-icons/hi';
 
