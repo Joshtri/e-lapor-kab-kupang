@@ -1,24 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Tabs, Button, Spinner } from 'flowbite-react';
+import axios from 'axios';
+import { Button, Spinner, Tabs } from 'flowbite-react';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import {
+  HiOutlineDocumentDuplicate,
   HiOutlineMail,
   HiOutlinePaperAirplane,
-  HiOutlineDocumentDuplicate,
-  HiOutlineTrash,
   HiOutlinePlus,
+  HiOutlineTrash,
 } from 'react-icons/hi';
-import { motion } from 'framer-motion';
-import axios from 'axios';
 import { toast } from 'sonner';
-import TabsComponent from '@/components/ui/TabsGroup'; // pastikan path-nya sesuai
 
-import ComposeMailList from '@/components/admin/mail/ComposeMailList';
-import SentMailList from '@/components/admin/mail/SentMailList';
-import DraftMailList from '@/components/admin/mail/DraftMailList';
-import TrashMailList from '@/components/admin/mail/TrashMailList';
 import ComposeMailModal from '@/components/admin/mail/ComposeMailCreateModal';
+import ComposeMailList from '@/components/admin/mail/ComposeMailList';
+import DraftMailList from '@/components/admin/mail/DraftMailList';
+import SentMailList from '@/components/admin/mail/SentMailList';
+import TrashMailList from '@/components/admin/mail/TrashMailList';
 
 export default function MailDashboard() {
   const [activeTab, setActiveTab] = useState('compose');
