@@ -180,8 +180,7 @@ const DashboardKinerjaOpd = () => {
     fetchAll();
   }, []);
 
-  if (loading)
-    return <LoadingMail />
+  if (loading) return <LoadingMail />;
 
   return (
     <motion.div
@@ -556,7 +555,7 @@ const DashboardKinerjaOpd = () => {
       {/* Modal Kategori Pengaduan */}
       {showCategoryModal && selectedOpdForCategory && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-96 overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-gray-800 rounded-lg  max-w-4xl w-full max-h-96 overflow-hidden flex flex-col">
             <div className="bg-purple-500 px-6 py-4 flex justify-between items-center">
               <h3 className="text-white font-semibold">
                 Pengaduan "{selectedOpdForCategory.topCategory}" -{' '}
@@ -593,9 +592,8 @@ const DashboardKinerjaOpd = () => {
                             Pelapor: {report.user?.name || 'N/A'}
                           </p>
                           <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                            {new Date(report.createdAt).toLocaleDateString(
-                              'id-ID',
-                            )}
+                            Dibuat:{' '}
+                            {new Date(report.createdAt).toLocaleString('id-ID')}
                           </p>
                         </div>
                         <span className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-2 py-1 rounded ml-2">
@@ -618,7 +616,7 @@ const DashboardKinerjaOpd = () => {
       {/* Modal Overdue Pengaduan */}
       {showOverdueModal && selectedOpdForOverdue && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-96 overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full  overflow-hidden flex flex-col">
             <div className="bg-orange-500 px-6 py-4 flex justify-between items-center">
               <h3 className="text-white font-semibold">
                 Pengaduan Terlambat - {selectedOpdForOverdue.name}
@@ -652,6 +650,10 @@ const DashboardKinerjaOpd = () => {
                           </h4>
                           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                             Pelapor: {report.user?.name || 'N/A'}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                            Dibuat:{' '}
+                            {new Date(report.createdAt).toLocaleString('id-ID')}
                           </p>
                           <p className="text-xs text-orange-600 dark:text-orange-400 font-semibold mt-1">
                             ⚠️ Terlambat lebih dari 7 hari
@@ -724,7 +726,7 @@ Card.propTypes = {
   title: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   icon: PropTypes.node.isRequired,
-  color: PropTypes.string.isRequired
+  color: PropTypes.string.isRequired,
 };
 
 export default DashboardKinerjaOpd;
