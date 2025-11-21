@@ -11,7 +11,7 @@ import {
   HiDownload,
 } from 'react-icons/hi';
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
-import Breadcrumbs from '@/components/ui/BreadCrumbs';
+import Breadcrumbs from '../BreadCrumbs';
 import { Button, Tooltip } from 'flowbite-react';
 import PropTypes from 'prop-types';
 
