@@ -1,11 +1,11 @@
 'use client';
 
-import DashboardChart from '@/components/admin/dashboard/dashboard-chart';
-import DashboardReports from '@/components/admin/dashboard/dashboard-latest-reports';
-import DashboardStats from '@/components/admin/dashboard/dashboard-stats';
+import DashboardChart from '@/features/dashboard/admin/DashboardChart';
+import DashboardReports from '@/features/dashboard/admin/DashboardLatestReports';
+import DashboardStats from '@/features/dashboard/admin/DashboardStats';
 import NotificationPanel from '@/components/DashboardNotificationPanel';
 import TabsComponent from '@/components/ui/TabsGroup';
-import DashboardKinerjaOpd from './dashboard/DashboardKinerjaOpd';
+import DashboardKinerjaOpd from '../../features/dashboard/admin/DashboardKinerjaOpd';
 import { useQuery } from '@tanstack/react-query';
 3;
 import { motion } from 'framer-motion';
@@ -117,5 +117,3 @@ const AdminDashboard = ({ titleHeader }) => {
 };
 
 export default AdminDashboard;
-
-
