@@ -5,15 +5,13 @@ import EmptyState from '@/components/ui/EmptyState';
 import LoadingListGrid from '@/components/ui/loading/LoadingListGrid';
 import LoadingScreen from '@/components/ui/loading/LoadingScreen';
 import PageHeader from '@/components/ui/PageHeader';
-import ConfirmationDialog from '@/components/common/ConfirmationDialog';
 import { getRoleHomePath } from '@/config/breadcrumbConfig';
-import { Button, Table, Card } from 'flowbite-react';
+import { Button, Table, Card, Tooltip } from 'flowbite-react';
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { useState, useEffect, useCallback } from 'react';
 import {
   HiTrash,
-  HiExclamation,
   HiOutlineEye,
   HiOutlinePencilAlt,
   HiOutlineChatAlt2,
@@ -54,10 +52,10 @@ const useIsDesktop = () => {
 const getNormalizedActionButton = (buttonDef, context) => {
   const {
     item,
-    handleDeleteClick,
     onViewClick,
     onEditClick,
     onCommentClick,
+    onDeleteClick,
     basePath,
   } = context;
 
@@ -66,6 +64,12 @@ const getNormalizedActionButton = (buttonDef, context) => {
     const btnType = buttonDef.toLowerCase();
 
     if (btnType === ActionButtonsPresets.DELETE) {
+      // Only render DELETE button if onDeleteClick handler exists
+      if (!onDeleteClick) {
+        console.warn('DELETE button requires onDeleteClick prop to be passed to ListGrid');
+        return null;
+      }
+
       return (
         <ActionsButton
           key="delete"
@@ -74,7 +78,7 @@ const getNormalizedActionButton = (buttonDef, context) => {
           color="red"
           onClick={(e) => {
             e.stopPropagation();
-            handleDeleteClick(item);
+            onDeleteClick(item);
           }}
         />
       );
@@ -144,7 +148,39 @@ const getNormalizedActionButton = (buttonDef, context) => {
       variant = 'outline',
       tooltip,
       color,
+      label, // Support untuk label text
     } = buttonDef;
+
+    // Jika ada label, render Button dengan icon dan text
+    if (label) {
+      const buttonElement = (
+        <Button
+          size="xs"
+          color={color || 'gray'}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick?.(item);
+          }}
+          className="flex items-center gap-1.5"
+        >
+          {Icon && <Icon className="w-4 h-4" />}
+          <span>{label}</span>
+        </Button>
+      );
+
+      // Jika ada tooltip, wrap dengan Tooltip
+      if (tooltip) {
+        return (
+          <Tooltip content={tooltip} placement="top">
+            {buttonElement}
+          </Tooltip>
+        );
+      }
+
+      return buttonElement;
+    }
+
+    // Jika tidak ada label, gunakan ActionsButton (icon only)
     return (
       <ActionsButton
         icon={Icon}
@@ -375,11 +411,11 @@ const MobileCardGrid = ({
                   <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
                     {columns[0].header}
                   </p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white mt-1 break-words">
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white mt-1 break-words">
                     {columns[0].cell
                       ? columns[0].cell(row)
                       : row[columns[0].accessor]}
-                  </p>
+                  </div>
                 </div>
               )}
 
@@ -390,9 +426,9 @@ const MobileCardGrid = ({
                     <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
                       {column.header}
                     </p>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-0.5 break-words">
+                    <div className="text-sm text-gray-700 dark:text-gray-300 mt-0.5 break-words">
                       {column.cell ? column.cell(row) : row[column.accessor]}
-                    </p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -409,11 +445,11 @@ const MobileCardGrid = ({
                         <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">
                           {column.header}
                         </p>
-                        <p className="text-xs text-gray-700 dark:text-gray-300 mt-0.5 break-words">
+                        <div className="text-xs text-gray-700 dark:text-gray-300 mt-0.5 break-words">
                           {column.cell
                             ? column.cell(row)
                             : row[column.accessor]}
-                        </p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -525,6 +561,8 @@ const ListGrid = ({
   setViewMode = () => {},
   gridComponent = null,
   pageSize = 10, // Default page size
+  showPageSizeSelector = false, // Enable page size selector dropdown
+  pageSizeOptions = [10, 25, 50, 75, 100], // Available page size options
   // Filters as array config
   filters = null,
   // Auto-navigation for standard action buttons
@@ -539,6 +577,7 @@ const ListGrid = ({
   searchQuery = '',
   onSearchChange = () => {},
   title = 'Data List',
+  description = '', // Optional description below title
   backHref = '/',
   showBackButton = true,
   showRefreshButton = false,
@@ -550,14 +589,6 @@ const ListGrid = ({
   onCreate = () => {},
   createButtonLabel = 'Tambah',
   showCreateButton = true,
-  // Delete functionality
-  onDelete = null,
-  isDeletePending = false,
-  deleteConfirmConfig = {
-    title: 'Hapus Item?',
-    confirmText: 'Ya, Hapus',
-    cancelText: 'Batal',
-  },
   // Legacy props (backward compatibility)
   filtersComponent = null,
   paginationProps = null,
@@ -571,10 +602,32 @@ const ListGrid = ({
 
   // Internal pagination state management
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageSize, setCurrentPageSize] = useState(pageSize);
   const [internalSearchQuery, setInternalSearchQuery] = useState(searchQuery);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
+
+  // Internal viewMode state (support both controlled and uncontrolled mode)
+  const [internalViewMode, setInternalViewMode] = useState('table');
   const isDesktop = useIsDesktop();
+
+  // Determine if this is controlled or uncontrolled mode
+  const isControlledMode = viewMode !== undefined && typeof setViewMode === 'function';
+
+  // Use controlled viewMode if provided, otherwise use internal state
+  const currentViewMode = isControlledMode ? viewMode : internalViewMode;
+
+  // Handler for view mode change (memoized for stable reference)
+  const handleViewModeChange = useCallback(
+    (newMode) => {
+      if (isControlledMode) {
+        // Controlled mode: call parent's setter
+        setViewMode(newMode);
+      } else {
+        // Uncontrolled mode: use internal state
+        setInternalViewMode(newMode);
+      }
+    },
+    [isControlledMode, setViewMode]
+  );
 
   // Auto reset page when filters/search change
   useEffect(() => {
@@ -584,6 +637,11 @@ const ListGrid = ({
   const handleSearchChange = (value) => {
     setInternalSearchQuery(value);
     onSearchChange(value);
+  };
+
+  const handlePageSizeChange = (newSize) => {
+    setCurrentPageSize(newSize);
+    setCurrentPage(1); // Reset to first page when changing page size
   };
 
   // Auto-reset filters handler
@@ -610,55 +668,18 @@ const ListGrid = ({
 
   // Calculate pagination
   const totalItems = data.length;
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const totalPages = Math.ceil(totalItems / currentPageSize);
   const paginatedData = data.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
+    (currentPage - 1) * currentPageSize,
+    currentPage * currentPageSize,
   );
-
-  // Default delete confirmation config - auto detect item name
-  const defaultDeleteConfig = {
-    title: 'Konfirmasi Hapus',
-    message: (item) => {
-      const itemName = item?.name || item?.title || item?.id || 'item ini';
-      return `Apakah Anda yakin ingin menghapus "${itemName}"? Tindakan ini tidak dapat dibatalkan.`;
-    },
-    confirmText: 'Ya, Hapus',
-    cancelText: 'Batal',
-    confirmColor: 'red',
-    icon: HiExclamation,
-  };
-
-  // Merge with custom config if provided
-  const finalDeleteConfig = {
-    ...defaultDeleteConfig,
-    ...deleteConfirmConfig,
-  };
-
-  const handleDeleteClick = (item) => {
-    setItemToDelete(item);
-    setDeleteModalOpen(true);
-  };
-
-  const handleDeleteConfirm = () => {
-    if (!itemToDelete || !onDelete) return;
-    onDelete(itemToDelete);
-  };
-
-  // Auto close dialog after delete success
-  useEffect(() => {
-    if (!isDeletePending && deleteModalOpen) {
-      setDeleteModalOpen(false);
-      setItemToDelete(null);
-    }
-  }, [isDeletePending, deleteModalOpen]);
 
   // Context untuk normalize action buttons
   const actionButtonContext = {
-    handleDeleteClick,
     onViewClick,
     onEditClick,
     onCommentClick,
+    onDeleteClick,
     basePath,
   };
 
@@ -671,7 +692,9 @@ const ListGrid = ({
   };
 
   // Normalize action buttons - convert string presets + keep custom functions
-  const normalizedActionButtons = actionButtons.map((btn) =>
+  // Also merge with customActions (legacy support)
+  const allActionButtons = [...actionButtons, ...customActions];
+  const normalizedActionButtons = allActionButtons.map((btn) =>
     typeof btn === 'string' ? btn : btn,
   );
 
@@ -693,7 +716,7 @@ const ListGrid = ({
       return (
         <>
           <LoadingListGrid
-            viewMode={viewMode}
+            viewMode={currentViewMode}
             columnCount={columns.length}
             rowCount={data.length || 6}
             isDesktop={isDesktop}
@@ -723,7 +746,7 @@ const ListGrid = ({
         <MobileCardGrid
           data={paginatedData}
           columns={columns}
-          actionButtons={actionButtons}
+          actionButtons={allActionButtons}
           rowActions={rowActions}
           onRowClick={onRowClick}
           renderActionButton={renderActionButton}
@@ -732,7 +755,7 @@ const ListGrid = ({
     }
 
     // Desktop grid view (lg and above)
-    if (viewMode === 'grid') {
+    if (currentViewMode === 'grid') {
       // Use custom gridComponent if provided, otherwise auto-generate
       if (gridComponent) {
         return (
@@ -750,7 +773,7 @@ const ListGrid = ({
         <AutoGeneratedGrid
           data={paginatedData}
           columns={columns}
-          actionButtons={actionButtons}
+          actionButtons={allActionButtons}
           rowActions={rowActions}
           renderActionButton={renderActionButton}
         />
@@ -777,7 +800,7 @@ const ListGrid = ({
                 {column.header}
               </Table.HeadCell>
             ))}
-            {(actionButtons.length > 0 || rowActions.length > 0) && (
+            {(allActionButtons.length > 0 || rowActions.length > 0) && (
               <Table.HeadCell className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[80px]">
                 Aksi
               </Table.HeadCell>
@@ -810,11 +833,11 @@ const ListGrid = ({
                       </Table.Cell>
                     );
                   })}
-                  {(actionButtons.length > 0 || rowActions.length > 0) && (
+                  {(allActionButtons.length > 0 || rowActions.length > 0) && (
                     <Table.Cell className="px-4 py-3 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
                         {/* Standard action buttons */}
-                        {actionButtons.map((buttonDef, btnIndex) => (
+                        {allActionButtons.map((buttonDef, btnIndex) => (
                           <div
                             key={btnIndex}
                             onClick={(e) => e.stopPropagation()}
@@ -844,6 +867,7 @@ const ListGrid = ({
     <div className="space-y-6">
       <PageHeader
         title={title}
+        description={description}
         backHref={finalBackHref}
         showSearch={searchBar}
         showBackButton={showBackButton}
@@ -857,49 +881,55 @@ const ListGrid = ({
         breadcrumbsProps={breadcrumbsProps}
       />
 
-      {(renderFiltersComponent() || viewMode) && (
-        <FilterBar
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          onCreate={onCreate}
-          createButtonLabel={createButtonLabel}
-          showCreateButton={showCreateButton}
-        >
-          {renderFiltersComponent()}
-        </FilterBar>
-      )}
+      {/* FilterBar: Always render if filters exist, or if create button shown, or if on desktop (for view mode toggle) */}
+      <FilterBar
+        viewMode={currentViewMode}
+        setViewMode={handleViewModeChange}
+        onCreate={onCreate}
+        createButtonLabel={createButtonLabel}
+        showCreateButton={showCreateButton}
+      >
+        {renderFiltersComponent()}
+      </FilterBar>
 
       {renderContent()}
 
-      {/* Auto-Pagination */}
-      {totalPages > 1 && (
-        <Pagination
-          totalItems={totalItems}
-          currentPage={currentPage}
-          pageSize={pageSize}
-          onPageChange={setCurrentPage}
-          className="mt-4"
-        />
-      )}
+      {/* Pagination and Page Size Selector */}
+      {(totalPages > 1 || (showPageSizeSelector && totalItems > 0)) && (
+        <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Page Size Selector */}
+          {showPageSizeSelector && totalItems > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Tampilkan:
+              </span>
+              <select
+                value={currentPageSize}
+                onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                {pageSizeOptions.map((size) => (
+                  <option key={size} value={size}>
+                    {size} data
+                  </option>
+                ))}
+              </select>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                dari {totalItems} total
+              </span>
+            </div>
+          )}
 
-      {/* Delete Confirmation Dialog - Auto handled */}
-      {onDelete && (
-        <ConfirmationDialog
-          isOpen={deleteModalOpen}
-          title={finalDeleteConfig.title}
-          message={
-            typeof finalDeleteConfig.message === 'function'
-              ? finalDeleteConfig.message(itemToDelete)
-              : finalDeleteConfig.message
-          }
-          confirmText={finalDeleteConfig.confirmText}
-          cancelText={finalDeleteConfig.cancelText}
-          confirmColor={finalDeleteConfig.confirmColor}
-          isLoading={isDeletePending}
-          onConfirm={handleDeleteConfirm}
-          onCancel={() => setDeleteModalOpen(false)}
-          icon={finalDeleteConfig.icon}
-        />
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <Pagination
+              totalItems={totalItems}
+              currentPage={currentPage}
+              pageSize={currentPageSize}
+              onPageChange={setCurrentPage}
+            />
+          )}
+        </div>
       )}
     </div>
   );
@@ -925,10 +955,12 @@ ListGrid.propTypes = {
   ),
   onRowClick: PropTypes.func,
   rowClassName: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  viewMode: PropTypes.string,
-  setViewMode: PropTypes.func,
+  viewMode: PropTypes.string, // Optional: if not provided, uses internal state
+  setViewMode: PropTypes.func, // Optional: if not provided, uses internal state
   gridComponent: PropTypes.node,
   pageSize: PropTypes.number,
+  showPageSizeSelector: PropTypes.bool,
+  pageSizeOptions: PropTypes.arrayOf(PropTypes.number),
   basePath: PropTypes.string,
   filters: PropTypes.arrayOf(
     PropTypes.shape({
@@ -944,6 +976,7 @@ ListGrid.propTypes = {
   searchQuery: PropTypes.string,
   onSearchChange: PropTypes.func,
   title: PropTypes.string,
+  description: PropTypes.string,
   backHref: PropTypes.string,
   showBackButton: PropTypes.bool,
   showRefreshButton: PropTypes.bool,
@@ -955,16 +988,6 @@ ListGrid.propTypes = {
   onCreate: PropTypes.func,
   createButtonLabel: PropTypes.string,
   showCreateButton: PropTypes.bool,
-  onDelete: PropTypes.func,
-  isDeletePending: PropTypes.bool,
-  deleteConfirmConfig: PropTypes.shape({
-    title: PropTypes.string,
-    message: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    confirmText: PropTypes.string,
-    cancelText: PropTypes.string,
-    confirmColor: PropTypes.string,
-    icon: PropTypes.elementType,
-  }),
   onViewClick: PropTypes.func,
   onEditClick: PropTypes.func,
   onCommentClick: PropTypes.func,
