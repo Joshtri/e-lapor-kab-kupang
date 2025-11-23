@@ -130,7 +130,7 @@ model BugReport {
   user        User         @relation(fields: [userId], references: [id])
   bugComments BugComment[] // Add this relation
 }
-
+ //testdulu
 model BugComment {
   id          String   @id @default(dbgenerated("concat('bgc_', replace(gen_random_uuid()::text, '-', ''))")) @db.VarChar(50)
   bugReportId String   @db.VarChar(50)
