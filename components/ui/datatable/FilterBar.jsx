@@ -51,11 +51,12 @@ export default function FilterBar({
       )}
 
       {/* 🔃 Switch view mode - HANYA MUNCUL DI DESKTOP */}
-      {setViewMode && isDesktop && (
+      {typeof setViewMode === 'function' && isDesktop && (
         <div className="flex gap-2">
           <Button
             color={viewMode === 'table' ? 'blue' : 'gray'}
             onClick={() => setViewMode('table')}
+            size="sm"
           >
             <HiOutlineTable className="mr-2" />
             Tabel
@@ -63,6 +64,7 @@ export default function FilterBar({
           <Button
             color={viewMode === 'grid' ? 'blue' : 'gray'}
             onClick={() => setViewMode('grid')}
+            size="sm"
           >
             <HiOutlineViewGrid className="mr-2" />
             Grid
