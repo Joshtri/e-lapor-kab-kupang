@@ -90,7 +90,12 @@ export default function CreateUserForm() {
       
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="mb-6">
-          <PageHeader title="Tambah User Baru" backHref="/adm/users" />
+          <PageHeader
+            title="Tambah User Baru"
+            description="Halaman ini untuk menambahkan user dengan role Pelapor, Admin, atau Bupati. Untuk menambahkan Staff OPD, silakan gunakan menu 'Kelola Staff OPD' dengan mengisi NIP dan assign ke OPD tertentu."
+            backHref="/adm/users"
+            role="adm"
+          />
         </div>
 
         <Card>
@@ -105,14 +110,16 @@ export default function CreateUserForm() {
               disabled={createUserMutation.isPending}
             >
               <option value="">Pilih Role</option>
-              <option value="PELAPOR">Pelapor</option>
-              <option value="ADMIN">Admin</option>
-              <option value="BUPATI">Bupati</option>
-              <option value="OPD">OPD</option>
+              <option value="PELAPOR">Pelapor (Masyarakat)</option>
+              <option value="ADMIN">Admin (Administrator Sistem)</option>
+              <option value="BUPATI">Bupati (Kepala Daerah)</option>
             </Select>
             {errors.role && (
               <p className="text-sm text-red-500 mt-1">{errors.role.message}</p>
             )}
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              ⚠️ Untuk menambahkan Staff OPD, gunakan menu <strong>"Kelola Staff OPD"</strong>
+            </p>
           </div>
 
           {/* Nama */}
@@ -128,31 +135,28 @@ export default function CreateUserForm() {
             />
           </div>
 
-          {/* NIK/NIP */}
+          {/* NIK */}
           <div>
-            <Label
-              htmlFor="nikNumber"
-              value={role === 'OPD' ? 'NIP (18 Digit) *' : 'NIK (16 Digit) *'}
-            />
+            <Label htmlFor="nikNumber" value="NIK (16 Digit) *" />
             <TextInput
               id="nikNumber"
-              placeholder={role === 'OPD' ? '18 digit angka' : '16 digit angka'}
+              placeholder="16 digit angka"
               {...register('nikNumber', {
-                required: `${role === 'OPD' ? 'NIP' : 'NIK'} wajib diisi`,
+                required: 'NIK wajib diisi',
                 minLength: {
-                  value: role === 'OPD' ? 18 : 16,
-                  message: `${role === 'OPD' ? 'NIP' : 'NIK'} harus ${role === 'OPD' ? '18' : '16'} digit`,
+                  value: 16,
+                  message: 'NIK harus 16 digit',
                 },
                 maxLength: {
-                  value: role === 'OPD' ? 18 : 16,
-                  message: `${role === 'OPD' ? 'NIP' : 'NIK'} tidak boleh lebih dari ${role === 'OPD' ? '18' : '16'} digit`,
+                  value: 16,
+                  message: 'NIK tidak boleh lebih dari 16 digit',
                 },
                 pattern: {
                   value: /^\d+$/,
-                  message: `${role === 'OPD' ? 'NIP' : 'NIK'} hanya boleh berisi angka`,
+                  message: 'NIK hanya boleh berisi angka',
                 },
               })}
-              maxLength={role === 'OPD' ? 18 : 16}
+              maxLength={16}
               inputMode="numeric"
               color={errors.nikNumber ? 'failure' : 'gray'}
               helperText={errors.nikNumber?.message}
