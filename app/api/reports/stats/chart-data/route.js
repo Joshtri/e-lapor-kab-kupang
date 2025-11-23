@@ -26,10 +26,10 @@ export async function GET(req) {
   }
 
   const { searchParams } = new URL(req.url);
-  const userId = parseInt(searchParams.get('userId') || '');
+  const userId = searchParams.get('userId') || '';
   const range = searchParams.get('range') || '6months';
 
-  if (isNaN(userId)) {
+  if (userId && typeof userId !== 'string') {
     return NextResponse.json({ message: 'Invalid userId' }, { status: 400 });
   }
 

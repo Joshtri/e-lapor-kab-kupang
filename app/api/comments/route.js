@@ -16,7 +16,7 @@ export async function GET(req) {
 
     // Ambil komentar berdasarkan reportId dan hanya dari user dengan role "BUPATI"
     const comments = await prisma.comment.findMany({
-      where: { reportId: Number(reportId), user: { role: 'BUPATI' } },
+      where: { reportId, user: { role: 'BUPATI' } },
       include: { user: { select: { id: true, name: true, role: true } } },
       orderBy: { createdAt: 'desc' }, // Urutkan dari terbaru ke terlama
     });

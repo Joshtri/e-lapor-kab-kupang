@@ -25,7 +25,7 @@ export async function GET(req) {
     const reportId = searchParams.get("reportId"); // Ambil filter jika ada
 
     const logs = await prisma.log.findMany({
-      where: reportId ? { reportId: parseInt(reportId) } : {},
+      where: reportId ? { reportId } : {},
       include: {
         user: { select: { id: true, name: true, email: true } },
         report: { select: { id: true, title: true } },

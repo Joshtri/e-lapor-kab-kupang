@@ -14,7 +14,7 @@ export async function GET(req, { params }) {
     }
 
     const bugReport = await prisma.bugReport.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       select: {
         attachment: true,
         userId: true,

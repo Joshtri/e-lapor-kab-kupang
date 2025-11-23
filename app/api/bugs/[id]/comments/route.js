@@ -5,9 +5,9 @@ import { getAuthenticatedUser } from '@/lib/auth'; // Pastikan path sesuai
 // GET /api/bugs/:id/comments
 export async function GET(req, { params }) {
   try {
-    const bugId = parseInt(params.id);
+    const bugId = params.id;
 
-    if (isNaN(bugId)) {
+    if (!bugId || typeof bugId !== 'string') {
       return NextResponse.json({ error: 'ID tidak valid' }, { status: 400 });
     }
 
@@ -34,7 +34,7 @@ export async function GET(req, { params }) {
 // POST /api/bugs/:id/comments
 export async function POST(req, { params }) {
   try {
-    const bugId = parseInt(params.id);
+    const bugId = params.id;
     const { message } = await req.json();
 
     const user = await getAuthenticatedUser(req);

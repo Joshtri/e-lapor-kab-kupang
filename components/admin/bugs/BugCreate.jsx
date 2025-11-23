@@ -110,7 +110,7 @@ export default function AddBugReport({ currentUser }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: Number.parseInt(selectedUserId),
+          userId: selectedUserId,
           title,
           description,
           priorityProblem: priority,

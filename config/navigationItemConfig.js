@@ -40,6 +40,12 @@ export const navigationItemConfig = {
       },
 
       {
+        path: '/adm/kelola-opd',
+        name: 'Kelola OPD',
+        icon: HiOutlineOfficeBuilding,
+      },
+
+      {
         path: '/adm/riwayat-pengaduan',
         name: 'Riwayat Pengaduan',
         icon: HiOutlineDocumentReport,

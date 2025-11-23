@@ -34,7 +34,7 @@ export default function InlineOPDSelector({ report, onUpdated }) {
     try {
       await axios.patch('/api/reports/admin/update-opd', {
         reportId: report.id,
-        opdId: Number(selectedOpdId),
+        opdId: selectedOpdId,
       });
       toast.success('OPD berhasil diperbarui');
       onUpdated();

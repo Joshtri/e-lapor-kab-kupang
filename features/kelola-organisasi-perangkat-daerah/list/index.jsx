@@ -65,7 +65,8 @@ export default function KelolaOrganisasiList() {
         statusMatch = (opd.reports?.length ?? 0) === 0;
       }
 
-      const searchMatch = [opd.name, opd.staff?.name, opd.wilayah]
+      const staffNames = opd.staff?.map((s) => s.name).join(' ') || '';
+      const searchMatch = [opd.name, staffNames, opd.wilayah]
         .join(' ')
         .toLowerCase()
         .includes(searchQuery.toLowerCase());

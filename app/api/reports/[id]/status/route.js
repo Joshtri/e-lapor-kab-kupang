@@ -12,7 +12,7 @@ export async function PATCH(req, { params }) {
 
   try {
     const updatedReport = await prisma.report.update({
-      where: { id: Number(id) },
+      where: { id },
       data: { bupatiStatus },
       include: { user: true },
     });

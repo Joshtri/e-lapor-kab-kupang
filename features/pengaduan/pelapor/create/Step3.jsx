@@ -85,7 +85,7 @@ const Step3 = ({ formData, files, categoryMap, priorityMap }) => {
                 OPD Tujuan:
               </p>
               <p className="text-gray-900 dark:text-white font-semibold">
-                {opds.find((opd) => opd.id === parseInt(formData.opdId))
+                {opds.find((opd) => opd.id === formData.opdId)
                   ?.name || '-'}
               </p>
             </div>

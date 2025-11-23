@@ -19,11 +19,19 @@ export async function GET(req) {
         orderBy: { createdAt: 'desc' },
       });
     } else if (user.role === 'OPD') {
-      // Notifikasi untuk OPD berdasarkan opdId = user.id (user login sebagai OPD staff)
-      notifications = await prisma.notification.findMany({
-        where: { opdId: user.id },
-        orderBy: { createdAt: 'desc' },
+      // Notifikasi untuk OPD berdasarkan opdId
+      // Ambil OPD yang terkait dengan user ini
+      const userWithOpd = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { opdId: true },
       });
+
+      if (userWithOpd?.opdId) {
+        notifications = await prisma.notification.findMany({
+          where: { opdId: userWithOpd.opdId },
+          orderBy: { createdAt: 'desc' },
+        });
+      }
     } else if (user.role === 'ADMIN' || user.role === 'BUPATI') {
       notifications = await prisma.notification.findMany({
         orderBy: { createdAt: 'desc' },
@@ -32,7 +40,7 @@ export async function GET(req) {
 
     return NextResponse.json(notifications, { status: 200 });
   } catch (error) {
-    'Gagal ambil notifikasi:', error;
+    console.error('Gagal ambil notifikasi:', error);
     return NextResponse.json(
       { error: 'Gagal mengambil notifikasi' },
       { status: 500 },
@@ -49,7 +57,7 @@ export async function POST(req) {
         userId,
         message,
         link,
-        opdId: Number(opdId),
+        opdId: opdId,
       },
     });
 

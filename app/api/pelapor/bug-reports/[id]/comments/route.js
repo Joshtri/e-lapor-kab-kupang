@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
     }
 
     const comments = await prisma.bugComment.findMany({
-      where: { bugReportId: Number(id) },
+      where: { bugReportId: id },
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
@@ -51,7 +51,7 @@ export async function POST(req, { params }) {
 
     const newComment = await prisma.bugComment.create({
       data: {
-        bugReportId: Number(id),
+        bugReportId: id,
         message,
         userId: user.id,
       },

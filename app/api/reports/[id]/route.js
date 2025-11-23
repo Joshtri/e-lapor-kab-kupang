@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
     const { id } = params;
 
     const report = await prisma.report.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       include: {
         user: {
           select: { id: true, email: true, name: true },
@@ -84,7 +84,7 @@ export async function PUT(req, { params }) {
     const updateData = await req.json();
 
     const report = await prisma.report.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       select: { opdId: true },
     });
 
@@ -101,7 +101,7 @@ export async function PUT(req, { params }) {
     }
 
     const updatedReport = await prisma.report.update({
-      where: { id: Number(id) },
+      where: { id },
       data: updateData,
     });
 
@@ -121,7 +121,7 @@ export async function DELETE(req, { params }) {
     const { id } = params;
 
     await prisma.report.delete({
-      where: { id: Number(id) },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Report deleted successfully' });

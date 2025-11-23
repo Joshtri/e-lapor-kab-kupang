@@ -10,17 +10,19 @@ export async function GET(req) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const opd = await prisma.oPD.findUnique({
-    where: { staffUserId: user.id },
+  // Get user with their OPD
+  const userData = await prisma.user.findUnique({
+    where: { id: user.id },
+    include: { opd: true },
   });
 
-  if (!opd) {
+  if (!userData?.opd) {
     return NextResponse.json({ error: 'OPD tidak ditemukan' }, { status: 404 });
   }
 
   const count = await prisma.report.count({
     where: {
-      opdId: opd.id,
+      opdId: userData.opd.id,
       isReadByOpd: false,
     },
   });

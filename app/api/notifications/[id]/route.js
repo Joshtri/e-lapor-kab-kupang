@@ -14,7 +14,7 @@ export async function DELETE(req, { params }) {
 
     // Hapus notifikasi berdasarkan ID
     const deleted = await prisma.notification.delete({
-      where: { id: Number(id) },
+      where: { id },
     });
 
     return NextResponse.json(

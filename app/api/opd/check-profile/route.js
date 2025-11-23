@@ -25,14 +25,15 @@ export async function GET() {
       );
     }
 
-    // Cek apakah user ini sudah punya profil OPD (berdasarkan staffUserId)
-    const opdProfile = await prisma.oPD.findUnique({
-      where: { staffUserId: userId },
+    // Cek apakah user ini sudah punya OPD (berdasarkan opdId)
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { opd: true },
     });
 
     return NextResponse.json({
-      hasProfile: !!opdProfile,
-      profile: opdProfile ?? null,
+      hasProfile: !!user?.opd,
+      profile: user?.opd ?? null,
     });
   } catch (error) {
     'Cek OPD profile error:', error;

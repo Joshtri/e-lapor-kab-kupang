@@ -18,12 +18,8 @@ export async function POST(req) {
       );
     }
 
-    // Cek apakah user sudah jadi staff OPD
-    const existingOPD = await prisma.oPD.findUnique({
-      where: { staffUserId },
-    });
-
-    if (existingOPD) {
+    // Cek apakah user sudah memiliki OPD (sudah jadi staff OPD)
+    if (user.opdId) {
       return NextResponse.json(
         { error: 'User ini sudah memiliki data OPD' },
         { status: 400 },
@@ -38,8 +34,13 @@ export async function POST(req) {
         email: email || null,
         telp: telp || null,
         website: website || null,
-        staffUserId,
       },
+    });
+
+    // Update user dengan opdId
+    await prisma.user.update({
+      where: { id: staffUserId },
+      data: { opdId: newOpd.id },
     });
 
     return NextResponse.json(newOpd);

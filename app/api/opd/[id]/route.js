@@ -7,7 +7,7 @@ export async function GET(req, { params }) {
 
   try {
     const opd = await prisma.oPD.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       include: {
         staff: true,
         reports: {
@@ -65,7 +65,7 @@ export async function PATCH(req, { params }) {
     
     // Update OPD in database
     const updatedOPD = await prisma.oPD.update({
-      where: { id: Number(id) },
+      where: { id },
       data: {
         name,
         alamat,
@@ -107,7 +107,7 @@ export async function DELETE(req, { params }) {
   try {
     // Check if OPD has associated reports
     const opdWithReports = await prisma.oPD.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       include: { reports: { select: { id: true }, take: 1 } }
     });
     
@@ -131,7 +131,7 @@ export async function DELETE(req, { params }) {
     
     // Delete the OPD
     await prisma.oPD.delete({
-      where: { id: Number(id) }
+      where: { id }
     });
     
     return new Response(null, { status: 204 });

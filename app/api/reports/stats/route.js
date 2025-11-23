@@ -7,7 +7,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId'); // Opsional, jika ada maka filter berdasarkan user
 
-    const whereClause = userId ? { userId: parseInt(userId) } : {}; // Filter jika ada userId
+    const whereClause = userId ? { userId } : {}; // Filter jika ada userId
 
     // Hitung jumlah laporan berdasarkan status
     const pending = await prisma.report.count({

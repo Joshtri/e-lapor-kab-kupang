@@ -24,7 +24,7 @@ export async function POST(req, context) {
     // 🔧 Buat komentar
     const newComment = await prisma.comment.create({
       data: {
-        reportId: Number(id),
+        reportId: id,
         userId: user.id,
         comment,
       },
@@ -83,7 +83,7 @@ export async function GET(req, context) {
 
   try {
     const comments = await prisma.comment.findMany({
-      where: { reportId: Number(id) },
+      where: { reportId: id },
       include: {
         user: {
           select: {

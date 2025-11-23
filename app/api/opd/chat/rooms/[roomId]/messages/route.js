@@ -16,18 +16,19 @@ export async function GET(req, { params }) {
     const decoded = verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
 
-    const opd = await prisma.oPD.findUnique({
-      where: { staffUserId: userId },
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { opd: true },
     });
 
-    if (!opd) {
+    if (!user?.opd) {
       return NextResponse.json({ error: 'OPD not found' }, { status: 404 });
     }
 
     // ✅ Tandai semua pesan dari pelapor sebagai sudah dibaca
     await prisma.chatMessage.updateMany({
       where: {
-        roomId: parseInt(roomId),
+        roomId: roomId,
         senderId: { not: userId },
         isRead: false,
       },
@@ -37,7 +38,7 @@ export async function GET(req, { params }) {
     });
 
     const messages = await prisma.chatMessage.findMany({
-      where: { roomId: parseInt(roomId) },
+      where: { roomId },
       orderBy: { createdAt: 'asc' },
       include: {
         sender: {

@@ -33,7 +33,7 @@ const ChangeOpdModal = ({
 
       // Find current OPD name for logging purposes
       if (currentOpdId) {
-        const currentOpd = data.find((opd) => opd.id === Number(currentOpdId));
+        const currentOpd = data.find((opd) => opd.id === currentOpdId);
         if (currentOpd) {
           setCurrentOpdName(currentOpd.name);
         }
@@ -47,20 +47,20 @@ const ChangeOpdModal = ({
     if (!selectedOpdId)
       return toast.error('Silakan pilih OPD terlebih dahulu.');
 
-    if (Number(selectedOpdId) === currentOpdId) {
+    if (selectedOpdId === currentOpdId) {
       return toast.info('OPD yang dipilih sama dengan OPD saat ini.');
     }
 
     setLoading(true);
     try {
-      const selectedOpd = opds.find((opd) => opd.id === Number(selectedOpdId));
+      const selectedOpd = opds.find((opd) => opd.id === selectedOpdId);
       const selectedOpdName = selectedOpd ? selectedOpd.name : 'Unknown';
 
       const res = await fetch(`/api/reports/${reportId}/opd-terkait-notify`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          opdId: Number(selectedOpdId),
+          opdId: selectedOpdId,
           previousOpdId: currentOpdId,
           previousOpdName: currentOpdName,
           newOpdName: selectedOpdName,

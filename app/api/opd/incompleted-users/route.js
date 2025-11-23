@@ -4,23 +4,14 @@ import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // Ambil semua user yang role-nya OPD
-    const opdUsers = await prisma.user.findMany({
-      where: { role: 'OPD' },
+    // Ambil semua user yang role-nya OPD dan belum memiliki opdId (belum punya profil instansi)
+    const incompleteUsers = await prisma.user.findMany({
+      where: {
+        role: 'OPD',
+        opdId: null, // Belum memiliki OPD
+      },
       select: { id: true, name: true, email: true },
     });
-
-    // Ambil semua staffUserId dari tabel OPD (sudah jadi staff)
-    const opdStaffs = await prisma.oPD.findMany({
-      select: { staffUserId: true },
-    });
-
-    const userIdsWithProfile = opdStaffs.map((opd) => opd.staffUserId);
-
-    // Filter user OPD yang belum jadi staff (belum punya profil instansi)
-    const incompleteUsers = opdUsers.filter(
-      (user) => !userIdsWithProfile.includes(user.id),
-    );
 
     return NextResponse.json({ incompleteUsers });
   } catch (error) {

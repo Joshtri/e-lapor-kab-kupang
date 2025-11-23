@@ -12,7 +12,12 @@
       "Bash(git checkout:*)",
       "Bash(grep:*)",
       "Bash(cat:*)",
-      "Bash(npm install)"
+      "Bash(npm install)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(powershell:*)",
+      "Bash(npx prisma generate)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma db push:*)"
     ],
     "deny": [],
     "ask": []

@@ -16,8 +16,8 @@ export async function PATCH(req) {
     }
 
     await prisma.report.update({
-      where: { id: Number(reportId) },
-      data: { opdId: Number(opdId) },
+      where: { id: reportId },
+      data: { opdId },
     });
 
     return NextResponse.json({ success: true });

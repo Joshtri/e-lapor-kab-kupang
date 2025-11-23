@@ -9,12 +9,13 @@ export async function GET(req) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // ✅ Ambil profile OPD berdasarkan user yang login
-  const opd = await prisma.oPD.findUnique({
-    where: { staffUserId: user.id },
+  // ✅ Get user with their OPD assignment
+  const userData = await prisma.user.findUnique({
+    where: { id: user.id },
+    include: { opd: true },
   });
 
-  if (!opd) {
+  if (!userData?.opd) {
     return NextResponse.json(
       { error: 'OPD profile not found' },
       { status: 404 },
@@ -23,7 +24,7 @@ export async function GET(req) {
 
   // ✅ Ambil semua chat room yang ditujukan ke OPD ini
   const rooms = await prisma.chatRoom.findMany({
-    where: { opdId: opd.id },
+    where: { opdId: userData.opd.id },
     include: {
       user: { select: { id: true, name: true } },
       messages: {

@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
 
   try {
     const bug = await prisma.bugReport.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       include: {
         user: {
           select: { id: true, name: true },
@@ -39,7 +39,7 @@ export async function GET(req, { params }) {
 }
 
 export async function PATCH(req, { params }) {
-  const id = parseInt(params.id);
+  const id = params.id;
   const { statusProblem, priorityProblem } = await req.json();
 
   try {

@@ -14,14 +14,13 @@ export async function GET(req) {
   try {
     const decoded = verify(token, process.env.JWT_SECRET);
 
-    // Cari OPD berdasarkan user yang login
-    const opd = await prisma.oPD.findUnique({
-      where: {
-        staffUserId: decoded.id,
-      },
+    // Get user with their OPD
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      include: { opd: true },
     });
 
-    if (!opd) {
+    if (!user?.opd) {
       return NextResponse.json(
         { error: 'OPD tidak ditemukan' },
         { status: 404 },
@@ -31,7 +30,7 @@ export async function GET(req) {
     // Ambil semua report yang ditujukan ke OPD tersebut
     const reports = await prisma.report.findMany({
       where: {
-        opdId: opd.id,
+        opdId: user.opd.id,
       },
       orderBy: {
         createdAt: 'desc',

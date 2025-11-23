@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 
 export async function PUT(request, params, id) {
   try {
-    const bugId = parseInt(params.id);
+    const bugId = params.id;
     const { statusProblem } = await request.json();
 
     // Validate input

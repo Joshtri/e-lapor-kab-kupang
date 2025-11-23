@@ -21,7 +21,7 @@ export async function GET(req) {
 
     // ✅ Optimize: Exclude image blob, paginate, minimal includes
     const reports = await prisma.report.findMany({
-      where: userId ? { userId: Number(userId) } : {},
+      where: userId ? { userId } : {},
       select: {
         id: true,
         userId: true,
@@ -48,7 +48,7 @@ export async function GET(req) {
 
     // ✅ Get total count for pagination
     const total = await prisma.report.count({
-      where: userId ? { userId: Number(userId) } : {},
+      where: userId ? { userId } : {},
     });
 
     return NextResponse.json({
@@ -77,14 +77,14 @@ export async function POST(req) {
     }
 
     const form = await req.formData();
-    const userId = parseInt(form.get('userId'));
+    const userId = form.get('userId');
     const title = form.get('title');
     const category = form.get('category');
     const priority = form.get('priority');
     const subcategory = form.get('subcategory') || '-';
     const location = form.get('location') || '-';
     const description = form.get('description');
-    const opdId = parseInt(form.get('opdId'));
+    const opdId = form.get('opdId');
     const file = form.get('image');
     const imageBuffer = await convertFileToBuffer(file);
 

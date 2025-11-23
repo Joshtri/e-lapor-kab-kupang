@@ -4,13 +4,13 @@ import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function PATCH(req, { params }) {
     const authUser = await getAuthenticatedUser(req);
-    const userId = parseInt(params.id);
+    const userId = params.id;
 
     if (!authUser || authUser.id !== userId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (isNaN(userId)) {
+    if (!userId || typeof userId !== 'string') {
         return NextResponse.json({ error: 'ID tidak valid' }, { status: 400 });
     }
 

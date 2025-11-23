@@ -10,11 +10,12 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const opd = await prisma.oPD.findUnique({
-      where: { staffUserId: user.id },
+    const userData = await prisma.user.findUnique({
+      where: { id: user.id },
+      include: { opd: true },
     });
 
-    if (!opd) {
+    if (!userData?.opd) {
       return NextResponse.json(
         { error: 'OPD tidak ditemukan' },
         { status: 404 },
@@ -22,7 +23,7 @@ export async function GET(req) {
     }
 
     const reports = await prisma.report.findMany({
-      where: { opdId: opd.id },
+      where: { opdId: userData.opd.id },
     });
 
     // 1️⃣ Laporan per bulan (12 bulan terakhir)

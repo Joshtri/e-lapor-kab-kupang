@@ -10,7 +10,7 @@ export async function GET(req, context) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const roomId = Number(context.params.roomId);
+    const roomId = context.params.roomId;
 
     const room = await prisma.chatRoom.findUnique({
       where: { id: roomId },
@@ -67,7 +67,7 @@ export async function POST(req) {
     }
 
     const room = await prisma.chatRoom.findUnique({
-      where: { id: Number(roomId) },
+      where: { id: roomId },
     });
 
     if (!room) {
@@ -89,7 +89,7 @@ export async function POST(req) {
 
     const message = await prisma.chatMessage.create({
       data: {
-        roomId: Number(roomId),
+        roomId: roomId,
         content,
         senderId: user.id,
         isRead: false,

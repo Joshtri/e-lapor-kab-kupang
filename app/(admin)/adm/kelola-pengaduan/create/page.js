@@ -101,12 +101,12 @@ export default function CreateReportPage() {
       const formData = new FormData();
 
       // Convert string values to appropriate types
-      formData.append('userId', parseInt(data.userId));
+      formData.append('userId', data.userId);
       formData.append('title', data.title);
       formData.append('category', data.category);
       formData.append('subcategory', data.subcategory);
       formData.append('priority', data.priority);
-      formData.append('opdId', parseInt(data.opdId));
+      formData.append('opdId', data.opdId);
       formData.append('description', data.description);
       formData.append('location', data.location || '-');
 

@@ -1,5 +1,5 @@
-import LoadingMail from '@/components/ui/loading/LoadingMail';
+import LoadingScreen from '@/components/ui/loading/LoadingScreen';
 
 export default function Loading() {
-  return <LoadingMail />;
+  return <LoadingScreen isLoading={true} />;
 }

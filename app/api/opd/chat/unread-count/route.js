@@ -9,18 +9,19 @@ export async function GET(req) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // ✅ Temukan profil OPD berdasarkan user yang login
-  const opd = await prisma.oPD.findUnique({
-    where: { staffUserId: user.id },
+  // ✅ Get user with their OPD
+  const userData = await prisma.user.findUnique({
+    where: { id: user.id },
+    include: { opd: true },
   });
 
-  if (!opd) {
+  if (!userData?.opd) {
     return NextResponse.json({ error: 'OPD not found' }, { status: 404 });
   }
 
   // ✅ Ambil semua room yang ditujukan ke OPD ini
   const rooms = await prisma.chatRoom.findMany({
-    where: { opdId: opd.id },
+    where: { opdId: userData.opd.id },
     select: { id: true },
   });
 

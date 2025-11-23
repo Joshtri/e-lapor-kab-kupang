@@ -9,7 +9,7 @@ export async function POST(req, context) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const roomId = Number(context.params.roomId);
+    const roomId = context.params.roomId;
     const { content } = await req.json();
 
     if (!content) {

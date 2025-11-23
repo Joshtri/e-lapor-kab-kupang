@@ -9,11 +9,12 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const opd = await prisma.oPD.findUnique({
-      where: { staffUserId: user.id },
+    const userData = await prisma.user.findUnique({
+      where: { id: user.id },
+      include: { opd: true },
     });
 
-    if (!opd) {
+    if (!userData?.opd) {
       return NextResponse.json(
         { error: 'Profil OPD belum lengkap', code: 'NO_PROFILE' },
         { status: 403 },
@@ -21,7 +22,7 @@ export async function GET() {
     }
 
     const reports = await prisma.report.findMany({
-      where: { opdId: opd.id },
+      where: { opdId: userData.opd.id },
     });
 
     const now = new Date();

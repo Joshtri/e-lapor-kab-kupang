@@ -111,7 +111,7 @@ export default function ChatOpdPage() {
     setCreatingChat(true);
     try {
       // Check if room already exists
-      const existingRoom = rooms.find((r) => r.opdId === Number(selectedOpd));
+      const existingRoom = rooms.find((r) => r.opdId === selectedOpd);
 
       if (existingRoom) {
         handleRoomSelect(existingRoom);
@@ -121,7 +121,7 @@ export default function ChatOpdPage() {
 
       // Create new room
       const res = await axios.post('/api/pelapor/chat/create-room', {
-        opdId: Number(selectedOpd),
+        opdId: selectedOpd,
       });
 
       // Add to rooms list and select it

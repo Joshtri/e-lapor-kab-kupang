@@ -5,9 +5,9 @@ import { encrypt } from '@/lib/encryption';
 import bcrypt from 'bcrypt';
 
 export async function GET(req, { params }) {
-  const userId = parseInt(params.id);
+  const userId = params.id;
 
-  if (isNaN(userId)) {
+  if (!userId || typeof userId !== 'string') {
     return new Response(JSON.stringify({ error: 'Invalid ID' }), {
       status: 400,
     });
@@ -61,9 +61,9 @@ export async function GET(req, { params }) {
 }
 
 export async function DELETE(_req, { params }) {
-  const userId = parseInt(params.id);
+  const userId = params.id;
 
-  if (isNaN(userId)) {
+  if (!userId || typeof userId !== 'string') {
     return NextResponse.json({ error: 'ID tidak valid' }, { status: 400 });
   }
 
@@ -128,7 +128,7 @@ export async function PATCH(req, { params }) {
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: Number(id) },
+      where: { id },
       data: updatedData,
     });
 

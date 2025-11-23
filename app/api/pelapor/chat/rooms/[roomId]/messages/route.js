@@ -10,7 +10,7 @@ export async function GET(req, context) {
     if (!user)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const roomId = Number(context.params.roomId);
+    const roomId = context.params.roomId;
 
     const room = await prisma.chatRoom.findUnique({
       where: { id: roomId },

@@ -73,7 +73,7 @@ export const fetchAvailableOpdUsers = async () => {
 export const createOpdWithStaff = async (opdData) => {
   const { data } = await axios.post('/api/opd/create', {
     ...opdData,
-    staffUserId: parseInt(opdData.staffUserId),
+    staffUserId: opdData.staffUserId,
   });
   return data;
 };

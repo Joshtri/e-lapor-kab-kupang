@@ -8,8 +8,8 @@ export async function PATCH(req, { params }) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const reportId = Number(params.id);
-  if (isNaN(reportId)) {
+  const reportId = params.id;
+  if (!reportId || typeof reportId !== 'string') {
     return NextResponse.json({ error: 'Invalid report ID' }, { status: 400 });
   }
 

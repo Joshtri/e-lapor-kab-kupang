@@ -21,9 +21,22 @@ export const getColumns = () => [
   },
   {
     header: 'Staff PJ',
-    accessor: 'staff.name',
+    accessor: 'staff',
     gridSection: 'header',
-    cell: (opd) => opd.staff?.name || '-',
+    cell: (opd) => {
+      if (!opd.staff || opd.staff.length === 0) {
+        return '-';
+      }
+      return (
+        <div className="flex flex-col gap-1">
+          {opd.staff.map((person) => (
+            <span key={person.id} className="text-sm">
+              {person.name}
+            </span>
+          ))}
+        </div>
+      );
+    },
   },
   {
     header: 'Laporan',

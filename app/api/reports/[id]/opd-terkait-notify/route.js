@@ -20,7 +20,7 @@ export async function PATCH(req, { params }) {
 
     // Validasi apakah OPD ada
     const opd = await prisma.oPD.findUnique({
-      where: { id: Number(opdId) },
+      where: { id: opdId },
     });
 
     if (!opd) {
@@ -34,7 +34,7 @@ export async function PATCH(req, { params }) {
     let logPreviousOpdName = previousOpdName;
     if (!logPreviousOpdName && previousOpdId) {
       const prevOpd = await prisma.oPD.findUnique({
-        where: { id: Number(previousOpdId) },
+        where: { id: previousOpdId },
         select: { name: true },
       });
       if (prevOpd) {
@@ -44,9 +44,9 @@ export async function PATCH(req, { params }) {
 
     // Update laporan
     const updatedReport = await prisma.report.update({
-      where: { id: Number(id) },
+      where: { id },
       data: {
-        opdId: Number(opdId),
+        opdId: opdId,
         isReadByOpd: false,
         assignedAt: new Date(),
         updatedAt: new Date(),
@@ -79,7 +79,7 @@ export async function PATCH(req, { params }) {
 
     await prisma.log.create({
       data: {
-        reportId: Number(id),
+        reportId: id,
         userId: user.id,
         action: 'STATUS_CHANGED', // Using existing action enum
         details: logMessage, // Using the details field that exists in your schema

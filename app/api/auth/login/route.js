@@ -85,7 +85,7 @@ export async function POST(req) {
       },
     );
   } catch (error) {
-    ('Login Error:', error);
+    console.error('Login Error:', error);
     return NextResponse.json(
       { error: 'Terjadi kesalahan pada server.' },
       { status: 500 },

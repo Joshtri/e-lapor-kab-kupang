@@ -67,7 +67,7 @@ export default function PengaduanJurnalList() {
     const matchesOpd =
       filterOpd === 'all' ||
       (filterOpd === 'none' && !report.opdId) ||
-      report.opdId === parseInt(filterOpd);
+      report.opdId === filterOpd;
 
     return matchesSearch && matchesStatus && matchesOpd;
   });

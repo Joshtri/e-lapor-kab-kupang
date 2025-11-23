@@ -38,7 +38,7 @@ export async function PATCH(req, { params }) {
     }
 
     const updatedReport = await prisma.report.update({
-      where: { id: Number(id) },
+      where: { id },
       data: {
         ...(bupatiStatus && { bupatiStatus }),
         ...(opdStatus && { opdStatus }),

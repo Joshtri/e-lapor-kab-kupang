@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
+  id            String   @id @db.VarChar(50)
   name          String   @db.VarChar(100)
   nikNumber     String?  @unique
   contactNumber String?  @db.VarChar(15)
@@ -30,8 +30,10 @@ model User {
   resetPasswordToken   String?   @db.Text
   resetPasswordExpires DateTime?
 
-  // ❌ HAPUS: fields dan references
-  opd            OPD?          @relation("UserToOPD")
+  // ✅ OPD yang terkait jika role = OPD
+  opdId  String? @db.VarChar(50) // Null jika bukan OPD staff
+  opd    OPD?    @relation("UserToOPD", fields: [opdId], references: [id])
+
   sentEmails     Email[]       @relation("SentEmails")
   receivedEmails Email[]       @relation("ReceivedEmails")
   BugComment     BugComment[]
@@ -40,26 +42,25 @@ model User {
 }
 
 model OPD {
-  id      Int     @id @default(autoincrement())
+  id      String  @id @db.VarChar(50)
   name    String  @db.VarChar(255) // nama instansi, misalnya "Dinas Kesehatan"
   alamat  String? @db.VarChar(255) // opsional: alamat instansi
   email   String? @unique @db.VarChar(100) // email resmi instansi
   telp    String? @db.VarChar(20) // telepon kantor, bukan staff
   website String? @db.VarChar(100) // opsional: website instansi
 
-  staffUserId Int  @unique
-  staff       User @relation("UserToOPD", fields: [staffUserId], references: [id]) // ✅ hanya di sini pakai fields & references
-
-  reports   Report[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  ChatRoom  ChatRoom[]
+  staff         User[]         @relation("UserToOPD") // Multiple staff users can belong to one OPD
+  reports       Report[]
+  notifications Notification[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  ChatRoom      ChatRoom[]
 }
 
-model Report { //laporan. 
-  id     Int  @id @default(autoincrement())
-  userId Int
-  opdId  Int? // mengacu ke userId OPD
+model Report { //laporan.
+  id     String  @id @db.VarChar(50)
+  userId String  @db.VarChar(50)
+  opdId  String? @db.VarChar(50) // mengacu ke userId OPD
 
   title       String @db.VarChar(255)
   description String
@@ -92,9 +93,9 @@ model Report { //laporan.
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
-  reportId  Int
-  userId    Int
+  id        String   @id @db.VarChar(50)
+  reportId  String   @db.VarChar(50)
+  userId    String   @db.VarChar(50)
   comment   String
   createdAt DateTime @default(now())
 
@@ -103,9 +104,9 @@ model Comment {
 }
 
 model Log {
-  id       Int     @id @default(autoincrement())
-  reportId Int
-  userId   Int
+  id       String  @id @db.VarChar(50)
+  reportId String  @db.VarChar(50)
+  userId   String  @db.VarChar(50)
   action   Action
   details  String? // Add this field to store specific details about the action
 
@@ -116,8 +117,8 @@ model Log {
 }
 
 model BugReport {
-  id              Int         @id @default(autoincrement())
-  userId          Int
+  id              String      @id @db.VarChar(50)
+  userId          String      @db.VarChar(50)
   title           String      @db.VarChar(255)
   description     String
   priorityProblem BugPriority @default(LOW)
@@ -131,9 +132,9 @@ model BugReport {
 }
 
 model BugComment {
-  id          Int      @id @default(autoincrement())
-  bugReportId Int
-  userId      Int
+  id          String   @id @db.VarChar(50)
+  bugReportId String   @db.VarChar(50)
+  userId      String   @db.VarChar(50)
   message     String   @db.Text
   createdAt   DateTime @default(now())
 
@@ -142,22 +143,22 @@ model BugComment {
 }
 
 model Notification {
-  id        Int      @id @default(autoincrement())
-  userId    Int? // Untuk user biasa, bisa null jika ditujukan ke OPD
-  opdId     Int? // Berisi userId dari OPD
+  id        String   @id @default(uuid()) @db.VarChar(50)
+  userId    String?  @db.VarChar(50) // Untuk user biasa, bisa null jika ditujukan ke OPD
+  opdId     String?  @db.VarChar(50) // ID OPD (bukan userId)
   message   String   @db.VarChar(255)
   link      String?  @db.VarChar(255)
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id])
-  // opd  OPD?  @relation(fields: [opdId], references: [userId])
+  opd  OPD?  @relation(fields: [opdId], references: [id])
 }
 
 model Email {
-  id          Int      @id @default(autoincrement())
-  senderId    Int // ID of the admin who sent the email
-  recipientId Int // ID of the PELAPOR who received the email
+  id          String   @id @db.VarChar(50)
+  senderId    String   @db.VarChar(50) // ID of the admin who sent the email
+  recipientId String   @db.VarChar(50) // ID of the PELAPOR who received the email
   subject     String   @db.VarChar(255)
   content     String   @db.Text
   sentAt      DateTime @default(now())
@@ -168,9 +169,9 @@ model Email {
 }
 
 model ChatRoom {
-  id         Int      @id @default(autoincrement())
-  userId     Int // Pelapor
-  opdId      Int? // Jika chat ditujukan ke OPD
+  id         String   @id @db.VarChar(50)
+  userId     String   @db.VarChar(50) // Pelapor
+  opdId      String?  @db.VarChar(50) // Jika chat ditujukan ke OPD
   isToBupati Boolean // true jika chat ke Bupati
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -182,9 +183,9 @@ model ChatRoom {
 }
 
 model ChatMessage {
-  id        Int      @id @default(autoincrement())
-  roomId    Int
-  senderId  Int
+  id        String   @id @db.VarChar(50)
+  roomId    String   @db.VarChar(50)
+  senderId  String   @db.VarChar(50)
   content   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())

@@ -3,7 +3,7 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
 export async function PATCH(req, { params }) {
-  const id = parseInt(params.id);
+  const id = params.id;
   const { statusProblem, priorityProblem } = await req.json();
 
   try {

@@ -23,7 +23,7 @@ export async function PATCH(req, { params }) {
 
     // ✅ Update report + ambil relasi user
     const updatedReport = await prisma.report.update({
-      where: { id: Number(id) },
+      where: { id },
       data: { opdStatus },
       include: {
         user: true,

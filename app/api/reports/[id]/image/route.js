@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
     }
 
     const report = await prisma.report.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       select: {
         image: true,
         userId: true,

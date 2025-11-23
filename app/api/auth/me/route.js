@@ -79,7 +79,7 @@ export async function GET(req) {
 
     return NextResponse.json(responseData);
   } catch (error) {
-    '[GET /api/auth/me]', error;
+    console.error('[GET /api/auth/me]', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 },

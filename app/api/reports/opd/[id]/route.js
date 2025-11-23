@@ -20,7 +20,7 @@ export async function GET(req, { params }) {
 
     // Build where clause
     const where = {
-      opdId: parseInt(opdId),
+      opdId: opdId,
     };
 
     if (category) {

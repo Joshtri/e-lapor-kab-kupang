@@ -14,27 +14,32 @@ export async function GET(req) {
   }
 
   try {
-    const opd = await prisma.oPD.findFirst({
-      where: { staffUserId: user.id },
+    // Get user with their OPD
+    const userData = await prisma.user.findUnique({
+      where: { id: user.id },
       include: {
-        staff: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
+        opd: {
+          include: {
+            staff: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
           },
         },
       },
     });
 
-    if (!opd) {
+    if (!userData?.opd) {
       return NextResponse.json(
         { error: 'Profil OPD tidak ditemukan' },
         { status: 404 },
       );
     }
 
-    return NextResponse.json(opd, { status: 200 });
+    return NextResponse.json(userData.opd, { status: 200 });
   } catch (error) {
     'Gagal mengambil data OPD:', error;
     return NextResponse.json(
