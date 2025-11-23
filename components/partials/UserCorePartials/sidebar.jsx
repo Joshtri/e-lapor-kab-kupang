@@ -46,7 +46,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
     chat: 0,
     reports: 0,
   });
-  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [expandedMenus, setExpandedMenus] = useState({});
 
   const colorMap = {
     blue: {
@@ -151,16 +151,28 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
     );
   };
 
+  const toggleMenu = (menuName) => {
+    setExpandedMenus((prev) => ({
+      ...prev,
+      [menuName]: !prev[menuName],
+    }));
+  };
+
   const renderRoute = (route, index) => {
     if (route.type === 'expandable') {
       const normalizedPathname = pathname?.replace(/\/$/, '') || '';
-      const isActive = normalizedPathname.startsWith('/adm/notifications');
+      // Check if any subroute is active
+      const isActive = route.subRoutes?.some((subRoute) =>
+        normalizedPathname.startsWith(subRoute.path.replace(/\/$/, ''))
+      );
+      const isExpanded = expandedMenus[route.name] || false;
+
       return (
         <div key={index} className="space-y-1">
           <Tooltip text={route.name} position="right" disabled={isSidebarOpen}>
             <button
               type="button"
-              onClick={() => setIsNotifOpen(!isNotifOpen)}
+              onClick={() => toggleMenu(route.name)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm transition-all group ${
                 isActive
                   ? `${colorMap[color].bg} ${colorMap[color].text} ${colorMap[color].darkBg} ${colorMap[color].darkText} ring-2 ring-offset-1 ring-offset-white dark:ring-offset-gray-900 ${colorMap[color].border.replace('border-', 'ring-')}`
@@ -174,14 +186,14 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
               {isSidebarOpen && (
                 <HiOutlineChevronRight
                   className={`h-4 w-4 transition-transform duration-300 ${
-                    isNotifOpen ? 'rotate-90' : ''
+                    isExpanded ? 'rotate-90' : ''
                   }`}
                 />
               )}
             </button>
           </Tooltip>
 
-          {isSidebarOpen && isNotifOpen && (
+          {isSidebarOpen && isExpanded && (
             <ul className="ml-6 space-y-1 mt-1">
               {route.subRoutes.map((subRoute, subIndex) => (
                 <li key={subIndex}>
