@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma'; // pastikan path prisma kamu benar
 import { NextResponse } from 'next/server';
 import { getMaskedNik } from '@/utils/mask';
-import { encrypt } from '@/lib/encryption';
+import { encrypt, decrypt } from '@/lib/encryption';
 import bcrypt from 'bcrypt';
 
 export async function GET(req, { params }) {
@@ -44,13 +44,43 @@ export async function GET(req, { params }) {
       });
     }
 
-    // Tambahkan masking ke dalam user
-    const userWithMaskedNik = {
+    // Decrypt NIK/NIP untuk keperluan edit, dan tambahkan masking untuk display
+    let decryptedNik = '';
+    let decryptedNip = '';
+
+    // Decrypt nikNumber (for PELAPOR, ADMIN, BUPATI)
+    try {
+      if (user.nikNumber && user.nikNumber.includes(':')) {
+        decryptedNik = decrypt(user.nikNumber);
+      } else {
+        decryptedNik = user.nikNumber || '';
+      }
+    } catch (error) {
+      console.warn('Failed to decrypt nikNumber:', error);
+      decryptedNik = '';
+    }
+
+    // Decrypt nipNumber (for OPD staff)
+    try {
+      if (user.nipNumber && user.nipNumber.includes(':')) {
+        decryptedNip = decrypt(user.nipNumber);
+      } else {
+        decryptedNip = user.nipNumber || '';
+      }
+    } catch (error) {
+      console.warn('Failed to decrypt nipNumber:', error);
+      decryptedNip = '';
+    }
+
+    const userWithNikData = {
       ...user,
       nikMasked: getMaskedNik(user.nikNumber),
+      nipMasked: getMaskedNik(user.nipNumber),
+      nikDecrypted: decryptedNik, // For edit forms (PELAPOR, ADMIN, BUPATI)
+      nipDecrypted: decryptedNip, // For edit forms (OPD staff)
     };
 
-    return NextResponse.json({ user: userWithMaskedNik, reports }, { status: 200 });
+    return NextResponse.json({ user: userWithNikData, reports }, { status: 200 });
   } catch (error) {
     console.error('❌ Error fetching user detail:', error);
     return NextResponse.json(
@@ -91,19 +121,22 @@ export async function DELETE(_req, { params }) {
 export async function PATCH(req, { params }) {
   try {
     const { id } = params;
-    const { name, email, contactNumber, role, nikNumber, password } =
+    const { name, email, contactNumber, role, nikNumber, nipNumber, password, opdId } =
       await req.json();
 
-    if (!name || !email || !role || !nikNumber) {
+    // Staff OPD uses nipNumber (18 digits), others use nikNumber (16 digits)
+    const identityNumber = role === 'OPD' ? nipNumber : nikNumber;
+
+    if (!name || !email || !role || !identityNumber) {
       return NextResponse.json(
-        { error: 'Field nama, email, role, dan NIK wajib diisi.' },
+        { error: 'Field nama, email, role, dan nomor identitas wajib diisi.' },
         { status: 400 },
       );
     }
 
-    // Validasi format NIK
+    // Validasi format NIK (16) atau NIP (18)
     const isValidIdentitas =
-      /^\d{16}$/.test(nikNumber) || /^\d{18}$/.test(nikNumber);
+      /^\d{16}$/.test(identityNumber) || /^\d{18}$/.test(identityNumber);
 
     if (!isValidIdentitas) {
       return NextResponse.json(
@@ -112,7 +145,7 @@ export async function PATCH(req, { params }) {
       );
     }
 
-    const encryptedNik = encrypt(nikNumber);
+    const encryptedIdentity = encrypt(identityNumber);
 
     // Jika password diisi, hash ulang
     let updatedData = {
@@ -120,8 +153,19 @@ export async function PATCH(req, { params }) {
       email,
       contactNumber,
       role,
-      nikNumber: encryptedNik,
     };
+
+    // Set nikNumber or nipNumber based on role
+    if (role === 'OPD') {
+      updatedData.nipNumber = encryptedIdentity;
+      updatedData.nikNumber = null; // Clear nikNumber for OPD
+      // Handle opdId (can be null or empty string to unassign)
+      updatedData.opdId = opdId === '' || opdId === null ? null : opdId;
+    } else {
+      updatedData.nikNumber = encryptedIdentity;
+      updatedData.nipNumber = null; // Clear nipNumber for non-OPD
+      updatedData.opdId = null; // Non-OPD users don't have opdId
+    }
 
     if (password) {
       updatedData.password = await bcrypt.hash(password, 10);
@@ -142,7 +186,7 @@ export async function PATCH(req, { params }) {
       },
     });
   } catch (error) {
-    'Gagal mengupdate user:', error;
+    console.error('Gagal mengupdate user:', error);
     return NextResponse.json(
       { error: 'Terjadi kesalahan saat mengupdate user.' },
       { status: 500 },
