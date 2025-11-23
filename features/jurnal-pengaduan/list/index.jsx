@@ -614,6 +614,9 @@ export default function PengaduanJurnalList() {
         loading={loadingReports || loadingOpd}
         data={filteredReports}
         columns={columns}
+        pageSize={10}
+        showPageSizeSelector={true}
+        pageSizeOptions={[10, 25, 50, 75, 100]}
         filters={[
           {
             type: 'select',
