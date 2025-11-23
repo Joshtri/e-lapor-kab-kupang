@@ -17,7 +17,13 @@
       "Bash(powershell:*)",
       "Bash(npx prisma generate)",
       "Bash(npx prisma generate:*)",
-      "Bash(npx prisma db push:*)"
+      "Bash(npx prisma db push:*)",
+      "Bash(git reset:*)",
+      "Bash(curl:*)",
+      "Bash(test -f:*)",
+      "Bash(dir:*)",
+      "Bash(npm run dev:*)",
+      "Bash(psql:*)"
     ],
     "deny": [],
     "ask": []
