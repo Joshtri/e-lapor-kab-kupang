@@ -46,16 +46,16 @@ const LoadingListGrid = ({
       animate={{ opacity: 1 }}
       className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm"
     >
-      <table className="w-full">
+      <table className="w-full table-auto">
         <thead className="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
           <tr>
             {Array.from({ length: columnCount }).map((_, idx) => (
-              <th key={idx} className="px-4 py-4">
-                <SkeletonPulse height="h-3" width="w-3/4" radius="rounded-md" />
+              <th key={idx} className="px-4 py-4 min-w-[150px]">
+                <SkeletonPulse height="h-3" width="w-full" radius="rounded-md" />
               </th>
             ))}
-            <th className="px-4 py-4">
-              <SkeletonPulse height="h-3" width="w-1/3" radius="rounded-md" />
+            <th className="px-4 py-4 min-w-[120px]">
+              <SkeletonPulse height="h-3" width="w-full" radius="rounded-md" />
             </th>
           </tr>
         </thead>
@@ -69,22 +69,22 @@ const LoadingListGrid = ({
               className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
             >
               {Array.from({ length: columnCount }).map((_, colIdx) => (
-                <td key={colIdx} className="px-4 py-4">
+                <td key={colIdx} className="px-4 py-4 min-w-[150px]">
                   <div className="space-y-2">
                     <SkeletonPulse
                       height="h-3"
-                      width={colIdx === 0 ? 'w-4/5' : 'w-3/4'}
+                      width="w-full"
                       radius="rounded-md"
                     />
                     <SkeletonPulse
                       height="h-2"
-                      width={colIdx === 0 ? 'w-3/5' : 'w-1/2'}
+                      width="w-4/5"
                       radius="rounded-md"
                     />
                   </div>
                 </td>
               ))}
-              <td className="px-4 py-4">
+              <td className="px-4 py-4 min-w-[120px]">
                 <div className="flex gap-2">
                   <motion.div
                     className="h-8 w-8 rounded-md bg-gray-200 dark:bg-gray-700"
