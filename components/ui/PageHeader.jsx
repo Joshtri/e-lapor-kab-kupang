@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 
 export default function PageHeader({
   title,
+  description = '', // Optional description text below title
   backHref = '/',
   showSearch = false,
   showBackButton = true,
@@ -143,12 +144,18 @@ export default function PageHeader({
       <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-4">
         {title}
       </h1>
+      {description && (
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          {description}
+        </p>
+      )}
     </section>
   );
 }
 
 PageHeader.propTypes = {
   title: PropTypes.string.isRequired,
+  description: PropTypes.string,
   backHref: PropTypes.string,
   showSearch: PropTypes.bool,
   showBackButton: PropTypes.bool,
