@@ -9,6 +9,7 @@ import ListGrid, {
   ActionButtonsPresets,
 } from '@/components/ui/datatable/ListGrid';
 import LoadingScreen from '@/components/ui/loading/LoadingScreen';
+import ConfirmationDialog from '@/components/common/ConfirmationDialog';
 import { fetchOpds, deleteOpd } from '@/services/opdService';
 import { getColumns } from './columns';
 
@@ -51,6 +52,8 @@ export default function KelolaOrganisasiList() {
   const [filterWilayah, setFilterWilayah] = useState('ALL');
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   // Filter and search
   const filteredOpds = useMemo(() => {
@@ -75,9 +78,19 @@ export default function KelolaOrganisasiList() {
     });
   }, [opds, filterWilayah, filterStatus, searchQuery]);
 
-  // Delete handler
+  // Delete handler - open confirmation modal
   const handleDelete = (opd) => {
-    deleteOpdMutation.mutate(opd.id);
+    setItemToDelete(opd);
+    setDeleteModalOpen(true);
+  };
+
+  // Confirm delete
+  const handleDeleteConfirm = () => {
+    if (itemToDelete) {
+      deleteOpdMutation.mutate(itemToDelete.id);
+      setDeleteModalOpen(false);
+      setItemToDelete(null);
+    }
   };
 
   // Get columns
@@ -132,6 +145,8 @@ export default function KelolaOrganisasiList() {
         data={filteredOpds}
         columns={columns}
         pageSize={10}
+        showPageSizeSelector={true}
+        pageSizeOptions={[10, 25, 50, 75, 100]}
         // Auto-navigation for standard action buttons
         basePath="adm/org-perangkat-daerah"
         // Standard action buttons
@@ -141,9 +156,34 @@ export default function KelolaOrganisasiList() {
           ActionButtonsPresets.DELETE,
         ]}
         loading={loading}
-        onDelete={handleDelete}
-        isDeletePending={deleteOpdMutation.isPending}
+        onDeleteClick={handleDelete}
         emptyMessage="Tidak ada OPD ditemukan"
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={deleteModalOpen}
+        title="Hapus OPD?"
+        message={
+          itemToDelete ? (
+            <>
+              Apakah Anda yakin ingin menghapus OPD{' '}
+              <strong>{itemToDelete.name}</strong>? Tindakan ini tidak dapat
+              dibatalkan.
+            </>
+          ) : (
+            ''
+          )
+        }
+        confirmText="Ya, Hapus"
+        cancelText="Batal"
+        confirmColor="red"
+        isLoading={deleteOpdMutation.isPending}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => {
+          setDeleteModalOpen(false);
+          setItemToDelete(null);
+        }}
       />
     </>
   );
