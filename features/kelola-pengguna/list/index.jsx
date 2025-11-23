@@ -8,6 +8,7 @@ import ListGrid, {
   ActionButtonsPresets,
 } from '@/components/ui/datatable/ListGrid';
 import LoadingScreen from '@/components/ui/loading/LoadingScreen';
+import ConfirmationDialog from '@/components/common/ConfirmationDialog';
 import {
   deleteUser,
   fetchIncompleteProfiles,
@@ -59,6 +60,8 @@ export default function KelolaPenggunaList() {
   const [viewMode, setViewMode] = useState('table');
   const [filterRole, setFilterRole] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   // Filter and search
   const filteredUsers = users.filter((u) => {
@@ -88,9 +91,19 @@ export default function KelolaPenggunaList() {
     });
   };
 
-  // Delete handler - pass to ListGrid
+  // Delete handler - open confirmation modal
   const handleDelete = (user) => {
-    deleteUserMutation.mutate(user.id);
+    setItemToDelete(user);
+    setDeleteModalOpen(true);
+  };
+
+  // Confirm delete
+  const handleDeleteConfirm = () => {
+    if (itemToDelete) {
+      deleteUserMutation.mutate(itemToDelete.id);
+      setDeleteModalOpen(false);
+      setItemToDelete(null);
+    }
   };
 
   // Get columns with incomplete profiles data
@@ -136,6 +149,8 @@ export default function KelolaPenggunaList() {
         data={filteredUsers}
         columns={columns}
         pageSize={10}
+        showPageSizeSelector={true}
+        pageSizeOptions={[10, 25, 50, 75, 100]}
         // Auto-navigation for standard action buttons
         basePath="adm/users"
         // Standard action buttons
@@ -157,8 +172,33 @@ export default function KelolaPenggunaList() {
         //   },
         // ]}
         loading={loading}
-        onDelete={handleDelete}
-        isDeletePending={deleteUserMutation.isPending}
+        onDeleteClick={handleDelete}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={deleteModalOpen}
+        title="Hapus Pengguna?"
+        message={
+          itemToDelete ? (
+            <>
+              Apakah Anda yakin ingin menghapus pengguna{' '}
+              <strong>{itemToDelete.name}</strong>? Tindakan ini tidak dapat
+              dibatalkan.
+            </>
+          ) : (
+            ''
+          )
+        }
+        confirmText="Ya, Hapus"
+        cancelText="Batal"
+        confirmColor="red"
+        isLoading={deleteUserMutation.isPending}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => {
+          setDeleteModalOpen(false);
+          setItemToDelete(null);
+        }}
       />
     </>
   );
