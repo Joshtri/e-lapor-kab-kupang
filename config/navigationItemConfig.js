@@ -23,15 +23,47 @@ export const navigationItemConfig = {
       },
 
       {
-        path: '/adm/users',
+        type: 'expandable',
         name: 'Manajemen Pengguna',
         icon: HiOutlineUserGroup,
+        subRoutes: [
+          {
+            path: '/adm/users/pelapor',
+            name: 'Kelola Akun Pelapor',
+            icon: HiOutlineUserGroup,
+          },
+          {
+            path: '/adm/users/admin',
+            name: 'Kelola Akun Admin',
+            icon: HiOutlineUserGroup,
+          },
+          {
+            path: '/adm/users/bupati',
+            name: 'Kelola Akun Bupati',
+            icon: HiOutlineUserGroup,
+          },
+          {
+            path: '/adm/users/staff-opd',
+            name: 'Kelola Akun Staff OPD',
+            icon: HiOutlineUserGroup,
+          },
+        ],
       },
+      // {
+      //   path: '/adm/org-perangkat-daerah',
+      //   name: 'Manajemen OPD',
+      //   icon: HiOutlineOfficeBuilding,
+      // },
       {
-        path: '/adm/org-perangkat-daerah',
-        name: 'Manajemen OPD',
+        path: '/adm/organisasi-perangkat-daerah',
+        name: 'Manajemen OPD Revamp',
         icon: HiOutlineOfficeBuilding,
       },
+      // {
+      //   path: '/adm/staff-organisasi-perangkat-daerah',
+      //   name: 'Manajemen Staff OPD',
+      //   icon: HiOutlineUserGroup,
+      // },
 
       {
         path: '/adm/kelola-pengaduan',
@@ -39,11 +71,11 @@ export const navigationItemConfig = {
         icon: HiMailOpen,
       },
 
-      {
-        path: '/adm/kelola-opd',
-        name: 'Kelola OPD',
-        icon: HiOutlineOfficeBuilding,
-      },
+      // {
+      //   path: '/adm/kelola-opd',
+      //   name: 'Kelola OPD',
+      //   icon: HiOutlineOfficeBuilding,
+      // },
 
       {
         path: '/adm/riwayat-pengaduan',
@@ -57,7 +89,7 @@ export const navigationItemConfig = {
 
       {
         path: '/adm/jurnal',
-        name: 'Jurnal Pengaduan',
+        name: 'Rekapitulasi Pengaduan',
         icon: HiDocumentReport,
       },
       {
@@ -85,6 +117,12 @@ export const navigationItemConfig = {
           whileHover: { y: [0, -3, 0], x: [0, 3, 0] },
           transition: { duration: 0.5 },
         },
+      },
+
+      {
+        path: '/adm/log-whatsapp',
+        name: 'Log WhatsApp',
+        icon: HiOutlineMail,
       },
     ],
   },
@@ -170,7 +208,7 @@ export const navigationItemConfig = {
           whileHover: { rotate: [0, -10, 0] },
           transition: { duration: 0.5 },
         },
-      },  
+      },
     ],
   },
 };
