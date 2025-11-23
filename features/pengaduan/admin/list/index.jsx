@@ -156,6 +156,8 @@ export default function PengaduanList() {
         data={filteredReports}
         columns={columns}
         pageSize={6}
+        showPageSizeSelector={true}
+        pageSizeOptions={[10, 25, 50, 75, 100]}
         // Auto-navigation for standard action buttons
         basePath="adm/kelola-pengaduan"
         // Standard action buttons
