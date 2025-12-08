@@ -51,6 +51,11 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Password salah.' }, { status: 401 });
     }
 
+  
+    const isBupati = user.role === 'BUPATI';
+    const expiresIn = isBupati ? '1825d' : '7d'; // ~5 tahun vs 7 hari
+    const maxAge = isBupati ? 60 * 60 * 24 * 365 * 5 : 60 * 60 * 24 * 7;
+
     // 🔐 Buat token JWT
     const token = jwt.sign(
       {
@@ -59,14 +64,14 @@ export async function POST(req) {
         role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' },
+      { expiresIn },
     );
 
     const cookie = serialize('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge,
       path: '/',
     });
 
