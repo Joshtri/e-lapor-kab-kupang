@@ -19,8 +19,14 @@ export async function GET() {
         id: true,
         title: true,
         description: true,
-        category: true,
-        subcategory: true,
+        category: true, // Legacy field
+        subcategory: true, // Legacy field
+        reportCategory: { // ✅ New relational field
+          select: { id: true, name: true },
+        },
+        reportSubcategory: { // ✅ New relational field
+          select: { id: true, name: true },
+        },
         priority: true,
         bupatiStatus: true,
         opdStatus: true,

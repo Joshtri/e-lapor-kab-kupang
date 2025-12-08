@@ -53,7 +53,12 @@ export async function GET(req) {
       id: true,
       createdAt: true,
       bupatiStatus: true,
-      category: true,
+      category: true, // Legacy field untuk backward compatibility
+      reportCategory: {
+        select: {
+          name: true,
+        },
+      },
     },
     orderBy: {
       createdAt: 'asc',
@@ -87,7 +92,9 @@ export async function GET(req) {
   // === Bar Chart: Jumlah laporan per kategori ===
   const categoryCount = {};
   for (const report of reports) {
-    const category = report.category || 'LAINNYA';
+    // ✅ Gunakan kategori dari relasi, fallback ke legacy field
+    const category =
+      report.reportCategory?.name || report.category || 'Tidak Berkategori';
     categoryCount[category] = (categoryCount[category] || 0) + 1;
   }
 

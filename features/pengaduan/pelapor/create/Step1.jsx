@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Label, Select, Spinner } from 'flowbite-react';
 import {
   HiTag,
@@ -11,26 +11,49 @@ import {
 import { motion } from 'framer-motion';
 import { TextInput as FlowbiteTextInput } from 'flowbite-react';
 import SearchableSelect from '@/components/ui/inputs/SearchableSelect';
-import {
-  getMainCategories,
-  getSubcategoriesByText,
-} from '@/utils/reportCategories';
 import { getPriorityColor } from '@/utils/common';
-import { useOpdList } from './hooks';
+import { useOpdList, useCategories, useSubcategories } from './hooks';
 
 const Step1 = ({ formData, onFormChange, errors }) => {
-  const [selectedCategory, setSelectedCategory] = useState(formData.category);
-  const [subcategory, setSubcategory] = useState('');
-  const { data: opds = [], isLoading: loadingOpds } = useOpdList();
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState('');
+  
+  // Fetch data using custom hooks
+  const { data: categoriesData, isLoading: loadingCategories } = useCategories();
+  const { data: subcategoriesData, isLoading: loadingSubcategories } = useSubcategories(selectedCategoryId);
+  const { data: opdsData, isLoading: loadingOpds } = useOpdList();
+
+  // ✅ Extract data with proper null checks
+  const categories = categoriesData?.data || [];
+  const subcategories = subcategoriesData?.data || [];
+  // ✅ opdsData is already an array, not wrapped in { data: [...] }
+  const opds = Array.isArray(opdsData) ? opdsData : [];
+
 
   const handleCategoryChange = (value) => {
-    onFormChange('category', value);
-    setSelectedCategory(value);
-    setSubcategory('');
+    // value adalah category ID
+    const category = categories.find((cat) => cat.id === value);
+    if (category) {
+      setSelectedCategoryId(value);
+      setSelectedSubcategoryId('');
+      // ✅ Simpan both ID dan name
+      onFormChange('categoryId', category.id);
+      onFormChange('category', category.name);
+      // Reset subcategory
+      onFormChange('subcategoryId', '');
+      onFormChange('subcategory', '');
+    }
   };
 
   const handleSubcategoryChange = (value) => {
-    setSubcategory(value);
+    // value adalah subcategory ID
+    const subcategory = subcategories.find((sub) => sub.id === value);
+    if (subcategory) {
+      setSelectedSubcategoryId(value);
+      // ✅ Simpan both ID dan name
+      onFormChange('subcategoryId', subcategory.id);
+      onFormChange('subcategory', subcategory.name);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -93,27 +116,37 @@ const Step1 = ({ formData, onFormChange, errors }) => {
               Kategori Pengaduan <span className="text-red-500 ml-1">*</span>
             </Label>
           }
-          options={getMainCategories()}
-          value={formData.category}
+          options={categories.map((cat) => ({
+            label: cat.name,
+            value: cat.id,
+          }))}
+          value={selectedCategoryId}
           onChange={handleCategoryChange}
           placeholder="Cari kategori..."
           error={errors.category}
           required
           clearable
+          isLoading={loadingCategories}
+          disabled={loadingCategories}
         />
 
         {/* Subkategori */}
-        {selectedCategory && (
+        {selectedCategoryId && (
           <SearchableSelect
             id="subcategory"
             label="Subkategori"
-            options={getSubcategoriesByText(selectedCategory)}
-            value={subcategory}
+            options={subcategories.map((sub) => ({
+              label: sub.name,
+              value: sub.id,
+            }))}
+            value={selectedSubcategoryId}
             onChange={handleSubcategoryChange}
             placeholder="Cari subkategori..."
             error={errors.subcategory}
             required
             clearable
+            isLoading={loadingSubcategories}
+            disabled={loadingSubcategories}
           />
         )}
 
@@ -175,17 +208,22 @@ const Step1 = ({ formData, onFormChange, errors }) => {
           }
           options={opds.map((opd) => ({
             label: opd.name,
-            value: opd.id.toString(),
+            value: opd.id, // ✅ No need to convert to string, use directly
           }))}
           value={formData.opdId}
           onChange={handleOpdChange}
           placeholder="Cari OPD..."
           error={errors.opdId}
           required
-          disabled={loadingOpds}
+          disabled={loadingOpds || opds.length === 0}
           isLoading={loadingOpds}
           clearable
         />
+        {opds.length === 0 && !loadingOpds && (
+          <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+            Tidak ada OPD yang tersedia
+          </p>
+        )}
       </div>
     </motion.div>
   );

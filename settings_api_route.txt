@@ -1,0 +1,83 @@
+// FILE: app/api/settings/route.js
+// Please create directory app/api/settings first, then create route.js with this content:
+
+import { getAuthenticatedUser } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
+
+// GET settings - only for ADMIN
+export async function GET(req) {
+  try {
+    const user = await getAuthenticatedUser(req);
+    
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Unauthorized. Admin access only.' },
+        { status: 403 }
+      );
+    }
+
+    // Get or create settings (single record with fixed ID)
+    let settings = await prisma.appSettings.findUnique({
+      where: { id: 'settings_main' }
+    });
+
+    // If no settings exist, create default
+    if (!settings) {
+      settings = await prisma.appSettings.create({
+        data: {
+          id: 'settings_main',
+          maintenanceMode: false,
+          maintenanceMessage: 'Sistem sedang dalam pemeliharaan. Mohon coba lagi nanti.'
+        }
+      });
+    }
+
+    return NextResponse.json(settings, { status: 200 });
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    return NextResponse.json(
+      { error: 'Gagal mengambil pengaturan sistem' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH settings - only for ADMIN
+export async function PATCH(req) {
+  try {
+    const user = await getAuthenticatedUser(req);
+    
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Unauthorized. Admin access only.' },
+        { status: 403 }
+      );
+    }
+
+    const body = await req.json();
+    const { maintenanceMode, maintenanceMessage } = body;
+
+    // Update settings (upsert to ensure it exists)
+    const settings = await prisma.appSettings.upsert({
+      where: { id: 'settings_main' },
+      update: {
+        ...(typeof maintenanceMode !== 'undefined' && { maintenanceMode }),
+        ...(maintenanceMessage && { maintenanceMessage })
+      },
+      create: {
+        id: 'settings_main',
+        maintenanceMode: maintenanceMode ?? false,
+        maintenanceMessage: maintenanceMessage ?? 'Sistem sedang dalam pemeliharaan. Mohon coba lagi nanti.'
+      }
+    });
+
+    return NextResponse.json(settings, { status: 200 });
+  } catch (error) {
+    console.error('Error updating settings:', error);
+    return NextResponse.json(
+      { error: 'Gagal memperbarui pengaturan sistem' },
+      { status: 500 }
+    );
+  }
+}

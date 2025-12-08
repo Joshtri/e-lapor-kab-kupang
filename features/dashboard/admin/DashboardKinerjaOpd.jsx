@@ -685,21 +685,21 @@ const DashboardKinerjaOpd = () => {
 
       {/* Modal Kategori Pengaduan */}
       {showCategoryModal && selectedOpdForCategory && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg  max-w-4xl w-full max-h-96 overflow-hidden flex flex-col">
-            <div className="bg-purple-500 px-6 py-4 flex justify-between items-center">
-              <h3 className="text-white font-semibold">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full my-8 max-h-[85vh] overflow-hidden flex flex-col">
+            <div className="bg-purple-500 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center flex-shrink-0">
+              <h3 className="text-white font-semibold text-sm sm:text-base">
                 Pengaduan &quot;{selectedOpdForCategory.topCategory}&quot; -{' '}
                 {selectedOpdForCategory.name}
               </h3>
               <button
                 onClick={() => setShowCategoryModal(false)}
-                className="text-white hover:bg-purple-600 p-1 rounded"
+                className="text-white hover:bg-purple-600 p-1 rounded transition-colors flex-shrink-0 ml-2"
               >
                 ✕
               </button>
             </div>
-            <div className="overflow-y-auto flex-1 px-6 py-4">
+            <div className="overflow-y-auto flex-1 px-4 sm:px-6 py-4">
               {loadingReports ? (
                 <div className="text-center py-8">
                   <div className="inline-block animate-spin">⌛</div>
@@ -746,20 +746,20 @@ const DashboardKinerjaOpd = () => {
 
       {/* Modal Overdue Pengaduan */}
       {showOverdueModal && selectedOpdForOverdue && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full  overflow-hidden flex flex-col">
-            <div className="bg-orange-500 px-6 py-4 flex justify-between items-center">
-              <h3 className="text-white font-semibold">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full my-8 max-h-[85vh] overflow-hidden flex flex-col">
+            <div className="bg-orange-500 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center flex-shrink-0">
+              <h3 className="text-white font-semibold text-sm sm:text-base">
                 Pengaduan Terlambat - {selectedOpdForOverdue.name}
               </h3>
               <button
                 onClick={() => setShowOverdueModal(false)}
-                className="text-white hover:bg-orange-600 p-1 rounded"
+                className="text-white hover:bg-orange-600 p-1 rounded transition-colors flex-shrink-0 ml-2"
               >
                 ✕
               </button>
             </div>
-            <div className="overflow-y-auto flex-1 px-6 py-4">
+            <div className="overflow-y-auto flex-1 px-4 sm:px-6 py-4">
               {loadingReports ? (
                 <div className="text-center py-8">
                   <div className="inline-block animate-spin">⌛</div>

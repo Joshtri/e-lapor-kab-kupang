@@ -15,15 +15,32 @@ import axios from 'axios';
 
 const StatsReportByDailyCategory = () => {
   const [dailyCategoryStats, setDailyCategoryStats] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toISOString().slice(0, 7),
   );
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
+  // ✅ Fetch categories from database on mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   useEffect(() => {
     fetchDailyCategoryStats(selectedMonth, selectedCategory);
   }, [selectedMonth, selectedCategory]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('/api/categories', {
+        params: { activeOnly: true },
+      });
+      setCategories(response.data.categories || []);
+    } catch (error) {
+      console.error('Gagal mengambil data kategori:', error);
+    }
+  };
 
   const fetchDailyCategoryStats = async (month, category) => {
     try {
@@ -78,7 +95,7 @@ const StatsReportByDailyCategory = () => {
         </select>
       </div>
 
-      {/* 🔽 Dropdown untuk memilih kategori laporan */}
+      {/* 🔽 Dropdown untuk memilih kategori laporan (dinamis dari database) */}
       <div className="mb-4">
         <label className="text-gray-700 dark:text-gray-300 font-semibold">
           Pilih Kategori:
@@ -89,10 +106,11 @@ const StatsReportByDailyCategory = () => {
           className="block w-full p-2 mt-1 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring focus:border-blue-300 dark:focus:border-blue-500"
         >
           <option value="ALL">Semua Kategori</option>
-          <option value="INFRASTRUKTUR">Infrastruktur</option>
-          <option value="PELAYANAN">Pelayanan</option>
-          <option value="SOSIAL">Sosial</option>
-          <option value="LAINNYA">Lainnya</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.name}>
+              {category.name}
+            </option>
+          ))}
         </select>
       </div>
 

@@ -23,7 +23,8 @@
       "Bash(test -f:*)",
       "Bash(dir:*)",
       "Bash(npm run dev:*)",
-      "Bash(psql:*)"
+      "Bash(psql:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []

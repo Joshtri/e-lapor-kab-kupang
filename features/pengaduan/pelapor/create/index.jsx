@@ -49,6 +49,9 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
     title: '',
     description: '',
     category: '',
+    categoryId: '', // ✅ NEW: Menyimpan ID kategori
+    subcategory: '',
+    subcategoryId: '', // ✅ NEW: Menyimpan ID subkategori
     priority: 'LOW',
     opdId: '',
     location: '',
@@ -56,7 +59,6 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
   });
   const [files, setFiles] = useState([]);
   const [errors, setErrors] = useState({});
-  const [subcategory, setSubcategory] = useState('');
 
   const createReportMutation = useCreateReport();
   const registerPushNotification = useRegisterPushNotification();
@@ -169,13 +171,24 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
       const formDataObj = new FormData();
       formDataObj.append('title', formData.title);
       formDataObj.append('description', formData.description);
+
+      // ✅ NEW: Kirim categoryId dan subcategoryId (prioritas)
+      if (formData.categoryId) {
+        formDataObj.append('categoryId', formData.categoryId);
+      }
+      if (formData.subcategoryId) {
+        formDataObj.append('subcategoryId', formData.subcategoryId);
+      }
+
+      // Legacy: kirim juga text untuk backward compatibility
       formDataObj.append('category', formData.category);
+      formDataObj.append('subcategory', formData.subcategory);
+
       formDataObj.append('priority', formData.priority);
       formDataObj.append('opdId', formData.opdId);
       formDataObj.append('location', formData.location);
       formDataObj.append('status', formData.status);
       formDataObj.append('userId', user.id);
-      formDataObj.append('subcategory', subcategory);
 
       if (files.length > 0) {
         formDataObj.append('image', files[0]);
@@ -192,13 +205,15 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
         title: '',
         description: '',
         category: '',
+        categoryId: '',
+        subcategory: '',
+        subcategoryId: '',
         priority: 'LOW',
         opdId: '',
         location: '',
         status: 'PENDING',
       });
       setFiles([]);
-      setSubcategory('');
       setStep(1);
       setErrors({});
 

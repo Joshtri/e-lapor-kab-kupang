@@ -1,53 +1,62 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import useSWR from 'swr';
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
-/**
- * Fetch OPDs list
- */
-export const useOpdList = () => {
-  return useQuery({
-    queryKey: ['opd-list'],
-    queryFn: async () => {
-      const res = await axios.get('/api/opd/list');
-      return res.data;
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+// Hook untuk fetch categories
+export const useCategories = () => {
+  return useSWR('/api/categories?activeOnly=true', fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
   });
 };
 
-/**
- * Create report mutation
- */
-export const useCreateReport = () => {
-  const queryClient = useQueryClient();
+// Hook untuk fetch subcategories by category ID
+export const useSubcategories = (categoryId) => {
+  const shouldFetch = categoryId ? true : false;
+  return useSWR(
+    shouldFetch ? `/api/subcategories?categoryId=${categoryId}&activeOnly=true` : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
+};
 
+// Hook untuk fetch OPD list
+export const useOpdList = () => {
+  return useSWR('/api/opd/list', fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+};
+
+// Hook untuk create report
+export const useCreateReport = () => {
   return useMutation({
     mutationFn: async (formData) => {
-      const response = await axios.post('/api/reports', formData);
+      const response = await axios.post('/api/reports', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
-    },
-    onSuccess: () => {
-      // Invalidate all report-related queries
-      queryClient.invalidateQueries({ queryKey: ['user-reports'] });
-      queryClient.invalidateQueries({ queryKey: ['user-stats'] });
     },
   });
 };
 
-/**
- * Register push notification subscription
- */
+// Hook untuk register push notification
 export const useRegisterPushNotification = () => {
   return useMutation({
     mutationFn: async ({ userId, subscription }) => {
-      const response = await axios.post('/api/web-push/subscription', {
+      const response = await axios.post('/api/push/register', {
         userId,
         subscription,
       });
       return response.data;
-    },
-    onError: (error) => {
-      console.error('Failed to register push notification:', error);
     },
   });
 };

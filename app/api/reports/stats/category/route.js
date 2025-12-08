@@ -9,10 +9,14 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // ✅ Query dengan JOIN ke ReportCategory untuk data dinamis
     const categoryStatsRaw = await prisma.$queryRawUnsafe(`
-      SELECT category, COUNT(*)::int AS total
-      FROM "Report"
-      GROUP BY category
+      SELECT
+        COALESCE(rc.name, r.category, 'Tidak Berkategori') AS category,
+        COUNT(*)::int AS total
+      FROM "Report" r
+      LEFT JOIN "ReportCategory" rc ON r."categoryId" = rc.id
+      GROUP BY rc.name, r.category
       ORDER BY total DESC
     `);
 

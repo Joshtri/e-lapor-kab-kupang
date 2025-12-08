@@ -26,18 +26,19 @@ export async function GET(req) {
     const endDate = new Date(startDate);
     endDate.setMonth(startDate.getMonth() + 1);
 
-    // ✅ Gunakan query raw dengan filter kategori opsional
+    // ✅ Gunakan query raw dengan JOIN ke ReportCategory untuk data dinamis
     const dailyCategoryStatsRaw = await prisma.$queryRawUnsafe(`
-      SELECT 
-        TO_CHAR("createdAt", 'DD Mon') AS day, 
+      SELECT
+        TO_CHAR(r."createdAt", 'DD Mon') AS day,
         COUNT(*)::int AS total,
-        "category"
-      FROM "Report"
-      WHERE "createdAt" >= '${startDate.toISOString()}'
-        AND "createdAt" < '${endDate.toISOString()}'
-        ${category !== 'ALL' ? `AND "category" = '${category}'` : ''}
-      GROUP BY day, category, DATE_TRUNC('day', "createdAt")
-      ORDER BY DATE_TRUNC('day', "createdAt") ASC
+        COALESCE(rc.name, r.category, 'Tidak Berkategori') AS category
+      FROM "Report" r
+      LEFT JOIN "ReportCategory" rc ON r."categoryId" = rc.id
+      WHERE r."createdAt" >= '${startDate.toISOString()}'
+        AND r."createdAt" < '${endDate.toISOString()}'
+        ${category !== 'ALL' ? `AND COALESCE(rc.name, r.category) = '${category}'` : ''}
+      GROUP BY day, rc.name, r.category, DATE_TRUNC('day', r."createdAt")
+      ORDER BY DATE_TRUNC('day', r."createdAt") ASC
     `);
 
     return NextResponse.json({ dailyCategoryStats: dailyCategoryStatsRaw });

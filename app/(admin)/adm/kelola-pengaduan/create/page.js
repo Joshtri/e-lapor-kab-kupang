@@ -16,10 +16,6 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import imageCompression from 'browser-image-compression';
 import { useRouter } from 'next/navigation';
-import {
-  getMainCategories,
-  getSubcategoriesByText,
-} from '@/utils/reportCategories';
 import PageHeader from '@/components/ui/PageHeader';
 import SearchableSelect from '@/components/ui/inputs/SearchableSelect';
 import LoadingScreen from '@/components/ui/loading/LoadingScreen';
@@ -28,6 +24,10 @@ import {
   fetchPelaporUsers,
   createReport,
 } from '@/services/reportService';
+import {
+  fetchCategories,
+  fetchSubcategories,
+} from '@/services/categoryService';
 
 export default function CreateReportPage() {
   const [imageFile, setImageFile] = useState(null);
@@ -45,8 +45,8 @@ export default function CreateReportPage() {
     defaultValues: {
       userId: '',
       title: '',
-      category: '',
-      subcategory: '',
+      categoryId: '',
+      subcategoryId: '',
       priority: '',
       opdId: '',
       description: '',
@@ -54,7 +54,7 @@ export default function CreateReportPage() {
     },
   });
 
-  const categoryValue = watch('category');
+  const categoryIdValue = watch('categoryId');
 
   // TanStack Query for fetching data
   const {
@@ -76,6 +76,31 @@ export default function CreateReportPage() {
     queryFn: fetchPelaporUsers,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  // ✅ NEW: Fetch categories from database
+  const {
+    data: categoriesResponse,
+    isLoading: isLoadingCategories,
+  } = useQuery({
+    queryKey: ['categories', 'active'],
+    queryFn: () => fetchCategories(true), // activeOnly = true
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const categories = categoriesResponse?.data || [];
+
+  // ✅ NEW: Fetch subcategories based on selected category
+  const {
+    data: subcategoriesResponse,
+    isLoading: isLoadingSubcategories,
+  } = useQuery({
+    queryKey: ['subcategories', categoryIdValue],
+    queryFn: () => fetchSubcategories(categoryIdValue, true), // activeOnly = true
+    enabled: !!categoryIdValue, // Only fetch when category is selected
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const subcategories = subcategoriesResponse?.data || [];
 
   // Mutation for creating report
   const createReportMutation = useMutation({
@@ -103,8 +128,30 @@ export default function CreateReportPage() {
       // Convert string values to appropriate types
       formData.append('userId', data.userId);
       formData.append('title', data.title);
-      formData.append('category', data.category);
-      formData.append('subcategory', data.subcategory);
+
+      // ✅ NEW: Send categoryId and subcategoryId
+      if (data.categoryId) {
+        formData.append('categoryId', data.categoryId);
+        // Also send category name for legacy compatibility
+        const selectedCategory = categories.find(
+          (cat) => cat.id === data.categoryId
+        );
+        if (selectedCategory) {
+          formData.append('category', selectedCategory.name);
+        }
+      }
+
+      if (data.subcategoryId) {
+        formData.append('subcategoryId', data.subcategoryId);
+        // Also send subcategory name for legacy compatibility
+        const selectedSubcategory = subcategories.find(
+          (sub) => sub.id === data.subcategoryId
+        );
+        if (selectedSubcategory) {
+          formData.append('subcategory', selectedSubcategory.name);
+        }
+      }
+
       formData.append('priority', data.priority);
       formData.append('opdId', data.opdId);
       formData.append('description', data.description);
@@ -129,7 +176,7 @@ export default function CreateReportPage() {
     router.back();
   };
 
-  if (isLoadingOpds || isLoadingUsers) {
+  if (isLoadingOpds || isLoadingUsers || isLoadingCategories) {
     return <LoadingScreen isLoading={true} />;
   }
 
@@ -188,46 +235,60 @@ export default function CreateReportPage() {
 
           {/* Kategori */}
           <Controller
-            name="category"
+            name="categoryId"
             control={control}
             rules={{ required: 'Kategori wajib diisi.' }}
             render={({ field }) => (
               <SearchableSelect
-                id="category"
+                id="categoryId"
                 label="Kategori *"
-                options={getMainCategories().map((cat) => ({
-                  label: cat.label,
-                  value: cat.value,
+                options={categories.map((cat) => ({
+                  label: cat.name,
+                  value: cat.id,
                 }))}
                 value={field.value}
                 onChange={field.onChange}
                 placeholder="Pilih Kategori"
-                error={errors.category?.message}
+                error={errors.categoryId?.message}
+                disabled={isLoadingCategories || categories.length === 0}
+                isLoading={isLoadingCategories}
               />
             )}
           />
+          {categories.length === 0 && !isLoadingCategories && (
+            <p className="text-sm text-yellow-600 mt-1">
+              Tidak ada kategori yang tersedia. Silakan tambahkan kategori terlebih dahulu.
+            </p>
+          )}
 
           {/* Subkategori */}
-          {categoryValue && (
+          {categoryIdValue && (
             <Controller
-              name="subcategory"
+              name="subcategoryId"
               control={control}
               rules={{ required: 'Subkategori wajib diisi.' }}
               render={({ field }) => (
                 <SearchableSelect
-                  id="subcategory"
+                  id="subcategoryId"
                   label="Subkategori *"
-                  options={getSubcategoriesByText(categoryValue).map((sub) => ({
-                    label: sub.label,
-                    value: sub.value,
+                  options={subcategories.map((sub) => ({
+                    label: sub.name,
+                    value: sub.id,
                   }))}
                   value={field.value}
                   onChange={field.onChange}
                   placeholder="Pilih Subkategori"
-                  error={errors.subcategory?.message}
+                  error={errors.subcategoryId?.message}
+                  disabled={isLoadingSubcategories || subcategories.length === 0}
+                  isLoading={isLoadingSubcategories}
                 />
               )}
             />
+          )}
+          {categoryIdValue && subcategories.length === 0 && !isLoadingSubcategories && (
+            <p className="text-sm text-yellow-600 mt-1">
+              Tidak ada subkategori untuk kategori ini.
+            </p>
           )}
 
           {/* Prioritas */}

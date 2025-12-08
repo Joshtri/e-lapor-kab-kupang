@@ -24,6 +24,11 @@ export async function GET(req) {
 
     const reports = await prisma.report.findMany({
       where: { opdId: userData.opd.id },
+      include: {
+        reportCategory: {
+          select: { name: true },
+        },
+      },
     });
 
     // 1️⃣ Laporan per bulan (12 bulan terakhir)
@@ -44,10 +49,12 @@ export async function GET(req) {
       jumlah,
     }));
 
-    // 2️⃣ Distribusi Kategori (dinamis)
+    // 2️⃣ Distribusi Kategori (dinamis dari database)
     const kategoriMap = {};
     reports.forEach((r) => {
-      const kategori = r.category || 'LAINNYA';
+      // ✅ Gunakan kategori dari relasi, fallback ke legacy field
+      const kategori =
+        r.reportCategory?.name || r.category || 'Tidak Berkategori';
       if (!kategoriMap[kategori]) kategoriMap[kategori] = 0;
       kategoriMap[kategori]++;
     });

@@ -8,6 +8,7 @@ import {
   HiOutlineBell,
   HiChat,
   HiDocumentReport,
+  HiOutlineCog,
 } from 'react-icons/hi';
 import { FaBug } from 'react-icons/fa';
 
@@ -56,7 +57,7 @@ export const navigationItemConfig = {
       // },
       {
         path: '/adm/organisasi-perangkat-daerah',
-        name: 'Manajemen OPD Revamp',
+        name: 'Manajemen OPD',
         icon: HiOutlineOfficeBuilding,
       },
       // {
@@ -123,6 +124,30 @@ export const navigationItemConfig = {
         path: '/adm/log-whatsapp',
         name: 'Log WhatsApp',
         icon: HiOutlineMail,
+      },
+
+      {
+        type: 'expandable',
+        name: 'Master Data',
+        icon: HiOutlineUserGroup,
+        subRoutes: [
+          {
+            path: '/adm/master-data/categories',
+            name: 'Kategori',
+            icon: HiOutlineUserGroup,
+          },
+          {
+            path: '/adm/master-data/subcategories',
+            name: 'Subkategori',
+            icon: HiOutlineUserGroup,
+          },
+
+        ]
+      },
+      {
+        path: '/adm/settings',
+        name: 'Pengaturan',
+        icon: HiOutlineCog,
       },
     ],
   },
