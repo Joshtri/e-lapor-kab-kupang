@@ -1,20 +1,12 @@
 import DynamicMetadata from '@/components/seo/DynamicMetadata'; // ✅ import di sini
 import ClientThemeProvider from '@/providers/client-theme-provider';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import PropTypes from 'prop-types';
 import { Toaster } from 'sonner';
 import './globals.css';
 import TanstackQueryProvider from '@/providers/tanstack-query-provider';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
 
 export const metadata = {
   title: 'Lapor Kaka Bupati',
@@ -34,7 +26,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="id" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
+        className={`${GeistSans.variable} ${GeistMono.variable} antialiased min-h-screen`}
       >
         <ClientThemeProvider>
           <TanstackQueryProvider>
