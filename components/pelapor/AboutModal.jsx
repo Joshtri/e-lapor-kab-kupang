@@ -20,7 +20,7 @@ export default function AboutModal({ isOpen, onClose }) {
       "Responsive Design",
     ],
     contact: {
-      whatsapp: "+62 812-3715-9777",
+      whatsapp: "+6281277195777",
       email: "support@lapormail.id",
     },
   }

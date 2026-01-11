@@ -36,7 +36,7 @@ const DashboardPelaporMobile = ({ user }) => {
     const message = encodeURIComponent(
       'Halo KK Yos & Sis Arumi,\n\nNIK: \nNAMA: \nAlamat: \n\nSaya ingin melaporkan\n\nDeskripsi Laporan: \n\nTerima kasih. UIS NENO NOKAN KIT.',
     );
-    window.open(`https://wa.me/6281237159777?text=${message}`, '_blank');
+    window.open(`https://wa.me/6281277195777?text=${message}`, '_blank');
   };
 
   return (
