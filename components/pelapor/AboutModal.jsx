@@ -1,29 +1,34 @@
-"use client"
+'use client';
 
-import { Modal, Button, Badge } from "flowbite-react"
-import { HiOutlineMail, HiOutlineInformationCircle, HiOutlineCode, HiOutlineHeart } from "react-icons/hi"
-import { motion } from "framer-motion"
+import { Modal, Button, Badge } from 'flowbite-react';
+import {
+  HiOutlineMail,
+  HiOutlineInformationCircle,
+  HiOutlineCode,
+  HiOutlineHeart,
+} from 'react-icons/hi';
+import { motion } from 'framer-motion';
 
 export default function AboutModal({ isOpen, onClose }) {
   const appInfo = {
-    name: "Lapor Mail",
-    version: "2.0.1",
-    description: "Layanan Pengaduan Online Terpadu",
-    developer: "Tim Pengembang Lapor KK",
-    year: "2024",
+    name: 'Lapor Mail',
+    version: '2.0.1',
+    description: 'Layanan Pengaduan Online Terpadu',
+    developer: 'Tim Pengembang Lapor KK',
+    year: '2024',
     features: [
-      "Pelaporan Online Real-time",
-      "Notifikasi Push",
-      "Chat dengan Bupati & OPD",
-      "Tracking Status Laporan",
-      "Mode Dark/Light",
-      "Responsive Design",
+      'Pelaporan Online Real-time',
+      'Notifikasi Push',
+      'Chat dengan Bupati & OPD',
+      'Tracking Status Laporan',
+      'Mode Dark/Light',
+      'Responsive Design',
     ],
     contact: {
-      whatsapp: "+6281277195777",
-      email: "support@lapormail.id",
+      whatsapp: '+6281277195777',
+      email: 'support@lapormail.id',
     },
-  }
+  };
 
   return (
     <Modal show={isOpen} onClose={onClose} size="md" className="z-50">
@@ -34,15 +39,19 @@ export default function AboutModal({ isOpen, onClose }) {
             transition={{
               duration: 3,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
             }}
             className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full"
           >
             <HiOutlineMail className="h-6 w-6 text-blue-600 dark:text-blue-400" />
           </motion.div>
           <div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Tentang Aplikasi</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Informasi aplikasi dan pengembang</p>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Tentang Aplikasi
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Informasi aplikasi dan pengembang
+            </p>
           </div>
         </div>
       </Modal.Header>
@@ -54,12 +63,14 @@ export default function AboutModal({ isOpen, onClose }) {
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
+              transition={{ delay: 0.2, type: 'spring' }}
               className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center"
             >
               <HiOutlineMail className="h-10 w-10 text-white" />
             </motion.div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{appInfo.name}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              {appInfo.name}
+            </h2>
             <div className="flex items-center justify-center space-x-2 mb-3">
               <Badge color="blue" size="sm">
                 v{appInfo.version}
@@ -68,7 +79,9 @@ export default function AboutModal({ isOpen, onClose }) {
                 Aktif
               </Badge>
             </div>
-            <p className="text-gray-600 dark:text-gray-400">{appInfo.description}</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              {appInfo.description}
+            </p>
           </div>
 
           {/* Features */}
@@ -101,17 +114,25 @@ export default function AboutModal({ isOpen, onClose }) {
             </h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">Dikembangkan oleh:</span>
-                <span className="font-medium text-gray-900 dark:text-white">{appInfo.developer}</span>
+                <span className="text-gray-600 dark:text-gray-400">
+                  Dikembangkan oleh:
+                </span>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {appInfo.developer}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Tahun:</span>
-                <span className="font-medium text-gray-900 dark:text-white">{appInfo.year}</span>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {appInfo.year}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">WhatsApp:</span>
+                <span className="text-gray-600 dark:text-gray-400">
+                  WhatsApp:
+                </span>
                 <a
-                  href={`https://wa.me/${appInfo.contact.whatsapp.replace(/[^0-9]/g, "")}`}
+                  href={`https://wa.me/${appInfo.contact.whatsapp.replace(/[^0-9]/g, '')}`}
                   className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -138,13 +159,14 @@ export default function AboutModal({ isOpen, onClose }) {
               transition={{
                 duration: 2,
                 repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut",
+                ease: 'easeInOut',
               }}
             >
               <HiOutlineHeart className="h-6 w-6 text-red-500 mx-auto mb-2" />
             </motion.div>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Terima kasih telah menggunakan aplikasi kami untuk melayani masyarakat dengan lebih baik.
+              Terima kasih telah menggunakan aplikasi kami untuk melayani
+              masyarakat dengan lebih baik.
             </p>
           </div>
         </div>
@@ -156,5 +178,5 @@ export default function AboutModal({ isOpen, onClose }) {
         </Button>
       </Modal.Footer>
     </Modal>
-  )
+  );
 }

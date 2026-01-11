@@ -1,8 +1,7 @@
-"use client"
+'use client';
 
-import { Modal, Button } from "flowbite-react"
-import { HiOutlineInformationCircle } from "react-icons/hi"
-
+import { Modal, Button } from 'flowbite-react';
+import { HiOutlineInformationCircle } from 'react-icons/hi';
 
 export default function WhatsAppModal({ openModal, setOpenModal }) {
   return (
@@ -16,7 +15,8 @@ export default function WhatsAppModal({ openModal, setOpenModal }) {
               <span className="font-medium">Informasi Penting</span>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              Saat menghubungi kami via WhatsApp, mohon sertakan informasi berikut:
+              Saat menghubungi kami via WhatsApp, mohon sertakan informasi
+              berikut:
             </p>
             <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-300 mt-2">
               <li>NIK</li>
@@ -31,9 +31,12 @@ export default function WhatsAppModal({ openModal, setOpenModal }) {
             size="lg"
             onClick={() => {
               const message = encodeURIComponent(
-                "Halo KK Yos & Sis Arumi,\n\nNIK: \nNAMA: \nAlamat: \n\nSaya ingin melaporkan\n\nDeskripsi Laporan: \n\nTerima kasih. UIS NENO NOKAN KIT.",
-              )
-              window.open(`https://wa.me/6281277195777?text=${message}`, "_blank")
+                'Halo KK Yos & Sis Arumi,\n\nNIK: \nNAMA: \nAlamat: \n\nSaya ingin melaporkan\n\nDeskripsi Laporan: \n\nTerima kasih. UIS NENO NOKAN KIT.',
+              );
+              window.open(
+                `https://wa.me/6281277195777?text=${message}`,
+                '_blank',
+              );
             }}
           >
             Hubungi Opsi 1
@@ -44,9 +47,12 @@ export default function WhatsAppModal({ openModal, setOpenModal }) {
             size="lg"
             onClick={() => {
               const message = encodeURIComponent(
-                "Halo KK Yos & Sis Arumi,\n\nNIK: \nNAMA: \nAlamat: \n\nSaya ingin melaporkan\n\nTerima kasih. UIS NENO NOKAN KIT.",
-              )
-              window.open(`https://wa.me/6281339300533?text=${message}`, "_blank")
+                'Halo KK Yos & Sis Arumi,\n\nNIK: \nNAMA: \nAlamat: \n\nSaya ingin melaporkan\n\nTerima kasih. UIS NENO NOKAN KIT.',
+              );
+              window.open(
+                `https://wa.me/6281339300533?text=${message}`,
+                '_blank',
+              );
             }}
           >
             Hubungi Opsi 2
@@ -54,6 +60,5 @@ export default function WhatsAppModal({ openModal, setOpenModal }) {
         </div>
       </Modal.Body>
     </Modal>
-  )
+  );
 }
-
