@@ -52,32 +52,33 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
   const [subcategory, setSubcategory] = useState('');
 
   useEffect(() => {
-    const askNotificationPermission = async () => {
-      try {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          const reg = await navigator.serviceWorker.ready;
-          const subscription = await reg.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    const setupNotifications = async () => {
+      if (
+        typeof window !== 'undefined' &&
+        'Notification' in window &&
+        'serviceWorker' in navigator
+      ) {
+        if (Notification.permission === 'granted') {
+          const { registerAndSubscribe } = await import('@/lib/webPushClient');
+          registerAndSubscribe((subscription) => {
+            console.log('✅ Web Push terdaftar:', subscription);
           });
-
-          await fetch('/api/web-push/subscription', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId: user.id,
-              subscription,
-            }),
-          });
+        } else if (Notification.permission !== 'denied') {
+          const permission = await Notification.requestPermission();
+          if (permission === 'granted') {
+            const { registerAndSubscribe } = await import(
+              '@/lib/webPushClient'
+            );
+            registerAndSubscribe((subscription) => {
+              console.log('✅ Web Push baru saja terdaftar:', subscription);
+            });
+          }
         }
-      } catch (error) {
-        console.error('❌ Gagal mengaktifkan notifikasi:', error);
       }
     };
 
-    if (user?.id && 'Notification' in window && 'serviceWorker' in navigator) {
-      askNotificationPermission();
+    if (user?.id) {
+      setupNotifications();
     }
   }, [user?.id]);
 
@@ -362,7 +363,8 @@ const ReportModal = ({ openModal, setOpenModal, user, onSuccess }) => {
                         id="subcategory"
                         label={
                           <Label className="text-gray-700 dark:text-gray-300">
-                            Subkategori <span className="text-red-500 ml-1">*</span>
+                            Subkategori{' '}
+                            <span className="text-red-500 ml-1">*</span>
                           </Label>
                         }
                         options={getSubcategoriesByText(selectedCategory)}

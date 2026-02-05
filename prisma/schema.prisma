@@ -56,14 +56,15 @@ model User {
   resetPasswordExpires DateTime?
 
   // ✅ OPD yang terkait jika role = OPD
-  opdId  String? @db.VarChar(50) // Null jika bukan OPD staff
-  opd    OPD?    @relation("UserToOPD", fields: [opdId], references: [id])
+  opdId String? @db.VarChar(50) // Null jika bukan OPD staff
+  opd   OPD?    @relation("UserToOPD", fields: [opdId], references: [id])
 
-  sentEmails     Email[]       @relation("SentEmails")
-  receivedEmails Email[]       @relation("ReceivedEmails")
-  BugComment     BugComment[]
-  ChatRoom       ChatRoom[]
-  ChatMessage    ChatMessage[]
+  sentEmails        Email[]            @relation("SentEmails")
+  receivedEmails    Email[]            @relation("ReceivedEmails")
+  BugComment        BugComment[]
+  ChatRoom          ChatRoom[]
+  ChatMessage       ChatMessage[]
+  pushSubscriptions PushSubscription[]
 }
 
 model OPD {
@@ -77,12 +78,12 @@ model OPD {
   staff         User[]         @relation("UserToOPD") // Multiple staff users can belong to one OPD
   reports       Report[]
   notifications Notification[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   ChatRoom      ChatRoom[]
 }
 
-model Report { //laporan.
+model Report {
   id     String  @id @default(dbgenerated("concat('rep_', replace(gen_random_uuid()::text, '-', ''))")) @db.VarChar(50)
   userId String  @db.VarChar(50)
   opdId  String? @db.VarChar(50) // mengacu ke userId OPD
@@ -115,8 +116,8 @@ model Report { //laporan.
   // Relasi
   comments Comment[]
   logs     Log[]
-  user     User             @relation(fields: [userId], references: [id])
-  opd      OPD?             @relation(fields: [opdId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
+  opd      OPD?      @relation(fields: [opdId], references: [id])
 
   // ✅ Relasi ke kategori
   reportCategory    ReportCategory?    @relation(fields: [categoryId], references: [id])
@@ -164,7 +165,8 @@ model BugReport {
   user        User         @relation(fields: [userId], references: [id])
   bugComments BugComment[] // Add this relation
 }
- //testdulu
+
+//testdulu
 model BugComment {
   id          String   @id @default(dbgenerated("concat('bgc_', replace(gen_random_uuid()::text, '-', ''))")) @db.VarChar(50)
   bugReportId String   @db.VarChar(50)
@@ -229,13 +231,27 @@ model ChatMessage {
   sender User     @relation(fields: [senderId], references: [id])
 }
 
+// ✅ Web Push Subscription
+model PushSubscription {
+  id        String   @id @default(dbgenerated("concat('vps_', replace(gen_random_uuid()::text, '-', ''))")) @db.VarChar(50)
+  userId    String   @db.VarChar(50)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 // ✅ App Settings - Single record untuk konfigurasi aplikasi
+
 model AppSettings {
-  id                String   @id @default("settings_main") @db.VarChar(50)
-  maintenanceMode   Boolean  @default(false) // ON/OFF maintenance mode
-  maintenanceMessage String? @db.Text // Pesan yang ditampilkan saat maintenance mode
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id                 String   @id @default("settings_main") @db.VarChar(50)
+  maintenanceMode    Boolean  @default(false) // ON/OFF maintenance mode
+  maintenanceMessage String?  @db.Text // Pesan yang ditampilkan saat maintenance mode
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
 enum Role {
