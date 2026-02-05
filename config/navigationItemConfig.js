@@ -225,6 +225,11 @@ export const navigationItemConfig = {
         },
       },
       {
+        path: '/bupati-portal/log-whatsapp',
+        name: 'Log WhatsApp',
+        icon: HiOutlineMail,
+      },
+      {
         path: '/bupati-portal/kinerja-opd',
         name: 'Kinerja OPD',
         icon: HiOutlineOfficeBuilding,
@@ -237,3 +242,4 @@ export const navigationItemConfig = {
     ],
   },
 };
+

@@ -20,10 +20,8 @@ export default function AboutModal({ isOpen, onClose }) {
       'Pelaporan Online Real-time',
       'Notifikasi Push',
       'Chat dengan Bupati & OPD',
-      'Tracking Status Laporan',
-      'Mode Dark/Light',
-      'Responsive Design',
-    ],
+      'Tracking Status Laporan',      'Mode Dark/Light',
+      'Responsive Design',    ],
     contact: {
       whatsapp: '+6281277195777',
       email: 'support@lapormail.id',

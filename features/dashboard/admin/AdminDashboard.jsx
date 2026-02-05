@@ -6,8 +6,10 @@ import DashboardStats from '@/features/dashboard/admin/DashboardStats';
 import NotificationPanel from '@/components/DashboardNotificationPanel';
 import TabsComponent from '@/components/ui/TabsGroup';
 import DashboardKinerjaOpd from '@/features/dashboard/admin/DashboardKinerjaOpd';
+import DashboardWhatsApp from '@/features/dashboard/admin/DashboardWhatsApp';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+
 import { HiOutlineMail } from 'react-icons/hi';
 import { toast } from 'sonner';
 import {
@@ -39,7 +41,7 @@ const AdminDashboard = ({ titleHeader = 'Dashboard Admin' }) => {
   });
 
   // Fetch category stats
-  const { data: categoryStats = [], isLoading: loadingCategoryStats } =
+  const { data: categoryStats = [], isLoading: _loadingCategoryStats } =
     useQuery({
       queryKey: ['categoryStats'],
       queryFn: fetchCategoryStats,
@@ -88,8 +90,18 @@ const AdminDashboard = ({ titleHeader = 'Dashboard Admin' }) => {
         tabs={[
           {
             title: 'Ikhtisar',
-            content: <DashboardStats stats={stats} loading={loadingStats} />,
+            content: (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <DashboardStats stats={stats} loading={loadingStats} />
+                </div>
+                <div className="lg:col-span-1">
+                  <DashboardWhatsApp />
+                </div>
+              </div>
+            ),
           },
+
           {
             title: 'Statistik',
             content: (

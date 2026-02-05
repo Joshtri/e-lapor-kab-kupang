@@ -6,6 +6,7 @@ import DashboardStats from '@/features/dashboard/admin/DashboardStats';
 import NotificationPanel from '@/components/DashboardNotificationPanel';
 import TabsComponent from '@/components/ui/TabsGroup';
 import DashboardKinerjaOpd from '../../features/dashboard/admin/DashboardKinerjaOpd';
+import DashboardWhatsApp from '../../features/dashboard/admin/DashboardWhatsApp';
 import { useQuery } from '@tanstack/react-query';
 3;
 import { motion } from 'framer-motion';
@@ -18,8 +19,9 @@ import {
   fetchRecentReports,
 } from '@/services/dashboardService';
 import LoadingScreen from '@/components/ui/loading/LoadingScreen';
+import PropTypes from 'prop-types';
 
-const AdminDashboard = ({ titleHeader }) => {
+const AdminDashboard = ({ titleHeader = 'Dashboard Admin' }) => {
   // Fetch dashboard stats
   const { data: stats, isLoading: loadingStats } = useQuery({
     queryKey: ['dashboardStats'],
@@ -88,8 +90,18 @@ const AdminDashboard = ({ titleHeader }) => {
         tabs={[
           {
             title: 'Ikhtisar',
-            content: <DashboardStats stats={stats} loading={loadingStats} />,
+            content: (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <DashboardStats stats={stats} loading={loadingStats} />
+                </div>
+                <div className="lg:col-span-1">
+                  <DashboardWhatsApp />
+                </div>
+              </div>
+            ),
           },
+
           {
             title: 'Statistik',
             content: (
@@ -114,6 +126,10 @@ const AdminDashboard = ({ titleHeader }) => {
       />
     </div>
   );
+};
+
+AdminDashboard.propTypes = {
+  titleHeader: PropTypes.string,
 };
 
 export default AdminDashboard;
