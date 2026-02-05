@@ -7,15 +7,16 @@ import WhatsAppChatInterface from './components/WhatsAppInterface';
 
 export default function WhatsAppLogsList() {
   const [chatsLimit, setChatsLimit] = useState(10);
+  const [search, setSearch] = useState('');
 
   const {
     data: chats = [],
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ['whatsapp-logs', chatsLimit],
-    queryFn: () => fetchWhatsAppLogs(chatsLimit),
-    refetchInterval: 30000,
+    queryKey: ['whatsapp-logs', chatsLimit, search],
+    queryFn: () => fetchWhatsAppLogs(chatsLimit, search),
+    refetchInterval: 60000,
   });
 
   return (
@@ -26,6 +27,8 @@ export default function WhatsAppLogsList() {
         onRefresh={refetch}
         limit={chatsLimit}
         onLoadMore={() => setChatsLimit((prev) => prev + 10)}
+        search={search}
+        onSearchChange={setSearch}
       />
     </div>
   );

@@ -21,7 +21,7 @@ const DashboardWhatsApp = () => {
   } = useQuery({
     queryKey: ['whatsapp-notifications-dashboard'],
     queryFn: fetchWhatsAppNotifications,
-    refetchInterval: 30000, // Refresh every 30 seconds for live feel
+    refetchInterval: 60000, // Refresh every 1 minute to save resources
   });
 
   const formatTime = (dateStr) => {

@@ -84,8 +84,9 @@ export default function WhatsAppChatInterface({
   onRefresh,
   limit: chatsLimit,
   onLoadMore,
+  search,
+  onSearchChange,
 }) {
-  const [search, setSearch] = useState('');
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [replyMessage, setReplyMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -114,12 +115,6 @@ export default function WhatsAppChatInterface({
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, selectedChatId, isLoadingHistory]);
-
-  const filteredChats = chats.filter(
-    (c) =>
-      c.number.includes(search) ||
-      c.name?.toLowerCase().includes(search.toLowerCase()),
-  );
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -170,7 +165,7 @@ export default function WhatsAppChatInterface({
               placeholder="Cari chat..."
               className="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-green-500/20 dark:text-white transition-all shadow-inner"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => onSearchChange(e.target.value)}
             />
           </div>
         </div>
@@ -194,7 +189,7 @@ export default function WhatsAppChatInterface({
           ) : (
             <>
               <AnimatePresence mode="popLayout">
-                {filteredChats.map((chat) => (
+                {chats.map((chat) => (
                   <WhatsAppChatListItem
                     key={chat.id}
                     chat={chat}
@@ -388,4 +383,6 @@ WhatsAppChatInterface.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   limit: PropTypes.number,
   onLoadMore: PropTypes.func,
+  search: PropTypes.string,
+  onSearchChange: PropTypes.func,
 };

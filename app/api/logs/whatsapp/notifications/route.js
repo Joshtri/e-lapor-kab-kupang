@@ -6,10 +6,12 @@ export async function GET() {
         // Mengambil pesan masuk terakhir dari Green-API (default 24 jam)
         const messages = await getLastIncomingMessages(1440);
 
-        // Filter: Hanya ambil chat personal dan batasi ke 10 pesan terbaru
+        // Filter: Hanya ambil chat personal, urutkan terbaru, dan batasi ke 10 pesan
         const personalMessages = messages
             .filter(msg => msg.chatId.endsWith("@c.us") && msg.chatId !== "10000000000@c.us")
+            .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)) // Urutkan terbaru paling atas
             .slice(0, 10);
+
 
         // Format untuk dashboard feed dengan avatar
         const formattedNotifications = await Promise.all(personalMessages.map(async (msg) => {

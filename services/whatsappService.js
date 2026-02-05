@@ -3,10 +3,11 @@ import axios from 'axios';
 /**
  * Mengambil daftar percakapan (Sidebar)
  */
-export const fetchWhatsAppLogs = async (limit = 10) => {
-    const response = await axios.get(`/api/logs/whatsapp?limit=${limit}`);
+export const fetchWhatsAppLogs = async (limit = 10, query = '') => {
+    const response = await axios.get(`/api/logs/whatsapp?limit=${limit}&query=${query}`);
     return response.data;
 };
+
 
 
 /**
