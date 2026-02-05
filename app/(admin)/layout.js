@@ -8,6 +8,8 @@ import ClientThemeProvider from '@/providers/client-theme-provider';
 import TanstackQueryProvider from '@/providers/tanstack-query-provider';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import PushNotificationManager from '@/components/common/PushNotificationManager';
+
 
 export default function AdminLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -23,11 +25,12 @@ export default function AdminLayout({ children }) {
               isSidebarOpen={isSidebarOpen}
               toggleSidebar={toggleSidebar}
             />
+            <PushNotificationManager />
+
 
             <div
-              className={`flex-1 flex flex-col transition-all duration-300 ${
-                isSidebarOpen ? 'ml-64' : 'ml-20'
-              }`}
+              className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'
+                }`}
             >
               <Header
                 role="admin"

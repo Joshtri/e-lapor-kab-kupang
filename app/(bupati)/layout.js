@@ -6,6 +6,8 @@ import Header from '@/components/partials/UserCorePartials/header';
 import Sidebar from '@/components/partials/UserCorePartials/sidebar';
 import { ThemeProvider } from 'next-themes';
 import { useEffect, useState } from 'react';
+import PushNotificationManager from '@/components/common/PushNotificationManager';
+
 
 export default function BupatiLayout({ children }) {
   const [mounted, setMounted] = useState(false);
@@ -34,10 +36,11 @@ export default function BupatiLayout({ children }) {
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
           />
+          <PushNotificationManager />
+
           <div
-            className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
-              isSidebarOpen ? 'ml-64' : 'ml-20'
-            }`}
+            className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'
+              }`}
           >
             <Header
               role="bupati"

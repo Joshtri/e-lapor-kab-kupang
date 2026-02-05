@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { Toaster } from 'sonner';
 import './globals.css';
 import TanstackQueryProvider from '@/providers/tanstack-query-provider';
+import NotificationPermissionBanner from '@/components/NotificationPermissionBanner';
 
 
 export const metadata = {
@@ -32,6 +33,7 @@ export default async function RootLayout({ children }) {
           <TanstackQueryProvider>
             <DynamicMetadata /> {/* ✅ panggil di sini */}
             <Toaster position="top-right" />
+            <NotificationPermissionBanner />
             {/* <RouteLoadingIndicator /> */}
             {/* <ScrollToTopButton /> */}
             {/* <FloatingHelper /> */}

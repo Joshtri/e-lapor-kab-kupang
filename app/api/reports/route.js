@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getAuthenticatedUser } from '@/lib/auth';
-import { transporter } from '@/lib/email/transporter'; // atau path sesuai lokasi transporter kamu
+import { transporter } from '@/lib/email/transporter';
 import { convertFileToBuffer, validateImageFile } from '@/utils/common';
 import { render } from '@react-email/render';
-import NotificationEmail from '@/components/common/NotificationEmail'; // pastikan path sesuai
+import NotificationEmail from '@/components/common/NotificationEmail';
+import { sendNotificationToUser } from '@/lib/webPushServer';
 
 export async function GET(req) {
   try {
@@ -97,12 +98,26 @@ export async function POST(req) {
 
     const opd = await prisma.oPD.findUnique({
       where: { id: opdId },
-      include: { staff: { select: { id: true, role: true } } },
+      include: {
+        staff: {
+          where: { role: 'OPD' },
+          select: { id: true, role: true },
+          take: 1
+        }
+      },
     });
 
-    if (!opd || opd.staff?.role !== 'OPD') {
+    if (!opd) {
       return NextResponse.json(
         { error: 'OPD tidak valid atau tidak ditemukan.' },
+        { status: 400 },
+      );
+    }
+
+    // ✅ Validasi ada staff OPD (karena staff adalah array)
+    if (!opd.staff || opd.staff.length === 0) {
+      return NextResponse.json(
+        { error: 'OPD tidak memiliki staff yang valid.' },
         { status: 400 },
       );
     }
@@ -144,15 +159,16 @@ export async function POST(req) {
       createdAt: new Date(),
     }));
 
-    const notifOPD = {
-      userId: opd.staff.id, // Changed from opdId to userId to match schema
+    // ✅ Buat notifikasi untuk semua staff OPD
+    const notifOPD = opd.staff.map((staffMember) => ({
+      userId: staffMember.id,
       message: `Anda menerima laporan baru: "${newReport.title}"`,
       link: `/opd/laporan-warga/${newReport.id}`,
       createdAt: new Date(),
-    };
+    }));
 
     await prisma.notification.createMany({
-      data: [...notifAdminBupati, notifOPD],
+      data: [...notifAdminBupati, ...notifOPD],
     });
 
     await prisma.notification.create({
@@ -164,15 +180,57 @@ export async function POST(req) {
       },
     });
 
+    // ✅ Send PUSH NOTIFICATIONS to BUPATI & ADMIN
+    const host = req.headers.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const reportLink = `${protocol}://${host}/bupati-portal/kelola-pengaduan/${newReport.id}`;
+
+    // Send push notifications to all Bupati and Admin in parallel
+    const pushNotificationPromises = adminBupati.map((user) => {
+      const link = user.role === 'ADMIN'
+        ? `${protocol}://${host}/adm/kelola-pengaduan/${newReport.id}`
+        : reportLink;
+
+      return sendNotificationToUser(user.id, {
+        title: '📬 Laporan Baru',
+        body: `Laporan baru: "${newReport.title}" - Prioritas: ${newReport.priority}`,
+        icon: '/icons/icon-192.png',
+        data: {
+          url: link,
+          reportId: newReport.id,
+        },
+      }).catch((err) => {
+        console.error(`Failed to send push to user ${user.id} (${user.name}):`, err);
+      });
+    });
+
+    // Send push notifications to OPD staff
+    const opdPushPromises = opd.staff.map((staffMember) => {
+      return sendNotificationToUser(staffMember.id, {
+        title: '📬 Laporan Baru untuk OPD',
+        body: `Anda menerima laporan baru: "${newReport.title}"`,
+        icon: '/icons/icon-192.png',
+        data: {
+          url: `${protocol}://${host}/opd/laporan-warga/${newReport.id}`,
+          reportId: newReport.id,
+        },
+      }).catch((err) => {
+        console.error(`Failed to send push to OPD staff ${staffMember.id}:`, err);
+      });
+    });
+
+    // Non-blocking: send all push notifications in background
+    Promise.all([...pushNotificationPromises, ...opdPushPromises]).catch((err) => {
+      console.error('Push notification error:', err);
+    });
+
+
     // ✅ Send emails to BUPATI (optimized)
     const bupatiEmails = adminBupati.filter(
       (u) => u.role === 'BUPATI' && u.email,
     );
 
     if (bupatiEmails.length > 0) {
-      const host = req.headers.get('host');
-      const protocol = host?.includes('localhost') ? 'http' : 'https';
-      const reportLink = `${protocol}://${host}/bupati-portal/kelola-pengaduan/${newReport.id}`;
 
       // ✅ Render email HTML ONCE, not for each bupati
       const emailHtml = await render(

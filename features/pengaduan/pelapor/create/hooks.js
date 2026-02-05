@@ -52,8 +52,7 @@ export const useCreateReport = () => {
 export const useRegisterPushNotification = () => {
   return useMutation({
     mutationFn: async ({ userId, subscription }) => {
-      const response = await axios.post('/api/push/register', {
-        userId,
+      const response = await axios.post('/api/web-push/subscription', {
         subscription,
       });
       return response.data;

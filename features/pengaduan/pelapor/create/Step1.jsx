@@ -15,8 +15,8 @@ import { getPriorityColor } from '@/utils/common';
 import { useOpdList, useCategories, useSubcategories } from './hooks';
 
 const Step1 = ({ formData, onFormChange, errors }) => {
-  const [selectedCategoryId, setSelectedCategoryId] = useState('');
-  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState(formData.categoryId || '');
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(formData.subcategoryId || '');
   
   // Fetch data using custom hooks
   const { data: categoriesData, isLoading: loadingCategories } = useCategories();
@@ -29,9 +29,30 @@ const Step1 = ({ formData, onFormChange, errors }) => {
   // ✅ opdsData is already an array, not wrapped in { data: [...] }
   const opds = Array.isArray(opdsData) ? opdsData : [];
 
+  // ✅ Sync local state dengan formData saat kembali dari step berikutnya
+  useEffect(() => {
+    if (formData.categoryId && formData.categoryId !== selectedCategoryId) {
+      setSelectedCategoryId(formData.categoryId);
+    }
+    if (formData.subcategoryId && formData.subcategoryId !== selectedSubcategoryId) {
+      setSelectedSubcategoryId(formData.subcategoryId);
+    }
+  }, [formData.categoryId, formData.subcategoryId, selectedCategoryId, selectedSubcategoryId]);
+
 
   const handleCategoryChange = (value) => {
     // value adalah category ID
+    if (!value) {
+      // User cleared the category
+      setSelectedCategoryId('');
+      setSelectedSubcategoryId('');
+      onFormChange('categoryId', '');
+      onFormChange('category', '');
+      onFormChange('subcategoryId', '');
+      onFormChange('subcategory', '');
+      return;
+    }
+
     const category = categories.find((cat) => cat.id === value);
     if (category) {
       setSelectedCategoryId(value);
@@ -47,6 +68,14 @@ const Step1 = ({ formData, onFormChange, errors }) => {
 
   const handleSubcategoryChange = (value) => {
     // value adalah subcategory ID
+    if (!value) {
+      // User cleared the subcategory
+      setSelectedSubcategoryId('');
+      onFormChange('subcategoryId', '');
+      onFormChange('subcategory', '');
+      return;
+    }
+
     const subcategory = subcategories.find((sub) => sub.id === value);
     if (subcategory) {
       setSelectedSubcategoryId(value);

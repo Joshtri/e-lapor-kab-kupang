@@ -132,11 +132,12 @@ export default function LoginPage() {
                 <div>
                   <Label
                     htmlFor="email"
-                    value="Email"
                     className="flex items-center gap-2 mb-2"
                   >
                     <HiOutlineMail className="h-4 w-4 text-blue-600" />
-                    <span>Email</span>
+                    <span>
+                      Email <span className="text-red-500">*</span>
+                    </span>
                   </Label>
                   <TextInput
                     id="email"
@@ -157,11 +158,12 @@ export default function LoginPage() {
                 <div className="relative">
                   <Label
                     htmlFor="password"
-                    value="Password"
                     className="flex items-center gap-2 mb-2"
                   >
                     <HiOutlineLockClosed className="h-4 w-4 text-blue-600" />
-                    <span>Password</span>
+                    <span>
+                      Password <span className="text-red-500">*</span>
+                    </span>
                   </Label>
                   <div className="relative">
                     <TextInput

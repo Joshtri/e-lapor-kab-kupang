@@ -1,5 +1,10 @@
 /* global importScripts, clients */
-importScripts('./sw.js');
+try {
+    importScripts('./sw.js');
+} catch (e) {
+    console.warn('⚠️ sw.js (next-pwa caching) not found or failed to load. Push functionality still works.');
+}
+
 
 
 self.addEventListener('push', (event) => {

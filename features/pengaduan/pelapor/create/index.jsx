@@ -61,37 +61,9 @@ const CreatePengaduanForm = ({ user, onSuccess }) => {
   const [errors, setErrors] = useState({});
 
   const createReportMutation = useCreateReport();
-  const registerPushNotification = useRegisterPushNotification();
 
-  // Request push notification permission on mount
-  useEffect(() => {
-    const requestNotificationPermission = async () => {
-      try {
-        if (
-          !user?.id ||
-          !('Notification' in window) ||
-          !('serviceWorker' in navigator)
-        ) {
-          return;
-        }
-
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          const reg = await navigator.serviceWorker.ready;
-          const subscription = await reg.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-          });
-
-          registerPushNotification.mutate({ userId: user.id, subscription });
-        }
-      } catch (error) {
-        console.error('Failed to request notification permission:', error);
-      }
-    };
-
-    requestNotificationPermission();
-  }, [user?.id, registerPushNotification]);
+  // ✅ Removed: Push notification registration sudah ada di NotificationPermissionBanner
+  // Tidak perlu auto-request lagi di form ini
 
   // Form change handler
   const handleFormChange = useCallback(

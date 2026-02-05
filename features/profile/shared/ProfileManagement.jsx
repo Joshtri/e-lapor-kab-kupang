@@ -25,6 +25,7 @@ import ChangePasswordModal from './ChangePasswordProfile';
 import ChangeProfileModal from './ChangeProfileModal';
 import Image from 'next/image';
 import EditOpdProfileModal from '../opd/EditOpdProfileModal';
+import EnableNotificationButton from '@/components/EnableNotificationButton';
 
 const ProfileManagement = () => {
   const [user, setUser] = useState(null);
@@ -425,6 +426,18 @@ const ProfileManagement = () => {
           </Card>
         </motion.div>
       )}
+
+      {/* Card Pengaturan Notifikasi */}
+      <motion.div variants={item}>
+        <Card className="overflow-hidden border-0 shadow-md">
+          <div className="p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white mb-4">
+              Pengaturan Notifikasi
+            </h2>
+            <EnableNotificationButton />
+          </div>
+        </Card>
+      </motion.div>
 
       {/* Modal ubah password */}
       <ChangePasswordModal open={openModal} setOpen={setOpenModal} />

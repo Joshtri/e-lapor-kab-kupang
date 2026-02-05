@@ -6,6 +6,8 @@ import AuthProtectGuard from '@/components/AuthProtectedGuard';
 import Footer from '@/components/partials/UserCorePartials/footer';
 import Header from '@/components/partials/UserCorePartials/header';
 import Sidebar from '@/components/partials/UserCorePartials/sidebar';
+import PushNotificationManager from '@/components/common/PushNotificationManager';
+
 import ClientThemeProvider from '@/providers/client-theme-provider';
 
 export default function OpdLayout({ children }) {
@@ -23,16 +25,17 @@ export default function OpdLayout({ children }) {
   return (
     <AuthProtectGuard allowRole={['OPD']}>
       <ClientThemeProvider>
-         <div className="flex">
-         <Sidebar
+        <div className="flex">
+          <Sidebar
             role="opd"
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
           />
+          <PushNotificationManager />
+
           <div
-            className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${
-              isSidebarOpen ? 'ml-64' : 'ml-20'
-            }`}
+            className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'
+              }`}
           >
             <Header
               role="opd"
