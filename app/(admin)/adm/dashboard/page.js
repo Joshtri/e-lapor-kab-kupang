@@ -7,5 +7,5 @@ export const metadata = {
 
 
 export default function DashboardAdminPage() {
-  return <AdminDashboard titleHeader="Dashboard Admin" />;
+  return <AdminDashboard titleHeader="Dashboard" />;
 }

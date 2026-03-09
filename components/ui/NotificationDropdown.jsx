@@ -1,4 +1,3 @@
-
 import { Dropdown, Spinner, Button } from 'flowbite-react';
 import { HiOutlineBell, HiOutlineMailOpen } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -43,15 +42,20 @@ const NotificationDropdown = ({
     >
       <div className="max-h-[80vh] overflow-hidden flex flex-col">
         <Dropdown.Header className="border-b dark:border-gray-700 p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-900 dark:text-white">
-              Notifikasi
-            </span>
-            {unreadCount > 0 && (
-              <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
-                {unreadCount} baru
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-900 dark:text-white">
+                Notifikasi
               </span>
-            )}
+              {unreadCount > 0 && (
+                <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
+                  {unreadCount} baru
+                </span>
+              )}
+            </div>
+            <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+              Menampilkan notifikasi 2 minggu terakhir
+            </span>
           </div>
         </Dropdown.Header>
 

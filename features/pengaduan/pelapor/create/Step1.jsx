@@ -15,12 +15,18 @@ import { getPriorityColor } from '@/utils/common';
 import { useOpdList, useCategories, useSubcategories } from './hooks';
 
 const Step1 = ({ formData, onFormChange, errors }) => {
-  const [selectedCategoryId, setSelectedCategoryId] = useState(formData.categoryId || '');
-  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(formData.subcategoryId || '');
-  
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    formData.categoryId || '',
+  );
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(
+    formData.subcategoryId || '',
+  );
+
   // Fetch data using custom hooks
-  const { data: categoriesData, isLoading: loadingCategories } = useCategories();
-  const { data: subcategoriesData, isLoading: loadingSubcategories } = useSubcategories(selectedCategoryId);
+  const { data: categoriesData, isLoading: loadingCategories } =
+    useCategories();
+  const { data: subcategoriesData, isLoading: loadingSubcategories } =
+    useSubcategories(selectedCategoryId);
   const { data: opdsData, isLoading: loadingOpds } = useOpdList();
 
   // ✅ Extract data with proper null checks
@@ -34,11 +40,18 @@ const Step1 = ({ formData, onFormChange, errors }) => {
     if (formData.categoryId && formData.categoryId !== selectedCategoryId) {
       setSelectedCategoryId(formData.categoryId);
     }
-    if (formData.subcategoryId && formData.subcategoryId !== selectedSubcategoryId) {
+    if (
+      formData.subcategoryId &&
+      formData.subcategoryId !== selectedSubcategoryId
+    ) {
       setSelectedSubcategoryId(formData.subcategoryId);
     }
-  }, [formData.categoryId, formData.subcategoryId, selectedCategoryId, selectedSubcategoryId]);
-
+  }, [
+    formData.categoryId,
+    formData.subcategoryId,
+    selectedCategoryId,
+    selectedSubcategoryId,
+  ]);
 
   const handleCategoryChange = (value) => {
     // value adalah category ID
@@ -139,12 +152,7 @@ const Step1 = ({ formData, onFormChange, errors }) => {
         {/* Kategori */}
         <SearchableSelect
           id="category"
-          label={
-            <Label className="flex items-center text-gray-700 dark:text-gray-300">
-              <HiTag className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
-              Kategori Pengaduan <span className="text-red-500 ml-1">*</span>
-            </Label>
-          }
+          label="Kategori Pengaduan"
           options={categories.map((cat) => ({
             label: cat.name,
             value: cat.id,
@@ -229,12 +237,6 @@ const Step1 = ({ formData, onFormChange, errors }) => {
         {/* OPD Tujuan */}
         <SearchableSelect
           id="opdId"
-          label={
-            <Label className="flex items-center text-gray-700 dark:text-gray-300">
-              <HiOfficeBuilding className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
-              OPD Tujuan <span className="text-red-500 ml-1">*</span>
-            </Label>
-          }
           options={opds.map((opd) => ({
             label: opd.name,
             value: opd.id, // ✅ No need to convert to string, use directly
@@ -244,6 +246,7 @@ const Step1 = ({ formData, onFormChange, errors }) => {
           placeholder="Cari OPD..."
           error={errors.opdId}
           required
+          label="OPD Tujuan"
           disabled={loadingOpds || opds.length === 0}
           isLoading={loadingOpds}
           clearable

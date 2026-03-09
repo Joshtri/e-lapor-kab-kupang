@@ -63,17 +63,6 @@ const AdminDashboard = ({ titleHeader = 'Dashboard Admin' }) => {
     <div className="p-6">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-md border border-gray-200 dark:border-gray-700 mb-6">
         <div className="flex items-center">
-          <motion.div
-            className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mr-4"
-            animate={{ rotate: [0, 10, 0] }}
-            transition={{
-              repeat: Number.POSITIVE_INFINITY,
-              duration: 2,
-              ease: 'easeInOut',
-            }}
-          >
-            <HiOutlineMail className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-          </motion.div>
           <div>
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
               {titleHeader}

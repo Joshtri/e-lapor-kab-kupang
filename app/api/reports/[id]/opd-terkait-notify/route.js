@@ -4,7 +4,7 @@ import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function PATCH(req, { params }) {
   const { id } = params;
-  const { opdId, previousOpdId, previousOpdName, newOpdName } =
+  const { opdId, previousOpdId, previousOpdName } =
     await req.json();
 
   if (!opdId) {
@@ -93,7 +93,7 @@ export async function PATCH(req, { params }) {
         data: {
           userId: updatedReport.opd.staff.id,
           message: `Laporan baru ditugaskan ke OPD Anda: "${updatedReport.title || 'Laporan #' + id}"`,
-          link: `/opd/laporan/${id}`,
+          link: `/opd/laporan-warga/${id}`,
           createdAt: new Date(),
         },
       });

@@ -3,14 +3,14 @@ import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // Hitung tanggal 7 hari ke belakang
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    // Hitung tanggal 14 hari (2 minggu) ke belakang
+    const twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
     const reports = await prisma.report.findMany({
       where: {
         createdAt: {
-          gte: oneWeekAgo, // ✅ hanya laporan dari 7 hari terakhir
+          gte: twoWeeksAgo, // ✅ hanya laporan dari 14 hari terakhir
         },
       },
       orderBy: { createdAt: 'desc' },

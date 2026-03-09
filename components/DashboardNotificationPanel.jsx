@@ -50,12 +50,12 @@ const DashboardNotificationPanel = () => {
       <div className="flex items-center mb-2">
         <HiOutlineSpeakerphone className="text-blue-600 dark:text-blue-400 w-5 h-5 mr-2" />
         <h2 className="text-md font-semibold text-blue-800 dark:text-blue-300">
-          Notifikasi Laporan Terbaru
+          Notifikasi Laporan Terbaru (2 Minggu Terakhir)
         </h2>
       </div>
 
       {loading ? (
-          <LoadingMail />
+        <LoadingMail />
       ) : (
         <div className="max-h-[400px] overflow-y-auto pr-1">
           {/* 👆 Bisa atur max-h sesuai tinggi yang diinginkan */}

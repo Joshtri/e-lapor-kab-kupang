@@ -156,9 +156,11 @@ export default function Header({
     >
       <div className="flex justify-between items-center w-full">
         {/* Left - Menu Toggle & DateTime Widget */}
-        <div className={`flex items-center gap-4 transition-all duration-300 ${
-          isSidebarOpen ? 'ml-64' : 'ml-20'
-        }`}>
+        <div
+          className={`flex items-center gap-4 transition-all duration-300 ${
+            isSidebarOpen ? 'ml-80' : 'ml-20'
+          }`}
+        >
           <motion.button
             onClick={toggleSidebar}
             whileHover={{ scale: 1.05 }}

@@ -10,12 +10,16 @@ export async function GET(req) {
   }
 
   try {
+    const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
     let notifications = [];
 
     if (user.role === 'PELAPOR') {
       // Notifikasi untuk user pelapor
       notifications = await prisma.notification.findMany({
-        where: { userId: user.id },
+        where: {
+          userId: user.id,
+          createdAt: { gte: twoWeeksAgo },
+        },
         orderBy: { createdAt: 'desc' },
       });
     } else if (user.role === 'OPD') {
@@ -28,12 +32,18 @@ export async function GET(req) {
 
       if (userWithOpd?.opdId) {
         notifications = await prisma.notification.findMany({
-          where: { opdId: userWithOpd.opdId },
+          where: {
+            opdId: userWithOpd.opdId,
+            createdAt: { gte: twoWeeksAgo },
+          },
           orderBy: { createdAt: 'desc' },
         });
       }
     } else if (user.role === 'ADMIN' || user.role === 'BUPATI') {
       notifications = await prisma.notification.findMany({
+        where: {
+          createdAt: { gte: twoWeeksAgo },
+        },
         orderBy: { createdAt: 'desc' },
       });
     }

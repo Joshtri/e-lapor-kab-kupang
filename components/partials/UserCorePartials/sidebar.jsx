@@ -7,9 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import {
-  HiOutlineChevronRight
-} from 'react-icons/hi';
+import { HiOutlineChevronRight } from 'react-icons/hi';
 
 // Custom Tooltip Component for collapsed sidebar
 const Tooltip = ({ text, children, position = 'right', disabled = false }) => {
@@ -19,7 +17,11 @@ const Tooltip = ({ text, children, position = 'right', disabled = false }) => {
     <div className="relative group/tooltip">
       {children}
       <motion.div
-        initial={{ opacity: 0, x: position === 'right' ? 10 : -10, scale: 0.95 }}
+        initial={{
+          opacity: 0,
+          x: position === 'right' ? 10 : -10,
+          scale: 0.95,
+        }}
         whileHover={{ opacity: 1, x: 0, scale: 1 }}
         transition={{ duration: 0.15, ease: 'easeOut' }}
         className={`absolute top-1/2 -translate-y-1/2 ${
@@ -73,7 +75,8 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
   };
   // Role configurations
 
-  const currentConfig = navigationItemConfig[role] || navigationItemConfig.admin;
+  const currentConfig =
+    navigationItemConfig[role] || navigationItemConfig.admin;
   const color = currentConfig.color;
 
   const navLinkClass = (href) => {
@@ -84,11 +87,25 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
     const colorClass = colorMap[color] || colorMap.blue;
 
     return clsx(
-      'relative flex items-center gap-3 py-3 rounded-lg transition-all border-l-4 group',
-      isSidebarOpen ? 'pl-3 pr-4' : 'p-2 justify-center',
+      'relative flex items-center gap-3 py-3 rounded-xl transition-all duration-300 group',
+      isSidebarOpen ? 'px-4 mx-2' : 'p-2 justify-center mx-2',
       isActive
-        ? `${colorClass.border} ${colorClass.bg} ${colorClass.text} font-semibold ${colorClass.darkBg} ${colorClass.darkText} ring-2 ring-offset-1 ring-offset-white dark:ring-offset-gray-900 ${colorClass.border.replace('border-', 'ring-')}`
-        : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
+        ? `${colorClass.bg} ${colorClass.text} font-bold ${colorClass.darkBg} ${colorClass.darkText} shadow-sm backdrop-blur-sm shadow-black/5`
+        : 'hover:bg-gray-100 dark:hover:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white',
+    );
+  };
+
+  const subNavLinkClass = (href) => {
+    const normalizedPathname = pathname?.replace(/\/$/, '') || '';
+    const normalizedHref = href.replace(/\/$/, '');
+    const isActive = normalizedPathname === normalizedHref;
+    const colorClass = colorMap[color] || colorMap.blue;
+
+    return clsx(
+      'relative flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-200 group-sub mx-2',
+      isActive
+        ? `${colorClass.bg} ${colorClass.text} font-bold`
+        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/30',
     );
   };
 
@@ -163,7 +180,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
       const normalizedPathname = pathname?.replace(/\/$/, '') || '';
       // Check if any subroute is active
       const isActive = route.subRoutes?.some((subRoute) =>
-        normalizedPathname.startsWith(subRoute.path.replace(/\/$/, ''))
+        normalizedPathname.startsWith(subRoute.path.replace(/\/$/, '')),
       );
       const isExpanded = expandedMenus[route.name] || false;
 
@@ -173,11 +190,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
             <button
               type="button"
               onClick={() => toggleMenu(route.name)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm transition-all group ${
+              className={`w-full flex items-center gap-3 py-3 rounded-xl font-bold text-sm transition-all duration-300 group mx-2 ${
                 isActive
-                  ? `${colorMap[color].bg} ${colorMap[color].text} ${colorMap[color].darkBg} ${colorMap[color].darkText} ring-2 ring-offset-1 ring-offset-white dark:ring-offset-gray-900 ${colorMap[color].border.replace('border-', 'ring-')}`
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-              } ${!isSidebarOpen ? 'justify-center px-3' : ''}`}
+                  ? `${colorMap[color].bg} ${colorMap[color].text} ${colorMap[color].darkBg} ${colorMap[color].darkText} shadow-sm backdrop-blur-sm`
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white'
+              } ${isSidebarOpen ? 'px-4' : 'justify-center px-4 w-12'}`}
             >
               <route.icon className="h-6 w-6 flex-shrink-0" />
               {isSidebarOpen && (
@@ -194,19 +211,18 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
           </Tooltip>
 
           {isSidebarOpen && isExpanded && (
-            <ul className="ml-6 space-y-1 mt-1">
+            <div className="ml-10 mt-1 border-l-2 border-gray-100 dark:border-gray-800 space-y-1 py-1">
               {route.subRoutes.map((subRoute, subIndex) => (
-                <li key={subIndex}>
+                <li key={subIndex} className="list-none">
                   <Link
                     href={subRoute.path}
-                    className={navLinkClass(subRoute.path)}
+                    className={subNavLinkClass(subRoute.path)}
                   >
-                    <subRoute.icon className="h-5 w-5" />
-                    {subRoute.name}
+                    <span className="text-xs">{subRoute.name}</span>
                   </Link>
                 </li>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       );
@@ -216,7 +232,10 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
       <li key={index}>
         <Tooltip text={route.name} position="right" disabled={isSidebarOpen}>
           <Link href={route.path} className={navLinkClass(route.path)}>
-            <motion.div {...(route.motion || {})} className="relative flex-shrink-0">
+            <motion.div
+              {...(route.motion || {})}
+              className="relative flex-shrink-0"
+            >
               <route.icon className="h-6 w-6" />
               {route.badge && renderBadge(route.badge)}
             </motion.div>
@@ -238,9 +257,9 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
 
   return (
     <aside
-      className={`bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-screen transition-all shadow-lg fixed top-0 left-0 z-50 ${
-        isSidebarOpen ? 'w-64' : 'w-20'
-      } flex flex-col duration-300`}
+      className={`bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 h-screen transition-all shadow-xl fixed top-0 left-0 z-50 ${
+        isSidebarOpen ? 'w-80' : 'w-20'
+      } flex flex-col duration-300 ease-in-out`}
     >
       {/* Header Sidebar - Logo only */}
       <div className="p-4 flex items-center justify-center border-b border-gray-200 dark:border-gray-800">
@@ -282,8 +301,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, role = 'admin' }) => {
             // <h3 className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
             //   Main Menu
             // </h3>
-            <>
-            </>
+            <></>
           )}
           <ul className="space-y-1 mt-2">
             {currentConfig.routes.map((route, index) =>
