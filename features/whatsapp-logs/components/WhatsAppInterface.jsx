@@ -360,7 +360,7 @@ export default function WhatsAppChatInterface({
           </>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-gray-400">
-            <div className="w-24 h-24 bg-white/50 dark:bg-gray-700/50 rounded-full flex items-center justify-center mb-6 shadow-inner animate-bounce duration-[3s]">
+            <div className="w-24 h-24 bg-white/50 dark:bg-gray-700/50 rounded-full flex items-center justify-center mb-6 shadow-inner duration-[3s]">
               <HiOutlineUser className="w-12 h-12 opacity-20" />
             </div>
             <h3 className="text-lg font-bold text-gray-600 dark:text-gray-300 mb-2">

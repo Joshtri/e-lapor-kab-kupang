@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { isMobile } from '@/utils/isMobile';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, Label, TextInput } from 'flowbite-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -23,9 +22,7 @@ import {
 } from 'react-icons/hi';
 import { toast } from 'sonner';
 
-// Skema validasi dengan Zod (dengan batasan NIK hanya angka)
 import MaskedNikInput from '@/components/ui/inputs/MaskedNikInput';
-import { registerSchema } from '@/lib/validations/registerSchema';
 import LoadingScreen from '@/components/ui/loading/LoadingScreen';
 import Text from '@/components/ui/Text';
 import Button from '@/components/ui/Button';
@@ -41,13 +38,67 @@ export default function RegistrationPage() {
     handleSubmit,
     formState: { errors },
     watch,
+    trigger,
+    setValue,
   } = useForm({
-    resolver: zodResolver(registerSchema),
-    mode: 'onChange', // validasi langsung saat mengetik
+    defaultValues: {
+      fullName: '',
+      nikNumber: '',
+      contactNumber: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    mode: 'onChange',
   });
 
   // Watch all form fields to calculate progress
   const formValues = watch();
+
+  // Validasi functions
+  const validateFullName = (value) => {
+    if (!value) return 'Nama lengkap wajib diisi';
+    if (value.length < 3) return 'Nama lengkap minimal 3 karakter';
+    return true;
+  };
+
+  const validateNikNumber = (value) => {
+    if (!value) return 'NIK wajib diisi';
+    if (!/^\d+$/.test(value)) return 'NIK harus berupa angka';
+    if (value.length !== 16) return 'NIK harus 16 digit angka';
+    return true;
+  };
+
+  const validateContactNumber = (value) => {
+    if (!value) return 'Nomor kontak wajib diisi';
+    if (!/^\d+$/.test(value)) return 'Nomor kontak harus berupa angka';
+    if (value.length < 10 || value.length > 15)
+      return 'Nomor kontak harus antara 10-15 digit';
+    return true;
+  };
+
+  const validateEmail = (value) => {
+    if (!value) return 'Email wajib diisi';
+    const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
+    if (!emailRegex.test(value)) return 'Email tidak valid';
+    return true;
+  };
+
+  const validatePassword = (value) => {
+    if (!value) return 'Password wajib diisi';
+    if (value.length < 6) return 'Password minimal 6 karakter';
+    if (!/[A-Z]/.test(value)) return 'Password harus mengandung huruf besar';
+    if (!/[0-9]/.test(value)) return 'Password harus mengandung angka';
+    if (!/[!@#$%^&*]/.test(value))
+      return 'Password harus mengandung simbol (!@#$%^&*)';
+    return true;
+  };
+
+  const validateConfirmPassword = (value) => {
+    if (!value) return 'Konfirmasi password wajib diisi';
+    if (value !== formValues.password) return 'Password tidak cocok';
+    return true;
+  };
 
   // Calculate form completion progress
   useEffect(() => {
@@ -67,7 +118,9 @@ export default function RegistrationPage() {
   // TanStack Query mutation for registration
   const registerMutation = useMutation({
     mutationFn: async (data) => {
-      const res = await axios.post('/api/auth/register', data);
+      // Remove confirmPassword before sending to API
+      const { confirmPassword, ...submitData } = data;
+      const res = await axios.post('/api/auth/register', submitData);
       return res.data;
     },
     onSuccess: () => {
@@ -75,7 +128,6 @@ export default function RegistrationPage() {
         'Pendaftaran berhasil! Anda akan dialihkan ke halaman login.',
       );
 
-      // Redirect ke halaman login setelah 2 detik
       setTimeout(() => {
         router.push('/auth/login');
       }, 2000);
@@ -158,7 +210,11 @@ export default function RegistrationPage() {
                   id="fullName"
                   type="text"
                   placeholder="Masukkan nama lengkap"
-                  {...register('fullName')}
+                  {...register('fullName', {
+                    required: 'Nama lengkap wajib diisi',
+                    validate: validateFullName,
+                    onBlur: () => trigger('fullName'),
+                  })}
                   color={errors.fullName ? 'failure' : 'gray'}
                   className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500"
                 />
@@ -172,13 +228,8 @@ export default function RegistrationPage() {
               <MaskedNikInput
                 value={formValues.nikNumber}
                 onChange={(val) => {
-                  const event = {
-                    target: {
-                      name: 'nikNumber',
-                      value: val,
-                    },
-                  };
-                  register('nikNumber').onChange(event);
+                  setValue('nikNumber', val, { shouldValidate: true });
+                  trigger('nikNumber');
                 }}
                 error={errors.nikNumber?.message}
                 helperText="Pastikan NIK Anda berisi 16 digit angka."
@@ -200,10 +251,13 @@ export default function RegistrationPage() {
                   id="contactNumber"
                   type="text"
                   placeholder="Masukkan nomor kontak"
-                  {...register('contactNumber')}
+                  {...register('contactNumber', {
+                    required: 'Nomor kontak wajib diisi',
+                    validate: validateContactNumber,
+                    onBlur: () => trigger('contactNumber'),
+                  })}
                   maxLength={15}
                   inputMode="numeric"
-                  pattern="\d*"
                   onInput={(e) => {
                     e.currentTarget.value = e.currentTarget.value.replace(
                       /\D/g,
@@ -234,7 +288,11 @@ export default function RegistrationPage() {
                 <TextInput
                   id="email"
                   placeholder="email@example.com"
-                  {...register('email')}
+                  {...register('email', {
+                    required: 'Email wajib diisi',
+                    validate: validateEmail,
+                    onBlur: () => trigger('email'),
+                  })}
                   helperText="Gunakan alamat email yang valid dan aktif."
                   color={errors.email ? 'failure' : 'gray'}
                 />
@@ -262,7 +320,11 @@ export default function RegistrationPage() {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Masukkan Password"
-                  {...register('password')}
+                  {...register('password', {
+                    required: 'Password wajib diisi',
+                    validate: validatePassword,
+                    onBlur: () => trigger('password'),
+                  })}
                   helperText={
                     errors.password?.message ??
                     'Minimal 6 karakter, ada huruf besar, angka, dan simbol.'
@@ -297,7 +359,11 @@ export default function RegistrationPage() {
                   id="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="Ulangi password"
-                  {...register('confirmPassword')}
+                  {...register('confirmPassword', {
+                    required: 'Konfirmasi password wajib diisi',
+                    validate: validateConfirmPassword,
+                    onBlur: () => trigger('confirmPassword'),
+                  })}
                   helperText={
                     errors.confirmPassword?.message ??
                     'Masukkan ulang password yang sama untuk konfirmasi.'
@@ -319,7 +385,6 @@ export default function RegistrationPage() {
 
               <Button
                 type="submit"
-                // color="blue"
                 startIcon={<HiPaperAirplane />}
                 disabled={registerMutation.isPending}
                 className="flex items-center justify-center gap-2 mt-4"

@@ -4,7 +4,6 @@ import AuthRedirectGuard from '@/components/AuthRedirectGuard';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import LoadingScreen from '@/components/ui/loading/LoadingScreen';
 import { isMobile } from '@/utils/isMobile';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { Card, Label, TextInput } from 'flowbite-react';
@@ -24,14 +23,7 @@ import {
 import { toast } from 'sonner';
 import Heading from '@/components/ui/Heading';
 import Text from '@/components/ui/Text';
-import * as z from 'zod';
 import Button from '@/components/ui/Button';
-
-// Validation Schema
-const loginSchema = z.object({
-  email: z.string().email({ message: 'Email tidak valid' }),
-  password: z.string().min(6, { message: 'Password minimal 6 karakter' }),
-});
 
 export default function LoginPage() {
   const router = useRouter();
@@ -41,9 +33,28 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors },
+    trigger,
   } = useForm({
-    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    mode: 'onChange',
   });
+
+  // Validasi custom
+  const validateEmail = (value) => {
+    if (!value) return 'Email wajib diisi';
+    const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
+    if (!emailRegex.test(value)) return 'Email tidak valid';
+    return true;
+  };
+
+  const validatePassword = (value) => {
+    if (!value) return 'Password wajib diisi';
+    if (value.length < 6) return 'Password minimal 6 karakter';
+    return true;
+  };
 
   // TanStack Query mutation for login
   const loginMutation = useMutation({
@@ -143,7 +154,11 @@ export default function LoginPage() {
                     id="email"
                     type="email"
                     placeholder="nama@email.com"
-                    {...register('email')}
+                    {...register('email', {
+                      required: 'Email wajib diisi',
+                      validate: validateEmail,
+                      onBlur: () => trigger('email'),
+                    })}
                     color={errors.email ? 'failure' : 'gray'}
                     className="bg-blue-50 dark:bg-gray-800 bg-border-blue-100 focus:border-blue-500"
                   />
@@ -170,9 +185,13 @@ export default function LoginPage() {
                       id="password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="••••••••"
-                      {...register('password')}
+                      {...register('password', {
+                        required: 'Password wajib diisi',
+                        validate: validatePassword,
+                        onBlur: () => trigger('password'),
+                      })}
                       color={errors.password ? 'failure' : 'gray'}
-                      className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500 pr-12" // Tambah padding-right lebih besar untuk ruang ikon
+                      className="bg-blue-50 dark:bg-gray-800 border-blue-100 focus:border-blue-500 pr-12"
                     />
                     {/* Eye Icon Button */}
                     <button
@@ -209,10 +228,8 @@ export default function LoginPage() {
                   color="blue"
                   startIcon={<HiOutlineLogin className="h-5 w-5" />}
                   className="w-full flex items-center justify-center gap-2"
-                  // size="lg"
                   disabled={loginMutation.isPending}
                 >
-                  {/* <HiOutlineLogin className="h-5 w-5" /> */}
                   {loginMutation.isPending ? 'Memproses...' : 'Masuk'}
                 </Button>
 

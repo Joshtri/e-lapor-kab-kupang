@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { Button } from 'flowbite-react';
@@ -11,15 +9,6 @@ import { HiOutlineArrowLeft } from 'react-icons/hi';
 
 import { createOpdV2, updateOpdV2 } from '@/services/opdServiceV2';
 import LoadingScreen from '@/components/ui/loading/LoadingScreen';
-
-// Validation schema
-const opdSchema = z.object({
-  name: z.string().min(3, 'Nama OPD minimal 3 karakter'),
-  email: z.string().email('Email tidak valid').min(1, 'Email instansi wajib diisi'),
-  telp: z.string().min(1, 'Nomor telepon instansi wajib diisi'),
-  alamat: z.string().min(1, 'Alamat instansi wajib diisi'),
-  website: z.string().url('URL tidak valid').or(z.literal('')).optional(),
-});
 
 export default function OpdForm({ initialData, isEdit }) {
   const router = useRouter();
@@ -30,8 +19,8 @@ export default function OpdForm({ initialData, isEdit }) {
     handleSubmit,
     formState: { errors },
     reset,
+    trigger,
   } = useForm({
-    resolver: zodResolver(opdSchema),
     defaultValues: initialData || {
       name: '',
       email: '',
@@ -39,7 +28,42 @@ export default function OpdForm({ initialData, isEdit }) {
       alamat: '',
       website: '',
     },
+    mode: 'onChange',
   });
+
+  // Validasi functions
+  const validateName = (value) => {
+    if (!value) return 'Nama OPD wajib diisi';
+    if (value.length < 3) return 'Nama OPD minimal 3 karakter';
+    return true;
+  };
+
+  const validateEmail = (value) => {
+    if (!value) return 'Email instansi wajib diisi';
+    const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
+    if (!emailRegex.test(value)) return 'Email tidak valid';
+    return true;
+  };
+
+  const validateTelp = (value) => {
+    if (!value) return 'Nomor telepon instansi wajib diisi';
+    if (value.length < 8) return 'Nomor telepon minimal 8 digit';
+    return true;
+  };
+
+  const validateAlamat = (value) => {
+    if (!value) return 'Alamat instansi wajib diisi';
+    if (value.length < 5) return 'Alamat minimal 5 karakter';
+    return true;
+  };
+
+  const validateWebsite = (value) => {
+    if (!value) return true; // Optional field
+    const urlRegex =
+      /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    if (!urlRegex.test(value)) return 'URL tidak valid';
+    return true;
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -101,7 +125,11 @@ export default function OpdForm({ initialData, isEdit }) {
             <input
               type="text"
               placeholder="Contoh: Dinas Kesehatan"
-              {...register('name')}
+              {...register('name', {
+                required: 'Nama OPD wajib diisi',
+                validate: validateName,
+                onBlur: () => trigger('name'),
+              })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.name && (
@@ -115,12 +143,17 @@ export default function OpdForm({ initialData, isEdit }) {
               Email Instansi <span className="text-red-500">*</span>
             </label>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-              Email kontak untuk instansi/OPD ini (bukan email staff). Email staff diatur melalui akun user masing-masing.
+              Email kontak untuk instansi/OPD ini (bukan email staff). Email
+              staff diatur melalui akun user masing-masing.
             </p>
             <input
               type="email"
               placeholder="Contoh: dinas-kesehatan@kupang.go.id"
-              {...register('email')}
+              {...register('email', {
+                required: 'Email instansi wajib diisi',
+                validate: validateEmail,
+                onBlur: () => trigger('email'),
+              })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.email && (
@@ -136,14 +169,22 @@ export default function OpdForm({ initialData, isEdit }) {
               Nomor Telepon Instansi <span className="text-red-500">*</span>
             </label>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-              Nomor telepon kontak untuk instansi/OPD ini (bukan nomor HP staff). Nomor HP staff diatur melalui akun user masing-masing.
+              Nomor telepon kontak untuk instansi/OPD ini (bukan nomor HP
+              staff). Nomor HP staff diatur melalui akun user masing-masing.
             </p>
             <input
               type="tel"
               placeholder="Contoh: (0380) 123456"
-              {...register('telp')}
+              {...register('telp', {
+                required: 'Nomor telepon instansi wajib diisi',
+                validate: validateTelp,
+                onBlur: () => trigger('telp'),
+              })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.telp && (
+              <p className="text-red-500 text-sm mt-1">{errors.telp.message}</p>
+            )}
           </div>
 
           {/* Alamat */}
@@ -154,9 +195,18 @@ export default function OpdForm({ initialData, isEdit }) {
             <textarea
               rows="3"
               placeholder="Masukkan alamat lengkap OPD"
-              {...register('alamat')}
+              {...register('alamat', {
+                required: 'Alamat instansi wajib diisi',
+                validate: validateAlamat,
+                onBlur: () => trigger('alamat'),
+              })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.alamat && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.alamat.message}
+              </p>
+            )}
           </div>
 
           {/* Website */}
@@ -167,7 +217,10 @@ export default function OpdForm({ initialData, isEdit }) {
             <input
               type="url"
               placeholder="Contoh: https://dinas-kesehatan.kupang.go.id"
-              {...register('website')}
+              {...register('website', {
+                validate: validateWebsite,
+                onBlur: () => trigger('website'),
+              })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.website && (
